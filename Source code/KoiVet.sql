@@ -38,8 +38,8 @@ Go
 
 
 
-create table Veterinarian(
-VeterinarianID varchar(20) primary key,
+create table Employee(
+EmployeeID varchar(20) primary key,
 Email nvarchar unique not null,
 RoleID varchar(20) foreign key references Role(RoleID),
 PhoneNumber varchar(10) unique not null,
@@ -50,7 +50,8 @@ Birthday date,
 Avatar varchar,
 Address nvarchar(100),
 Password varchar(50),
-Status bit
+Status bit,
+Picture nvarchar
 )
 
 go
@@ -75,15 +76,6 @@ Price money,
 Description nvarchar
 )
 go
-
-create table TimeSlot(
-VeterinarianID varchar(20) foreign key references Veterinarian(VeterinarianID),
-Date date,
-SlotID int primary key,
-Status bit ,
-Note varchar(100)
-)
-
 
 go
 create table Appointment(
@@ -164,3 +156,12 @@ AppointmentID varchar(20) foreign key references Appointment(AppointmentID),
 Description nvarchar,
 isAvailable bit
 )
+
+go 
+
+create table FAQ(
+FaqID varchar(20),
+Question nvarchar,
+Answer nvarchar
+)
+
