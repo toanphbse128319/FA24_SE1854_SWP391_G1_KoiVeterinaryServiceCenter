@@ -128,4 +128,12 @@ Price money
 
 )
 
-
+create table Aquarium(
+AquariumID varchar(20) primary key,
+Name nvarchar(20),
+Note nvarchar,
+Width float,
+Height float,
+Depth float,
+Picture nvarchar
+)
