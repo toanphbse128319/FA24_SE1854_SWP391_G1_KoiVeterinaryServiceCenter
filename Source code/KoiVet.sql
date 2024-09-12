@@ -108,3 +108,9 @@ Duration int,
 Price money
 
 )
+
+go 
+create table AnimalType(
+TypeID varchar(20) primary key,
+Name nvarchar
+)
