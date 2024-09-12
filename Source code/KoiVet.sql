@@ -165,3 +165,12 @@ Question nvarchar,
 Answer nvarchar
 )
 
+go
+create table Schedule(
+EmployeeID varchar(20) foreign key references Employee(EmployeeID),
+Date date,
+Status bit,
+Note nvarchar,
+Slot int ,
+SlotNote nvarchar
+)
