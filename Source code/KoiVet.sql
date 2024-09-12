@@ -156,3 +156,11 @@ ExpiredDate date,
 MedicineID varchar(20),
 Note nvarchar
 )
+
+go
+create table Feedback(
+FeedbackID varchar(20) primary key,
+AppointmentID varchar(20) foreign key references Appointment(AppointmentID),
+Description nvarchar,
+isAvailable bit
+)
