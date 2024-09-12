@@ -99,6 +99,25 @@ SlotID int foreign key references TimeSlot(SlotID),
 Status int 
 )
 
+go 
+create table AnimalType(
+TypeID varchar(20) primary key,
+Name nvarchar
+)
+
+go 
+create table Animal(
+AnimalID varchar(20) primary key ,
+Name nvarchar(50),
+TypeID varchar(20) foreign key references AnimalType(TypeID),
+Size float,
+Age int,
+Color varchar(20),
+Description nvarchar,
+Sex bit,
+Picture nvarchar
+)
+
 go
 create table AppointmentDetail(
 AppointmentID varchar(20) references Appointment(AppointmentID),
@@ -109,8 +128,4 @@ Price money
 
 )
 
-go 
-create table AnimalType(
-TypeID varchar(20) primary key,
-Name nvarchar
-)
+
