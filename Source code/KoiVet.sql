@@ -87,7 +87,7 @@ Note varchar(100)
 
 go
 create table Appointment(
-AppointmentID varchar(20),
+AppointmentID varchar(20) primary key,
 CustomerID varchar(20) foreign key references Customer(CustomerID),
 VeterinarianID varchar(20) foreign key references Veterinarian(VeterinarianID),
 AppointmentDate date,
@@ -97,4 +97,14 @@ PaymentID varchar(20) foreign key references Payment(PaymentID),
 ServiceID varchar(20) foreign key references Service(ServiceID),
 SlotID int foreign key references TimeSlot(SlotID), 
 Status int 
+)
+
+go
+create table AppointmentDetail(
+AppointmentID varchar(20) references Appointment(AppointmentID),
+AquariumID varchar(20) references Aquarium(AquariumID),
+AnimalID varchar(20) references Animal(AnimalID), 
+Duration int,
+Price money
+
 )
