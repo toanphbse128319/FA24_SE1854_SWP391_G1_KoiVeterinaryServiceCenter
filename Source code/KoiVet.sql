@@ -119,6 +119,17 @@ Picture nvarchar
 )
 
 go
+create table Aquarium(
+AquariumID varchar(20) primary key,
+Name nvarchar(20),
+Note nvarchar,
+Width float,
+Height float,
+Depth float,
+Picture nvarchar
+)
+
+go
 create table AppointmentDetail(
 AppointmentID varchar(20) references Appointment(AppointmentID),
 AquariumID varchar(20) references Aquarium(AquariumID),
@@ -128,12 +139,20 @@ Price money
 
 )
 
-create table Aquarium(
-AquariumID varchar(20) primary key,
-Name nvarchar(20),
-Note nvarchar,
-Width float,
-Height float,
-Depth float,
-Picture nvarchar
+go
+create table PrescriptionMedicine(
+MedicineID varchar(20) primary key,
+Name varchar(30),
+Quantity int,
+Note nvarchar
+)
+
+go
+create table Prescription(
+PresID varchar(20) primary key,
+AppointmentID varchar(20) unique not null foreign key references Appointment(AppointmentID),
+ServiceID varchar(20) foreign key references Service(ServiceID),
+ExpiredDate date,
+MedicineID varchar(20),
+Note nvarchar
 )
