@@ -81,6 +81,12 @@ Price money,
 Description nvarchar
 )
 
+go
+create table Feedback(
+FeedbackID varchar(20) primary key,
+Description nvarchar,
+isAvailable bit
+)
 
 go
 create table Booking(
@@ -98,6 +104,7 @@ VAT varchar,
 VATAmount money,
 TotalAmount money,
 Status nvarchar,
+FeedbackID varchar(20) foreign key references Feedback(FeedbackID)
 )
 
 go 
@@ -151,15 +158,9 @@ Note nvarchar
 )
 
 go
+/--create table ExaminationResult()
 
 
-go
-create table Feedback(
-FeedbackID varchar(20) primary key,
-AppointmentID varchar(20) foreign key references Appointment(AppointmentID),
-Description nvarchar,
-isAvailable bit
-)
 
 go 
 
