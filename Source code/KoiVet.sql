@@ -73,10 +73,9 @@ Name varchar(100)
 )
 
 go
-create table Service(
-ServiceID varchar(20) primary key,
+create table ServiceType(
+ServiceTypeID varchar(20) primary key,
 CategoryID varchar(20) foreign key references ServicesCategories(CategoryID),
-Thumbnail varchar,
 Name nvarchar(30),
 Price money,
 Description nvarchar
