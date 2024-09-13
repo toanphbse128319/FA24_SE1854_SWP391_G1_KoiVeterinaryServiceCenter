@@ -166,11 +166,12 @@ go
 create table BookingDetail(
 BookingDetailID varchar(20) primary key,
 BookingID varchar(20) foreign key references Booking(BookingID),
-ServiceID varchar(20) foreign key references ServiceType(ServiceTypeID),
-AnimalID varchar(20) foreign key references Animal(AnimalID), 
-AquariumID varchar(20) foreign key references Aquarium(AquariumID),
-Price money
-
+ServiceTypeID varchar(20) foreign key references ServiceType(ServiceTypeID),
+AnimalProfileID varchar(20) foreign key references AnimalProfile(AnimalProfileID), 
+PoolProfileID varchar(20) foreign key references PoolProfile(PoolProfileID),
+UnitPrice money,
+NoteResult nvarchar,
+NoteExamination nvarchar,
 )
 
 go
