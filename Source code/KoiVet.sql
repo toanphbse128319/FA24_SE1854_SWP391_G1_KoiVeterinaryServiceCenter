@@ -144,19 +144,22 @@ Sex bit,
 Picture nvarchar,
 AnimalStatusDescription nvarchar,
 ConsultDoctor nvarchar,
-DrugList nvarchar
+DrugList nvarchar,
 )
 
 go
-create table Aquarium(
-AquariumID varchar(20) primary key,
+create table PoolProfile(
+PoolProfileID varchar(20) primary key,
 Name nvarchar(20),
 Note nvarchar,
 Width float,
 Description nvarchar,
 Height float,
 Depth float,
-Picture nvarchar
+Picture nvarchar,
+PoolStatusDescription nvarchar,
+ConsultTechnician nvarchar,
+MaterialList nvarchar,
 )
 
 go
