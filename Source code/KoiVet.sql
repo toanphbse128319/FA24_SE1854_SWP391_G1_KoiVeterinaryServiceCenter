@@ -57,12 +57,12 @@ Picture nvarchar
 
 go
 Create table PaymentMethod(
-PaymentID varchar(20) primary key,
+PaymentMethodID varchar(20) primary key,
 PaymentName varchar(50)
 )
 go
 create table PaymentStatus(
-PaymentStatusID varchar(20),
+PaymentStatusID varchar(20) primary key,
 StatusName varchar(50)
 )
 
@@ -80,20 +80,24 @@ Name nvarchar(30),
 Price money,
 Description nvarchar
 )
-go
+
 
 go
-create table Appointment(
-AppointmentID varchar(20) primary key,
+create table Booking(
+BookingID varchar(20) primary key ,
+ServiceTypeID varchar(20) foreign key references ServiceType(ServiceTypeID),
 CustomerID varchar(20) foreign key references Customer(CustomerID),
-VeterinarianID varchar(20) foreign key references Veterinarian(VeterinarianID),
-AppointmentDate date,
+EmployeeID varchar(20) foreign key references Employee(EmployeeID),
+BookingDate datetime,
 ExpiredDate date,
-TotalPrice money,
-PaymentID varchar(20) foreign key references Payment(PaymentID),
-ServiceID varchar(20) foreign key references Service(ServiceID),
-SlotID int foreign key references TimeSlot(SlotID), 
-Status int 
+PaymentMethodID varchar(20) foreign key references PaymentMethod(PaymentMethodID),
+PaymentStatusID varchar(20) foreign key references PaymentStatus(PaymentStatusID),
+DeliveryMethod nvarchar,
+Amount money,
+VAT varchar,
+VATAmount money,
+TotalAmount money,
+Status nvarchar,
 )
 
 go 
@@ -179,3 +183,16 @@ Note nvarchar,
 Slot int ,
 SlotNote nvarchar
 )
+
+//*create table Appointment(
+AppointmentID varchar(20) primary key,
+CustomerID varchar(20) foreign key references Customer(CustomerID),
+VeterinarianID varchar(20) foreign key references Veterinarian(VeterinarianID),
+AppointmentDate date,
+ExpiredDate date,
+TotalPrice money,
+PaymentID varchar(20) foreign key references Payment(PaymentID),
+ServiceID varchar(20) foreign key references Service(ServiceID),
+SlotID int foreign key references TimeSlot(SlotID), 
+Status int 
+)*//
