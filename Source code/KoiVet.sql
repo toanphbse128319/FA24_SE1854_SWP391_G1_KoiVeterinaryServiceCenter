@@ -88,6 +88,19 @@ Description nvarchar,
 isAvailable bit
 )
 
+
+
+go
+create table Schedule(
+ScheduleID varchar(20) primary key,
+EmployeeID varchar(20) foreign key references Employee(EmployeeID),
+Date date,
+Status bit,
+Note nvarchar,
+SlotCategoryID int foreign key references SlotCategory(SlotCategoryID),
+SlotNote nvarchar,
+)
+
 go
 create table Booking(
 BookingID varchar(20) primary key ,
@@ -104,7 +117,8 @@ VAT varchar,
 VATAmount money,
 TotalAmount money,
 Status nvarchar,
-FeedbackID varchar(20) foreign key references Feedback(FeedbackID)
+FeedbackID varchar(20) foreign key references Feedback(FeedbackID),
+ScheduleID varchar(20) foreign key references Schedule(ScheduleID)
 )
 
 go 
@@ -179,13 +193,5 @@ Question nvarchar,
 Answer nvarchar
 )
 
-go
-create table Schedule(
-EmployeeID varchar(20) foreign key references Employee(EmployeeID),
-Date date,
-Status bit,
-Note nvarchar,
-Slot int ,
-SlotNote nvarchar
-)
+
 
