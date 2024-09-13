@@ -30,7 +30,8 @@ Create table Customer(
 	Avatar varchar,
 	Address nvarchar(100),
 	Password varchar(50),
-	Status bit
+	Status bit,
+	Picture nvarchar
 )
 
 Go
@@ -38,8 +39,8 @@ Go
 
 
 
-create table Veterinarian(
-VeterinarianID varchar(20) primary key,
+create table Employee(
+EmployeeID varchar(20) primary key,
 Email nvarchar unique not null,
 RoleID varchar(20) foreign key references Role(RoleID),
 PhoneNumber varchar(10) unique not null,
@@ -50,51 +51,135 @@ Birthday date,
 Avatar varchar,
 Address nvarchar(100),
 Password varchar(50),
-Status bit
+Status bit,
+Picture nvarchar
 )
 
 go
-Create table Payment(
-PaymentID varchar(20) primary key,
-PaymentMethod varchar(50)
+Create table PaymentMethod(
+PaymentMethodID varchar(20) primary key,
+PaymentName varchar(50)
 )
 go
+create table PaymentStatus(
+PaymentStatusID varchar(20) primary key,
+StatusName varchar(50)
+)
 
+go
 create table ServicesCategories(
 CategoryID varchar(20) primary key,
 Name varchar(100)
 )
 
 go
-create table Service(
-ServiceID varchar(20) primary key,
+create table ServiceType(
+ServiceTypeID varchar(20) primary key,
 CategoryID varchar(20) foreign key references ServicesCategories(CategoryID),
-Thumbnail varchar,
 Name nvarchar(30),
 Price money,
 Description nvarchar
 )
-go
 
-create table TimeSlot(
-VeterinarianID varchar(20) foreign key references Veterinarian(VeterinarianID),
+go
+create table Feedback(
+FeedbackID varchar(20) primary key,
+Description nvarchar,
+isAvailable bit
+)
+
+go
+create table SlotCategory(
+SlotCategoryID int primary key ,
+SlotName nvarchar
+)
+
+go
+create table Schedule(
+ScheduleID varchar(20) primary key,
+EmployeeID varchar(20) foreign key references Employee(EmployeeID),
 Date date,
-SlotID int primary key,
-Status bit ,
-Note varchar(100)
+Status bit,
+Note nvarchar,
+SlotCategoryID int foreign key references SlotCategory(SlotCategoryID),
+SlotNote nvarchar,
 )
-
 
 go
-create table Appointment(
-AppointmentID varchar(20),
+create table Booking(
+BookingID varchar(20) primary key ,
+ServiceTypeID varchar(20) foreign key references ServiceType(ServiceTypeID),
 CustomerID varchar(20) foreign key references Customer(CustomerID),
-VeterinarianID varchar(20) foreign key references Veterinarian(VeterinarianID),
-AppointmentDate date,
+EmployeeID varchar(20) foreign key references Employee(EmployeeID),
+BookingDate datetime,
 ExpiredDate date,
-TotalPrice money,
-PaymentID varchar(20) foreign key references Payment(PaymentID),
-ServiceID varchar(20) foreign key references Service(ServiceID),
-SlotID int foreign key references TimeSlot(SlotID), 
-Status int 
+PaymentMethodID varchar(20) foreign key references PaymentMethod(PaymentMethodID),
+PaymentStatusID varchar(20) foreign key references PaymentStatus(PaymentStatusID),
+DeliveryMethod nvarchar,
+Amount money,
+VAT varchar,
+VATAmount money,
+TotalAmount money,
+Status nvarchar,
+FeedbackID varchar(20) foreign key references Feedback(FeedbackID),
+ScheduleID varchar(20) foreign key references Schedule(ScheduleID)
 )
+
+go 
+create table AnimalType(
+TypeID varchar(20) primary key,
+Name nvarchar
+)
+
+go 
+create table AnimalProfile(
+AnimalProfileID varchar(20) primary key ,
+Name nvarchar(50),
+TypeID varchar(20) foreign key references AnimalType(TypeID),
+Size float,
+Age int,
+Color varchar(20),
+Description nvarchar,
+Sex bit,
+Picture nvarchar,
+AnimalStatusDescription nvarchar,
+ConsultDoctor nvarchar,
+DrugList nvarchar,
+)
+
+go
+create table PoolProfile(
+PoolProfileID varchar(20) primary key,
+Name nvarchar(20),
+Note nvarchar,
+Width float,
+Description nvarchar,
+Height float,
+Depth float,
+Picture nvarchar,
+PoolStatusDescription nvarchar,
+ConsultTechnician nvarchar,
+MaterialList nvarchar,
+)
+
+go
+create table BookingDetail(
+BookingDetailID varchar(20) primary key,
+BookingID varchar(20) foreign key references Booking(BookingID),
+ServiceTypeID varchar(20) foreign key references ServiceType(ServiceTypeID),
+AnimalProfileID varchar(20) foreign key references AnimalProfile(AnimalProfileID), 
+PoolProfileID varchar(20) foreign key references PoolProfile(PoolProfileID),
+UnitPrice money,
+NoteResult nvarchar,
+NoteExamination nvarchar,
+)
+
+go 
+create table FAQ(
+FaqID varchar(20),
+Question nvarchar,
+Answer nvarchar
+)
+
+
+
