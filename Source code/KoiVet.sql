@@ -88,7 +88,11 @@ Description nvarchar,
 isAvailable bit
 )
 
-
+go
+create table SlotCategory(
+SlotCategoryID int primary key ,
+SlotName nvarchar
+)
 
 go
 create table Schedule(
