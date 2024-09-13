@@ -30,7 +30,8 @@ Create table Customer(
 	Avatar varchar,
 	Address nvarchar(100),
 	Password varchar(50),
-	Status bit
+	Status bit,
+	Picture nvarchar
 )
 
 Go
@@ -55,12 +56,17 @@ Picture nvarchar
 )
 
 go
-Create table Payment(
+Create table PaymentMethod(
 PaymentID varchar(20) primary key,
-PaymentMethod varchar(50)
+PaymentName varchar(50)
 )
 go
+create table PaymentStatus(
+PaymentStatusID varchar(20),
+StatusName varchar(50)
+)
 
+go
 create table ServicesCategories(
 CategoryID varchar(20) primary key,
 Name varchar(100)
