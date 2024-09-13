@@ -151,14 +151,7 @@ Note nvarchar
 )
 
 go
-create table Prescription(
-PresID varchar(20) primary key,
-AppointmentID varchar(20) unique not null foreign key references Appointment(AppointmentID),
-ServiceID varchar(20) foreign key references Service(ServiceID),
-ExpiredDate date,
-MedicineID varchar(20),
-Note nvarchar
-)
+
 
 go
 create table Feedback(
