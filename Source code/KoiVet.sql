@@ -158,7 +158,16 @@ Note nvarchar
 )
 
 go
-/--create table ExaminationResult()
+create table ExaminationResult(
+ExamResultID varchar(20) primary key,
+BookingDetailID varchar(20) foreign key references BookingDetail(BookingDetailID),
+BookingID varchar(20) foreign key references Booking(BookingID),
+ServiceTypeID varchar(20) foreign key references ServiceType(ServiceTypeID),
+ExpiredDate date,
+MedicineID varchar(20) foreign key references PrescriptionMedicine(MedicineID),
+Note nvarchar,
+)
+
 
 
 
@@ -180,15 +189,3 @@ Slot int ,
 SlotNote nvarchar
 )
 
-//*create table Appointment(
-AppointmentID varchar(20) primary key,
-CustomerID varchar(20) foreign key references Customer(CustomerID),
-VeterinarianID varchar(20) foreign key references Veterinarian(VeterinarianID),
-AppointmentDate date,
-ExpiredDate date,
-TotalPrice money,
-PaymentID varchar(20) foreign key references Payment(PaymentID),
-ServiceID varchar(20) foreign key references Service(ServiceID),
-SlotID int foreign key references TimeSlot(SlotID), 
-Status int 
-)*//
