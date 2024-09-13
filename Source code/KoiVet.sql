@@ -125,17 +125,19 @@ AquariumID varchar(20) primary key,
 Name nvarchar(20),
 Note nvarchar,
 Width float,
+Description nvarchar,
 Height float,
 Depth float,
 Picture nvarchar
 )
 
 go
-create table AppointmentDetail(
-AppointmentID varchar(20) references Appointment(AppointmentID),
-AquariumID varchar(20) references Aquarium(AquariumID),
-AnimalID varchar(20) references Animal(AnimalID), 
-Duration int,
+create table BookingDetail(
+BookingDetailID varchar(20) primary key,
+BookingID varchar(20) foreign key references Booking(BookingID),
+ServiceID varchar(20) foreign key references ServiceType(ServiceTypeID),
+AnimalID varchar(20) foreign key references Animal(AnimalID), 
+AquariumID varchar(20) foreign key references Aquarium(AquariumID),
 Price money
 
 )
