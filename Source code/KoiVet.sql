@@ -174,24 +174,7 @@ NoteResult nvarchar,
 NoteExamination nvarchar,
 )
 
-
-
-go
-create table ExaminationResult(
-ExamResultID varchar(20) primary key,
-BookingDetailID varchar(20) foreign key references BookingDetail(BookingDetailID),
-BookingID varchar(20) foreign key references Booking(BookingID),
-ServiceTypeID varchar(20) foreign key references ServiceType(ServiceTypeID),
-ExpiredDate date,
-MedicineID varchar(20) foreign key references PrescriptionMedicine(MedicineID),
-Note nvarchar,
-)
-
-
-
-
 go 
-
 create table FAQ(
 FaqID varchar(20),
 Question nvarchar,
