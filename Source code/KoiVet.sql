@@ -174,13 +174,7 @@ NoteResult nvarchar,
 NoteExamination nvarchar,
 )
 
-go
-create table PrescriptionMedicine(
-MedicineID varchar(20) primary key,
-Name varchar(30),
-Quantity int,
-Note nvarchar
-)
+
 
 go
 create table ExaminationResult(
