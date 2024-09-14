@@ -143,9 +143,7 @@ Color varchar(20),
 Description nvarchar,
 Sex bit,
 Picture nvarchar,
-AnimalStatusDescription nvarchar,
-ConsultDoctor nvarchar,
-DrugList nvarchar,
+
 )
 
 go
@@ -158,9 +156,7 @@ Description nvarchar,
 Height float,
 Depth float,
 Picture nvarchar,
-PoolStatusDescription nvarchar,
-ConsultTechnician nvarchar,
-MaterialList nvarchar,
+
 )
 
 go
@@ -173,6 +169,12 @@ PoolProfileID varchar(20) foreign key references PoolProfile(PoolProfileID),
 UnitPrice money,
 NoteResult nvarchar,
 NoteExamination nvarchar,
+AnimalStatusDescription nvarchar,
+ConsultDoctor nvarchar,
+DrugList nvarchar,
+PoolStatusDescription nvarchar,
+ConsultTechnician nvarchar,
+MaterialList nvarchar,
 )
 
 go 
