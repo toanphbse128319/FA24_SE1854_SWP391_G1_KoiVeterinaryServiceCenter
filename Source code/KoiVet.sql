@@ -1,15 +1,16 @@
-IF EXISTS (SELECT name FROM master.dbo.sysdatabases WHERE name = N'koi vet')
+
+IF EXISTS (SELECT name FROM master.dbo.sysdatabases WHERE name = N'FA24_SE1854_SWP391_G1_KoiVeterinaryServiceCenter')
 BEGIN
-	ALTER DATABASE [koi vet] SET OFFLINE WITH ROLLBACK IMMEDIATE;
-	ALTER DATABASE [koi vet] SET ONLINE;
-	DROP DATABASE [koi vet];
+	ALTER DATABASE [FA24_SE1854_SWP391_G1_KoiVeterinaryServiceCenter] SET OFFLINE WITH ROLLBACK IMMEDIATE;
+	ALTER DATABASE [FA24_SE1854_SWP391_G1_KoiVeterinaryServiceCenter] SET ONLINE;
+	DROP DATABASE [FA24_SE1854_SWP391_G1_KoiVeterinaryServiceCenter];
 END
 
 GO
-CREATE DATABASE [koi vet]
+CREATE DATABASE [FA24_SE1854_SWP391_G1_KoiVeterinaryServiceCenter]
 GO
 
-USE [koi vet]
+USE [FA24_SE1854_SWP391_G1_KoiVeterinaryServiceCenter]
 
 Go
 Create table Role(
