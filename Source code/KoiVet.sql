@@ -184,5 +184,17 @@ Question nvarchar,
 Answer nvarchar
 )
 
+go
+create table PostCategory(
+PostCategoryID varchar(20) primary key,
+Name nvarchar
+)
 
+go
+create table Post(
+PostID varchar(20) primary key,
+PostName nvarchar,
+PostCategoryID varchar(20) foreign key references PostCategory(PostCategoryID),
+Context nvarchar,
+)
 
