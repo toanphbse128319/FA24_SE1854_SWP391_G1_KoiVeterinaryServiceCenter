@@ -164,7 +164,7 @@ go
 create table BookingDetail(
 BookingDetailID varchar(20) primary key,
 BookingID varchar(20) foreign key references Booking(BookingID) not null,
-ServiceTypeID varchar(20) foreign key references ServiceType(ServiceTypeID) not null,
+ServiceID varchar(20) foreign key references Service(ServiceID) not null,
 AnimalProfileID varchar(20) foreign key references AnimalProfile(AnimalProfileID) not null, 
 PoolProfileID varchar(20) foreign key references PoolProfile(PoolProfileID) not null,
 UnitPrice money not null,
