@@ -199,3 +199,7 @@ PostCategoryID varchar(20) foreign key references PostCategory(PostCategoryID) n
 Context nvarchar not null,
 )
 
+go create table Dashboard(
+EmployeeID varchar(20) foreign key references Employee(EmployeeID),
+BookingID varchar(20) foreign key references Booking(BookingID),
+)
