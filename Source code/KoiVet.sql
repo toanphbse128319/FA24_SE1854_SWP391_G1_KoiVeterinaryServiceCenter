@@ -68,25 +68,27 @@ StatusName varchar(50) not null
 )
 
 go
-create table ServicesCategories(
+create table ServiceDeliveryMethod(
 CategoryID varchar(20) primary key,
-Name varchar(100) not null
+Name varchar(100) not null,
+Status bit,
 )
 
 go
-create table ServiceType(
+create table Service(
 ServiceTypeID varchar(20) primary key,
 CategoryID varchar(20) foreign key references ServicesCategories(CategoryID) not null,
 Name nvarchar(30) not null,
 Price money not null,
-Description nvarchar
+Description nvarchar,
+Status bit,
 )
 
 go
 create table Feedback(
 FeedbackID varchar(20) primary key,
 Description nvarchar not null,
-isAvailable bit not null
+Status bit not null
 )
 
 go
