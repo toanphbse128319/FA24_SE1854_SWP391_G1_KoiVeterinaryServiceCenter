@@ -69,15 +69,15 @@ StatusName varchar(50) not null
 
 go
 create table ServiceDeliveryMethod(
-CategoryID varchar(20) primary key,
+ServiceDeliveryMethodID varchar(20) primary key,
 Name varchar(100) not null,
 Status bit,
 )
 
 go
 create table Service(
-ServiceTypeID varchar(20) primary key,
-CategoryID varchar(20) foreign key references ServicesCategories(CategoryID) not null,
+ServiceID varchar(20) primary key,
+ServiceDeliveryMethodID varchar(20) foreign key references ServiceDeliveryMethod(ServiceDeliveryMethodID) not null,
 Name nvarchar(30) not null,
 Price money not null,
 Description nvarchar,
@@ -111,7 +111,7 @@ SlotNote nvarchar,
 go
 create table Booking(
 BookingID varchar(20) primary key ,
-ServiceTypeID varchar(20) foreign key references ServiceType(ServiceTypeID) not null,
+ServiceTypeID varchar(20) foreign key references Service(ServiceID) not null,
 CustomerID varchar(20) foreign key references Customer(CustomerID),
 EmployeeID varchar(20) foreign key references Employee(EmployeeID),
 BookingDate datetime not null,
@@ -146,9 +146,6 @@ Color varchar(20) not null,
 Description nvarchar,
 Sex int not null,
 Picture nvarchar ,
-AnimalStatusDescription nvarchar ,
-ConsultDoctor nvarchar ,
-DrugList nvarchar ,
 )
 
 go
@@ -161,9 +158,6 @@ Description nvarchar ,
 Height float not null,
 Depth float not null,
 Picture nvarchar ,
-PoolStatusDescription nvarchar,
-ConsultTechnician nvarchar,
-MaterialList nvarchar,
 )
 
 go
@@ -176,6 +170,12 @@ PoolProfileID varchar(20) foreign key references PoolProfile(PoolProfileID) not 
 UnitPrice money not null,
 NoteResult nvarchar,
 NoteExamination nvarchar,
+AnimalStatusDescription nvarchar ,
+ConsultDoctor nvarchar ,
+DrugList nvarchar ,
+PoolStatusDescription nvarchar,
+ConsultTechnician nvarchar,
+MaterialList nvarchar,
 )
 
 go 
