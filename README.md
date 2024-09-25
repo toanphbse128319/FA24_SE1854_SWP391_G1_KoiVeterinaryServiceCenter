@@ -2,7 +2,7 @@
 1. Install npm.
 2. Go to KVCSFrontend folder, open cmd and execute:
 
-   > npm install
+   > npm install -D vite
 3. Done.
 
 
