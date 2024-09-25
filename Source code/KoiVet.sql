@@ -88,8 +88,8 @@ CREATE TABLE Feedback(
 )
 GO
 
-CREATE TABLE SlotCateGOry(
-    SlotCateGOryID int PRIMARY KEY ,
+CREATE TABLE SlotCategory(
+    SlotCategoryID int PRIMARY KEY ,
     SlotName nvarchar NOT NULL
 )
 GO
@@ -100,7 +100,7 @@ CREATE TABLE Schedule(
     Date date NOT NULL,
     Status bit NOT NULL,
     Note nvarchar,
-    SlotCateGOryID int FOREIGN KEY REFERENCES SlotCategory(SlotCategoryID) NOT NULL,
+    SlotCategoryID int FOREIGN KEY REFERENCES SlotCategory(SlotCategoryID) NOT NULL,
     SlotNote nvarchar
 )
 GO
@@ -182,8 +182,8 @@ CREATE TABLE FAQ(
 )
 GO
 
-CREATE TABLE PostCateGOry(
-    PostCateGOryID varchar(20) PRIMARY KEY,
+CREATE TABLE PostCategory(
+    PostCategoryID varchar(20) PRIMARY KEY,
     Name nvarchar NOT NULL,
 )
 GO
@@ -191,7 +191,7 @@ GO
 CREATE TABLE Post(
     PostID varchar(20) PRIMARY KEY,
     PostName nvarchar NOT NULL,
-    PostCateGOryID varchar(20) FOREIGN KEY REFERENCES PostCategory(PostCategoryID) NOT NULL,
+    PostCategoryID varchar(20) FOREIGN KEY REFERENCES PostCategory(PostCategoryID) NOT NULL,
     Context nvarchar NOT NULL,
 )
 GO 
