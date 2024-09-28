@@ -50,15 +50,11 @@ CREATE TABLE Employee(
 )
 GO
 
-Create TABLE PaymentMethod(
-    PaymentMethodID nvarchar(20) PRIMARY KEY,
+Create TABLE PaymentSystem(
+    PaymentID nvarchar(20) PRIMARY KEY,
+    PaymentMethod nvarchar(50) NOT NULL,
+    Status nvarchar(50) NOT NULL,
     PaymentName nvarchar(50) NOT NULL
-)
-GO
-
-CREATE TABLE PaymentStatus(
-    PaymentStatusID nvarchar(20) PRIMARY KEY,
-    StatusName nvarchar(50) NOT NULL
 )
 GO
 
@@ -110,7 +106,7 @@ CREATE TABLE Booking(
     EmployeeID nvarchar(20) FOREIGN KEY REFERENCES Employee(EmployeeID),
     BookingDate datetime NOT NULL,
     ExpiredDate date NOT NULL,
-    PaymentMethodID nvarchar(20) FOREIGN KEY REFERENCES PaymentMethod(PaymentMethodID) NOT NULL,
+    PaymentMethodID nvarchar(20) FOREIGN KEY REFERENCES PaymentSystem(PaymentMethodID) NOT NULL,
     PaymentStatusID nvarchar(20) FOREIGN KEY REFERENCES PaymentStatus(PaymentStatusID) NOT NULL,
     DeliveryMethod nvarchar(50) NOT NULL,
     VAT float,
@@ -230,8 +226,8 @@ VALUES
 ('E004', 'reception1@gmai.com', 'R005', '0334455667', 'Nancy', 'Lee', 0, '1985-12-12', 'avatar6.jpg', '333 Pine Ln', '123456', 1),
 ('E005', 'admin@gmail.com', 'R001', '0998877665', 'Michael', 'Scott', 1, '1975-09-08', 'avatar7.jpg', '444 Birch Rd', '123456', 1);
 
--- Insert sample data for PaymentMethod
-INSERT INTO PaymentMethod (PaymentMethodID, PaymentName) 
+-- Insert sample data for PaymentSystem
+INSERT INTO PaymentSystem (PaymentMethodID, PaymentName) 
 VALUES 
 ('PM001', 'Credit Card'),
 ('PM002', 'PayPal'),
