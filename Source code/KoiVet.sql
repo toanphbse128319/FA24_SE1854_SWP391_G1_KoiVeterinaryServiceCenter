@@ -187,9 +187,7 @@ CREATE TABLE PostCateGOry(
 )
 GO
 
-create table Dashboard(
-DashboardID nvarchar(20) primary key,
-)
+Drop table Dashboard
 GO
 
 CREATE TABLE Post(
