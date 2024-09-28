@@ -125,10 +125,27 @@ CREATE TABLE AnimalType(
 )
 GO 
 
+CREATE TABLE BookingDetail(
+    BookingDetailID nvarchar(20) PRIMARY KEY,
+    BookingID nvarchar(20) FOREIGN KEY REFERENCES Booking(BookingID) NOT NULL,
+    ServiceID nvarchar(20) FOREIGN KEY REFERENCES Service(ServiceID) NOT NULL,
+    UnitPrice money NOT NULL,
+    NoteResult nvarchar,
+    NoteExamination nvarchar,
+    AnimalStatusDescription nvarchar ,
+    ConsultDoctor nvarchar ,
+    DrugList nvarchar ,
+    PoolStatusDescription nvarchar,
+    ConsultTechnician nvarchar,
+    MaterialList nvarchar,
+)
+GO 
+
 CREATE TABLE AnimalProfile(
     AnimalProfileID nvarchar(20) PRIMARY KEY ,
     Name nvarchar(50) NOT NULL,
     TypeID nvarchar(20) FOREIGN KEY REFERENCES AnimalType(TypeID) NOT NULL,
+    BookingDetailID nvarchar(20) FOREIGN KEY REFERENCES BookingDetail(BookingDetailID) NOT NULL,
     Size float NOT NULL,
     Age int NOT NULL,
     Color nvarchar(20) NOT NULL,
@@ -141,6 +158,7 @@ GO
 CREATE TABLE PoolProfile(
     PoolProfileID nvarchar(20) PRIMARY KEY,
     Name nvarchar(20) NOT NULL,
+    BookingDetailID nvarchar(20) FOREIGN KEY REFERENCES BookingDetail(BookingDetailID) NOT NULL,
     Note nvarchar,
     Width float NOT NULL,
     Description nvarchar ,
@@ -150,23 +168,6 @@ CREATE TABLE PoolProfile(
 )
 GO
 
-CREATE TABLE BookingDetail(
-    BookingDetailID nvarchar(20) PRIMARY KEY,
-    BookingID nvarchar(20) FOREIGN KEY REFERENCES Booking(BookingID) NOT NULL,
-    ServiceID nvarchar(20) FOREIGN KEY REFERENCES Service(ServiceID) NOT NULL,
-    AnimalProfileID nvarchar(20) FOREIGN KEY REFERENCES AnimalProfile(AnimalProfileID) NOT NULL, 
-    PoolProfileID nvarchar(20) FOREIGN KEY REFERENCES PoolProfile(PoolProfileID) NOT NULL,
-    UnitPrice money NOT NULL,
-    NoteResult nvarchar,
-    NoteExamination nvarchar,
-    AnimalStatusDescription nvarchar ,
-    ConsultDoctor nvarchar ,
-    DrugList nvarchar ,
-    PoolStatusDescription nvarchar,
-    ConsultTechnician nvarchar,
-    MaterialList nvarchar,
-)
-GO 
 
 CREATE TABLE FAQ(
     FaqID nvarchar(20) PRIMARY KEY,
