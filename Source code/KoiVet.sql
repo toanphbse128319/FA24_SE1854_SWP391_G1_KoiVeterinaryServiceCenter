@@ -115,7 +115,7 @@ CREATE TABLE Booking(
     TotalServiceCost money NOT NULL,
     Status nvarchar(50) NOT NULL,
     FeedbackID nvarchar(20) FOREIGN KEY REFERENCES Feedback(FeedbackID) NOT NULL,
-    ScheduleID nvarchar(20) FOREIGN KEY REFERENCES Schedule(ScheduleID) NOT NULL
+    ScheduleID nvarchar(20) FOREIGN KEY REFERENCES Schedule(ScheduleID) NOT NULL,
     Note nvarchar(MAX)
 )
 GO 
@@ -147,7 +147,7 @@ CREATE TABLE PoolProfile(
     Description nvarchar ,
     Height float NOT NULL,
     Depth float NOT NULL,
-    Picture nvarchar,
+    Picture nvarchar
 )
 GO
 
