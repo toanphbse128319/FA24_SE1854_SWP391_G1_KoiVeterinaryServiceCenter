@@ -18,10 +18,19 @@ CREATE TABLE Role(
 )
 GO
 
+Create table Account(
+    AccountID nvarchar(30) primary key,
+    Email nvarchar(30) UNIQUE NOT NULL,
+    RoleID nvarchar(20) FOREIGN KEY REFERENCES Role(RoleID) NOT NULL,
+    Avatar nvarchar(500),
+    Password nvarchar(50) NOT NULL,
+    Status nvarchar(50) NOT NULL,
+	isActive bit not null,
+)
+
 CREATE TABLE Customer(
     CustomerID nvarchar(20) PRIMARY KEY,
     Email nvarchar(30) UNIQUE NOT NULL,
-    RoleID nvarchar(20) FOREIGN KEY REFERENCES Role(RoleID) NOT NULL,
     PhoneNumber nvarchar(10) UNIQUE NOT NULL,
     Firstname nvarchar(20) NOT NULL,
     Lastname nvarchar(20),
@@ -29,15 +38,15 @@ CREATE TABLE Customer(
     Birthday date,
     Avatar nvarchar(500),
     Address nvarchar(100) NOT NULL,
-    Password nvarchar(50) NOT NULL,
+    AccountID nvarchar(30) FOREIGN KEY REFERENCES Account(AccountID),
     Status nvarchar(50) NOT NULL
 )
 GO
 
 CREATE TABLE Employee(
     EmployeeID nvarchar(20) PRIMARY KEY,
+	AccountID nvarchar(30) FOREIGN KEY REFERENCES Account(AccountID),
     Email nvarchar(100)  UNIQUE NOT NULL,
-    RoleID nvarchar(20) FOREIGN KEY REFERENCES Role(RoleID) NOT NULL,
     PhoneNumber nvarchar(10) UNIQUE NOT NULL,
     Firstname nvarchar(20) NOT NULL,
     Lastname nvarchar(20),
@@ -48,14 +57,7 @@ CREATE TABLE Employee(
     Password nvarchar(50) NOT NULL,
     Status nvarchar(50) NOT NULL,
 )
-GO
 
-Create TABLE PaymentSystem(
-    PaymentID nvarchar(20) PRIMARY KEY,
-    PaymentMethod nvarchar(50) NOT NULL,
-    Status nvarchar(50) NOT NULL,
-    PaymentName nvarchar(50) NOT NULL
-)
 GO
 
 CREATE TABLE ServiceDeliveryMethod(
@@ -105,7 +107,7 @@ CREATE TABLE Booking(
     EmployeeID nvarchar(20) FOREIGN KEY REFERENCES Employee(EmployeeID),
     BookingDate datetime NOT NULL,
     ExpiredDate date NOT NULL,
-    PaymentID nvarchar(20) FOREIGN KEY REFERENCES PaymentSystem( PaymentID ) NOT NULL,
+    Deposit money not null,
     DeliveryMethod nvarchar(50) NOT NULL,
     VAT float,
     BookingAddress nvarchar(200) NOT NULL,
@@ -115,7 +117,10 @@ CREATE TABLE Booking(
     Status nvarchar(50) NOT NULL,
     FeedbackID nvarchar(20) FOREIGN KEY REFERENCES Feedback(FeedbackID) NOT NULL,
     ScheduleID nvarchar(20) FOREIGN KEY REFERENCES Schedule(ScheduleID) NOT NULL,
-    Note nvarchar(MAX)
+
+    Note nvarchar(MAX),
+	PaymentMethod nvarchar(50) NOT NULL,
+    PaymentStatus nvarchar(50) NOT NULL
 )
 GO 
 
@@ -184,8 +189,6 @@ GO
 
 create table Dashboard(
 DashboardID nvarchar(20) primary key,
-CustomerID nvarchar(20) foreign key references Customer(CustomerID),
-BookingID nvarchar(20) foreign key references Booking(BookingID),
 )
 GO
 
@@ -226,14 +229,8 @@ VALUES
 ('E004', 'reception1@gmai.com', 'R005', '0334455667', 'Nancy', 'Lee', 0, '1985-12-12', 'avatar6.jpg', '333 Pine Ln', '123456', 1),
 ('E005', 'admin@gmail.com', 'R001', '0998877665', 'Michael', 'Scott', 1, '1975-09-08', 'avatar7.jpg', '444 Birch Rd', '123456', 1);
 
--- Insert sample data for PaymentStatus
-INSERT INTO PaymentStatus (PaymentStatusID, StatusName) 
-VALUES 
-('PS001', 'Paid'),
-('PS002', 'Pending'),
-('PS003', 'Cancelled'),
-('PS004', 'Failed'),
-('PS005', 'Refunded');
+
+
 
 -- Insert sample data for ServiceDeliveryMethod
 INSERT INTO ServiceDeliveryMethod (ServiceDeliveryMethodID, Name, Status) 
