@@ -101,7 +101,6 @@ GO
 
 CREATE TABLE Booking(
     BookingID nvarchar(20) PRIMARY KEY ,
-    ServiceID nvarchar(20) FOREIGN KEY REFERENCES Service(ServiceID) NOT NULL,
     CustomerID nvarchar(20) FOREIGN KEY REFERENCES Customer(CustomerID),
     EmployeeID nvarchar(20) FOREIGN KEY REFERENCES Employee(EmployeeID),
     BookingDate datetime NOT NULL,
