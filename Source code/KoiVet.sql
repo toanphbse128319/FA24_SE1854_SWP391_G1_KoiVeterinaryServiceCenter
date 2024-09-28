@@ -187,9 +187,6 @@ CREATE TABLE PostCateGOry(
 )
 GO
 
-Drop table Dashboard
-GO
-
 CREATE TABLE Post(
     PostID nvarchar(20) PRIMARY KEY,
     PostName nvarchar NOT NULL,
