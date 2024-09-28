@@ -13,156 +13,154 @@ USE [FA24_SE1854_SWP391_G1_KoiVeterinaryServiceCenter]
 GO
 
 CREATE TABLE Role(
-    RoleID varchar(20) PRIMARY KEY,
-    Rolename varchar(100) NOT NULL
+    RoleID nvarchar(20) PRIMARY KEY,
+    Rolename nvarchar(100) NOT NULL
 )
 GO
 
 CREATE TABLE Customer(
-    CustomerID varchar(20) PRIMARY KEY,
+    CustomerID nvarchar(20) PRIMARY KEY,
     Email nvarchar(30) UNIQUE NOT NULL,
-    RoleID varchar(20) FOREIGN KEY REFERENCES Role(RoleID) NOT NULL,
-    PhoneNumber varchar(10) UNIQUE NOT NULL,
-    Firstname nvarchar(20),
+    RoleID nvarchar(20) FOREIGN KEY REFERENCES Role(RoleID) NOT NULL,
+    PhoneNumber nvarchar(10) UNIQUE NOT NULL,
+    Firstname nvarchar(20) NOT NULL,
     Lastname nvarchar(20),
-    Sex int ,
+    Sex bit,
     Birthday date,
-    Avatar varchar,
+    Avatar nvarchar(500),
     Address nvarchar(100) NOT NULL,
-    Password varchar(50) NOT NULL,
-    Status bit NOT NULL,
-    Picture nvarchar
+    Password nvarchar(50) NOT NULL,
+    Status nvarchar(50) NOT NULL
 )
 GO
 
 CREATE TABLE Employee(
-    EmployeeID varchar(20) PRIMARY KEY,
-    Email nvarchar UNIQUE NOT NULL,
-    RoleID varchar(20) FOREIGN KEY REFERENCES Role(RoleID) NOT NULL,
-    PhoneNumber varchar(10) UNIQUE NOT NULL,
+    EmployeeID nvarchar(20) PRIMARY KEY,
+    Email nvarchar(100)  UNIQUE NOT NULL,
+    RoleID nvarchar(20) FOREIGN KEY REFERENCES Role(RoleID) NOT NULL,
+    PhoneNumber nvarchar(10) UNIQUE NOT NULL,
     Firstname nvarchar(20) NOT NULL,
     Lastname nvarchar(20),
-    Sex int ,
+    Sex bit,
     Birthday date,
-    Avatar varchar,
+    Avatar nvarchar(500),
     Address nvarchar(100) NOT NULL,
-    Password varchar(50) NOT NULL,
-    Status bit NOT NULL,
-    Picture nvarchar
+    Password nvarchar(50) NOT NULL,
+    Status nvarchar(50) NOT NULL,
 )
 GO
 
 Create TABLE PaymentMethod(
-    PaymentMethodID varchar(20) PRIMARY KEY,
-    PaymentName varchar(50) NOT NULL
+    PaymentMethodID nvarchar(20) PRIMARY KEY,
+    PaymentName nvarchar(50) NOT NULL
 )
 GO
 
 CREATE TABLE PaymentStatus(
-    PaymentStatusID varchar(20) PRIMARY KEY,
-    StatusName varchar(50) NOT NULL
+    PaymentStatusID nvarchar(20) PRIMARY KEY,
+    StatusName nvarchar(50) NOT NULL
 )
 GO
 
 CREATE TABLE ServiceDeliveryMethod(
-    ServiceDeliveryMethodID varchar(20) PRIMARY KEY,
-    Name varchar(100) NOT NULL,
-    Status bit
+    ServiceDeliveryMethodID nvarchar(20) PRIMARY KEY,
+    Name nvarchar(100) NOT NULL,
+    Status nvarchar(50)
 )
 GO
 
 CREATE TABLE Service(
-    ServiceID varchar(20) PRIMARY KEY,
-    ServiceDeliveryMethodID varchar(20) FOREIGN KEY REFERENCES ServiceDeliveryMethod(ServiceDeliveryMethodID) NOT NULL,
+    ServiceID nvarchar(20) PRIMARY KEY,
+    ServiceDeliveryMethodID nvarchar(20) FOREIGN KEY REFERENCES ServiceDeliveryMethod(ServiceDeliveryMethodID) NOT NULL,
     Name nvarchar(30) NOT NULL,
     Price money NOT NULL,
-    Description nvarchar,
-    Status bit
+    Description nvarchar(MAX),
+    Status nvarchar(50)
 )
 GO
 
 CREATE TABLE Feedback(
-    FeedbackID varchar(20) PRIMARY KEY,
-    Description nvarchar NOT NULL,
-    Status bit NOT NULL
+    FeedbackID nvarchar(20) PRIMARY KEY,
+    Description nvarchar(MAX) NOT NULL,
+    Status nvarchar(50) NOT NULL
 )
 GO
 
 CREATE TABLE SlotCateGOry(
     SlotCateGOryID int PRIMARY KEY ,
-    SlotName nvarchar NOT NULL
+    SlotName nvarchar(50) NOT NULL
 )
 GO
 
 CREATE TABLE Schedule(
-    ScheduleID varchar(20) PRIMARY KEY,
-    EmployeeID varchar(20) FOREIGN KEY REFERENCES Employee(EmployeeID) NOT NULL,
+    ScheduleID nvarchar(20) PRIMARY KEY,
+    EmployeeID nvarchar(20) FOREIGN KEY REFERENCES Employee(EmployeeID) NOT NULL,
     Date date NOT NULL,
-    Status bit NOT NULL,
-    Note nvarchar,
+    Status nvarchar(500) NOT NULL,
+    Note nvarchar(MAX),
     SlotCateGOryID int FOREIGN KEY REFERENCES SlotCategory(SlotCategoryID) NOT NULL,
-    SlotNote nvarchar
+    SlotNote nvarchar(50)
 )
 GO
 
 CREATE TABLE Booking(
-    BookingID varchar(20) PRIMARY KEY ,
-    ServiceTypeID varchar(20) FOREIGN KEY REFERENCES Service(ServiceID) NOT NULL,
-    CustomerID varchar(20) FOREIGN KEY REFERENCES Customer(CustomerID),
-    EmployeeID varchar(20) FOREIGN KEY REFERENCES Employee(EmployeeID),
+    BookingID nvarchar(20) PRIMARY KEY ,
+    ServiceID nvarchar(20) FOREIGN KEY REFERENCES Service(ServiceID) NOT NULL,
+    CustomerID nvarchar(20) FOREIGN KEY REFERENCES Customer(CustomerID),
+    EmployeeID nvarchar(20) FOREIGN KEY REFERENCES Employee(EmployeeID),
     BookingDate datetime NOT NULL,
     ExpiredDate date NOT NULL,
-    PaymentMethodID varchar(20) FOREIGN KEY REFERENCES PaymentMethod(PaymentMethodID) NOT NULL,
-    PaymentStatusID varchar(20) FOREIGN KEY REFERENCES PaymentStatus(PaymentStatusID) NOT NULL,
-    DeliveryMethod nvarchar NOT NULL,
-    VAT varchar,
-    BookingAddress nvarchar NOT NULL,
+    PaymentMethodID nvarchar(20) FOREIGN KEY REFERENCES PaymentMethod(PaymentMethodID) NOT NULL,
+    PaymentStatusID nvarchar(20) FOREIGN KEY REFERENCES PaymentStatus(PaymentStatusID) NOT NULL,
+    DeliveryMethod nvarchar(50) NOT NULL,
+    VAT float,
+    BookingAddress nvarchar(200) NOT NULL,
     Distance float NOT NULL,
     DistanceCost money NOT NULL,
     TotalServiceCost money NOT NULL,
-    Status nvarchar NOT NULL,
-    FeedbackID varchar(20) FOREIGN KEY REFERENCES Feedback(FeedbackID) NOT NULL,
-    ScheduleID varchar(20) FOREIGN KEY REFERENCES Schedule(ScheduleID) NOT NULL
+    Status nvarchar(50) NOT NULL,
+    FeedbackID nvarchar(20) FOREIGN KEY REFERENCES Feedback(FeedbackID) NOT NULL,
+    ScheduleID nvarchar(20) FOREIGN KEY REFERENCES Schedule(ScheduleID) NOT NULL
 )
 GO 
 
 CREATE TABLE AnimalType(
-    TypeID varchar(20) PRIMARY KEY,
-    Name nvarchar NOT NULL
+    TypeID nvarchar(20) PRIMARY KEY,
+    Name nvarchar(100) NOT NULL
 )
 GO 
 
 CREATE TABLE AnimalProfile(
-    AnimalProfileID varchar(20) PRIMARY KEY ,
+    AnimalProfileID nvarchar(20) PRIMARY KEY ,
     Name nvarchar(50) NOT NULL,
-    TypeID varchar(20) FOREIGN KEY REFERENCES AnimalType(TypeID) NOT NULL,
+    TypeID nvarchar(20) FOREIGN KEY REFERENCES AnimalType(TypeID) NOT NULL,
     Size float NOT NULL,
     Age int NOT NULL,
-    Color varchar(20) NOT NULL,
+    Color nvarchar(20) NOT NULL,
     Description nvarchar,
     Sex int NOT NULL,
-    Picture nvarchar ,
+    Picture nvarchar 
 )
 GO
 
 CREATE TABLE PoolProfile(
-    PoolProfileID varchar(20) PRIMARY KEY,
+    PoolProfileID nvarchar(20) PRIMARY KEY,
     Name nvarchar(20) NOT NULL,
     Note nvarchar,
     Width float NOT NULL,
     Description nvarchar ,
     Height float NOT NULL,
     Depth float NOT NULL,
-    Picture nvarchar ,
+    Picture nvarchar,
 )
 GO
 
 CREATE TABLE BookingDetail(
-    BookingDetailID varchar(20) PRIMARY KEY,
-    BookingID varchar(20) FOREIGN KEY REFERENCES Booking(BookingID) NOT NULL,
-    ServiceID varchar(20) FOREIGN KEY REFERENCES Service(ServiceID) NOT NULL,
-    AnimalProfileID varchar(20) FOREIGN KEY REFERENCES AnimalProfile(AnimalProfileID) NOT NULL, 
-    PoolProfileID varchar(20) FOREIGN KEY REFERENCES PoolProfile(PoolProfileID) NOT NULL,
+    BookingDetailID nvarchar(20) PRIMARY KEY,
+    BookingID nvarchar(20) FOREIGN KEY REFERENCES Booking(BookingID) NOT NULL,
+    ServiceID nvarchar(20) FOREIGN KEY REFERENCES Service(ServiceID) NOT NULL,
+    AnimalProfileID nvarchar(20) FOREIGN KEY REFERENCES AnimalProfile(AnimalProfileID) NOT NULL, 
+    PoolProfileID nvarchar(20) FOREIGN KEY REFERENCES PoolProfile(PoolProfileID) NOT NULL,
     UnitPrice money NOT NULL,
     NoteResult nvarchar,
     NoteExamination nvarchar,
@@ -176,24 +174,33 @@ CREATE TABLE BookingDetail(
 GO 
 
 CREATE TABLE FAQ(
-    FaqID varchar(20) PRIMARY KEY,
+    FaqID nvarchar(20) PRIMARY KEY,
     Question nvarchar NOT NULL,
     Answer nvarchar NOT NULL
 )
 GO
 
 CREATE TABLE PostCateGOry(
-    PostCateGOryID varchar(20) PRIMARY KEY,
+    PostCateGOryID nvarchar(20) PRIMARY KEY,
     Name nvarchar NOT NULL,
 )
 GO
 
-go
 create table Dashboard(
-DashboardID varchar(20) primary key,
-CustomerID varchar(20) foreign key references Customer(CustomerID),
-BookingID varchar(20) foreign key references Booking(BookingID),
+DashboardID nvarchar(20) primary key,
+CustomerID nvarchar(20) foreign key references Customer(CustomerID),
+BookingID nvarchar(20) foreign key references Booking(BookingID),
 )
+GO
+
+CREATE TABLE Post(
+    PostID nvarchar(20) PRIMARY KEY,
+    PostName nvarchar NOT NULL,
+    PostCateGOryID nvarchar(20) FOREIGN KEY REFERENCES PostCategory(PostCategoryID) NOT NULL,
+    Context nvarchar NOT NULL,
+)
+GO 
+
 USE [FA24_SE1854_SWP391_G1_KoiVeterinaryServiceCenter]
 
 -- Insert sample data for Role
@@ -206,22 +213,22 @@ VALUES
 ('R005', 'Staff');
 
 -- Insert sample data for Customer
-INSERT INTO Customer (CustomerID, Email, RoleID, PhoneNumber, Firstname, Lastname, Sex, Birthday, Avatar, Address, Password, Status, Picture) 
+INSERT INTO Customer (CustomerID, Email, RoleID, PhoneNumber, Firstname, Lastname, Sex, Birthday, Avatar, Address, Password, Status) 
 VALUES 
-('C001', 'kyn6036@gmail.com', 'R002', '0123456789', 'Vy', 'Nguyen', 1, '2004-20-11', 'avatar1.jpg', '250 vo van hat', '12345', 1, 'pic1.jpg'),
-('C002', 'jane@gmail.com', 'R002', '0987654321', 'Jane', 'Smith', 0, '1985-03-15', 'avatar2.jpg', '456 Maple Ave', '12345', 1, 'pic2.jpg'),
-('C003', 'alice@gmail.com', 'R003', '0111222333', 'Alice', 'Johnson', 0, '1995-07-22', 'avatar3.jpg', '789 Oa St', '12345', 1, 'pic3.jpg'),
-('C004', 'bob@gmail.com', 'R002', '0223344556', 'Bob', 'Brown', 1, '1982-11-02', 'avatar4.jpg', '321 Birch Ave', '12345', 1, 'pic4.jpg'),
-('C005', 'carol@gmail.com', 'R002', '0334455667', 'Carol', 'White', 0, '1979-08-14', 'avatar5.jpg', '654 Pine St', '12345', 1, 'pic5.jpg');
+('C001', 'kyn6036@gmail.com', 'R002', '0123456789', 'Vy', 'Nguyen', 1, '2004-11-20', 'avatar1.jpg', '250 vo van hat', '12345', 1),
+('C002', 'jane@gmail.com', 'R002', '0987654321', 'Jane', 'Smith', 0, '1985-03-15', 'avatar2.jpg', '456 Maple Ave', '12345', 1),
+('C003', 'alice@gmail.com', 'R003', '0111222333', 'Alice', 'Johnson', 0, '1995-07-22', 'avatar3.jpg', '789 Oa St', '12345', 1),
+('C004', 'bob@gmail.com', 'R002', '0223344556', 'Bob', 'Brown', 1, '1982-11-02', 'avatar4.jpg', '321 Birch Ave', '12345', 1),
+('C005', 'carol@gmail.com', 'R002', '0334455667', 'Carol', 'White', 0, '1979-08-14', 'avatar5.jpg', '654 Pine St', '12345', 1);
 
 -- Insert sample data for Employee
-INSERT INTO Employee (EmployeeID, Email, RoleID, PhoneNumber, Firstname, Lastname, Sex, Birthday, Avatar, Address, Password, Status, Picture) 
+INSERT INTO Employee (EmployeeID, Email, RoleID, PhoneNumber, Firstname, Lastname, Sex, Birthday, Avatar, Address, Password, Status) 
 VALUES 
-('E001', 'vet1@gmail.com', 'R003', '0123456789', 'Sam', 'Wilson', 1, '1980-01-15', 'avatar3.jpg', '789 Cedar St', '123456', 1, 'pic3.jpg'),
-('E002', 'vet2@gmail.com', 'R003', '0456677889', 'Lily', 'Anderson', 0, '1988-04-25', 'avatar4.jpg', '111 Maple St', '123456', 1, 'pic4.jpg'),
-('E003', 'Manager@gmail.com', 'R001', '0223344556', 'Tom', 'Clark', 1, '1991-02-19', 'avatar5.jpg', '222 Oak Dr', '123456', 1, 'pic5.jpg'),
-('E004', 'reception1@gmai.com', 'R005', '0334455667', 'Nancy', 'Lee', 0, '1985-12-12', 'avatar6.jpg', '333 Pine Ln', '123456', 1, 'pic6.jpg'),
-('E005', 'admin@gmail.com', 'R001', '0998877665', 'Michael', 'Scott', 1, '1975-09-08', 'avatar7.jpg', '444 Birch Rd', '123456', 1, 'pic7.jpg');
+('E001', 'vet1@gmail.com', 'R003', '0123456789', 'Sam', 'Wilson', 1, '1980-01-15', 'avatar3.jpg', '789 Cedar St', '123456', 1),
+('E002', 'vet2@gmail.com', 'R003', '0456677889', 'Lily', 'Anderson', 0, '1988-04-25', 'avatar4.jpg', '111 Maple St', '123456', 1),
+('E003', 'Manager@gmail.com', 'R001', '0223344556', 'Tom', 'Clark', 1, '1991-02-19', 'avatar5.jpg', '222 Oak Dr', '123456', 1),
+('E004', 'reception1@gmai.com', 'R005', '0334455667', 'Nancy', 'Lee', 0, '1985-12-12', 'avatar6.jpg', '333 Pine Ln', '123456', 1),
+('E005', 'admin@gmail.com', 'R001', '0998877665', 'Michael', 'Scott', 1, '1975-09-08', 'avatar7.jpg', '444 Birch Rd', '123456', 1);
 
 -- Insert sample data for PaymentMethod
 INSERT INTO PaymentMethod (PaymentMethodID, PaymentName) 
@@ -229,7 +236,7 @@ VALUES
 ('PM001', 'Credit Card'),
 ('PM002', 'PayPal'),
 ('PM003', 'Bank Transfer'),
-('PM004', 'Cash'),
+('PM004', 'Cash');
 
 
 -- Insert sample data for PaymentStatus
@@ -280,20 +287,20 @@ VALUES
 -- Insert sample data for Schedule
 INSERT INTO Schedule (ScheduleID, EmployeeID, Date, Status, Note, SlotCategoryID, SlotNote) 
 VALUES 
-('SCH001', 'E001', '2024-09-01', 1, 'Regular checkup', 1, 'Morning slot'),
-('SCH002', 'E001', '2024-09-02', 1, 'Consultation', 2, 'Afternoon slot'),
-('SCH003', 'E002', '2024-09-03', 1, 'Follow-up', 3, 'Evening slot'),
-('SCH004', 'E003', '2024-09-04', 1, 'Emergency', 4, 'Night slot'),
-('SCH005', 'E004', '2024-09-05', 1, 'Routine check', 5, 'Early Morning slot');
+('SCH001', 'E001', '2024/09/01', 1, 'Regular checkup', 1, 'Morning slot'),
+('SCH002', 'E002', '2024/09/02', 1, 'Consultation', 2, 'Afternoon slot'),
+('SCH003', 'E003', '2024/09/03', 1, 'Follow-up', 3, 'Evening slot'),
+('SCH004', 'E004', '2024/09/04', 1, 'Emergency', 4, 'Night slot'),
+('SCH005', 'E005', '2024/09/05', 1, 'Routine check', 5, 'Early Morning slot');
 
 -- Insert sample data for Booking
-INSERT INTO Booking (BookingID, ServiceTypeID, CustomerID, EmployeeID, BookingDate, ExpiredDate, PaymentMethodID, PaymentStatusID, DeliveryMethod, VAT, BookingAddress, Distance, DistanceCost, TotalServiceCost, Status, FeedbackID, ScheduleID) 
+INSERT INTO Booking (BookingID, ServiceID, CustomerID, EmployeeID, BookingDate, ExpiredDate, PaymentMethodID, PaymentStatusID, DeliveryMethod, VAT, BookingAddress, Distance, DistanceCost, TotalServiceCost, Status, FeedbackID, ScheduleID) 
 VALUES 
-('B001', 'S001', 'C001', 'E001', '2024-08-20', '2024-08-25', 'PM001', 'PS001', 'Home', '10%', '123 Main St', 5.0, 50.00, 150.00, 'Completed', 'FB001', 'SCH001'),
-('B002', 'S002', 'C002', 'E002', '2024-08-21', '2024-08-26', 'PM002', 'PS002', 'Online', '15%', '456 Maple Ave', 0, 0.00, 90.00, 'Pending', 'FB002', 'SCH002'),
-('B003', 'S003', 'C003', 'E003', '2024-08-22', '2024-08-27', 'PM003', 'PS003', 'Clinic', '20%', '789 Oak St', 8.0, 60.00, 210.00, 'Cancelled', 'FB003', 'SCH003'),
-('B004', 'S004', 'C004', 'E004', '2024-08-23', '2024-08-28', 'PM004', 'PS004', 'Emergency', '18%', '321 Birch Ave', 15.0, 90.00, 390.00, 'Failed', 'FB004', 'SCH004'),
-('B005', 'S005', 'C005', 'E005', '2024-08-24', '2024-08-29', 'PM005', 'PS005', 'Follow-up', '12%', '654 Pine St', 3.0, 30.00, 80.00, 'Refunded', 'FB005', 'SCH005');
+('B001', 'S001', 'C001', 'E001', '2024-08-20', '2024-08-25', 'PM001', 'PS001', 'Home', 0.1, '123 Main St', 5.0, 50.00, 150.00, 'Completed', 'FB001', 'SCH001'),
+('B002', 'S002', 'C002', 'E002', '2024-08-21', '2024-08-26', 'PM002', 'PS002', 'Online', 0.1, '456 Maple Ave', 0, 0.00, 90.00, 'Pending', 'FB002', 'SCH002'),
+('B003', 'S003', 'C003', 'E003', '2024-08-22', '2024-08-27', 'PM003', 'PS003', 'Clinic', 0.1, '789 Oak St', 8.0, 60.00, 210.00, 'Cancelled', 'FB003', 'SCH003'),
+('B004', 'S004', 'C004', 'E004', '2024-08-23', '2024-08-28', 'PM004', 'PS004', 'Emergency', 0.1, '321 Birch Ave', 15.0, 90.00, 390.00, 'Failed', 'FB004', 'SCH004'),
+('B005', 'S005', 'C005', 'E005', '2024-08-24', '2024-08-29', 'PM004', 'PS005', 'Follow-up', 0.1, '654 Pine St', 3.0, 30.00, 80.00, 'Refunded', 'FB005', 'SCH005');
 
 -- Insert sample data for AnimalType
 INSERT INTO AnimalType (TypeID, Name) 
@@ -305,17 +312,4 @@ VALUES
 ('AT005', 'Betta Fish');
 
 -- Insert sample data for AnimalProfile
-INSERT INTO AnimalProfile (AnimalProfileID, Name,
-CREATE TABLE Post(
-    PostID varchar(20) PRIMARY KEY,
-    PostName nvarchar NOT NULL,
-    PostCateGOryID varchar(20) FOREIGN KEY REFERENCES PostCategory(PostCategoryID) NOT NULL,
-    Context nvarchar NOT NULL,
-)
-GO 
-
-CREATE TABLE Dashboard(
-    EmployeeID varchar(20) FOREIGN KEY REFERENCES Employee(EmployeeID),
-    BookingID varchar(20) FOREIGN KEY REFERENCES Booking(BookingID),
-)
-GO
+-- INSERT INTO AnimalProfile (AnimalProfileID, Name,
