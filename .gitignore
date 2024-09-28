@@ -1,0 +1,6 @@
+# Ignore C# build file 
+# as this only make repository heavier without any benefit
+
+*/bin
+*/obj
+
