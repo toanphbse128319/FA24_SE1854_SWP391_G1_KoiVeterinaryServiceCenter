@@ -10,8 +10,8 @@ public class Account{
     private string _status;
     private bool _isActive;
 
-    public Account( string Account, String Email, String roleID, String Avatar, String Password, String Status, bool IsActive ){
-        _accountID = Account;
+    public Account( string AccountID, String Email, String roleID, String Avatar, String Password, String Status, bool IsActive ){
+        _accountID = AccountID;
         _email = Email;
         _roleID = roleID;
         _avatar = Avatar;
@@ -20,7 +20,13 @@ public class Account{
         _isActive = IsActive;
     }
 
-    public String Account{ get; set; }
+    public String AccountID{ get; set; }
+    public String Email{ get; set; }
+    public String roleID{ get; set; }
+    public String Avartar{ get; set; }
+    public String Password{ get; set; }
+    public String Status{ get; set; }
+    public bool IsActive{ get; set; }
     
 
 }
