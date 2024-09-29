@@ -1,4 +1,4 @@
-namespace Models;
+namespace Repositories.Models;
 
 public class Account{
 
@@ -10,10 +10,10 @@ public class Account{
     private string _status;
     private bool _isActive;
 
-    public Account( string AccountID, String Email, String roleID, String Avatar, String Password, String Status, bool IsActive ){
+    public Account( string AccountID, String Email, String RoleID, String Avatar, String Password, String Status, bool IsActive ){
         _accountID = AccountID;
         _email = Email;
-        _roleID = roleID;
+        _roleID = RoleID;
         _avatar = Avatar;
         _password = Password;
         _status = Status;
@@ -22,7 +22,7 @@ public class Account{
 
     public String AccountID{ get; set; }
     public String Email{ get; set; }
-    public String roleID{ get; set; }
+    public String RoleID{ get; set; }
     public String Avartar{ get; set; }
     public String Password{ get; set; }
     public String Status{ get; set; }
