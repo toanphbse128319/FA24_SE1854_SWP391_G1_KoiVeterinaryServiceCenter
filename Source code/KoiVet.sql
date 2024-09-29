@@ -155,7 +155,7 @@ CREATE TABLE AnimalProfile(
     Age int NOT NULL,
     Color nvarchar(20) NOT NULL,
     Description nvarchar(MAX),
-    Sex int NOT NULL,
+    Sex bit NOT NULL,
     Picture nvarchar(500) 
 )
 GO
