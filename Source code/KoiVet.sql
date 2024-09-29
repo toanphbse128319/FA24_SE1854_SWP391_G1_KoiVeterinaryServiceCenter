@@ -108,7 +108,7 @@ CREATE TABLE Booking(
     BookingDate datetime NOT NULL,
     ExpiredDate date NOT NULL,
     Deposit money not null,
-    DeliveryMethod nvarchar(50) NOT NULL,
+    ServiceDeliveryMethodID nvarchar(20) FOREIGN KEY REFERENCES ServiceDeliveryMethod(ServiceDeliveryMethodID) NOT NULL,
     VAT float,
     BookingAddress nvarchar(200) NOT NULL,
     Distance float NOT NULL,
