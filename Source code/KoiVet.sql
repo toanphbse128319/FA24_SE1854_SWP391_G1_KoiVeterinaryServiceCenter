@@ -135,14 +135,14 @@ CREATE TABLE BookingDetail(
     BookingID nvarchar(20) FOREIGN KEY REFERENCES Booking(BookingID) NOT NULL,
     ServiceID nvarchar(20) FOREIGN KEY REFERENCES Service(ServiceID) NOT NULL,
     UnitPrice money NOT NULL,
-    NoteResult nvarchar,
-    NoteExamination nvarchar,
-    AnimalStatusDescription nvarchar ,
-    ConsultDoctor nvarchar ,
-    DrugList nvarchar ,
-    PoolStatusDescription nvarchar,
-    ConsultTechnician nvarchar,
-    MaterialList nvarchar,
+    NoteResult nvarchar(MAX),
+    NoteExamination nvarchar(MAX),
+    AnimalStatusDescription nvarchar(MAX) ,
+    ConsultDoctor nvarchar(MAX),
+    DrugList nvarchar(MAX),
+    PoolStatusDescription nvarchar(MAX),
+    ConsultTechnician nvarchar(MAX),
+    MaterialList nvarchar(MAX),
 )
 GO 
 
@@ -154,9 +154,9 @@ CREATE TABLE AnimalProfile(
     Size float NOT NULL,
     Age int NOT NULL,
     Color nvarchar(20) NOT NULL,
-    Description nvarchar,
+    Description nvarchar(MAX),
     Sex int NOT NULL,
-    Picture nvarchar 
+    Picture nvarchar(500) 
 )
 GO
 
@@ -164,34 +164,34 @@ CREATE TABLE PoolProfile(
     PoolProfileID nvarchar(20) PRIMARY KEY,
     Name nvarchar(20) NOT NULL,
     BookingDetailID nvarchar(20) FOREIGN KEY REFERENCES BookingDetail(BookingDetailID) NOT NULL,
-    Note nvarchar,
+    Note nvarchar(MAX),
     Width float NOT NULL,
-    Description nvarchar ,
+    Description nvarchar(MAX),
     Height float NOT NULL,
     Depth float NOT NULL,
-    Picture nvarchar
+    Picture nvarchar(500)
 )
 GO
 
 
 CREATE TABLE FAQ(
     FaqID nvarchar(20) PRIMARY KEY,
-    Question nvarchar NOT NULL,
-    Answer nvarchar NOT NULL
+    Question nvarchar(MAX) NOT NULL,
+    Answer nvarchar(MAX) NOT NULL
 )
 GO
 
 CREATE TABLE PostCateGOry(
     PostCateGOryID nvarchar(20) PRIMARY KEY,
-    Name nvarchar NOT NULL,
+    Name nvarchar(MAX) NOT NULL,
 )
 GO
 
 CREATE TABLE Post(
     PostID nvarchar(20) PRIMARY KEY,
-    PostName nvarchar NOT NULL,
+    PostName nvarchar(MAX) NOT NULL,
     PostCateGOryID nvarchar(20) FOREIGN KEY REFERENCES PostCategory(PostCategoryID) NOT NULL,
-    Context nvarchar NOT NULL,
+    Context nvarchar(MAX) NOT NULL,
 )
 GO 
 
