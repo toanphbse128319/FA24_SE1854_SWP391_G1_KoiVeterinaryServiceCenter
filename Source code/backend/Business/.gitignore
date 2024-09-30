@@ -1,0 +1,4 @@
+# Ignore foldder
+bin
+obj
+.vs
