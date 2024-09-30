@@ -21,6 +21,7 @@ GO
 Create table Account(
     AccountID nvarchar(30) primary key,
     Email nvarchar(30) UNIQUE NOT NULL,
+    PhoneNumber nvarchar(10) UNIQUE NOT NULL,
     RoleID nvarchar(20) FOREIGN KEY REFERENCES Role(RoleID) NOT NULL,
     Avatar nvarchar(500),
     Password nvarchar(50) NOT NULL,
@@ -30,15 +31,12 @@ Create table Account(
 
 CREATE TABLE Customer(
     CustomerID nvarchar(20) PRIMARY KEY,
-    Email nvarchar(30) UNIQUE NOT NULL,
-    PhoneNumber nvarchar(10) UNIQUE NOT NULL,
+    AccountID nvarchar(30) FOREIGN KEY REFERENCES Account(AccountID),
     Firstname nvarchar(20) NOT NULL,
     Lastname nvarchar(20),
     Sex bit,
     Birthday date,
-    Avatar nvarchar(500),
     Address nvarchar(100) NOT NULL,
-    AccountID nvarchar(30) FOREIGN KEY REFERENCES Account(AccountID),
     Status nvarchar(50) NOT NULL
 )
 GO
@@ -46,18 +44,13 @@ GO
 CREATE TABLE Employee(
     EmployeeID nvarchar(20) PRIMARY KEY,
 	AccountID nvarchar(30) FOREIGN KEY REFERENCES Account(AccountID),
-    Email nvarchar(100)  UNIQUE NOT NULL,
-    PhoneNumber nvarchar(10) UNIQUE NOT NULL,
     Firstname nvarchar(20) NOT NULL,
     Lastname nvarchar(20),
     Sex bit,
     Birthday date,
-    Avatar nvarchar(500),
     Address nvarchar(100) NOT NULL,
-    Password nvarchar(50) NOT NULL,
     Status nvarchar(50) NOT NULL,
 )
-
 GO
 
 CREATE TABLE ServiceDeliveryMethod(
@@ -205,27 +198,40 @@ VALUES
 ('R003', 'Veterinarian'),
 ('R004', 'Guest'),
 ('R005', 'Staff');
+GO
 
 -- Insert sample data for Customer
-INSERT INTO Customer (CustomerID, Email, RoleID, PhoneNumber, Firstname, Lastname, Sex, Birthday, Avatar, Address, Password, Status) 
-VALUES 
-('C001', 'kyn6036@gmail.com', 'R002', '0123456789', 'Vy', 'Nguyen', 1, '2004-11-20', 'avatar1.jpg', '250 vo van hat', '12345', 1),
-('C002', 'jane@gmail.com', 'R002', '0987654321', 'Jane', 'Smith', 0, '1985-03-15', 'avatar2.jpg', '456 Maple Ave', '12345', 1),
-('C003', 'alice@gmail.com', 'R003', '0111222333', 'Alice', 'Johnson', 0, '1995-07-22', 'avatar3.jpg', '789 Oa St', '12345', 1),
-('C004', 'bob@gmail.com', 'R002', '0223344556', 'Bob', 'Brown', 1, '1982-11-02', 'avatar4.jpg', '321 Birch Ave', '12345', 1),
-('C005', 'carol@gmail.com', 'R002', '0334455667', 'Carol', 'White', 0, '1979-08-14', 'avatar5.jpg', '654 Pine St', '12345', 1);
+INSERT INTO Account (AccountID, PhoneNumber, Email, RoleID, Avatar, Password, Status, isActive )
+VALUES
+('A001', '0123456789', 'phbtoan9185@gmail.com', 'R002', 'avatar1.jpg', 'caniskip', 'Normal', 1),
+('A002', '0987654321', 'admin2@gmail.com', 'R002', 'avatar2.jpg', 'admin', 'Normal', 1),
+('A003', '0111111111', 'arandomvet@gmail.com', 'R002', 'avatar3.jpg', 'vet', 'Normal', 1),
+('A004', '0121111111', 'manager2@gmail.com', 'R002', 'avatar4.jpg', 'manager', 'Normal', 1),
+('A005', '0123212313', 'Test@gmail.com', 'R002', 'avatar5.jpg', 'test', 'Normal', 1),
 
+('A006', '0000000000', 'vet1@gmail.com', 'R002', 'avatar1.jpg', 'caniskip', 'Normal', 1),
+('A007', '0835377623', 'vet2@gmail.com', 'R005', 'avatar2.jpg', 'admin', 'Normal', 1),
+('A008', '1122334455', 'Manager@gmail.com', 'R003', 'avatar3.jpg', 'vet', 'Normal', 1),
+('A009', '1234554321', 'reception1@gmai.com', 'R001', 'avatar4.jpg', 'manager', 'Normal', 1),
+('A010', '1234567876', 'admin@gmail.com', 'R002', 'avatar5.jpg', 'test', 'Normal', 1);
+GO
+
+INSERT INTO Customer (CustomerID, Firstname, Lastname, Sex, Birthday, Address, AccountID, Status) 
+VALUES 
+('C001', 'Vy', 'Nguyen', 1, '2004-11-20', '250 vo van hat', 'A001', 1),
+('C002', 'Jane', 'Smith', 0, '1985-03-15', '456 Maple Ave', 'A002', 1),
+('C003', 'Alice', 'Johnson', 0, '1995-07-22', '789 Oa St', 'A003', 1),
+('C004', 'Bob', 'Brown', 1, '1982-11-02', '321 Birch Ave', 'A004', 1),
+('C005', 'Carol', 'White', 0, '1979-08-14', '654 Pine St', 'A005', 1);
+GO
 -- Insert sample data for Employee
-INSERT INTO Employee (EmployeeID, Email, RoleID, PhoneNumber, Firstname, Lastname, Sex, Birthday, Avatar, Address, Password, Status) 
+INSERT INTO Employee (EmployeeID, AccountID, Firstname, Lastname, Sex, Birthday, Address, Status) 
 VALUES 
-('E001', 'vet1@gmail.com', 'R003', '0123456789', 'Sam', 'Wilson', 1, '1980-01-15', 'avatar3.jpg', '789 Cedar St', '123456', 1),
-('E002', 'vet2@gmail.com', 'R003', '0456677889', 'Lily', 'Anderson', 0, '1988-04-25', 'avatar4.jpg', '111 Maple St', '123456', 1),
-('E003', 'Manager@gmail.com', 'R001', '0223344556', 'Tom', 'Clark', 1, '1991-02-19', 'avatar5.jpg', '222 Oak Dr', '123456', 1),
-('E004', 'reception1@gmai.com', 'R005', '0334455667', 'Nancy', 'Lee', 0, '1985-12-12', 'avatar6.jpg', '333 Pine Ln', '123456', 1),
-('E005', 'admin@gmail.com', 'R001', '0998877665', 'Michael', 'Scott', 1, '1975-09-08', 'avatar7.jpg', '444 Birch Rd', '123456', 1);
-
-
-
+('E001', 'A006', 'Sam', 'Wilson', 1, '1980-01-15', '789 Cedar St', 1),
+('E002', 'A007', 'Lily', 'Anderson', 0, '1988-04-25', '111 Maple St', 1),
+('E003', 'A008', 'Tom', 'Clark', 1, '1991-02-19', '222 Oak Dr', 1),
+('E004', 'A009', 'Nancy', 'Lee', 0, '1985-12-12', '333 Pine Ln', 1),
+('E005', 'A010', 'Michael', 'Scott', 1, '1975-09-08', '444 Birch Rd', 1);
 
 -- Insert sample data for ServiceDeliveryMethod
 INSERT INTO ServiceDeliveryMethod (ServiceDeliveryMethodID, Name, Status) 
@@ -273,7 +279,7 @@ VALUES
 ('SCH005', 'E005', '2024/09/05', 1, 'Routine check', 5, 'Early Morning slot');
 
 -- Insert sample data for Booking
-INSERT INTO Booking (BookingID, ServiceID, CustomerID, EmployeeID, BookingDate, ExpiredDate, PaymentMethodID, PaymentStatusID, DeliveryMethod, VAT, BookingAddress, Distance, DistanceCost, TotalServiceCost, Status, FeedbackID, ScheduleID) 
+INSERT INTO Booking (BookingID, CustomerID, EmployeeID, BookingDate, ExpiredDate, Deposit, PaymentMethodID, PaymentStatusID, DeliveryMethod, VAT, BookingAddress, Distance, DistanceCost, TotalServiceCost, Status, FeedbackID, ScheduleID) 
 VALUES 
 ('B001', 'S001', 'C001', 'E001', '2024-08-20', '2024-08-25', 'PM001', 'PS001', 'Home', 0.1, '123 Main St', 5.0, 50.00, 150.00, 'Completed', 'FB001', 'SCH001'),
 ('B002', 'S002', 'C002', 'E002', '2024-08-21', '2024-08-26', 'PM002', 'PS002', 'Online', 0.1, '456 Maple Ave', 0, 0.00, 90.00, 'Pending', 'FB002', 'SCH002'),
@@ -291,4 +297,5 @@ VALUES
 ('AT005', 'Betta Fish');
 
 -- Insert sample data for AnimalProfile
+
 -- INSERT INTO AnimalProfile (AnimalProfileID, Name,
