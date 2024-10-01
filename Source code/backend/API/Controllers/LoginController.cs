@@ -23,12 +23,11 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Account>> LoggingByEmail(string email, string password){
-            AccountDAO dao = new AccountDAO(_context);
-            var account = await dao.LoginByEmail(email, password);
-            if( account == null )
-                return account!;
-            else return account;
+        public async Task<ActionResult<Account?>> LoggingByEmail(string str, string password){
+            AccountDAO dao = new AccountDAO( _context );
+            var account = await dao.Login( str, password );
+            return account!;
         }
+
     }
 }
