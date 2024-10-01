@@ -155,7 +155,7 @@ GO
 
 CREATE TABLE PoolProfile(
     PoolProfileID nvarchar(20) PRIMARY KEY,
-    Name nvarchar(20) NOT NULL,
+    Name nvarchar(200) NOT NULL,
     BookingDetailID nvarchar(20) FOREIGN KEY REFERENCES BookingDetail(BookingDetailID) NOT NULL,
     Note nvarchar(MAX),
     Width float NOT NULL,
@@ -279,13 +279,13 @@ VALUES
 ('SCH005', 'E005', '2024/09/05', 1, 'Routine check', 5, 'Early Morning slot');
 
 -- Insert sample data for Booking
-INSERT INTO Booking (BookingID, CustomerID, EmployeeID, BookingDate, ExpiredDate, Deposit, PaymentMethodID, PaymentStatusID, DeliveryMethod, VAT, BookingAddress, Distance, DistanceCost, TotalServiceCost, Status, FeedbackID, ScheduleID) 
+INSERT INTO Booking (BookingID, CustomerID, EmployeeID, BookingDate, ExpiredDate, Deposit, ServiceDeliveryMethodID, VAT, BookingAddress, Distance, DistanceCost, TotalServiceCost, Status, FeedbackID, ScheduleID, Note, PaymentMethod, PaymentStatus) 
 VALUES 
-('B001', 'S001', 'C001', 'E001', '2024-08-20', '2024-08-25', 'PM001', 'PS001', 'Home', 0.1, '123 Main St', 5.0, 50.00, 150.00, 'Completed', 'FB001', 'SCH001'),
-('B002', 'S002', 'C002', 'E002', '2024-08-21', '2024-08-26', 'PM002', 'PS002', 'Online', 0.1, '456 Maple Ave', 0, 0.00, 90.00, 'Pending', 'FB002', 'SCH002'),
-('B003', 'S003', 'C003', 'E003', '2024-08-22', '2024-08-27', 'PM003', 'PS003', 'Clinic', 0.1, '789 Oak St', 8.0, 60.00, 210.00, 'Cancelled', 'FB003', 'SCH003'),
-('B004', 'S004', 'C004', 'E004', '2024-08-23', '2024-08-28', 'PM004', 'PS004', 'Emergency', 0.1, '321 Birch Ave', 15.0, 90.00, 390.00, 'Failed', 'FB004', 'SCH004'),
-('B005', 'S005', 'C005', 'E005', '2024-08-24', '2024-08-29', 'PM004', 'PS005', 'Follow-up', 0.1, '654 Pine St', 3.0, 30.00, 80.00, 'Refunded', 'FB005', 'SCH005');
+('B001', 'C001', 'E001', '2024-09-01 09:00:00', '2024-09-01', 50.00, 'SDM001', 10.00, '250 vo van hat', 5.5, 11.00, 111.00, 'Confirmed', 'FB001', 'SCH001', 'Home visit for koi health check', 'Credit Card', 'Paid'),
+('B002', 'C002', 'E002', '2024-09-02 14:00:00', '2024-09-02', 37.50, 'SDM002', 7.50, '456 Maple Ave', 0, 0.00, 82.50, 'Pending', 'FB002', 'SCH002', 'Online consultation for koi', 'PayPal', 'Pending'),
+('B003', 'C003', 'E003', '2024-09-03 18:00:00', '2024-09-03', 75.00, 'SDM003', 15.00, '789 Oak St', 3.2, 6.40, 171.40, 'Cancelled', 'FB003', 'SCH003', 'Clinic visit for koi disease treatment', 'Cash', 'Refunded'),
+('B004', 'C004', 'E004', '2024-09-04 22:00:00', '2024-09-05', 150.00, 'SDM004', 30.00, '321 Birch Ave', 8.7, 17.40, 347.40, 'In Progress', 'FB004', 'SCH004', 'Emergency koi surgery', 'Credit Card', 'Paid'),
+('B005', 'C005', 'E005', '2024-09-05 07:00:00', '2024-09-05', 25.00, 'SDM005', 5.00, '654 Pine St', 2.1, 4.20, 59.20, 'Completed', 'FB005', 'SCH005', 'Follow-up checkup after treatment', 'Debit Card', 'Paid'); 
 
 -- Insert sample data for AnimalType
 INSERT INTO AnimalType (TypeID, Name) 
@@ -296,6 +296,58 @@ VALUES
 ('AT004', 'Saltwater Fish'),
 ('AT005', 'Betta Fish');
 
--- Insert sample data for AnimalProfile
+-- Insert sample data for BookingDetail
+INSERT INTO BookingDetail (BookingDetailID, BookingID, ServiceID, UnitPrice, NoteResult, NoteExamination, AnimalStatusDescription, ConsultDoctor, DrugList, PoolStatusDescription, ConsultTechnician, MaterialList)
+VALUES 
+('BD001', 'B001', 'S001', 100.00, 'Koi appears healthy overall', 'Routine health check performed', 'Nishiki shows good coloration and active behavior', 'Dr. Amelia Fish', 'Probiotic supplement', 'Zen Garden Koi Pond maintains good water quality', 'Tech John Doe', 'Water testing kit, net'),
 
--- INSERT INTO AnimalProfile (AnimalProfileID, Name,
+('BD002', 'B002', 'S002', 75.00, 'Goldfish exhibiting signs of stress', 'Observed labored breathing and loss of appetite', 'Bubbles has clamped fins and reduced activity', 'Dr. Michael Scales', 'Antibiotics, stress coat additive', 'Indoor Goldfish Tank requires improved filtration', 'Tech Jane Smith', 'New filter system, air pump'),
+
+('BD003', 'B003', 'S003', 150.00, 'Tropical fish recovering from minor infection', 'Treated for bacterial infection', 'Nemo shows improvement in fin condition and appetite', 'Dr. Sarah Coral', 'Broad-spectrum antibiotic, vitamin supplements', 'Tropical Reef Aquarium parameters stable', 'Tech Robert Johnson', 'UV sterilizer, coral food'),
+
+('BD004', 'B004', 'S004', 300.00, 'Emergency surgery successful', 'Removed foreign object from blue tang', 'Azure is stable post-surgery, requires close monitoring', 'Dr. David Finn', 'Pain medication, antibiotics', 'Saltwater Lagoon quarantine section set up', 'Tech Emily Waters', 'Surgical tools, quarantine tank'),
+
+('BD005', 'B005', 'S005', 50.00, 'Betta fish in excellent condition', 'Regular check-up completed', 'Crimson displays vibrant colors and active behavior', 'Dr. Lisa Gills', 'None required', 'Betta Paradise tank environment optimal', 'Tech Mark River', 'Water conditioner, betta-specific food');
+
+-- Insert sample data for AnimalProfile
+INSERT INTO AnimalProfile (AnimalProfileID, Name, TypeID, BookingDetailID, Size, Age, Color, Description, Sex, Picture) 
+
+VALUES 
+('AP001', 'Nishiki', 'AT001', 'BD001', 24.5, 3, 'Red and White', 'A beautiful Kohaku koi with vibrant red patches on a white body', 1, 'nishiki_koi.jpg'),
+('AP002', 'Bubbles', 'AT002', 'BD002', 6.0, 2, 'Orange', 'Energetic fancy goldfish with a bubbly personality', 0, 'bubbles_goldfish.jpg'),
+('AP003', 'Nemo', 'AT003', 'BD003', 3.5, 1, 'Orange and White', 'Playful clownfish, always hiding in the anemone', 1, 'nemo_clownfish.jpg'),
+('AP004', 'Azure', 'AT004', 'BD004', 12.0, 4, 'Blue', 'Majestic blue tang with vibrant coloration', 0, 'azure_bluetang.jpg'),
+('AP005', 'Crimson', 'AT005', 'BD005', 2.5, 1, 'Red', 'Feisty betta fish with flowing fins', 1, 'crimson_betta.jpg');
+
+-- Insert sample data for PoolProfile
+INSERT INTO PoolProfile (PoolProfileID, Name, BookingDetailID, Note, Width, Description, Height, Depth, Picture)
+VALUES 
+('PP001', 'Zen Garden Koi Pond', 'BD001', 'Requires weekly maintenance', 15.0, 'A traditional Japanese-style koi pond with a small waterfall and surrounding rock garden', 2.5, 4.0, 'zen_garden_pond.jpg'),
+('PP002', 'Indoor Goldfish Tank', 'BD002', 'Check filter system monthly', 4.0, 'A large, well-lit indoor aquarium designed for multiple goldfish', 2.0, 2.0, 'indoor_goldfish_tank.jpg'),
+('PP003', 'Tropical Reef Aquarium', 'BD003', 'Maintain consistent water temperature', 6.0, 'A colorful reef tank with live corals and various tropical fish species', 3.0, 2.5, 'tropical_reef_aquarium.jpg'),
+('PP004', 'Saltwater Lagoon', 'BD004', 'Monitor salinity levels regularly', 20.0, 'An expansive outdoor saltwater pool mimicking a natural lagoon environment', 5.0, 6.0, 'saltwater_lagoon.jpg'),
+('PP005', 'Betta Paradise', 'BD005', 'Ensure proper hiding spots and plant coverage', 2.0, 'A specially designed tank with multiple compartments for housing several betta fish', 1.5, 1.0, 'betta_paradise_tank.jpg');
+
+-- Insert sample data for FAQ
+INSERT INTO FAQ (FaqID, Question, Answer) VALUES
+('FAQ001', 'What is a Koi fish?', 'Koi are colorful fish that are kept in ponds and water gardens, known for their beauty and variety.'),
+('FAQ002', 'How long do Koi live?', 'Koi can live for several decades, with some living over 200 years under optimal conditions.'),
+('FAQ003', 'What do Koi eat?', 'Koi are omnivorous and can eat a variety of foods including pellets, vegetables, and insects.'),
+('FAQ004', 'How big do Koi get?', 'Koi can grow to be quite large, often reaching sizes of 2 to 3 feet in length.'),
+('FAQ005', 'What is the best water temperature for Koi?', 'Koi thrive in water temperatures between 65ÅãF and 75ÅãF (18ÅãC to 24ÅãC).');
+
+-- Insert sample data for PostCategory
+INSERT INTO PostCategory (PostCategoryID, Name) VALUES
+('CAT001', 'Koi Care'),
+('CAT002', 'Koi Breeding'),
+('CAT003', 'Koi Health'),
+('CAT004', 'Koi Pond Design'),
+('CAT005', 'Koi Varieties');
+
+-- Insert sample data for Post
+INSERT INTO Post (PostID, PostName, PostCategoryID, Context) VALUES
+('POST001', 'Essential Koi Care Tips', 'CAT001', 'This post discusses the essential tips for properly taking care of your Koi fish.'),
+('POST002', 'Breeding Koi: A Step-by-Step Guide', 'CAT002', 'Learn how to breed Koi fish successfully with this comprehensive guide.'),
+('POST003', 'Common Koi Diseases and Solutions', 'CAT003', 'An overview of common diseases that affect Koi and how to treat them.'),
+('POST004', 'Designing the Perfect Koi Pond', 'CAT004', 'Explore the key elements of designing a beautiful and functional Koi pond.'),
+('POST005', 'A Guide to Popular Koi Varieties', 'CAT005', 'This article highlights some of the most popular Koi varieties and their unique features.');
