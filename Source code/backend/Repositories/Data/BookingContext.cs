@@ -9,6 +9,6 @@ namespace Repositories.Data
         : base(options)
         {
         }
-        DbSet<Booking> Bookings { get; set; }
+        public DbSet<Booking> Bookings { get; set; }
     }
 }
