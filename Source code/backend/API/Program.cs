@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using KVCS.Context;
+using Repositories.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<AccountContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("kvcs")));
 builder.Services.AddDbContext<CustomerContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("kvcs")));
 builder.Services.AddDbContext<EmployeeContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("kvcs")));
+builder.Services.AddDbContext<BookingContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("kvcs")));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
