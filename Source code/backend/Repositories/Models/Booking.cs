@@ -17,7 +17,7 @@ public class Booking
 
     public decimal Deposit { get; set; }
 
-    public string DeliveryMethod { get; set; }
+    public string ServiceDeliveryMethodID { get; set; }
 
     public double? Vat { get; set; }
 
