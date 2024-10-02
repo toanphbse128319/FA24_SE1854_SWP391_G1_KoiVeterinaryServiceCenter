@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Repositories.Data;
+using Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,11 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddControllers();
-builder.Services.AddDbContext<AccountContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("kvcs")));
-builder.Services.AddDbContext<CustomerContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("kvcs")));
-builder.Services.AddDbContext<EmployeeContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("kvcs")));
-builder.Services.AddDbContext<BookingContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("kvcs")));
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddScoped<UnitOfWork>();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
