@@ -4,9 +4,6 @@ using Repositories.Data;
 using Repositories.Models;
 using Business.DAO;
 using Microsoft.EntityFrameworkCore;
-using KVCS.Context;
-using KVCS.Business;
-using KVCS.Model;
 
 
 namespace API.Controllers
