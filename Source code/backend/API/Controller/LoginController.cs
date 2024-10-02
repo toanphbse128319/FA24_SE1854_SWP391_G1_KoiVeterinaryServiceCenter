@@ -1,31 +1,24 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+#nullable disable
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Repositories.Data;
-using Business.DAO;
 using Repositories.Model;
-
+using Repositories;
+using Helper;
 namespace API.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class LoginController : ControllerBase
     {
-        private readonly AccountContext _context;
-
-        public LoginController(AccountContext context)
+        private UnitOfWork _unitOfWork;
+        public LoginController(UnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpPost]
-        public async Task<ActionResult<Account?>> LoggingByEmail(string str, string password){
-            AccountDAO dao = new AccountDAO( _context );
-            var account = await dao.Login( str, password );
+        public async Task<ActionResult<Account>> LoggingByEmail(LoginInformation info){
+            var account = await _unitOfWork.AccountRepository.Login( info );
             return account!;
         }
 
