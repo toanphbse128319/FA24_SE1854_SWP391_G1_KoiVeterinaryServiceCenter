@@ -58,3 +58,10 @@ public class AccountContext : DbContext
 
 ``http://localhost:5145/swagger/index.html``
 
+# Cách dùng docker để chạy sqlserver 
+- Cài docker
+- Mở cmd, cd vào folder chứa file docker-compose.yml
+
+`` docker compose up ``
+
+** Ko ctrl+c, ko đóng cmd, port docker sqlserver dùng là 1433:1433. (Port hose: port docker)
