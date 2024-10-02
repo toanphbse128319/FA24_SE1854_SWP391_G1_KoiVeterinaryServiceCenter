@@ -1,6 +1,8 @@
 services:
   db:
-    build: docker/sqlserver/
+    build: .
     ports: 
       - 1433:1433
-    
+      #  api:
+      #    build: 
+      #      dockerfile: ./backend/dockerfile
