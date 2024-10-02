@@ -1,9 +1,10 @@
 using System.ComponentModel.DataAnnotations.Schema;
-namespace KVCS.Model;
+namespace Repositories.Models;
 
 // Tên table từ dababase ghi ở đây
 [Table("Account")]
-public class Account{
+public class Account
+{
 
     public string AccountID { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;

@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using KVCS.Context;
-using KVCS.Model;
-using KVCS.Business;
+using Repositories.Data;
+using Repositories.Models;
+using Business.DAO;
 
 namespace API.Controllers
 {

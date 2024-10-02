@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using KVCS.Model;
+using Repositories.Models;
 
-namespace KVCS.Context;
+namespace Repositories.Data;
 
 public class AccountContext : DbContext
 {

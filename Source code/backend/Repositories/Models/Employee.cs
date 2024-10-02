@@ -1,8 +1,9 @@
 using System.ComponentModel.DataAnnotations.Schema;
-namespace KVCS.Model;
+namespace Repositories.Models;
 
 [Table("Employee")]
-public class Employee{
+public class Employee
+{
 
     public string EmployeeID { get; set; } = string.Empty;
     public string AccountID { get; set; } = string.Empty;

@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using KVCS.Context;
 using Repositories.Data;
 
 var builder = WebApplication.CreateBuilder(args);
