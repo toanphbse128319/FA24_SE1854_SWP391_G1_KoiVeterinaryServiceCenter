@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Repositories.Data;
-using Repositories.Models;
+using Repositories.Model;
 using Business.DAO;
 using Microsoft.EntityFrameworkCore;
 

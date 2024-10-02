@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
-namespace Repositories.Models;
+namespace Repositories.Model;
 
 [Table("Employee")]
 public class Employee

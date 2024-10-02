@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 using Repositories.Data;
-using Repositories.Models;
+using Repositories.Model;
 
 namespace Business.DAO;
 public class AccountDAO

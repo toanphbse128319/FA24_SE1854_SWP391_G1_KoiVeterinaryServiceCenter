@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Repositories.Models;
+using Repositories.Model;
 
 namespace Repositories.Data
 {

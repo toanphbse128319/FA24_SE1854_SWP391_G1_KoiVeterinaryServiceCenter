@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Repositories.Data;
-using Repositories.Models;
+using Repositories.Model;
 
 namespace Business.DAO
 {
