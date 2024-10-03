@@ -21,6 +21,14 @@ public class AccountRepository : GenericRepository<Account>
         return _context.Accounts.FirstOrDefault(account => account.PhoneNumber == phone)!;
     }
 
+    public Task<Account?> FindEmailAsync(String email){
+        return _context.Accounts.FirstOrDefaultAsync(account => account.Email == email)!;
+    }
+
+    public Task<Account?> FindPhoneNumberAsync(String email){
+        return _context.Accounts.FirstOrDefaultAsync(account => account.Email == email)!;
+    }
+
     public async Task<Account?> LoginAsync(LoginInformation info)
     {
         //Check for any character
@@ -51,6 +59,7 @@ public class AccountRepository : GenericRepository<Account>
     }
 
     public async Task<Account?> SignUpAsync(Account account){
+    
         await base.CreateAsync(account);
         return await _context.Accounts.FindAsync(account.AccountID);
     }
