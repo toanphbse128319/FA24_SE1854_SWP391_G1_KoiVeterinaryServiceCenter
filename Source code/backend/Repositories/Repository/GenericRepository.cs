@@ -1,6 +1,7 @@
 #nullable disable
 using Microsoft.EntityFrameworkCore;
 namespace Repositories.Repository;
+
 public class GenericRepository<T> where T : class{
     protected Context _context;
 
@@ -41,7 +42,7 @@ public class GenericRepository<T> where T : class{
 
     //Use guids when you have multiple independent systems or clients generating ID's that need to be unique. 
     //http://stackoverflow.com/questions/371762/ddg#371788
-    //Still don't know why we use here?
+//    //Still don't know why we use here?
     public T GetById(Guid code){
         return _context.Set<T>().Find(code);
     }
@@ -52,16 +53,17 @@ public class GenericRepository<T> where T : class{
     {
         return await _context.Set<T>().ToListAsync();
     }
+
     public async Task<int> CreateAsync(T entity)
     {
         _context.Add(entity);
         return await _context.SaveChangesAsync();
     }
+
     public async Task<int> UpdateAsync(T entity)
     {
         var tracker = _context.Attach(entity);
         tracker.State = EntityState.Modified;
-
         return await _context.SaveChangesAsync();
     }
 
@@ -98,14 +100,12 @@ public class GenericRepository<T> where T : class{
         _context.Add(entity);
     }
 
-
 //This will ONLY MODIFY data to the context. but now save down to the database
     public void PrepareUpdate(T entity)
     {
         var tracker = _context.Attach(entity);
         tracker.State = EntityState.Modified;
     }
-
 
 //This will ONLY MODIFY data to the context. but now save down to the database
     public void PrepareRemove(T entity)
@@ -119,7 +119,6 @@ public class GenericRepository<T> where T : class{
         return _context.SaveChanges();
     }
 
-
 //This will save the context down to the database
     public async Task<int> SaveAsync()
     {
@@ -127,5 +126,6 @@ public class GenericRepository<T> where T : class{
     }
 
     #endregion Separating asign entity and save operators
+
 }
 
