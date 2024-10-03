@@ -13,7 +13,7 @@ public class AccountRepository : GenericRepository<Account>
         _context = context;
     }
 
-    public async Task<Account?> Login(LoginInformation info)
+    public async Task<Account?> LoginAsync(LoginInformation info)
     {
         //Check for any character
         string pat = @"\D";
@@ -42,7 +42,7 @@ public class AccountRepository : GenericRepository<Account>
         );
     }
 
-    public async Task<Account?> SignUp(Account account){
+    public async Task<Account?> SignUpAsync(Account account){
         await base.CreateAsync(account);
         return await _context.Accounts.FindAsync(account.AccountID);
     }
