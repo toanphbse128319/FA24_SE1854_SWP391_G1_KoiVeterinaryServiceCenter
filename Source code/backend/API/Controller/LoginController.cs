@@ -18,7 +18,10 @@ namespace API.Controllers
 
         [HttpPost]
         public async Task<ActionResult<Account>> LoggingByEmail(LoginInformation info){
-            var account = await _unitOfWork.AccountRepository.Login( info );
+            var account = await _unitOfWork.AccountRepository.LoginAsync( info );
+            if( account == null )
+                return NotFound("Login information is incorrect!");
+            account.Password = "******";
             return account!;
         }
 
