@@ -17,6 +17,10 @@ public class AccountRepository : GenericRepository<Account>
         return _context.Accounts.FirstOrDefault(account => account.Email == email)!;
     }
 
+    public Account FindPhoneNumber(string phone){
+        return _context.Accounts.FirstOrDefault(account => account.PhoneNumber == phone)!;
+    }
+
     public async Task<Account?> LoginAsync(LoginInformation info)
     {
         //Check for any character
