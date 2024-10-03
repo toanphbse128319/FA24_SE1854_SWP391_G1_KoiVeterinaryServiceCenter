@@ -18,6 +18,11 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<Account>> LoggingByEmail(Account info){
             try{
+                Account empty = new Account();
+                if( _unitOfWork.AccountRepository.FindEmail(info.Email) != null )
+                    return Conflict("That email is already used!");
+                if( _unitOfWork.AccountRepository.FindPhoneNumber(info.PhoneNumber) != null )
+                    return Conflict("That phone number is already used!");
                 var account = await _unitOfWork.AccountRepository.SignUpAsync( info );
                 return account!;
             } catch (Exception ex){

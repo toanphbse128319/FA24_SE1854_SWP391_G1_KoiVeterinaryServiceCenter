@@ -59,8 +59,13 @@ public class AccountRepository : GenericRepository<Account>
     }
 
     public async Task<Account?> SignUpAsync(Account account){
-    
+        if( account.AccountID == "" ){
+            int index = _context.Accounts.ToList().Count;
+            account.AccountID = "A" + index;
+        }
+        if( account.RoleID == "")
+            account.RoleID = "R002";
         await base.CreateAsync(account);
-        return await _context.Accounts.FindAsync(account.AccountID);
+        return await base.GetByIdAsync(account.AccountID);
     }
 }
