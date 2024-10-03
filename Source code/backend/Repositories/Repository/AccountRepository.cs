@@ -28,11 +28,22 @@ public class AccountRepository : GenericRepository<Account>
 
     public async Task<Account?> LoginByPhoneNumber(string phone, string password)
     {
-        return await _context.Accounts.FromSql($"SELECT * FROM Account WHERE PhoneNumber = {phone} AND password = {password} COLLATE SQL_Latin1_General_CP1_CS_AS").FirstOrDefaultAsync();
+        return await _context.Accounts.FirstOrDefaultAsync(account => 
+                account.Password == phone && 
+                account.Password == password
+        );
     }
 
     public async Task<Account?> LoginByEmail(string email, string password)
     {
-        return await _context.Accounts.FromSql($"SELECT * FROM Account WHERE email = {email} AND password = {password} COLLATE SQL_Latin1_General_CP1_CS_AS").FirstOrDefaultAsync();
+        return await _context.Accounts.FirstOrDefaultAsync( account =>
+                account.Email == email &&
+                account.Password == password
+        );
+    }
+
+    public async Task<Account?> SignUp(Account account){
+        await base.CreateAsync(account);
+        return await _context.Accounts.FindAsync(account.AccountID);
     }
 }
