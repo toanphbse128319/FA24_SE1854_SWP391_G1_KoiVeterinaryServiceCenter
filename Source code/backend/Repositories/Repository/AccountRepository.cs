@@ -13,6 +13,10 @@ public class AccountRepository : GenericRepository<Account>
         _context = context;
     }
 
+    public Account FindEmail(string email){
+        return _context.Accounts.FirstOrDefault(account => account.Email == email)!;
+    }
+
     public async Task<Account?> LoginAsync(LoginInformation info)
     {
         //Check for any character
