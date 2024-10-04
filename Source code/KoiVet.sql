@@ -21,6 +21,7 @@ GO
 Create table Account(
     AccountID nvarchar(30) primary key,
     Email nvarchar(30) UNIQUE NOT NULL,
+    PhoneNumber nvarchar(10) UNIQUE NOT NULL,
     RoleID nvarchar(20) FOREIGN KEY REFERENCES Role(RoleID) NOT NULL,
     Avatar nvarchar(500),
     Password nvarchar(50) NOT NULL,
@@ -30,15 +31,12 @@ Create table Account(
 
 CREATE TABLE Customer(
     CustomerID nvarchar(20) PRIMARY KEY,
-    Email nvarchar(30) UNIQUE NOT NULL,
-    PhoneNumber nvarchar(10) UNIQUE NOT NULL,
+    AccountID nvarchar(30) FOREIGN KEY REFERENCES Account(AccountID),
     Firstname nvarchar(20) NOT NULL,
     Lastname nvarchar(20),
     Sex bit,
     Birthday date,
-    Avatar nvarchar(500),
     Address nvarchar(100) NOT NULL,
-    AccountID nvarchar(30) FOREIGN KEY REFERENCES Account(AccountID),
     Status nvarchar(50) NOT NULL
 )
 GO
@@ -46,18 +44,13 @@ GO
 CREATE TABLE Employee(
     EmployeeID nvarchar(20) PRIMARY KEY,
 	AccountID nvarchar(30) FOREIGN KEY REFERENCES Account(AccountID),
-    Email nvarchar(100)  UNIQUE NOT NULL,
-    PhoneNumber nvarchar(10) UNIQUE NOT NULL,
     Firstname nvarchar(20) NOT NULL,
     Lastname nvarchar(20),
     Sex bit,
     Birthday date,
-    Avatar nvarchar(500),
     Address nvarchar(100) NOT NULL,
-    Password nvarchar(50) NOT NULL,
     Status nvarchar(50) NOT NULL,
 )
-
 GO
 
 CREATE TABLE ServiceDeliveryMethod(
@@ -79,6 +72,8 @@ GO
 
 CREATE TABLE Feedback(
     FeedbackID nvarchar(20) PRIMARY KEY,
+    ServiceRating int NOT NULL,
+    VetRating int NOT NULL,
     Description nvarchar(MAX) NOT NULL,
     Status nvarchar(50) NOT NULL
 )
@@ -108,7 +103,7 @@ CREATE TABLE Booking(
     BookingDate datetime NOT NULL,
     ExpiredDate date NOT NULL,
     Deposit money not null,
-    DeliveryMethod nvarchar(50) NOT NULL,
+    ServiceDeliveryMethodID nvarchar(20) FOREIGN KEY REFERENCES ServiceDeliveryMethod(ServiceDeliveryMethodID) NOT NULL,
     VAT float,
     BookingAddress nvarchar(200) NOT NULL,
     Distance float NOT NULL,
@@ -135,14 +130,14 @@ CREATE TABLE BookingDetail(
     BookingID nvarchar(20) FOREIGN KEY REFERENCES Booking(BookingID) NOT NULL,
     ServiceID nvarchar(20) FOREIGN KEY REFERENCES Service(ServiceID) NOT NULL,
     UnitPrice money NOT NULL,
-    NoteResult nvarchar,
-    NoteExamination nvarchar,
-    AnimalStatusDescription nvarchar ,
-    ConsultDoctor nvarchar ,
-    DrugList nvarchar ,
-    PoolStatusDescription nvarchar,
-    ConsultTechnician nvarchar,
-    MaterialList nvarchar,
+    NoteResult nvarchar(MAX),
+    NoteExamination nvarchar(MAX),
+    AnimalStatusDescription nvarchar(MAX) ,
+    ConsultDoctor nvarchar(MAX),
+    DrugList nvarchar(MAX),
+    PoolStatusDescription nvarchar(MAX),
+    ConsultTechnician nvarchar(MAX),
+    MaterialList nvarchar(MAX),
 )
 GO 
 
@@ -154,47 +149,44 @@ CREATE TABLE AnimalProfile(
     Size float NOT NULL,
     Age int NOT NULL,
     Color nvarchar(20) NOT NULL,
-    Description nvarchar,
-    Sex int NOT NULL,
-    Picture nvarchar 
+    Description nvarchar(MAX),
+    Sex bit NOT NULL,
+    Picture nvarchar(500) 
 )
 GO
 
 CREATE TABLE PoolProfile(
     PoolProfileID nvarchar(20) PRIMARY KEY,
-    Name nvarchar(20) NOT NULL,
+    Name nvarchar(200) NOT NULL,
     BookingDetailID nvarchar(20) FOREIGN KEY REFERENCES BookingDetail(BookingDetailID) NOT NULL,
-    Note nvarchar,
+    Note nvarchar(MAX),
     Width float NOT NULL,
-    Description nvarchar ,
+    Description nvarchar(MAX),
     Height float NOT NULL,
     Depth float NOT NULL,
-    Picture nvarchar
+    Picture nvarchar(500)
 )
 GO
 
 
 CREATE TABLE FAQ(
     FaqID nvarchar(20) PRIMARY KEY,
-    Question nvarchar NOT NULL,
-    Answer nvarchar NOT NULL
+    Question nvarchar(MAX) NOT NULL,
+    Answer nvarchar(MAX) NOT NULL
 )
 GO
 
-CREATE TABLE PostCateGOry(
-    PostCateGOryID nvarchar(20) PRIMARY KEY,
-    Name nvarchar NOT NULL,
+CREATE TABLE PostCategory(
+    PostCategoryID nvarchar(20) PRIMARY KEY,
+    Name nvarchar(MAX) NOT NULL,
 )
-GO
-
-Drop table Dashboard
 GO
 
 CREATE TABLE Post(
     PostID nvarchar(20) PRIMARY KEY,
-    PostName nvarchar NOT NULL,
-    PostCateGOryID nvarchar(20) FOREIGN KEY REFERENCES PostCategory(PostCategoryID) NOT NULL,
-    Context nvarchar NOT NULL,
+    PostName nvarchar(MAX) NOT NULL,
+    PostCategoryID nvarchar(20) FOREIGN KEY REFERENCES PostCategory(PostCategoryID) NOT NULL,
+    Context nvarchar(MAX) NOT NULL,
 )
 GO 
 
@@ -208,27 +200,40 @@ VALUES
 ('R003', 'Veterinarian'),
 ('R004', 'Guest'),
 ('R005', 'Staff');
+GO
 
 -- Insert sample data for Customer
-INSERT INTO Customer (CustomerID, Email, RoleID, PhoneNumber, Firstname, Lastname, Sex, Birthday, Avatar, Address, Password, Status) 
-VALUES 
-('C001', 'kyn6036@gmail.com', 'R002', '0123456789', 'Vy', 'Nguyen', 1, '2004-11-20', 'avatar1.jpg', '250 vo van hat', '12345', 1),
-('C002', 'jane@gmail.com', 'R002', '0987654321', 'Jane', 'Smith', 0, '1985-03-15', 'avatar2.jpg', '456 Maple Ave', '12345', 1),
-('C003', 'alice@gmail.com', 'R003', '0111222333', 'Alice', 'Johnson', 0, '1995-07-22', 'avatar3.jpg', '789 Oa St', '12345', 1),
-('C004', 'bob@gmail.com', 'R002', '0223344556', 'Bob', 'Brown', 1, '1982-11-02', 'avatar4.jpg', '321 Birch Ave', '12345', 1),
-('C005', 'carol@gmail.com', 'R002', '0334455667', 'Carol', 'White', 0, '1979-08-14', 'avatar5.jpg', '654 Pine St', '12345', 1);
+INSERT INTO Account (AccountID, PhoneNumber, Email, RoleID, Avatar, Password, Status, isActive )
+VALUES
+('A001', '0123456789', 'phbtoan9185@gmail.com', 'R002', 'avatar1.jpg', 'caniskip', 'Normal', 1),
+('A002', '0987654321', 'admin2@gmail.com', 'R002', 'avatar2.jpg', 'admin', 'Normal', 1),
+('A003', '0111111111', 'arandomvet@gmail.com', 'R002', 'avatar3.jpg', 'vet', 'Normal', 1),
+('A004', '0121111111', 'manager2@gmail.com', 'R002', 'avatar4.jpg', 'manager', 'Normal', 1),
+('A005', '0123212313', 'Test@gmail.com', 'R002', 'avatar5.jpg', 'test', 'Normal', 1),
 
+('A006', '0000000000', 'vet1@gmail.com', 'R002', 'avatar1.jpg', 'caniskip', 'Normal', 1),
+('A007', '0835377623', 'vet2@gmail.com', 'R005', 'avatar2.jpg', 'admin', 'Normal', 1),
+('A008', '1122334455', 'Manager@gmail.com', 'R003', 'avatar3.jpg', 'vet', 'Normal', 1),
+('A009', '1234554321', 'reception1@gmai.com', 'R001', 'avatar4.jpg', 'manager', 'Normal', 1),
+('A010', '1234567876', 'admin@gmail.com', 'R002', 'avatar5.jpg', 'test', 'Normal', 1);
+GO
+
+INSERT INTO Customer (CustomerID, Firstname, Lastname, Sex, Birthday, Address, AccountID, Status) 
+VALUES 
+('C001', 'Vy', 'Nguyen', 1, '2004-11-20', '250 vo van hat', 'A001', 1),
+('C002', 'Jane', 'Smith', 0, '1985-03-15', '456 Maple Ave', 'A002', 1),
+('C003', 'Alice', 'Johnson', 0, '1995-07-22', '789 Oa St', 'A003', 1),
+('C004', 'Bob', 'Brown', 1, '1982-11-02', '321 Birch Ave', 'A004', 1),
+('C005', 'Carol', 'White', 0, '1979-08-14', '654 Pine St', 'A005', 1);
+GO
 -- Insert sample data for Employee
-INSERT INTO Employee (EmployeeID, Email, RoleID, PhoneNumber, Firstname, Lastname, Sex, Birthday, Avatar, Address, Password, Status) 
+INSERT INTO Employee (EmployeeID, AccountID, Firstname, Lastname, Sex, Birthday, Address, Status) 
 VALUES 
-('E001', 'vet1@gmail.com', 'R003', '0123456789', 'Sam', 'Wilson', 1, '1980-01-15', 'avatar3.jpg', '789 Cedar St', '123456', 1),
-('E002', 'vet2@gmail.com', 'R003', '0456677889', 'Lily', 'Anderson', 0, '1988-04-25', 'avatar4.jpg', '111 Maple St', '123456', 1),
-('E003', 'Manager@gmail.com', 'R001', '0223344556', 'Tom', 'Clark', 1, '1991-02-19', 'avatar5.jpg', '222 Oak Dr', '123456', 1),
-('E004', 'reception1@gmai.com', 'R005', '0334455667', 'Nancy', 'Lee', 0, '1985-12-12', 'avatar6.jpg', '333 Pine Ln', '123456', 1),
-('E005', 'admin@gmail.com', 'R001', '0998877665', 'Michael', 'Scott', 1, '1975-09-08', 'avatar7.jpg', '444 Birch Rd', '123456', 1);
-
-
-
+('E001', 'A006', 'Sam', 'Wilson', 1, '1980-01-15', '789 Cedar St', 1),
+('E002', 'A007', 'Lily', 'Anderson', 0, '1988-04-25', '111 Maple St', 1),
+('E003', 'A008', 'Tom', 'Clark', 1, '1991-02-19', '222 Oak Dr', 1),
+('E004', 'A009', 'Nancy', 'Lee', 0, '1985-12-12', '333 Pine Ln', 1),
+('E005', 'A010', 'Michael', 'Scott', 1, '1975-09-08', '444 Birch Rd', 1);
 
 -- Insert sample data for ServiceDeliveryMethod
 INSERT INTO ServiceDeliveryMethod (ServiceDeliveryMethodID, Name, Status) 
@@ -276,13 +281,13 @@ VALUES
 ('SCH005', 'E005', '2024/09/05', 1, 'Routine check', 5, 'Early Morning slot');
 
 -- Insert sample data for Booking
-INSERT INTO Booking (BookingID, ServiceID, CustomerID, EmployeeID, BookingDate, ExpiredDate, PaymentMethodID, PaymentStatusID, DeliveryMethod, VAT, BookingAddress, Distance, DistanceCost, TotalServiceCost, Status, FeedbackID, ScheduleID) 
+INSERT INTO Booking (BookingID, CustomerID, EmployeeID, BookingDate, ExpiredDate, Deposit, ServiceDeliveryMethodID, VAT, BookingAddress, Distance, DistanceCost, TotalServiceCost, Status, FeedbackID, ScheduleID, Note, PaymentMethod, PaymentStatus) 
 VALUES 
-('B001', 'S001', 'C001', 'E001', '2024-08-20', '2024-08-25', 'PM001', 'PS001', 'Home', 0.1, '123 Main St', 5.0, 50.00, 150.00, 'Completed', 'FB001', 'SCH001'),
-('B002', 'S002', 'C002', 'E002', '2024-08-21', '2024-08-26', 'PM002', 'PS002', 'Online', 0.1, '456 Maple Ave', 0, 0.00, 90.00, 'Pending', 'FB002', 'SCH002'),
-('B003', 'S003', 'C003', 'E003', '2024-08-22', '2024-08-27', 'PM003', 'PS003', 'Clinic', 0.1, '789 Oak St', 8.0, 60.00, 210.00, 'Cancelled', 'FB003', 'SCH003'),
-('B004', 'S004', 'C004', 'E004', '2024-08-23', '2024-08-28', 'PM004', 'PS004', 'Emergency', 0.1, '321 Birch Ave', 15.0, 90.00, 390.00, 'Failed', 'FB004', 'SCH004'),
-('B005', 'S005', 'C005', 'E005', '2024-08-24', '2024-08-29', 'PM004', 'PS005', 'Follow-up', 0.1, '654 Pine St', 3.0, 30.00, 80.00, 'Refunded', 'FB005', 'SCH005');
+('B001', 'C001', 'E001', '2024-09-01 09:00:00', '2024-09-01', 50.00, 'SDM001', 10.00, '250 vo van hat', 5.5, 11.00, 111.00, 'Confirmed', 'FB001', 'SCH001', 'Home visit for koi health check', 'Credit Card', 'Paid'),
+('B002', 'C002', 'E002', '2024-09-02 14:00:00', '2024-09-02', 37.50, 'SDM002', 7.50, '456 Maple Ave', 0, 0.00, 82.50, 'Pending', 'FB002', 'SCH002', 'Online consultation for koi', 'PayPal', 'Pending'),
+('B003', 'C003', 'E003', '2024-09-03 18:00:00', '2024-09-03', 75.00, 'SDM003', 15.00, '789 Oak St', 3.2, 6.40, 171.40, 'Cancelled', 'FB003', 'SCH003', 'Clinic visit for koi disease treatment', 'Cash', 'Refunded'),
+('B004', 'C004', 'E004', '2024-09-04 22:00:00', '2024-09-05', 150.00, 'SDM004', 30.00, '321 Birch Ave', 8.7, 17.40, 347.40, 'In Progress', 'FB004', 'SCH004', 'Emergency koi surgery', 'Credit Card', 'Paid'),
+('B005', 'C005', 'E005', '2024-09-05 07:00:00', '2024-09-05', 25.00, 'SDM005', 5.00, '654 Pine St', 2.1, 4.20, 59.20, 'Completed', 'FB005', 'SCH005', 'Follow-up checkup after treatment', 'Debit Card', 'Paid'); 
 
 -- Insert sample data for AnimalType
 INSERT INTO AnimalType (TypeID, Name) 
@@ -293,5 +298,58 @@ VALUES
 ('AT004', 'Saltwater Fish'),
 ('AT005', 'Betta Fish');
 
+-- Insert sample data for BookingDetail
+INSERT INTO BookingDetail (BookingDetailID, BookingID, ServiceID, UnitPrice, NoteResult, NoteExamination, AnimalStatusDescription, ConsultDoctor, DrugList, PoolStatusDescription, ConsultTechnician, MaterialList)
+VALUES 
+('BD001', 'B001', 'S001', 100.00, 'Koi appears healthy overall', 'Routine health check performed', 'Nishiki shows good coloration and active behavior', 'Dr. Amelia Fish', 'Probiotic supplement', 'Zen Garden Koi Pond maintains good water quality', 'Tech John Doe', 'Water testing kit, net'),
+
+('BD002', 'B002', 'S002', 75.00, 'Goldfish exhibiting signs of stress', 'Observed labored breathing and loss of appetite', 'Bubbles has clamped fins and reduced activity', 'Dr. Michael Scales', 'Antibiotics, stress coat additive', 'Indoor Goldfish Tank requires improved filtration', 'Tech Jane Smith', 'New filter system, air pump'),
+
+('BD003', 'B003', 'S003', 150.00, 'Tropical fish recovering from minor infection', 'Treated for bacterial infection', 'Nemo shows improvement in fin condition and appetite', 'Dr. Sarah Coral', 'Broad-spectrum antibiotic, vitamin supplements', 'Tropical Reef Aquarium parameters stable', 'Tech Robert Johnson', 'UV sterilizer, coral food'),
+
+('BD004', 'B004', 'S004', 300.00, 'Emergency surgery successful', 'Removed foreign object from blue tang', 'Azure is stable post-surgery, requires close monitoring', 'Dr. David Finn', 'Pain medication, antibiotics', 'Saltwater Lagoon quarantine section set up', 'Tech Emily Waters', 'Surgical tools, quarantine tank'),
+
+('BD005', 'B005', 'S005', 50.00, 'Betta fish in excellent condition', 'Regular check-up completed', 'Crimson displays vibrant colors and active behavior', 'Dr. Lisa Gills', 'None required', 'Betta Paradise tank environment optimal', 'Tech Mark River', 'Water conditioner, betta-specific food');
+
 -- Insert sample data for AnimalProfile
--- INSERT INTO AnimalProfile (AnimalProfileID, Name,
+INSERT INTO AnimalProfile (AnimalProfileID, Name, TypeID, BookingDetailID, Size, Age, Color, Description, Sex, Picture) 
+
+VALUES 
+('AP001', 'Nishiki', 'AT001', 'BD001', 24.5, 3, 'Red and White', 'A beautiful Kohaku koi with vibrant red patches on a white body', 1, 'nishiki_koi.jpg'),
+('AP002', 'Bubbles', 'AT002', 'BD002', 6.0, 2, 'Orange', 'Energetic fancy goldfish with a bubbly personality', 0, 'bubbles_goldfish.jpg'),
+('AP003', 'Nemo', 'AT003', 'BD003', 3.5, 1, 'Orange and White', 'Playful clownfish, always hiding in the anemone', 1, 'nemo_clownfish.jpg'),
+('AP004', 'Azure', 'AT004', 'BD004', 12.0, 4, 'Blue', 'Majestic blue tang with vibrant coloration', 0, 'azure_bluetang.jpg'),
+('AP005', 'Crimson', 'AT005', 'BD005', 2.5, 1, 'Red', 'Feisty betta fish with flowing fins', 1, 'crimson_betta.jpg');
+
+-- Insert sample data for PoolProfile
+INSERT INTO PoolProfile (PoolProfileID, Name, BookingDetailID, Note, Width, Description, Height, Depth, Picture)
+VALUES 
+('PP001', 'Zen Garden Koi Pond', 'BD001', 'Requires weekly maintenance', 15.0, 'A traditional Japanese-style koi pond with a small waterfall and surrounding rock garden', 2.5, 4.0, 'zen_garden_pond.jpg'),
+('PP002', 'Indoor Goldfish Tank', 'BD002', 'Check filter system monthly', 4.0, 'A large, well-lit indoor aquarium designed for multiple goldfish', 2.0, 2.0, 'indoor_goldfish_tank.jpg'),
+('PP003', 'Tropical Reef Aquarium', 'BD003', 'Maintain consistent water temperature', 6.0, 'A colorful reef tank with live corals and various tropical fish species', 3.0, 2.5, 'tropical_reef_aquarium.jpg'),
+('PP004', 'Saltwater Lagoon', 'BD004', 'Monitor salinity levels regularly', 20.0, 'An expansive outdoor saltwater pool mimicking a natural lagoon environment', 5.0, 6.0, 'saltwater_lagoon.jpg'),
+('PP005', 'Betta Paradise', 'BD005', 'Ensure proper hiding spots and plant coverage', 2.0, 'A specially designed tank with multiple compartments for housing several betta fish', 1.5, 1.0, 'betta_paradise_tank.jpg');
+
+-- Insert sample data for FAQ
+INSERT INTO FAQ (FaqID, Question, Answer) VALUES
+('FAQ001', 'What is a Koi fish?', 'Koi are colorful fish that are kept in ponds and water gardens, known for their beauty and variety.'),
+('FAQ002', 'How long do Koi live?', 'Koi can live for several decades, with some living over 200 years under optimal conditions.'),
+('FAQ003', 'What do Koi eat?', 'Koi are omnivorous and can eat a variety of foods including pellets, vegetables, and insects.'),
+('FAQ004', 'How big do Koi get?', 'Koi can grow to be quite large, often reaching sizes of 2 to 3 feet in length.'),
+('FAQ005', 'What is the best water temperature for Koi?', 'Koi thrive in water temperatures between 65ÅãF and 75ÅãF (18ÅãC to 24ÅãC).');
+
+-- Insert sample data for PostCategory
+INSERT INTO PostCategory (PostCategoryID, Name) VALUES
+('CAT001', 'Koi Care'),
+('CAT002', 'Koi Breeding'),
+('CAT003', 'Koi Health'),
+('CAT004', 'Koi Pond Design'),
+('CAT005', 'Koi Varieties');
+
+-- Insert sample data for Post
+INSERT INTO Post (PostID, PostName, PostCategoryID, Context) VALUES
+('POST001', 'Essential Koi Care Tips', 'CAT001', 'This post discusses the essential tips for properly taking care of your Koi fish.'),
+('POST002', 'Breeding Koi: A Step-by-Step Guide', 'CAT002', 'Learn how to breed Koi fish successfully with this comprehensive guide.'),
+('POST003', 'Common Koi Diseases and Solutions', 'CAT003', 'An overview of common diseases that affect Koi and how to treat them.'),
+('POST004', 'Designing the Perfect Koi Pond', 'CAT004', 'Explore the key elements of designing a beautiful and functional Koi pond.'),
+('POST005', 'A Guide to Popular Koi Varieties', 'CAT005', 'This article highlights some of the most popular Koi varieties and their unique features.');

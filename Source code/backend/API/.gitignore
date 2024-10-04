@@ -1,0 +1,6 @@
+# Ignore foldder
+bin
+obj
+.vs
+API.csproj.user
+appsettings.json
