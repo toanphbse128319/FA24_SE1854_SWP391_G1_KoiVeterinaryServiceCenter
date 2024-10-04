@@ -176,8 +176,8 @@ CREATE TABLE FAQ(
 )
 GO
 
-CREATE TABLE PostCateGOry(
-    PostCateGOryID nvarchar(20) PRIMARY KEY,
+CREATE TABLE PostCategory(
+    PostCategoryID nvarchar(20) PRIMARY KEY,
     Name nvarchar(MAX) NOT NULL,
 )
 GO
