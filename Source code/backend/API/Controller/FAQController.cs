@@ -22,5 +22,10 @@ namespace API.Controllers
 
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<FAQ>> GetFAQByID(string id){
+            return await _unitOfWork.FAQRepository.GetByIdAsync(id);
+        }
+
     }
 }
