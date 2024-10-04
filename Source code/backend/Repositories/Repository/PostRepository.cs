@@ -1,5 +1,5 @@
-using Repositories;
-using Repositories.Repository;
+
+namespace Repositories.Repository;
 
 public class PostReposity : GenericRepository<Post> {
 
