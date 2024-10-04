@@ -72,6 +72,8 @@ GO
 
 CREATE TABLE Feedback(
     FeedbackID nvarchar(20) PRIMARY KEY,
+    ServiceRating int NOT NULL,
+    VetRating int NOT NULL,
     Description nvarchar(MAX) NOT NULL,
     Status nvarchar(50) NOT NULL
 )
