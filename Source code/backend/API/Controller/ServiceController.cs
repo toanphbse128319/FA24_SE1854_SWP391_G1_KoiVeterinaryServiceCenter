@@ -1,6 +1,5 @@
 #nullable disable
 using Microsoft.AspNetCore.Mvc;
-using Repositories.Model;
 using Repositories;
 
 namespace API.Controllers
@@ -23,5 +22,9 @@ namespace API.Controllers
             return await _unitOfWork.ServiceRepository.GetAllAsync();
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Service>> GetServiceByID(string id){
+            return await _unitOfWork.ServiceRepository.GetByIdAsync(id);
+        }
     }
 }

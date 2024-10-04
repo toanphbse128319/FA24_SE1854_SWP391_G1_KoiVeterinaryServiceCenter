@@ -16,10 +16,15 @@ namespace API.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        [HttpGet]
+        [HttpGet("all")]
         public async Task<ActionResult<IEnumerable<FAQ>>> GetAll(){
             return await _unitOfWork.FAQRepository.GetAllAsync();
 
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<FAQ>> GetFAQByID(string id){
+            return await _unitOfWork.FAQRepository.GetByIdAsync(id);
         }
 
     }
