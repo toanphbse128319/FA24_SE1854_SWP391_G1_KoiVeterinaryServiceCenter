@@ -9,7 +9,7 @@ public class GenericRepository<T> where T : class{
 
     public GenericRepository(Context context) => _context = context;
 
-    public List<T> GetAlL(){
+    public List<T> GetAll(){
         return _context.Set<T>().ToList();
     }
 
