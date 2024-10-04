@@ -9,7 +9,7 @@ public class FAQ
 
     public string FaqID { get; set; }
     public string Question { get; set; }
-    public string Asnwer { get; set; }
+    public string Answer { get; set; }
 
 }
 
