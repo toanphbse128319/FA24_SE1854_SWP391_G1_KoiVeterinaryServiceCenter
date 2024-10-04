@@ -27,7 +27,7 @@ namespace API.Controllers
             {
                 var booking = await _unitOfWork.BookingRepository.UpdateStatusAsync(info.Id,info.Message);
                 if (booking == null)
-                    return NotFound("Booking is not found!");
+                    return Ok("Booking is not found!");
                 return booking;
             }
             catch (Exception ex) 
