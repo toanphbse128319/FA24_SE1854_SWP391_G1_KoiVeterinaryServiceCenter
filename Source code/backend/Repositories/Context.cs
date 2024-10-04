@@ -1,5 +1,4 @@
-using System;
-using System.Collections.Generic;
+#nullable disable
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -31,8 +30,9 @@ public class Context : DbContext {
         => optionsBuilder.UseSqlServer(GetConnectionString("DefaultConnection"));
 
     public virtual DbSet<Account> Accounts { get; set; }
-    public virtual DbSet<Account> Bookings { get; set; }
-    public virtual DbSet<Account> Employees { get; set; }
-    public virtual DbSet<Account> Customers { get; set; }
+    public virtual DbSet<Booking> Bookings { get; set; }
+    public virtual DbSet<Employee> Employees { get; set; }
+    public virtual DbSet<Customer> Customers { get; set; }
+    public virtual DbSet<FAQ> FAQs { get; set; }
 
 }
