@@ -10,6 +10,7 @@ public class UnitOfWork{
     private PostReposity _postRepository;
     private ServiceRepository _serviceRepository;
     private ServiceDeliveryMethodRepository _serviceDeliveryMethoddRepository;
+    private BookingRepository _bookingRepository;
 
     public UnitOfWork(){
         _context ??= new Context();
@@ -33,5 +34,9 @@ public class UnitOfWork{
 
     public ServiceDeliveryMethodRepository ServiceDeliveryMethodRepository {
         get { return _serviceDeliveryMethoddRepository ??= new ServiceDeliveryMethodRepository(_context); }
+    }
+    public BookingRepository BookingRepository
+    {
+        get { return _bookingRepository??= new BookingRepository(_context); }
     }
 }
