@@ -1,5 +1,7 @@
 #nullable disable
+using System.ComponentModel.DataAnnotations.Schema;
 
+[Table("Post")]
 public class Post{
 
     public string PostID { get; set; }
