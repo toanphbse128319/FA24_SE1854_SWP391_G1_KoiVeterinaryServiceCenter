@@ -254,13 +254,13 @@ VALUES
 ('S005', 'SDM005', 'Post-Treatment Checkup', 50.00, 'Follow-up checkup after treatment', 1);
 
 -- Insert sample data for Feedback
-INSERT INTO Feedback (FeedbackID, Description, Status) 
+INSERT INTO Feedback (FeedbackID, ServiceRating, VetRating, Description, Status) 
 VALUES 
-('FB001', 'Great service!', 1),
-('FB002', 'Needs improvement.', 1),
-('FB003', 'Very satisfied with the consultation.', 1),
-('FB004', 'Prompt and professional.', 1),
-('FB005', 'Koi surgery saved my fish!', 1);
+('FB001', 5, 5, 'Great service!', 'Active'),
+('FB002', 3, 3, 'Needs improvement.', 'Active'),
+('FB003', 5, 5, 'Very satisfied with the consultation.', 'Active'),
+('FB004', 4, 5, 'Prompt and professional.', 'Active'),
+('FB005', 5, 5, 'Koi surgery saved my fish!', 'Active');
 
 -- Insert sample data for SlotCategory
 INSERT INTO SlotCategory (SlotCategoryID, SlotName) 
