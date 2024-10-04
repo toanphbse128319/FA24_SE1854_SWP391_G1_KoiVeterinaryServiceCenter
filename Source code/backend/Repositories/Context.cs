@@ -35,5 +35,7 @@ public class Context : DbContext {
     public virtual DbSet<Customer> Customers { get; set; }
     public virtual DbSet<FAQ> FAQs { get; set; }
     public virtual DbSet<Post> Posts { get; set; }
+    public virtual DbSet<Service> Services { get; set; }
+    public virtual DbSet<ServiceDeliveryMethod> ServiceDeliveryMethods { get; set; }
 
 }
