@@ -185,7 +185,7 @@ GO
 CREATE TABLE Post(
     PostID nvarchar(20) PRIMARY KEY,
     PostName nvarchar(MAX) NOT NULL,
-    PostCateGOryID nvarchar(20) FOREIGN KEY REFERENCES PostCategory(PostCategoryID) NOT NULL,
+    PostCategoryID nvarchar(20) FOREIGN KEY REFERENCES PostCategory(PostCategoryID) NOT NULL,
     Context nvarchar(MAX) NOT NULL,
 )
 GO 
