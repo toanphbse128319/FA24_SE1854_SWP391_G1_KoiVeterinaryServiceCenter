@@ -79,20 +79,14 @@ CREATE TABLE Feedback(
 )
 GO
 
-CREATE TABLE SlotCategory(
-    SlotCategoryID int PRIMARY KEY ,
-    SlotName nvarchar(50) NOT NULL
-)
-GO
-
 CREATE TABLE Schedule(
     ScheduleID nvarchar(20) PRIMARY KEY,
     EmployeeID nvarchar(20) FOREIGN KEY REFERENCES Employee(EmployeeID) NOT NULL,
     Date date NOT NULL,
-    Status nvarchar(500) NOT NULL,
     Note nvarchar(MAX),
-    SlotCategoryID int FOREIGN KEY REFERENCES SlotCategory(SlotCategoryID) NOT NULL,
-    SlotNote nvarchar(50)
+    Slot int,
+    SlotCapacity int,
+    SlotStatus nvarchar(200) NOT NULL
 )
 GO
 
@@ -112,7 +106,7 @@ CREATE TABLE Booking(
     Status nvarchar(50) NOT NULL,
     FeedbackID nvarchar(20) FOREIGN KEY REFERENCES Feedback(FeedbackID) NOT NULL,
     ScheduleID nvarchar(20) FOREIGN KEY REFERENCES Schedule(ScheduleID) NOT NULL,
-
+    
     Note nvarchar(MAX),
 	PaymentMethod nvarchar(50) NOT NULL,
     PaymentStatus nvarchar(50) NOT NULL
