@@ -106,7 +106,6 @@ CREATE TABLE Booking(
     Status nvarchar(50) NOT NULL,
     FeedbackID nvarchar(20) FOREIGN KEY REFERENCES Feedback(FeedbackID) NOT NULL,
     ScheduleID nvarchar(20) FOREIGN KEY REFERENCES Schedule(ScheduleID) NOT NULL,
-    
     Note nvarchar(MAX),
 	PaymentMethod nvarchar(50) NOT NULL,
     PaymentStatus nvarchar(50) NOT NULL
@@ -256,23 +255,14 @@ VALUES
 ('FB004', 4, 5, 'Prompt and professional.', 'Active'),
 ('FB005', 5, 5, 'Koi surgery saved my fish!', 'Active');
 
--- Insert sample data for SlotCategory
-INSERT INTO SlotCategory (SlotCategoryID, SlotName) 
-VALUES 
-(1, 'Morning'),
-(2, 'Afternoon'),
-(3, 'Evening'),
-(4, 'Night'),
-(5, 'Early Morning');
-
 -- Insert sample data for Schedule
-INSERT INTO Schedule (ScheduleID, EmployeeID, Date, Status, Note, SlotCategoryID, SlotNote) 
+INSERT INTO Schedule (ScheduleID, EmployeeID, Date, Note, Slot, SlotCapacity, SlotStatus) 
 VALUES 
-('SCH001', 'E001', '2024/09/01', 1, 'Regular checkup', 1, 'Morning slot'),
-('SCH002', 'E002', '2024/09/02', 1, 'Consultation', 2, 'Afternoon slot'),
-('SCH003', 'E003', '2024/09/03', 1, 'Follow-up', 3, 'Evening slot'),
-('SCH004', 'E004', '2024/09/04', 1, 'Emergency', 4, 'Night slot'),
-('SCH005', 'E005', '2024/09/05', 1, 'Routine check', 5, 'Early Morning slot');
+('SCH001', 'E001', '2024/09/01', 'Regular checkup', 1, 5, 'Morning slot'),
+('SCH002', 'E002', '2024/09/02', 'Consultation', 2, 4, 'Afternoon slot'),
+('SCH003', 'E003', '2024/09/03', 'Follow-up', 3, 3, 'Evening slot'),
+('SCH004', 'E004', '2024/09/04', 'Emergency', 4, 4, 'Night slot'),
+('SCH005', 'E005', '2024/09/05', 'Routine check', 5, 1, 'Early Morning slot');
 
 -- Insert sample data for Booking
 INSERT INTO Booking (BookingID, CustomerID, EmployeeID, BookingDate, ExpiredDate, Deposit, ServiceDeliveryMethodID, VAT, BookingAddress, Distance, DistanceCost, TotalServiceCost, Status, FeedbackID, ScheduleID, Note, PaymentMethod, PaymentStatus) 
