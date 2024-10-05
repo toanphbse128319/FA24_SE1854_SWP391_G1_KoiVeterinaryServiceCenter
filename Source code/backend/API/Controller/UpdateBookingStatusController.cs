@@ -1,9 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using Repositories.Data;
 using Repositories.Model;
-using Microsoft.EntityFrameworkCore;
-using Repositories.Repository;
 using Repositories;
 using Helper;
 
@@ -14,7 +10,7 @@ namespace API.Controllers
     [ApiController]
     public class UpdateBookingStatusController : Controller
     {
-        private UnitOfWork _unitOfWork ;
+        private UnitOfWork _unitOfWork;
         public UpdateBookingStatusController(UnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
