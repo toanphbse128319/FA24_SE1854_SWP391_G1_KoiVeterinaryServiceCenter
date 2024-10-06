@@ -22,16 +22,21 @@ namespace API.Controllers
             try{ 
                 return await _unitOfWork.ServiceRepository.GetAllAsync();
             } catch( Exception ex ){
-                return BadRequest( ex.GetBaseException().ToString() );
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Service>> GetServiceByID(string id){
-            var service = await _unitOfWork.ServiceRepository.GetByIdAsync(id);
-            if( service == null )
-                return NotFound("Cannot find service with that id");
-            return Ok(service);
+            try{ 
+                var service = await _unitOfWork.ServiceRepository.GetByIdAsync(id);
+                if( service == null )
+                    return NotFound("Cannot find service with that id");
+
+                return Ok(service);
+            } catch( Exception ex ) {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
     }
 }
