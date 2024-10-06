@@ -19,12 +19,19 @@ namespace API.Controllers
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Service>>> GetAll(){
-            return await _unitOfWork.ServiceRepository.GetAllAsync();
+            try{ 
+                return await _unitOfWork.ServiceRepository.GetAllAsync();
+            } catch( Exception ex ){
+                return BadRequest( ex.GetBaseException().ToString() );
+            }
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Service>> GetServiceByID(string id){
-            return await _unitOfWork.ServiceRepository.GetByIdAsync(id);
+            var service = await _unitOfWork.ServiceRepository.GetByIdAsync(id);
+            if( service == null )
+                return NotFound("Cannot find service with that id");
+            return Ok(service);
         }
     }
 }
