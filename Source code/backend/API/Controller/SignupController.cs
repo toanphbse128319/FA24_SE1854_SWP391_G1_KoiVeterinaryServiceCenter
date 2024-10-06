@@ -18,7 +18,20 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<Account>> LoggingByEmail(Account info){
             try{
-                Account empty = new Account();
+                //Check if the paramter is null
+                if( info.Email == null )
+                    return BadRequest("Missing parameter: Email");
+                if( info.PhoneNumber == null ) 
+                    return BadRequest("Missing parameter: PhoneNumber");
+                if( info.Password == null )
+                    return BadRequest("Missing parameter: Password");
+                //Check if parameter is empty
+                if( info.Email == String.Empty )
+                    return BadRequest("Email must not be empty");
+                if( info.PhoneNumber == String.Empty ) 
+                    return BadRequest("PhoneNumber must not be empty");
+                if( info.Password == String.Empty )
+                    return BadRequest("Password must not be empty");
                 if( _unitOfWork.AccountRepository.FindEmail(info.Email) != null )
                     return Conflict("That email is already used!");
                 if( _unitOfWork.AccountRepository.FindPhoneNumber(info.PhoneNumber) != null )
@@ -26,7 +39,7 @@ namespace API.Controllers
                 var account = await _unitOfWork.AccountRepository.SignUpAsync( info );
                 return account!;
             } catch (Exception ex){
-                return BadRequest("Unknown Error: " + ex.GetBaseException().ToString());
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
