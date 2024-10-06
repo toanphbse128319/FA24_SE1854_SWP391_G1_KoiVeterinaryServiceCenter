@@ -18,11 +18,15 @@ public class LoginController : ControllerBase
 
     [HttpPost]
     public async Task<ActionResult<Account>> LoggingByEmail(LoginInformation info){
-        var account = await _unitOfWork.AccountRepository.LoginAsync( info );
-        if( account == null )
-            return StatusCode(StatusCodes.Status401Unauthorized, "Invalid username or password!");
-        account.Password = "******";
-        return account!;
+        try{
+            var account = await _unitOfWork.AccountRepository.LoginAsync( info );
+            if( account == null )
+                return StatusCode(StatusCodes.Status401Unauthorized, "Invalid username or password!");
+            account.Password = "******";
+            return account!;
+        } catch ( Exception ex ){
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
     }
 
 }
