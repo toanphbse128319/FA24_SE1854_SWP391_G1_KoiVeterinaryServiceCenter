@@ -10,7 +10,6 @@ namespace API.Controllers;
 [ApiController]
 public class LoginController : ControllerBase
 {
-
     private UnitOfWork _unitOfWork;
     public LoginController(UnitOfWork unitOfWork)
     {
@@ -19,15 +18,11 @@ public class LoginController : ControllerBase
 
     [HttpPost]
     public async Task<ActionResult<Account>> LoggingByEmail(LoginInformation info){
-        try{
-            var account = await _unitOfWork.AccountRepository.LoginAsync( info );
-            if( account == null )
-                return NotFound("Login information is incorrect!");
-            account.Password = "******";
-            return account!;
-        } catch ( Exception ex ) {
-            return BadRequest(ex.GetBaseException().ToString());
-        }
+        var account = await _unitOfWork.AccountRepository.LoginAsync( info );
+        if( account == null )
+            return StatusCode(StatusCodes.Status401Unauthorized, "Invalid username or password!");
+        account.Password = "******";
+        return account!;
     }
 
 }
