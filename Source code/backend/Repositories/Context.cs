@@ -37,5 +37,6 @@ public class Context : DbContext {
     public virtual DbSet<Post> Posts { get; set; }
     public virtual DbSet<Service> Services { get; set; }
     public virtual DbSet<ServiceDeliveryMethod> ServiceDeliveryMethods { get; set; }
+    public virtual DbSet<AnimalType> AnimalTypes { get; set; }  
 
 }
