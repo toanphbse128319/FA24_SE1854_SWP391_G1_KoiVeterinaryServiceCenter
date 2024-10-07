@@ -1,15 +1,18 @@
-﻿namespace Repositories.Model;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
+namespace Repositories.Model;
+
+[Table("AnimalProfile")]
 public class AnimalProfile
 {
-    public string AnimalProfileID { get; set; } = string.Empty;
-    public string Name { get; set; } = string.Empty;
-    public string TypeID { get; set; } = string.Empty;
-    public string BookingDetailID { get; set; } = string.Empty;
+    public string AnimalProfileID { get; set; }
+    public string Name { get; set; }
+    public string TypeID { get; set; }
+    public string BookingDetailID { get; set; }
     public double Size { get; set; }
     public int Age { get; set; }
-    public string Color { get; set; } = string.Empty;
-    public string Description { get; set; } = string.Empty;
+    public string Color { get; set; }
+    public string Description { get; set; }
     public int Sex { get; set; }
-    public string Picture { get; set; } = string.Empty;
+    public string Picture { get; set; } 
 }
