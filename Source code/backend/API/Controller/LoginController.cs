@@ -16,12 +16,10 @@ namespace API.Controllers;
 public class LoginController : ControllerBase
 {
     private UnitOfWork _unitOfWork;
-    private IConfiguration _configuration;
 
     public LoginController(UnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
-        _configuration = Configuration.GetConfiguration();        
     }
 
     public string IsRequestValid(LoginInformation info){
@@ -40,15 +38,16 @@ public class LoginController : ControllerBase
     public async Task<ActionResult<Account>> LoggingByEmail(LoginInformation info){
         try{
             string invalid = IsRequestValid(info);
-            if( invalid != null ){
+            if( invalid != null )
                 return BadRequest(invalid);
-            }
+
             var account = await _unitOfWork.AccountRepository.LoginAsync( info );
             if( account == null )
                 return StatusCode(StatusCodes.Status401Unauthorized, "Invalid username or password!");
-            var issuer = _configuration["Jwt:Issuer"];
-            var audience = _configuration["Jwt:Audience"];
-            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"] ?? string.Empty);
+
+            var issuer = Configuration.GetConfiguration()["Jwt:Issuer"];
+            var audience = Configuration.GetConfiguration()["Jwt:Audience"];
+            var key = Encoding.ASCII.GetBytes(Configuration.GetConfiguration()["Jwt:Key"] ?? string.Empty);
             var claims = new List<Claim>{
                 new Claim("Id", Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, account.Email),
@@ -63,7 +62,7 @@ public class LoginController : ControllerBase
                  *sensitive string. Use of this claim is OPTIONAL.
                  */
             }; 
-            Console.WriteLine(_unitOfWork.RoleRepository.getRoleName(account.RoleID));
+
             claims.Add(new Claim(ClaimTypes.Role, _unitOfWork.RoleRepository.getRoleName(account.RoleID)));
             var tokenDescriptor = new SecurityTokenDescriptor{
                 Subject = new ClaimsIdentity(claims),
@@ -76,6 +75,7 @@ public class LoginController : ControllerBase
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var stringToken = tokenHandler.WriteToken(token);
             return Ok(stringToken);
+
         } catch ( Exception ex ){
             Console.WriteLine(ex);
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
