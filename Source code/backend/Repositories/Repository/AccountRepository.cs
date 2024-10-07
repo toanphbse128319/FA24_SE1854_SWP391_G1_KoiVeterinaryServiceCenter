@@ -65,6 +65,11 @@ public class AccountRepository : GenericRepository<Account>
         }
         if( account.RoleID == "")
             account.RoleID = "R002";
+        if( account.Status == "" )
+            account.Status = "Normal";
+        if( account.IsActive == false )
+            account.IsActive = true;
+        
         await base.CreateAsync(account);
         return await base.GetByIdAsync(account.AccountID);
     }
