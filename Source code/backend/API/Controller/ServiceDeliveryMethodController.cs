@@ -22,5 +22,9 @@ namespace API.Controllers
             return await _unitOfWork.ServiceDeliveryMethodRepository.GetAllAsync();
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ServiceDeliveryMethod>> GetDeliveryMethodByID(string id){
+            return await _unitOfWork.ServiceDeliveryMethodRepository.GetByIdAsync(id);
+        }
     }
 }

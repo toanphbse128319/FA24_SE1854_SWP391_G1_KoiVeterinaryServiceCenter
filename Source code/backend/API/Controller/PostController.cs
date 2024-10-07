@@ -20,4 +20,9 @@ public class PostController : ControllerBase
 
     }
 
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Post>> GetPostByID(string id){
+        return await _unitOfWork.PostReposity.GetByIdAsync(id);
+    }
+
 }
