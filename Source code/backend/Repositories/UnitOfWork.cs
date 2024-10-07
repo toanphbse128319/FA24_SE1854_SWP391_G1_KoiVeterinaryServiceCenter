@@ -11,11 +11,14 @@ public class UnitOfWork{
     private ServiceRepository _serviceRepository;
     private ServiceDeliveryMethodRepository _serviceDeliveryMethoddRepository;
     private BookingRepository _bookingRepository;
-<<<<<<< HEAD
+
     private AnimalTypeRepository _animalTypeRepository;
-=======
+
     private RoleRepository _roleRepository;
->>>>>>> 7efa8cd (Added role repository into unit of work)
+
+    private AnimalProfileRepository _animalProfileRepository;
+    private PoolProfileRepository _poolProfileRepository;
+
 
     public UnitOfWork(){
         _context ??= new Context();
@@ -53,5 +56,15 @@ public class UnitOfWork{
     public AnimalTypeRepository AnimalTypeRepository 
     {
         get { return _animalTypeRepository ??= new AnimalTypeRepository(_context); }
+    }
+
+    public AnimalProfileRepository AnimalProfileRepository
+    {
+        get { return _animalProfileRepository ??= new AnimalProfileRepository(_context); }
+    }
+
+    public PoolProfileRepository PoolProfileRepository
+    {
+        get { return _poolProfileRepository ??= new PoolProfileRepository(_context); }
     }
 }
