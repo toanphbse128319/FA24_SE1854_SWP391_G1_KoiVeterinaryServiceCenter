@@ -18,11 +18,7 @@ public class Context : DbContext {
 
     public static string GetConnectionString(string connectionStringName)
     {
-        var config = new ConfigurationBuilder()
-            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-            .AddJsonFile("appsettings.json")
-            .Build();
-
+        var config = Helper.Configuration.GetConfiguration();
         string connectionString = config.GetConnectionString(connectionStringName);
         return connectionString;
     }
@@ -38,5 +34,6 @@ public class Context : DbContext {
     public virtual DbSet<Service> Services { get; set; }
     public virtual DbSet<ServiceDeliveryMethod> ServiceDeliveryMethods { get; set; }
     public virtual DbSet<AnimalType> AnimalTypes { get; set; }  
+    public virtual DbSet<Role> Roles { get; set; }
 
 }
