@@ -1,6 +1,8 @@
 ﻿#nullable disable
-namespace Repositories.Model;
+using System.ComponentModel.DataAnnotations.Schema;
 
+namespace Repositories.Model;
+[Table("Role")]
 public class Role
 {
 
