@@ -26,7 +26,6 @@ public class LoginController : ControllerBase
     public async Task<ActionResult<Account>> LoggingByEmail(LoginInformation info){
         try{
 
-
             if( info.Info == null )
                 return BadRequest("Missing parameter: Info");
             if( info.Password == null )
