@@ -22,25 +22,19 @@ public class LoginController : ControllerBase
         _unitOfWork = unitOfWork;
     }
 
-    public string IsRequestValid(LoginInformation info){
-            if( info.Info == null )
-                return "Missing parameter: Info";
-            if( info.Password == null )
-                return "Missing parameter: password";
-            if( info.Info.Trim() == "" )
-                return "Info cannot be empty";
-            if( info.Password.Trim() == "" )
-                return "Password cannot be empty";
-            return null;
-    }
-
     [HttpPost]
     public async Task<ActionResult<Account>> LoggingByEmail(LoginInformation info){
         try{
-            string invalid = IsRequestValid(info);
-            if( invalid != null )
-                return BadRequest(invalid);
 
+
+            if( info.Info == null )
+                return BadRequest("Missing parameter: Info");
+            if( info.Password == null )
+                return BadRequest("Missing parameter: password");
+            if( info.Info.Trim() == "" )
+                return BadRequest("Info cannot be empty");
+            if( info.Password.Trim() == "" )
+                return BadRequest("Password cannot be empty");
             var account = await _unitOfWork.AccountRepository.LoginAsync( info );
             if( account == null )
                 return StatusCode(StatusCodes.Status401Unauthorized, "Invalid username or password!");
