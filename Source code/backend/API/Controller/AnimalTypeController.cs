@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
-using Repositories.Data;
 using Repositories.Model;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Repository;
