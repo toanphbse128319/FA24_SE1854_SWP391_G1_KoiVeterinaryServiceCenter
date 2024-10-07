@@ -11,6 +11,7 @@ public class UnitOfWork{
     private ServiceRepository _serviceRepository;
     private ServiceDeliveryMethodRepository _serviceDeliveryMethoddRepository;
     private BookingRepository _bookingRepository;
+    private AnimalTypeRepository _animalTypeRepository;
 
     public UnitOfWork(){
         _context ??= new Context();
@@ -38,5 +39,10 @@ public class UnitOfWork{
     public BookingRepository BookingRepository
     {
         get { return _bookingRepository??= new BookingRepository(_context); }
+    }
+
+    public AnimalTypeRepository AnimalTypeRepository 
+    {
+        get { return _animalTypeRepository ??= new AnimalTypeRepository(_context); }
     }
 }

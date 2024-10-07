@@ -8,7 +8,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UpdateBookingStatusController : Controller
+    public class UpdateBookingStatusController : ControllerBase
     {
         private UnitOfWork _unitOfWork;
         public UpdateBookingStatusController(UnitOfWork unitOfWork)
