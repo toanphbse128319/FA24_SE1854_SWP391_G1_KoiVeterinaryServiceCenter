@@ -59,6 +59,7 @@ public class LoginController : ControllerBase
                  */
             }; 
 
+            Console.WriteLine(_unitOfWork.RoleRepository.getRoleName(account.RoleID));
             claims.Add(new Claim(ClaimTypes.Role, _unitOfWork.RoleRepository.getRoleName(account.RoleID)));
             
             var tokenDescriptor = new SecurityTokenDescriptor{

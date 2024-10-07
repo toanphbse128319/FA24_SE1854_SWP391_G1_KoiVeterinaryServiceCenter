@@ -1,5 +1,6 @@
 #nullable disable
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Repositories;
 
 namespace API.Controllers
@@ -27,6 +28,9 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [Authorize(Policy = "customer_policy")]
+        [Authorize(Policy = "staff_policy")]
         public async Task<ActionResult<Service>> GetServiceByID(string id){
             try{ 
                 var service = await _unitOfWork.ServiceRepository.GetByIdAsync(id);
