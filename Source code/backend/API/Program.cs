@@ -59,10 +59,12 @@ builder.Services.AddAuthentication(options => {
 
 //Adding Authorization
 //builder.Services.AddAuthorization(); //Used if no authorization policy required
-builder.Services.AddAuthorizationBuilder().AddPolicy("staff_policy", policy => policy.RequireRole("staff"));
-builder.Services.AddAuthorizationBuilder().AddPolicy("manager_policy", policy => policy.RequireRole("manager"));
-builder.Services.AddAuthorizationBuilder().AddPolicy("customer_policy", policy => policy.RequireRole("customer"));
-builder.Services.AddAuthorizationBuilder().AddPolicy("vet_policy", policy => policy.RequireRole("vet"));
+//
+//Spare me, the authorization policy when used  only support AND, not OR so I have to do this mess so that the correct one can have right access
+builder.Services.AddAuthorizationBuilder().AddPolicy("staff_policy", policy => policy.RequireRole("Staff", "Manager"));
+builder.Services.AddAuthorizationBuilder().AddPolicy("manager_policy", policy => policy.RequireRole("Manager"));
+builder.Services.AddAuthorizationBuilder().AddPolicy("customer_policy", policy => policy.RequireRole("Customer", "Vet", "Staff", "Manager"));
+builder.Services.AddAuthorizationBuilder().AddPolicy("vet_policy", policy => policy.RequireRole("Vet", "Staff", "Manager"));
 
 var app = builder.Build();
 
