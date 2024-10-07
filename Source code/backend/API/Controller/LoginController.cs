@@ -24,23 +24,28 @@ public class LoginController : ControllerBase
         _configuration = Configuration.GetConfiguration();        
     }
 
+    public string IsRequestValid(LoginInformation info){
+            if( info.Info == null )
+                return "Missing parameter: Info";
+            if( info.Password == null )
+                return "Missing parameter: password";
+            if( info.Info.Trim() == "" )
+                return "Info cannot be empty";
+            if( info.Password.Trim() == "" )
+                return "Password cannot be empty";
+            return null;
+    }
+
     [HttpPost]
     public async Task<ActionResult<Account>> LoggingByEmail(LoginInformation info){
         try{
-
-            if( info.Info == null )
-                return BadRequest("Missing parameter: Info");
-            if( info.Password == null )
-                return BadRequest("Missing parameter: password");
-            if( info.Info.Trim() == "" )
-                return BadRequest("Info cannot be empty");
-            if( info.Password.Trim() == "" )
-                return BadRequest("Password cannot be empty");
-
+            string invalid = IsRequestValid(info);
+            if( invalid != null ){
+                return BadRequest(invalid);
+            }
             var account = await _unitOfWork.AccountRepository.LoginAsync( info );
             if( account == null )
                 return StatusCode(StatusCodes.Status401Unauthorized, "Invalid username or password!");
-
             var issuer = _configuration["Jwt:Issuer"];
             var audience = _configuration["Jwt:Audience"];
             var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"] ?? string.Empty);
@@ -58,10 +63,8 @@ public class LoginController : ControllerBase
                  *sensitive string. Use of this claim is OPTIONAL.
                  */
             }; 
-
             Console.WriteLine(_unitOfWork.RoleRepository.getRoleName(account.RoleID));
             claims.Add(new Claim(ClaimTypes.Role, _unitOfWork.RoleRepository.getRoleName(account.RoleID)));
-            
             var tokenDescriptor = new SecurityTokenDescriptor{
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddHours(4),
