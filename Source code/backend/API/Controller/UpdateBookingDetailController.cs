@@ -10,31 +10,32 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PoolProfileController : ControllerBase
+    public class UpdateBookingDetailController : ControllerBase
     {
         private UnitOfWork _unitOfWork;
-        public PoolProfileController(UnitOfWork unitOfWork)
+        public UpdateBookingDetailController(UnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
-        [HttpPost]
-        [HttpPost]
-        public async Task<ActionResult<PoolProfile?>> AddPoolProfile(PoolProfile poolprofile)
+        [HttpPut]
+        public async Task<ActionResult<BookingDetail?>> UpdateBookingDetail(BookingDetail info)
         {
             try
             {
-                if (await _unitOfWork.PoolProfileRepository.AddPoolProfileAsync(poolprofile) != null)
-                    return Ok($"Added {poolprofile.Name} successfully!");
+                var bookingdetail = await _unitOfWork.BookingDetailRepository.UpdateAsync(info);
+                if (bookingdetail == null)
+                    return NotFound("BookingDetail does not existed!");
                 else
-                    return BadRequest($"Added {poolprofile.Name} failed");
+                    return Ok(bookingdetail);
             }
             catch (Exception ex)
             {
                 return BadRequest("Unknown Error: " + ex.Message);
             }
+
+
         }
+
     }
 }
-
-

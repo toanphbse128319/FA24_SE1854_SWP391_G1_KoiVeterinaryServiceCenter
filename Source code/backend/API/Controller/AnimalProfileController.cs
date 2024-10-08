@@ -33,7 +33,7 @@ namespace API.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest("Unknown Error: " + ex.GetBaseException().ToString());
+                return BadRequest("Unknown Error: " + ex.Message);
             }
 
 
