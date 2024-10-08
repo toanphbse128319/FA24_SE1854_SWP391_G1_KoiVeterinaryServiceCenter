@@ -19,6 +19,7 @@ public class UnitOfWork{
     private AnimalProfileRepository _animalProfileRepository;
     private PoolProfileRepository _poolProfileRepository;
     private BookingDetailRepository _bookingDetailRepository;
+    private EmployeeRepository _employeeRepository;
 
 
     public UnitOfWork(){
@@ -72,6 +73,9 @@ public class UnitOfWork{
     {
         get { return _bookingDetailRepository ??= new BookingDetailRepository(_context); }
     }
-
-    
-}
+    public EmployeeRepository EmployeeRepository
+    {
+        get {
+            return _employeeRepository ??= new EmployeeRepository(_context); }
+    }
+    }
