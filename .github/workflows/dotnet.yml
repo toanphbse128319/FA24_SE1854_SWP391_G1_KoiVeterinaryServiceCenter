@@ -5,7 +5,7 @@ name: .NET
 
 on:
   push:
-    branches: [ "master", "Dev", "GithubAction" ]
+  
   pull_request:
     branches: [ "master", "Dev" ]
   workflow_dispatch:
