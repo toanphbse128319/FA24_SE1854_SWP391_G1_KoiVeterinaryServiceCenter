@@ -28,7 +28,6 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(AuthenticationSchemes = "Bearer")]
         [Authorize(Policy = "customer_policy")]
         public async Task<ActionResult<Service>> GetServiceByID(string id){
             try{ 

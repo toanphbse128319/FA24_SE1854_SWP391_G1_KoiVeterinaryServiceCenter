@@ -58,7 +58,39 @@ public class ServiceRepository : GenericRepository<Service> {
 
 </details>
 
+# Cách dùng Bearer authentication để giới hạn theo role
 
+<details>
+<summary> thêm trong appsetting.js </summary>
+
+```
+  "Jwt": {
+    "Issuer": "FA24_SE1854_SWP391_G1_KoiVeterinaryServiceCenter",
+    "Audience": "FA24_SE1854_SWP391_G1_KoiVeterinaryServiceCenter",
+    "Key": "There is no secret key here, find somewhere else!"
+  }
+```
+</details>
+
+<details>
+<summary> thêm giới hạn role vào 1 API endpoint </summary>
+
+<br>
+( Code chỉ mang tính chất minh họa )
+
+```
+        [HttpGet("{id}")] // Method của API
+        [Authorize(Policy = "customer_policy")] // policy để giới hạn role try cập 
+        public async Task<ActionResult<Service>> GetServiceByID(string id){ // API endpoint
+```
+
+<br>
+
+* Giới hạn của role tạm thời sẽ là 
+
+    Manager > Staff > Vet > Customer ( Guest thì đừng thêm policy là được )
+
+</details>
 
 # Cách bật trang web swagger ui
 - Mở cmd lên, cd vào API, chạy command: 
