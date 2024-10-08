@@ -34,6 +34,8 @@ namespace Repositories.Repository
                 bookingdetail.ConsultDoctor = info.ConsultDoctor;
                 bookingdetail.PoolStatusDescription= info.PoolStatusDescription;
                 bookingdetail.AnimalStatusDescription = info.AnimalStatusDescription;
+                bookingdetail.ConsultTechnician = info.ConsultTechnician;
+                bookingdetail.NoteExamination = info.NoteExamination;
                 await _context.SaveChangesAsync();
                 return bookingdetail;
             }
