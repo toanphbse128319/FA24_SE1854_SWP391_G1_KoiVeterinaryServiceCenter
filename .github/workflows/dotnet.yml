@@ -7,7 +7,7 @@ on:
   push:
     branches: [ "master", "Dev", "GithubAction" ]
   pull_request:
-    branches: [ "master", "Dev", "GithubAction" ]
+    branches: [ "master", "Dev" ]
   workflow_dispatch:
 
 defaults:
