@@ -125,7 +125,7 @@ CREATE TABLE BookingDetail(
     BookingID nvarchar(20) FOREIGN KEY REFERENCES Booking(BookingID) NOT NULL,
     ServiceID nvarchar(20) FOREIGN KEY REFERENCES Service(ServiceID) NOT NULL,
     UnitPrice money NOT NULL,
-    Incidental boolean,
+    Incidental boolean NOT NULL,
     NoteResult nvarchar(MAX),
     NoteExamination nvarchar(MAX),
     AnimalStatusDescription nvarchar(MAX) ,
@@ -266,15 +266,16 @@ VALUES
 ('SCH003', 'E003', '2024/09/03', 'Follow-up', 3, 3, 'Evening slot'),
 ('SCH004', 'E004', '2024/09/04', 'Emergency', 4, 4, 'Night slot'),
 ('SCH005', 'E005', '2024/09/05', 'Routine check', 5, 1, 'Early Morning slot');
-
+--NumberOfFish int not null,
+   -- IncidentalFish 
 -- Insert sample data for Booking
-INSERT INTO Booking (BookingID, CustomerID, EmployeeID, BookingDate, ExpiredDate, Deposit, ServiceDeliveryMethodID, VAT, BookingAddress, Distance, DistanceCost, TotalServiceCost, Status, FeedbackID, ScheduleID, Note, PaymentMethod, PaymentStatus) 
+INSERT INTO Booking (BookingID, CustomerID, EmployeeID, BookingDate, ExpiredDate, Deposit, NumberOfFish, IncidentalFish, ServiceDeliveryMethodID, VAT, BookingAddress, Distance, DistanceCost, TotalServiceCost, Status, FeedbackID, ScheduleID, Note, PaymentMethod, PaymentStatus) 
 VALUES 
-('B001', 'C001', 'E001', '2024-09-01 09:00:00', '2024-09-01', 50.00, 'SDM001', 10.00, '250 vo van hat', 5.5, 11.00, 111.00, 'Confirmed', 'FB001', 'SCH001', 'Home visit for koi health check', 'Credit Card', 'Paid'),
-('B002', 'C002', 'E002', '2024-09-02 14:00:00', '2024-09-02', 37.50, 'SDM002', 7.50, '456 Maple Ave', 0, 0.00, 82.50, 'Pending', 'FB002', 'SCH002', 'Online consultation for koi', 'PayPal', 'Pending'),
-('B003', 'C003', 'E003', '2024-09-03 18:00:00', '2024-09-03', 75.00, 'SDM003', 15.00, '789 Oak St', 3.2, 6.40, 171.40, 'Cancelled', 'FB003', 'SCH003', 'Clinic visit for koi disease treatment', 'Cash', 'Refunded'),
-('B004', 'C004', 'E004', '2024-09-04 22:00:00', '2024-09-05', 150.00, 'SDM004', 30.00, '321 Birch Ave', 8.7, 17.40, 347.40, 'In Progress', 'FB004', 'SCH004', 'Emergency koi surgery', 'Credit Card', 'Paid'),
-('B005', 'C005', 'E005', '2024-09-05 07:00:00', '2024-09-05', 25.00, 'SDM005', 5.00, '654 Pine St', 2.1, 4.20, 59.20, 'Completed', 'FB005', 'SCH005', 'Follow-up checkup after treatment', 'Debit Card', 'Paid'); 
+('B001', 'C001', 'E001', '2024-09-01 09:00:00', '2024-09-01', 50.00, 1, 0,'SDM001', 10.00, '250 vo van hat', 5.5, 11.00, 111.00, 'Confirmed', 'FB001', 'SCH001', 'Home visit for koi health check', 'Credit Card', 'Paid'),
+('B002', 'C002', 'E002', '2024-09-02 14:00:00', '2024-09-02', 37.50, 1, 0,'SDM002', 7.50, '456 Maple Ave', 0, 0.00, 82.50, 'Pending', 'FB002', 'SCH002', 'Online consultation for koi', 'PayPal', 'Pending'),
+('B003', 'C003', 'E003', '2024-09-03 18:00:00', '2024-09-03', 75.00, 1, 0,'SDM003', 15.00, '789 Oak St', 3.2, 6.40, 171.40, 'Cancelled', 'FB003', 'SCH003', 'Clinic visit for koi disease treatment', 'Cash', 'Refunded'),
+('B004', 'C004', 'E004', '2024-09-04 22:00:00', '2024-09-05', 150.00, 1, 0,'SDM004', 30.00, '321 Birch Ave', 8.7, 17.40, 347.40, 'In Progress', 'FB004', 'SCH004', 'Emergency koi surgery', 'Credit Card', 'Paid'),
+('B005', 'C005', 'E005', '2024-09-05 07:00:00', '2024-09-05', 25.00, 1, 1,'SDM005', 5.00, '654 Pine St', 2.1, 4.20, 59.20, 'Completed', 'FB005', 'SCH005', 'Follow-up checkup after treatment', 'Debit Card', 'Paid'); 
 
 -- Insert sample data for AnimalType
 INSERT INTO AnimalType (TypeID, Name) 
@@ -286,17 +287,19 @@ VALUES
 ('AT005', 'Betta Fish');
 
 -- Insert sample data for BookingDetail
-INSERT INTO BookingDetail (BookingDetailID, BookingID, ServiceID, UnitPrice, NoteResult, NoteExamination, AnimalStatusDescription, ConsultDoctor, DrugList, PoolStatusDescription, ConsultTechnician, MaterialList)
+INSERT INTO BookingDetail (BookingDetailID, BookingID, ServiceID, UnitPrice, Incidental, NoteResult, NoteExamination, AnimalStatusDescription, ConsultDoctor, DrugList, PoolStatusDescription, ConsultTechnician, MaterialList)
 VALUES 
-('BD001', 'B001', 'S001', 100.00, 'Koi appears healthy overall', 'Routine health check performed', 'Nishiki shows good coloration and active behavior', 'Dr. Amelia Fish', 'Probiotic supplement', 'Zen Garden Koi Pond maintains good water quality', 'Tech John Doe', 'Water testing kit, net'),
+('BD001', 'B001', 'S001', 100.00, false,'Koi appears healthy overall', 'Routine health check performed', 'Nishiki shows good coloration and active behavior', 'Dr. Amelia Fish', 'Probiotic supplement', 'Zen Garden Koi Pond maintains good water quality', 'Tech John Doe', 'Water testing kit, net'),
 
-('BD002', 'B002', 'S002', 75.00, 'Goldfish exhibiting signs of stress', 'Observed labored breathing and loss of appetite', 'Bubbles has clamped fins and reduced activity', 'Dr. Michael Scales', 'Antibiotics, stress coat additive', 'Indoor Goldfish Tank requires improved filtration', 'Tech Jane Smith', 'New filter system, air pump'),
+('BD002', 'B002', 'S002', 75.00, false,'Goldfish exhibiting signs of stress', 'Observed labored breathing and loss of appetite', 'Bubbles has clamped fins and reduced activity', 'Dr. Michael Scales', 'Antibiotics, stress coat additive', 'Indoor Goldfish Tank requires improved filtration', 'Tech Jane Smith', 'New filter system, air pump'),
 
-('BD003', 'B003', 'S003', 150.00, 'Tropical fish recovering from minor infection', 'Treated for bacterial infection', 'Nemo shows improvement in fin condition and appetite', 'Dr. Sarah Coral', 'Broad-spectrum antibiotic, vitamin supplements', 'Tropical Reef Aquarium parameters stable', 'Tech Robert Johnson', 'UV sterilizer, coral food'),
+('BD003', 'B003', 'S003', 150.00, false,'Tropical fish recovering from minor infection', 'Treated for bacterial infection', 'Nemo shows improvement in fin condition and appetite', 'Dr. Sarah Coral', 'Broad-spectrum antibiotic, vitamin supplements', 'Tropical Reef Aquarium parameters stable', 'Tech Robert Johnson', 'UV sterilizer, coral food'),
 
-('BD004', 'B004', 'S004', 300.00, 'Emergency surgery successful', 'Removed foreign object from blue tang', 'Azure is stable post-surgery, requires close monitoring', 'Dr. David Finn', 'Pain medication, antibiotics', 'Saltwater Lagoon quarantine section set up', 'Tech Emily Waters', 'Surgical tools, quarantine tank'),
+('BD004', 'B004', 'S004', 300.00, false,'Emergency surgery successful', 'Removed foreign object from blue tang', 'Azure is stable post-surgery, requires close monitoring', 'Dr. David Finn', 'Pain medication, antibiotics', 'Saltwater Lagoon quarantine section set up', 'Tech Emily Waters', 'Surgical tools, quarantine tank'),
 
-('BD005', 'B005', 'S005', 50.00, 'Betta fish in excellent condition', 'Regular check-up completed', 'Crimson displays vibrant colors and active behavior', 'Dr. Lisa Gills', 'None required', 'Betta Paradise tank environment optimal', 'Tech Mark River', 'Water conditioner, betta-specific food');
+('BD005', 'B005', 'S005', 50.00, false,'Betta fish in excellent condition', 'Regular check-up completed', 'Crimson displays vibrant colors and active behavior', 'Dr. Lisa Gills', 'None required', 'Betta Paradise tank environment optimal', 'Tech Mark River', 'Water conditioner, betta-specific food');
+
+('BD006', 'B005', 'S006', 50.00, true,'Betta fish in excellent condition', 'Regular check-up completed', 'Crimson displays vibrant colors and active behavior', 'Dr. Lisa Gills', 'None required', 'Betta Paradise tank environment optimal', 'Tech Mark River', 'Water conditioner, betta-specific food');
 
 -- Insert sample data for AnimalProfile
 INSERT INTO AnimalProfile (AnimalProfileID, Name, TypeID, BookingDetailID, Size, Age, Color, Description, Sex, Picture) 
