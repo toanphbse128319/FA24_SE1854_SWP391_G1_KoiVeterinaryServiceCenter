@@ -1,21 +1,21 @@
 import React from "react";
-import { Component } from "./Components/GuestView";
-import group25 from "./Components/TrangChu/group-25.png";
-import logoCS2 from "./Components/TrangChu/logo-c-s-2.png";
-import logoCS from "./Components/TrangChu/logo-c-s.png";
-import logoKhMTICS from "./Components/TrangChu/logo-kh-m-t-i-c-s.png";
-import logoKiMTraBHC from "./Components/TrangChu/logo-ki-m-tra-b-h-c.png";
-import logoTVNVIBCS from "./Components/TrangChu/logo-t-v-n-v-i-b-c-s.png";
-import nhKhMTINh from "./Components/TrangChu/nh-kh-m-t-i-nh.png";
-import polygon1 from "./Components/TrangChu/polygon-1.svg";
-import polygon2 from "./Components/TrangChu/polygon-2.svg";
-import screenshot202409291744131 from "./Components/TrangChu/screenshot-2024-09-29-174413-1.png";
-import screenshot202409291745431 from "./Components/TrangChu/screenshot-2024-09-29-174543-1.png";
-import screenshot202409291746221 from "./Components/TrangChu/screenshot-2024-09-29-174622-1.png";
-import screenshot202409291746591 from "./Components/TrangChu/screenshot-2024-09-29-174659-1.png";
-import screenshot202409291747381 from "./Components/TrangChu/screenshot-2024-09-29-174738-1.png";
-import screenshot202409292039042 from "./Components/TrangChu/screenshot-2024-09-29-203904-2.png";
-import vector from "./Components/TrangChu/vector.png";
+import { Component } from "../Component/Component";
+import group25 from "./group-25.png";
+import logoCS2 from "./logo-c-s-2.png";
+import logoCS from "./logo-c-s.png";
+import logoKhMTICS from "./logo-kh-m-t-i-c-s.png";
+import logoKiMTraBHC from "./logo-ki-m-tra-b-h-c.png";
+import logoTVNVIBCS from "./logo-t-v-n-v-i-b-c-s.png";
+import nhKhMTINh from "./nh-kh-m-t-i-nh.png";
+import polygon1 from "./polygon-1.svg";
+import polygon2 from "./polygon-2.svg";
+import screenshot202409291744131 from "./screenshot-2024-09-29-174413-1.png";
+import screenshot202409291745431 from "./screenshot-2024-09-29-174543-1.png";
+import screenshot202409291746221 from "./screenshot-2024-09-29-174622-1.png";
+import screenshot202409291746591 from "./screenshot-2024-09-29-174659-1.png";
+import screenshot202409291747381 from "./screenshot-2024-09-29-174738-1.png";
+import screenshot202409292039042 from "./screenshot-2024-09-29-203904-2.png";
+import vector from "./vector.png";
 
 export const TrangCh = () => {
   return (
@@ -236,17 +236,17 @@ export const TrangCh = () => {
             <p className="absolute w-[575px] top-[243px] left-0 [font-family:'Inter-Bold',Helvetica] font-normal text-black text-base tracking-[0] leading-[normal]">
               <span className="font-bold">Địa chỉ</span>
               <span className="[font-family:'Inter-Regular',Helvetica]">
-                : 236/29/18 Điện Biên Phủ - Phường 17 - Quận Bình Thạnh - TPHCM.
+                : 236/29/18 Điện Biên Phủ - Phường 17 - Quận Bình Thạnh - TPHCM.
                 <br />
               </span>
               <span className="font-bold">Website</span>
               <span className="[font-family:'Inter-Regular',Helvetica]">
-                : https://****.vn
+                : https://****.vn
                 <br />
               </span>
               <span className="font-bold">Email</span>
               <span className="[font-family:'Inter-Regular',Helvetica]">
-                : cskh@****.vn
+                : cskh@****.vn
                 <br />
               </span>
               <span className="font-bold">Điện thoại</span>
