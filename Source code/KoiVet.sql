@@ -97,6 +97,8 @@ CREATE TABLE Booking(
     BookingDate datetime NOT NULL,
     ExpiredDate date NOT NULL,
     Deposit money not null,
+    NumberOfFish int not null,
+    IncidentalFish int not null,
     ServiceDeliveryMethodID nvarchar(20) FOREIGN KEY REFERENCES ServiceDeliveryMethod(ServiceDeliveryMethodID) NOT NULL,
     VAT float,
     BookingAddress nvarchar(200) NOT NULL,
@@ -123,6 +125,7 @@ CREATE TABLE BookingDetail(
     BookingID nvarchar(20) FOREIGN KEY REFERENCES Booking(BookingID) NOT NULL,
     ServiceID nvarchar(20) FOREIGN KEY REFERENCES Service(ServiceID) NOT NULL,
     UnitPrice money NOT NULL,
+    Incidental boolean,
     NoteResult nvarchar(MAX),
     NoteExamination nvarchar(MAX),
     AnimalStatusDescription nvarchar(MAX) ,
@@ -320,7 +323,7 @@ INSERT INTO FAQ (FaqID, Question, Answer) VALUES
 ('FAQ002', 'How long do Koi live?', 'Koi can live for several decades, with some living over 200 years under optimal conditions.'),
 ('FAQ003', 'What do Koi eat?', 'Koi are omnivorous and can eat a variety of foods including pellets, vegetables, and insects.'),
 ('FAQ004', 'How big do Koi get?', 'Koi can grow to be quite large, often reaching sizes of 2 to 3 feet in length.'),
-('FAQ005', 'What is the best water temperature for Koi?', 'Koi thrive in water temperatures between 65ÅãF and 75ÅãF (18ÅãC to 24ÅãC).');
+('FAQ005', 'What is the best water temperature for Koi?', 'Koi thrive in water temperatures between 65ÔøΩÔøΩF and 75ÔøΩÔøΩF (18ÔøΩÔøΩC to 24ÔøΩÔøΩC).');
 
 -- Insert sample data for PostCategory
 INSERT INTO PostCategory (PostCategoryID, Name) VALUES
