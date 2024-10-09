@@ -2,7 +2,8 @@
 using Repositories.Repository;
 namespace Repositories;
 
-public class UnitOfWork{
+public class UnitOfWork
+{
 
     private Context _context;
     private FAQRepository _faqRepository;
@@ -21,28 +22,35 @@ public class UnitOfWork{
     private BookingDetailRepository _bookingDetailRepository;
     private EmployeeRepository _employeeRepository;
 
+    private ScheduleRepository _scheduleRepository;
 
-    public UnitOfWork(){
+    public UnitOfWork()
+    {
         _context ??= new Context();
     }
 
-    public AccountRepository AccountRepository {
+    public AccountRepository AccountRepository
+    {
         get { return _accountRepository ??= new AccountRepository(_context); }
     }
-    
-    public FAQRepository FAQRepository {
+
+    public FAQRepository FAQRepository
+    {
         get { return _faqRepository ??= new FAQRepository(_context); }
     }
 
-    public PostReposity PostReposity {
+    public PostReposity PostReposity
+    {
         get { return _postRepository ??= new PostReposity(_context); }
     }
 
-    public ServiceRepository ServiceRepository {
+    public ServiceRepository ServiceRepository
+    {
         get { return _serviceRepository ??= new ServiceRepository(_context); }
     }
 
-    public ServiceDeliveryMethodRepository ServiceDeliveryMethodRepository {
+    public ServiceDeliveryMethodRepository ServiceDeliveryMethodRepository
+    {
         get { return _serviceDeliveryMethoddRepository ??= new ServiceDeliveryMethodRepository(_context); }
     }
 
@@ -51,11 +59,12 @@ public class UnitOfWork{
         get { return _bookingRepository ??= new BookingRepository(_context); }
     }
 
-    public RoleRepository RoleRepository{
+    public RoleRepository RoleRepository
+    {
         get { return _roleRepository ??= new RoleRepository(_context); }
     }
 
-    public AnimalTypeRepository AnimalTypeRepository 
+    public AnimalTypeRepository AnimalTypeRepository
     {
         get { return _animalTypeRepository ??= new AnimalTypeRepository(_context); }
     }
@@ -75,7 +84,14 @@ public class UnitOfWork{
     }
     public EmployeeRepository EmployeeRepository
     {
-        get {
-            return _employeeRepository ??= new EmployeeRepository(_context); }
+        get
+        {
+            return _employeeRepository ??= new EmployeeRepository(_context);
+        }
     }
+    public ScheduleRepository ScheduleRepository
+    {
+        get
+        { return _scheduleRepository ??= new ScheduleRepository(_context); }
     }
+}
