@@ -37,7 +37,7 @@ namespace API.Controllers
                 if( _unitOfWork.AccountRepository.FindPhoneNumber(info.PhoneNumber) != null )
                     return Conflict("That phone number is already used!");
                 var account = await _unitOfWork.AccountRepository.SignUpAsync( info );
-                return Created();
+                return StatusCode(StatusCodes.Status201Created, "Signup successfully");
             } catch (Exception ex){
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }

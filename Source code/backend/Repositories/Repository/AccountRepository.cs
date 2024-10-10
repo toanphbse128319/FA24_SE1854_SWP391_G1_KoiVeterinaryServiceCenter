@@ -70,6 +70,16 @@ public class AccountRepository : GenericRepository<Account>
         if( account.IsActive == false )
             account.IsActive = true;
         
+        try{
+            Mail mail = new Mail(account.Email);
+            string subject = "Signup successfully!";
+            string message = $"Thanks for signing up at our website with your email {account.Email}";
+            mail.SetMessage(subject, message);
+            mail.Send();
+        } catch (Exception ex){
+            Console.WriteLine(ex);
+        }    
+
         await base.CreateAsync(account);
         return await base.GetByIdAsync(account.AccountID);
     }
