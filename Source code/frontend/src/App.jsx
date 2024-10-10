@@ -4,10 +4,11 @@ import Header from "./Components/Header.jsx";
 const App = () => {
   return (
   <div>
-      <Header />
-   
+
+    <Header />
+  
   </div>
-   
+
   );
 };
 
