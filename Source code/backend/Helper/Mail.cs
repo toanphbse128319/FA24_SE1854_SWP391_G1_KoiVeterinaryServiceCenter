@@ -7,7 +7,6 @@ namespace Helper;
 public class Mail{
     public SmtpClient SmtpClient{ get; }
     public MailMessage Email{ get; set; }
-    private System.Net.NetworkCredential _auth;
 
     /*
      * This contructor will set the SmtpClient, not the email message, sender, recepient
