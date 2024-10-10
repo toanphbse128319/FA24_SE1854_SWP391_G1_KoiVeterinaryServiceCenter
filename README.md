@@ -1,5 +1,12 @@
 ### **Có lỗi gì xảy ra khi làm các thao tác này thì hãy liên lạc với team, đừng im lặng mà tự gồng gánh**
 
+# LƯU Ý:
+- Cách cấu trúc lại cú pháp dấu câu: ```ctrl + k + d```
+- Kiểm tra branch bằng lệnh ```git status``` trước khi push, tránh push nhầm vào branch Dev, master
+- Nên add và push file cụ thể, vd như ```git add <tên file>``` thay vì ```git add .``` để tránh conflict
+- Các thông tin về lỗi sẽ nằm trong channel #review-bug, lỗi nằm trong branch nào thì người phụ trách branch sửa lại xong commit, người không làm branch đó thì không commit để tránh xung đột. Trường hợp gấp có thể nhờ Toàn
+- KHÔNG TỰ Ý MERGE, NẾU CÓ NHU CẦU MERGE CẦN PHẢI ĐỢI LONG VÀ TOÀN REVIEW ĐỂ TRÁNH CONFLICT
+
 # Cách thêm model, DbSet, Repository, ... 
 (Code chỉ mang tính chất minh họa)
 
