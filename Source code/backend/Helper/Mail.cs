@@ -14,8 +14,8 @@ public class Mail{
      */
     public Mail(string recepient){
         SmtpClient = new SmtpClient{
-            Host = "smtp.gmail.com",
-            Port = 587,
+            Host = Configuration.GetConfiguration()["Mail:Server"],
+            Port = int.Parse(Configuration.GetConfiguration()["Mail:Port"]),
             EnableSsl = true,
             DeliveryMethod = SmtpDeliveryMethod.Network,
             UseDefaultCredentials = false,
