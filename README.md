@@ -1,10 +1,16 @@
 ### **Có lỗi gì xảy ra khi làm các thao tác này thì hãy liên lạc với team, đừng im lặng mà tự gồng gánh**
 
+# Cách đặt tên
+- Đặt tên model theo tên table, với các trường tương tự 
+- Đặt tên Repository theo cú pháp ```<Tên Model>Repository```
+- Đặt tên Controller theo cú pháp ```<Tên Model>Controller```, trong controller bao gồm các action, không để tên là ```<action> + Controller```
+
 # LƯU Ý:
 - Cách cấu trúc lại cú pháp dấu câu: ```ctrl + k + d```
 - Kiểm tra branch bằng lệnh ```git status``` trước khi push, tránh push nhầm vào branch Dev, master
 - Nên add và push file cụ thể, vd như ```git add <tên file>``` thay vì ```git add .``` để tránh conflict
 - Các thông tin về lỗi sẽ nằm trong channel #review-bug, lỗi nằm trong branch nào thì người phụ trách branch sửa lại xong commit, người không làm branch đó thì không commit để tránh xung đột. Trường hợp gấp có thể nhờ Toàn
+- Với các func có sử dụng trường id, nên sử dụng ```_id.ToLower() == id``` thay vì ```_id.Equals(id)```, vì trong trường id hạn chế phân biệt hoa thường, nên khi truy xuất ta không cần phải quan tâm
 - KHÔNG TỰ Ý MERGE, NẾU CÓ NHU CẦU MERGE CẦN PHẢI ĐỢI LONG VÀ TOÀN REVIEW ĐỂ TRÁNH CONFLICT
 
 # Cách thêm model, DbSet, Repository, ... 
