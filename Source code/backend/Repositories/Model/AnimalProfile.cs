@@ -13,6 +13,6 @@ public class AnimalProfile
     public int Age { get; set; }
     public string Color { get; set; }
     public string Description { get; set; }
-    public int Sex { get; set; }
+    public bool Sex { get; set; }
     public string Picture { get; set; } 
 }
