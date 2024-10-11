@@ -91,7 +91,6 @@ public class UnitOfWork
     }
     public ScheduleRepository ScheduleRepository
     {
-        get
-        { return _scheduleRepository ??= new ScheduleRepository(_context); }
+        get { return _scheduleRepository ??= new ScheduleRepository(_context); }
     }
 }
