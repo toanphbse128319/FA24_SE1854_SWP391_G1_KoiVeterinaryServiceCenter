@@ -1,6 +1,6 @@
 import React from "react";
 
-export const Component = ({ className, overlapGroupClassName }) => {
+ const GuestView = ({ className, overlapGroupClassName }) => {
   return (
     <div className={`relative w-[1211px] h-[634px] ${className}`}>
       <div className="absolute w-[552px] h-[638px] -top-px left-0">
@@ -36,3 +36,4 @@ export const Component = ({ className, overlapGroupClassName }) => {
     </div>
   );
 };
+export default GuestView;
