@@ -11,17 +11,14 @@ public class UnitOfWork{
     private ServiceRepository _serviceRepository;
     private ServiceDeliveryMethodRepository _serviceDeliveryMethoddRepository;
     private BookingRepository _bookingRepository;
-
     private AnimalTypeRepository _animalTypeRepository;
-
     private RoleRepository _roleRepository;
-
     private AnimalProfileRepository _animalProfileRepository;
     private PoolProfileRepository _poolProfileRepository;
     private BookingDetailRepository _bookingDetailRepository;
     private EmployeeRepository _employeeRepository;
-
-
+    private FeedbackRepository _feedbackRepository;
+    
     public UnitOfWork(){
         _context ??= new Context();
     }
@@ -78,4 +75,9 @@ public class UnitOfWork{
         get {
             return _employeeRepository ??= new EmployeeRepository(_context); }
     }
+
+    public FeedbackRepository FeedbackRepository
+    {
+        get { return _feedbackRepository ??= new FeedbackRepository(_context); }
     }
+}
