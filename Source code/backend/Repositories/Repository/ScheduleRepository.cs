@@ -14,14 +14,14 @@ public class ScheduleRepository : GenericRepository<Schedule>
     }
     public Task<Schedule?> FindScheduleAsync(string id)
     {
-        return _context.Schedules.FirstOrDefaultAsync(schedule => schedule.ScheduleID == id);
+        return _context.Schedules.FirstOrDefaultAsync(schedule => schedule.ScheduleID.ToLower() == id.ToLower());
     }
 
-    public Task<List<Schedule>> GetScheduleAsync(string date)
+    public Task<List<Schedule>> FindScheduleByDateAsync(string date)
     {
         return _context.Schedules.Where(schedule => schedule.Date == date).ToListAsync();
     }
-    public Task<List<Schedule>> GetSlotAvailableAsync(string date) 
+    public Task<List<Schedule>> FindSlotAvailableAsync(string date) 
     { 
         return _context.Schedules.Where(schedule => schedule.Date == date &&
                                                     schedule.SlotStatus == "true").ToListAsync();
