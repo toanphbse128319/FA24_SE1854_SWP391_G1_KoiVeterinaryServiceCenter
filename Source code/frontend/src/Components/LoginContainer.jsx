@@ -101,7 +101,7 @@ function Login() {
         return;
       }
       const token = data;
-      const decoded = jwtDecode(token);
+      const decoded = jwt_decode(token);
 
 console.log(decoded); // In thông tin giải mã
       localStorage.setItem('token', data);
