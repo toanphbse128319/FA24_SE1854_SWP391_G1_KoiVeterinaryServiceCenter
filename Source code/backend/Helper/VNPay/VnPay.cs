@@ -12,15 +12,15 @@ public class VnPay{
 
     public VnPay(string bankCode){
         var config = Configuration.GetConfiguration();
-        _vnpUrl = config["vnp_Url"];
-        _tmnCode = config["vnp_TmnCode"];
-        _hashSecret = config["vnp_HashSecret"];
-        _vnpVersion = config["vnp_Version"];
+        _vnpUrl = config["VnPay:vnp_Url"];
+        _tmnCode = config["VnPay:vnp_TmnCode"];
+        _hashSecret = config["VnPay:vnp_HashSecret"];
+        _vnpVersion = config["VnPay:vnp_Version"];
         if( bankCode == null )
-            _bankCode = "VNPAYQR";
+            _bankCode = "VNBANK";
         else
             _bankCode = bankCode;
-        _returnURL = config["vnp_returnUrl"];
+        _returnURL = config["VnPay:vnp_returnUrl"];
     }
 
     public string PayUrl(int amount, string orderID,  string customerAddress, string locale, string transferInfo){
@@ -41,10 +41,7 @@ public class VnPay{
         vnpay.AddRequestData("vnp_ReturnUrl", _returnURL);
         vnpay.AddRequestData("vnp_ExpireDate", DateTime.Now.AddMinutes(15).ToString("yyyyMMddHHmmss"));
         vnpay.AddRequestData("vnp_TxnRef", orderID);
-        vnpay.AddRequestData("vnp_SecureHash", _hashSecret);
-        return  vnpay.CreateRequestUrl(_vnpUrl, _hashSecret);
-
-
-        
+        return vnpay.CreateRequestUrl(_vnpUrl, _hashSecret);
     }
+
 }
