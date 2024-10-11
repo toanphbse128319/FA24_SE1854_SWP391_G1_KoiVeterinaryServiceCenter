@@ -267,12 +267,17 @@ VALUES
 -- Insert sample data for Booking
 INSERT INTO Booking (BookingID, CustomerID, EmployeeID, BookingDate, ExpiredDate, Deposit, ServiceDeliveryMethodID, VAT, BookingAddress, Distance, DistanceCost, TotalServiceCost, Status, FeedbackID, ScheduleID, Note, PaymentMethod, PaymentStatus) 
 VALUES 
-('B001', 'C001', 'E001', '2024-09-01 09:00:00', '2024-09-01', 50.00, 'SDM001', 10.00, '250 vo van hat', 5.5, 11.00, 111.00, 'Confirmed', 'FB001', 'SCH001', 'Home visit for koi health check', 'Credit Card', 'Paid'),
-('B002', 'C002', 'E002', '2024-09-02 14:00:00', '2024-09-02', 37.50, 'SDM002', 7.50, '456 Maple Ave', 0, 0.00, 82.50, 'Pending', 'FB002', 'SCH002', 'Online consultation for koi', 'PayPal', 'Pending'),
-('B003', 'C003', 'E003', '2024-09-03 18:00:00', '2024-09-03', 75.00, 'SDM003', 15.00, '789 Oak St', 3.2, 6.40, 171.40, 'Cancelled', 'FB003', 'SCH003', 'Clinic visit for koi disease treatment', 'Cash', 'Refunded'),
-('B004', 'C004', 'E004', '2024-09-04 22:00:00', '2024-09-05', 150.00, 'SDM004', 30.00, '321 Birch Ave', 8.7, 17.40, 347.40, 'In Progress', 'FB004', 'SCH004', 'Emergency koi surgery', 'Credit Card', 'Paid'),
-('B005', 'C005', 'E005', '2024-09-05 07:00:00', '2024-09-05', 25.00, 'SDM005', 5.00, '654 Pine St', 2.1, 4.20, 59.20, 'Completed', 'FB005', 'SCH005', 'Follow-up checkup after treatment', 'Debit Card', 'Paid'); 
+('B007', 'C001', 'E001', '2024-09-01 09:00:00', '2024-09-01', 500000, 'SDM001', 10.00, '250 vo van hat', 5.5, 11.00, 661000, 'Confirmed', 'FB001', 'SCH001', 'Home visit for koi health check', 'Credit Card', 'Pending'),
+('B008', 'C002', 'E002', '2024-09-02 14:00:00', '2024-09-02', 370000, 'SDM002', 7.50, '456 Maple Ave', 0, 0.00, 397500, 'Pending', 'FB002', 'SCH002', 'Online consultation for koi', 'PayPal', 'Pending'),
+('B009', 'C003', 'E003', '2024-09-03 18:00:00', '2024-09-03', 750000, 'SDM003', 15.00, '789 Oak St', 3.2, 6.40,996000, 'Cancelled', 'FB003', 'SCH003', 'Clinic visit for koi disease treatment', 'Cash', 'Pending'),
+('B010', 'C004', 'E004', '2024-09-04 22:00:00', '2024-09-05', 1500000, 'SDM004', 30.00, '321 Birch Ave', 8.7, 50000, 2000000, 'In Progress', 'FB004', 'SCH004', 'Emergency koi surgery', 'Credit Card', 'Pending'),
+('B011', 'C005', 'E005', '2024-09-05 07:00:00', '2024-09-05', 250000, 'SDM005', 5.00, '654 Pine St', 2.1, 4.20, 867000, 'Completed', 'FB005', 'SCH005', 'Follow-up checkup after treatment', 'Debit Card', 'Pending'),
 
+('B012', 'C001', 'E001', '2024-09-01 09:00:00', '2024-09-01', 500000, 'SDM001', 10.00, '250 vo van hat', 5.5, 11.00, 661000, 'Confirmed', 'FB001', 'SCH001', 'Home visit for koi health check', 'Credit Card', 'Pending'),
+('B012', 'C002', 'E002', '2024-09-02 14:00:00', '2024-09-02', 370000, 'SDM002', 7.50, '456 Maple Ave', 0, 0.00, 397500, 'Pending', 'FB002', 'SCH002', 'Online consultation for koi', 'PayPal', 'Pending'),
+('B013', 'C003', 'E003', '2024-09-03 18:00:00', '2024-09-03', 750000, 'SDM003', 15.00, '789 Oak St', 3.2, 6.40,996000, 'Cancelled', 'FB003', 'SCH003', 'Clinic visit for koi disease treatment', 'Cash', 'Pending'),
+('B014', 'C004', 'E004', '2024-09-04 22:00:00', '2024-09-05', 1500000, 'SDM004', 30.00, '321 Birch Ave', 8.7, 50000, 2000000, 'In Progress', 'FB004', 'SCH004', 'Emergency koi surgery', 'Credit Card', 'Pending'),
+('B015', 'C005', 'E005', '2024-09-05 07:00:00', '2024-09-05', 250000, 'SDM005', 5.00, '654 Pine St', 2.1, 4.20, 867000, 'Completed', 'FB005', 'SCH005', 'Follow-up checkup after treatment', 'Debit Card', 'Pending'); 
 -- Insert sample data for AnimalType
 INSERT INTO AnimalType (TypeID, Name) 
 VALUES 
