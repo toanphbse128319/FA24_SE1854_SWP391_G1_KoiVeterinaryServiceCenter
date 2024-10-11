@@ -24,6 +24,10 @@ namespace API.Controllers
         {
             try
             {
+                if ((await _unitOfWork.PoolProfileRepository.FindPoolProfileByIdAsync(poolprofile.PoolProfileID) != null))
+                    return BadRequest("Pool profile is already existed!");
+                if (await _unitOfWork.BookingDetailRepository.FindBookingDetailAsync(poolprofile.BookingDetailID) == null)
+                    return BadRequest("Booking detail ID does not exist!");
                 if (await _unitOfWork.PoolProfileRepository.AddPoolProfileAsync(poolprofile) != null)
                     return Ok($"Added {poolprofile.Name} successfully!");
                 else

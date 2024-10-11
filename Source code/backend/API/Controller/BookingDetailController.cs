@@ -10,10 +10,10 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UpdateBookingDetailController : ControllerBase
+    public class BookingDetailController : ControllerBase
     {
         private UnitOfWork _unitOfWork;
-        public UpdateBookingDetailController(UnitOfWork unitOfWork)
+        public BookingDetailController(UnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
