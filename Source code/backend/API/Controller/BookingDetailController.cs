@@ -10,12 +10,18 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UpdateBookingDetailController : ControllerBase
+    public class BookingDetailController : ControllerBase
     {
         private UnitOfWork _unitOfWork;
-        public UpdateBookingDetailController(UnitOfWork unitOfWork)
+        public BookingDetailController(UnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<BookingDetail>> GetBookingDetailByID(string id)
+        {
+            return await _unitOfWork.BookingDetailRepository.GetByIdAsync(id);
         }
 
         [HttpPut]
@@ -23,11 +29,10 @@ namespace API.Controllers
         {
             try
             {
-                var bookingdetail = await _unitOfWork.BookingDetailRepository.UpdateAsync(info);
-                if (bookingdetail == null)
+                if(await _unitOfWork.BookingDetailRepository.UpdateAsync(info) == 0)
                     return NotFound("BookingDetail does not existed!");
                 else
-                    return Ok(bookingdetail);
+                    return Ok("Changes have been saved");
             }
             catch (Exception ex)
             {

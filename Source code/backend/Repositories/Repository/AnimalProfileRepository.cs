@@ -15,11 +15,6 @@ namespace Repositories.Repository
             _context = context;
         }
 
-        public Task<AnimalProfile?> FindAnimalProfileByIdAsync(string id)
-        {
-            return _context.AnimalProfiles.FirstOrDefaultAsync(animalprofile => animalprofile.AnimalProfileID == id)!;
-        }
-
         public async Task<AnimalProfile?> AddAnimalProfileAsync(AnimalProfile animalprofile)
         {
             if (animalprofile.AnimalProfileID == "")
