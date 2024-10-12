@@ -1,10 +1,9 @@
 import React from 'react';
-import { Button } from '@mui/material'; // Kiểm tra import
-
+import { Button } from '@mui/material'; 
 const Header = () => {
   const handleClick = (section) => {
     console.log(`Navigating to ${section}`);
-    // Thêm logic điều hướng tại đây
+   
   };
 
   return (

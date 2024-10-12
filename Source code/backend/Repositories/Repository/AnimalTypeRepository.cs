@@ -15,11 +15,6 @@ namespace Repositories.Repository
             _context = context;
         }
 
-        public Task<AnimalType?> FindAnimalTypeByIdAsync(string id)
-        {
-            return _context.AnimalTypes.FirstOrDefaultAsync(animaltype => animaltype.TypeID == id)!;
-        }
-
         public Task<AnimalType?> FindAnimalTypeByNameAsync(string name)
         {
             return _context.AnimalTypes.FirstOrDefaultAsync(at => at.Name.Equals(name))!;

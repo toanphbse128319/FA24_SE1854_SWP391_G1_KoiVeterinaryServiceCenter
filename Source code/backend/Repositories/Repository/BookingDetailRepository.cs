@@ -15,16 +15,12 @@ namespace Repositories.Repository
             _context = context; 
         }
 
-        public Task<BookingDetail> FindBookingDetailAsync(string id)
+        public async Task<int> UpdateAsync(BookingDetail info)
         {
-            return _context.BookingDetails.FirstOrDefaultAsync(bookingdetail => bookingdetail.BookingDetailID == id);
-        }
-        public async Task<BookingDetail> UpdateAsync(BookingDetail info)
-        {
-            BookingDetail bookingdetail = await FindBookingDetailAsync(info.BookingDetailID);
+            BookingDetail bookingdetail = await base.GetByIdAsync(info.BookingDetailID);
             if (bookingdetail == null)
             {
-                return bookingdetail;
+                return 0;
             }
             else
             {
@@ -36,8 +32,8 @@ namespace Repositories.Repository
                 bookingdetail.AnimalStatusDescription = info.AnimalStatusDescription;
                 bookingdetail.ConsultTechnician = info.ConsultTechnician;
                 bookingdetail.NoteExamination = info.NoteExamination;
-                await _context.SaveChangesAsync();
-                return bookingdetail;
+                bookingdetail.Incidental = info.Incidental;
+                return await base.UpdateAsync(bookingdetail);
             }
         }
     }
