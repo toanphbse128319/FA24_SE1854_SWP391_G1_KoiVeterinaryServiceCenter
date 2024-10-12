@@ -1,11 +1,7 @@
 ﻿#nullable disable
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
 using Repositories.Model;
-using Microsoft.EntityFrameworkCore;
-using Repositories.Repository;
 using Repositories;
-using Microsoft.IdentityModel.Tokens;
 using Helper;
 
 namespace API.Controllers
@@ -27,7 +23,7 @@ namespace API.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<Booking?>> UpdateStatusAsync(UpdateStatusInformation info)
+        public async Task<ActionResult<Booking>> UpdateStatusAsync(UpdateStatusInformation info)
         {
             try
             {
@@ -42,22 +38,22 @@ namespace API.Controllers
             }
         }
 
-            [HttpGet]
-            public async Task<ActionResult<IEnumerable<Booking?>>> GetVetBookings(string id)
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Booking>>> GetVetBookings(string id)
+        {
+            try
             {
-                try
-                {
-                    if (await _unitOfWork.EmployeeRepository.FindEmpByIdAsync(id) == null)
-                        return BadRequest("EmployeeID is not existed!");
-                    List<Booking> list = await _unitOfWork.BookingRepository.GetVetBookingsAsync(id);
-                    if (list.Count == 0)
-                        return NotFound("Vet schedule is empty!");
-                    return list;
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest("Unknown Error: " + ex.Message);
-                }
+                if (await _unitOfWork.EmployeeRepository.GetByIdAsync(id) == null)
+                    return BadRequest("EmployeeID is not existed!");
+                List<Booking> list = await _unitOfWork.BookingRepository.GetVetBookingsAsync(id);
+                if (list.Count == 0)
+                    return NotFound("Vet schedule is empty!");
+                return list;
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Unknown Error: " + ex.Message);
             }
         }
     }
+}

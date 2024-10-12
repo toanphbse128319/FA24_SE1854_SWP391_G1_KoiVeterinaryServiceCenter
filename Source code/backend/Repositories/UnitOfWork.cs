@@ -18,6 +18,7 @@ public class UnitOfWork
     private PoolProfileRepository _poolProfileRepository;
     private BookingDetailRepository _bookingDetailRepository;
     private EmployeeRepository _employeeRepository;
+    private CustomerRepository _customerRepository;
     private ScheduleRepository _scheduleRepository;
     private FeedbackRepository _feedbackRepository;
     
@@ -86,6 +87,11 @@ public class UnitOfWork
             return _employeeRepository ??= new EmployeeRepository(_context);
         }
     }
+    
+    public CustomerRepository CustomerRepository{
+        get { return _customerRepository ??= new CustomerRepository(_context); }
+    }
+
     public ScheduleRepository ScheduleRepository
     {
         get
