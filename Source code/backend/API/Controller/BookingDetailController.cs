@@ -18,16 +18,21 @@ namespace API.Controllers
             _unitOfWork = unitOfWork;
         }
 
+        [HttpGet]
+        public async Task<ActionResult<BookingDetail>> GetBookingDetailByID(string id)
+        {
+            return await _unitOfWork.BookingDetailRepository.GetByIdAsync(id);
+        }
+
         [HttpPut]
         public async Task<ActionResult<BookingDetail?>> UpdateBookingDetail(BookingDetail info)
         {
             try
             {
-                var bookingdetail = await _unitOfWork.BookingDetailRepository.UpdateAsync(info);
-                if (bookingdetail == null)
+                if(await _unitOfWork.BookingDetailRepository.UpdateAsync(info) == 0)
                     return NotFound("BookingDetail does not existed!");
                 else
-                    return Ok(bookingdetail);
+                    return Ok("Changes have been saved");
             }
             catch (Exception ex)
             {

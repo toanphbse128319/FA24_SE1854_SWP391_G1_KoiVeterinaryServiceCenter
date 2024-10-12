@@ -19,17 +19,23 @@ namespace API.Controllers
             _unitOfWork = unitOfWork;
         }
 
+        [HttpGet]
+        public async Task<ActionResult<AnimalProfile>> GetAnimalProfileByID(string id)
+        {
+            return await _unitOfWork.AnimalProfileRepository.GetByIdAsync(id);
+        }
+
         [HttpPost]
         public async Task<ActionResult<AnimalProfile?>> AddAnimalProfile(AnimalProfile animalprofile)
         {
             try
-            {   
-                if((await _unitOfWork.AnimalProfileRepository.FindAnimalProfileByIdAsync(animalprofile.AnimalProfileID) != null))
+            {
+                if (await _unitOfWork.AnimalProfileRepository.GetByIdAsync(animalprofile.TypeID) == null)
                     return BadRequest("Animal profile is already existed!");
-                var animalType = await _unitOfWork.AnimalTypeRepository.FindAnimalTypeByIdAsync(animalprofile.TypeID);
+                AnimalType animalType = await _unitOfWork.AnimalTypeRepository.GetByIdAsync(animalprofile.TypeID);
                 if (animalType == null)
                     return BadRequest("Animal type does not exist!");
-                if(await _unitOfWork.BookingDetailRepository.FindBookingDetailAsync(animalprofile.BookingDetailID) == null)
+                if(await _unitOfWork.BookingDetailRepository.GetByIdAsync(animalprofile.BookingDetailID) == null)
                     return BadRequest("Booking detail ID does not exist!");
                 if (await _unitOfWork.AnimalProfileRepository.AddAnimalProfileAsync(animalprofile) != null)
                     return Ok($"Added {animalprofile.Name} successfully!");
