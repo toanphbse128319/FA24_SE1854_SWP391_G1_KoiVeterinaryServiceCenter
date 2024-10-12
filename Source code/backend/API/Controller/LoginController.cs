@@ -41,9 +41,30 @@ public class LoginController : ControllerBase
             var issuer = Configuration.GetConfiguration()["Jwt:Issuer"];
             var audience = Configuration.GetConfiguration()["Jwt:Audience"];
             var key = Encoding.ASCII.GetBytes(Configuration.GetConfiguration()["Jwt:Key"] ?? string.Empty);
+            var currentRole = _unitOfWork.RoleRepository.getRoleName(account.RoleID);
+            
+            string firstname = null;
+            string lastname = null;
+            Customer customer = await _unitOfWork.CustomerRepository.GetByIdAsync(account.AccountID);
+            Employee employee = null;
+            if( customer == null ){
+                employee = await _unitOfWork.EmployeeRepository.GetByIdAsync(account.AccountID);
+                if( employee == null ){
+                    return StatusCode(StatusCodes.Status404NotFound, "Cannot find profile associate with the account");
+                }
+                firstname = employee.FirstName;
+                lastname = employee.Lastname;
+            } else {
+                firstname = customer.FirstName;
+                lastname = customer.Lastname;
+            }
+
             var claims = new List<Claim>{
                 new Claim("Id", Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, account.Email),
+                new Claim(ClaimTypes.Role, currentRole),
+                new Claim("Firstname", firstname),
+                new Claim("Lastname", lastname)
                 //new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())  
                 /*
                  * The identifier value MUST be assigned in a manner that ensures that
@@ -56,7 +77,6 @@ public class LoginController : ControllerBase
                  */
             }; 
 
-            claims.Add(new Claim(ClaimTypes.Role, _unitOfWork.RoleRepository.getRoleName(account.RoleID)));
             var tokenDescriptor = new SecurityTokenDescriptor{
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddHours(4),
