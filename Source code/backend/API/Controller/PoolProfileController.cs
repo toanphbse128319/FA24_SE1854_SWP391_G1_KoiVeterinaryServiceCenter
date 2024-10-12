@@ -18,7 +18,7 @@ namespace API.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<ActionResult<PoolProfile>> GetPoolProfileByID(string id)
         {
             return await _unitOfWork.PoolProfileRepository.GetByIdAsync(id);

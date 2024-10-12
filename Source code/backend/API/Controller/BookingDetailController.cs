@@ -18,7 +18,7 @@ namespace API.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<ActionResult<BookingDetail>> GetBookingDetailByID(string id)
         {
             return await _unitOfWork.BookingDetailRepository.GetByIdAsync(id);

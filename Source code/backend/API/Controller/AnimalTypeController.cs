@@ -19,7 +19,7 @@ namespace API.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<ActionResult<AnimalType>> GetAnimalTypeByID(string id)
         {
             return await _unitOfWork.AnimalTypeRepository.GetByIdAsync(id);

@@ -19,7 +19,7 @@ namespace API.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<ActionResult<AnimalProfile>> GetAnimalProfileByID(string id)
         {
             return await _unitOfWork.AnimalProfileRepository.GetByIdAsync(id);
@@ -30,7 +30,7 @@ namespace API.Controllers
         {
             try
             {
-                if (await _unitOfWork.AnimalProfileRepository.GetByIdAsync(animalprofile.TypeID) == null)
+                if ((await _unitOfWork.AnimalProfileRepository.GetByIdAsync(animalprofile.AnimalProfileID) != null))
                     return BadRequest("Animal profile is already existed!");
                 AnimalType animalType = await _unitOfWork.AnimalTypeRepository.GetByIdAsync(animalprofile.TypeID);
                 if (animalType == null)
