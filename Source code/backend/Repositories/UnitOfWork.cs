@@ -18,9 +18,11 @@ public class UnitOfWork
     private PoolProfileRepository _poolProfileRepository;
     private BookingDetailRepository _bookingDetailRepository;
     private EmployeeRepository _employeeRepository;
-    private FeedbackRepository _feedbackRepository;
+
     private ScheduleRepository _scheduleRepository;
 
+    private FeedbackRepository _feedbackRepository;
+    
     public UnitOfWork()
     {
         _context ??= new Context();
@@ -86,18 +88,15 @@ public class UnitOfWork
             return _employeeRepository ??= new EmployeeRepository(_context);
         }
     }
-
-
-    public FeedbackRepository FeedbackRepository
-    {
-		get 
-		{ return _feedbackRepository ??= new FeedbackRepository(_context); }
-	}
-
     public ScheduleRepository ScheduleRepository
     {
         get
         { return _scheduleRepository ??= new ScheduleRepository(_context); }
+    }
+}
 
+    public FeedbackRepository FeedbackRepository
+    {
+        get { return _feedbackRepository ??= new FeedbackRepository(_context); }
     }
 }
