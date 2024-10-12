@@ -37,7 +37,7 @@ public class FeedbackController : ControllerBase
             return  Ok("them feedback thanh cong");
         }
         catch(Exception ex)
-        {   Console.WriteLine(ex.ToString());
+        {   
             return StatusCode (StatusCodes.Status500InternalServerError,ex.Message);
         }
 
