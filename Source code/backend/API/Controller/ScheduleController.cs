@@ -1,3 +1,4 @@
+#nullable disable
 using Helper;
 using Microsoft.AspNetCore.Mvc;
 using Repositories;
@@ -17,6 +18,22 @@ public class ScheduleController : ControllerBase
     }
 
     [HttpPost]
+    public async Task<ActionResult<Schedule>> AddScheduleAsync(Schedule info)
+    {
+        try
+        {
+            if (info.Date == null || info.FirstName == null || info.LastName == null || info.SlotStatus == null)
+                return BadRequest("Missing parameter(s)!");
+            if (await _unitOfWork.ScheduleRepository.FindScheduleByDateAsync(info.Date) != null)
+                return BadRequest("Date is already existed!");
+            var schedule = await _unitOfWork.ScheduleRepository.GenerateVetScheduleAsync(info);
+            return Ok("Added successfully!");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest("Unknown Error: " + ex.Message);
+        }
+    }
 
     [HttpPut]
     public async Task<ActionResult<Schedule>> UpdateSlotStatusAsync(Schedule info)
@@ -25,10 +42,26 @@ public class ScheduleController : ControllerBase
         {
             var schedule = await _unitOfWork.ScheduleRepository.UpdateSlotStatusAsync(info.Date, info.SlotStatus);
             if (schedule == null)
-                return NotFound("Booking is not found!");
-            if (info.SlotStatus == "true")
-                return Ok("The Slot is available!");
-            return Ok("The Slot is not available!");
+                return NotFound("Date is not found!");
+            if (info.SlotStatus == "1")
+                return Ok("The Slot Status changed to available!");
+            return Ok("The Slot Status changed to not available!");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest("Unknown Error: " + ex.Message);
+        }
+    }
+
+    [HttpPut]
+    public async Task<ActionResult<Schedule>> UpdateVetScheduleAsync(UpdateSchedule info)
+    {
+        try
+        {
+            var schedule = await _unitOfWork.ScheduleRepository.UpdateVetScheduleAsync(info.Date, info.FirstName, info.LastName);
+            if (schedule == null)
+                return NotFound("Date is not found!");
+            return Ok(info.FirstName + " " + info.LastName + " is updated successfully!");
         }
         catch (Exception ex)
         {
@@ -37,26 +70,33 @@ public class ScheduleController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Schedule?>> GetScheduleByDate(string date)
+    public async Task<ActionResult<List<Schedule>>> GetScheduleByDate(string date)
     {
         return await _unitOfWork.ScheduleRepository.FindScheduleByDateAsync(date);
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Booking>>> GetVetBookings(String id)
+    public async Task<ActionResult<List<Schedule>>> GetScheduleByName(string firstname, string lastname)
     {
-        try
-        {
-            if (await _unitOfWork.EmployeeRepository.FindEmpByIdAsync(id) == null)
-                return BadRequest("EmployeeID is not existed!");
-            List<Booking> list = await _unitOfWork.BookingRepository.GetVetBookingsAsync(id);
-            if (list.Count == 0)
-                return NotFound("Vet schedule is empty!");
-            return list;
-        }
-        catch (Exception ex)
-        {
-            return BadRequest("Unknown Error: " + ex.Message);
-        }
+        return await _unitOfWork.ScheduleRepository.FindScheduleByNameAsync(firstname, lastname);
     }
+
+
+    //[HttpGet]
+    //public async Task<ActionResult<IEnumerable<Booking>>> GetVetBookings(String id)
+    //{
+    //    try
+    //    {
+    //        if (await _unitOfWork.EmployeeRepository.FindEmpByIdAsync(id) == null)
+    //            return BadRequest("EmployeeID is not existed!");
+    //        List<Booking> list = await _unitOfWork.BookingRepository.GetVetBookingsAsync(id);
+    //        if (list.Count == 0)
+    //            return NotFound("Vet schedule is empty!");
+    //        return list;
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        return BadRequest("Unknown Error: " + ex.Message);
+    //    }
+    //}
 }
