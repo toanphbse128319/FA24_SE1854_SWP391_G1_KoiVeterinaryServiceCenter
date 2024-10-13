@@ -65,21 +65,41 @@ public class AccountRepository : GenericRepository<Account>
         return result;
     }
 
-    public async Task<string?> CustomerSignUpAsync(Account account){
+    public async Task<string?> CustomerSignUpAsync(Account info){
+        //Check if the paramter is null
+        if( info.Email == null )
+            return "Missing parameter: Email";
+        if( info.PhoneNumber == null ) 
+            return "Missing parameter: PhoneNumber";
+        if( info.Password == null )
+            return "Missing parameter: Password";
+        //Check if parameter is empty
+        if( info.Email == String.Empty )
+            return "Email must not be empy";
+        if( info.PhoneNumber == String.Empty ) 
+            return "PhoneNumber must not be empy";
+        if( info.Password == String.Empty )
+            return "Password must not be empy";
+        if( FindEmail(info.Email) != null )
+            return "That email is already usd!";
+        if( FindPhoneNumber(info.PhoneNumber) != null )
+            return "That phone number is alreay used!";
+
+
         int index = (await base.GetAllAsync()).Count;
-        account.AccountID = "A" + index;
-        account.RoleID = "R002";
-        account.IsActive = false;
+        info.AccountID = "A" + index;
+        info.RoleID = "R002";
+        info.IsActive = false;
         Random rnd = new Random();
         int luckyNumber = rnd.Next(100000, 999999);
         Console.WriteLine("Created OTP: " + luckyNumber);
 
-        account.Status = (Constants.Account.WaitingForOTPMessage + luckyNumber + " " + DateTime.Now.ToString()) ;
+        info.Status = (Constants.Account.WaitingForOTPMessage + luckyNumber + " " + DateTime.Now.ToString()) ;
 
-        await base.CreateAsync(account);
+        await base.CreateAsync(info);
 
         try{
-            Mail mail = new Mail(account.Email);
+            Mail mail = new Mail(info.Email);
             string subject = "Signup confirmation";
             string message = PrepareMail(luckyNumber.ToString());
             mail.SetMessage(subject, message);
