@@ -44,8 +44,9 @@ GO
 CREATE TABLE Employee(
     EmployeeID nvarchar(20) PRIMARY KEY,
 	AccountID nvarchar(30) FOREIGN KEY REFERENCES Account(AccountID),
-    Firstname nvarchar(20) NOT NULL,
-    Lastname nvarchar(20),
+    RoleID nvarchar(20) FOREIGN KEY REFERENCES Role(RoleID) NOT NULL,
+	Firstname nvarchar(20) NOT NULL,
+    Lastname nvarchar(20) NOT NULL,
     Sex bit,
     Birthday date,
     Address nvarchar(100) NOT NULL,
@@ -82,6 +83,8 @@ GO
 CREATE TABLE Schedule(
     ScheduleID nvarchar(20) PRIMARY KEY,
     EmployeeID nvarchar(20) FOREIGN KEY REFERENCES Employee(EmployeeID) NOT NULL,
+	Firstname nvarchar(20) NOT NULL,
+    Lastname nvarchar(20) NOT NULL,
     Date date NOT NULL,
     Note nvarchar(MAX),
     Slot int,
@@ -192,10 +195,10 @@ USE [FA24_SE1854_SWP391_G1_KoiVeterinaryServiceCenter]
 INSERT INTO Role (RoleID, Rolename) 
 VALUES 
 ('R001', 'Manager'),
-('R002', 'Customer'),
+('R002', 'Staff'),
 ('R003', 'Veterinarian'),
-('R004', 'Guest'),
-('R005', 'Staff');
+('R004', 'Customer'),
+('R005', 'Guest');
 GO
 
 -- Insert sample data for Customer
@@ -207,7 +210,7 @@ VALUES
 ('A004', '0121111111', 'manager2@gmail.com', 'R002', 'avatar4.jpg', 'manager', 'Normal', 1),
 ('A005', '0123212313', 'Test@gmail.com', 'R002', 'avatar5.jpg', 'test', 'Normal', 1),
 
-('A006', '0000000000', 'vet1@gmail.com', 'R002', 'avatar1.jpg', 'caniskip', 'Normal', 1),
+('A006', '0000000000', 'longtnhse173174@fpt.edu.vn', 'R001', 'avatar1.jpg', 'tangdeptrai', 'Normal', 1),
 ('A007', '0835377623', 'vet2@gmail.com', 'R005', 'avatar2.jpg', 'admin', 'Normal', 1),
 ('A008', '1122334455', 'Manager@gmail.com', 'R003', 'avatar3.jpg', 'vet', 'Normal', 1),
 ('A009', '1234554321', 'reception1@gmai.com', 'R001', 'avatar4.jpg', 'manager', 'Normal', 1),
@@ -223,13 +226,13 @@ VALUES
 ('C005', 'Carol', 'White', 0, '1979-08-14', '654 Pine St', 'A005', 1);
 GO
 -- Insert sample data for Employee
-INSERT INTO Employee (EmployeeID, AccountID, Firstname, Lastname, Sex, Birthday, Address, Status) 
+INSERT INTO Employee (EmployeeID, AccountID, RoleID, Firstname, Lastname, Sex, Birthday, Address, Status) 
 VALUES 
-('E001', 'A006', 'Sam', 'Wilson', 1, '1980-01-15', '789 Cedar St', 1),
-('E002', 'A007', 'Lily', 'Anderson', 0, '1988-04-25', '111 Maple St', 1),
-('E003', 'A008', 'Tom', 'Clark', 1, '1991-02-19', '222 Oak Dr', 1),
-('E004', 'A009', 'Nancy', 'Lee', 0, '1985-12-12', '333 Pine Ln', 1),
-('E005', 'A010', 'Michael', 'Scott', 1, '1975-09-08', '444 Birch Rd', 1);
+('E001', 'A006', 'R001', 'Duong', 'Tang', 1, '2003-01-02', 'VinHome Q9', 1),
+('E002', 'A007', 'R002', 'Lily', 'Anderson', 0, '1988-04-25', '111 Maple St', 1),
+('E003', 'A008', 'R003', 'Tom', 'Clark', 1, '1991-02-19', '222 Oak Dr', 1),
+('E004', 'A009', 'R002', 'Nancy', 'Lee', 0, '1985-12-12', '333 Pine Ln', 1),
+('E005', 'A010', 'R003', 'Michael', 'Scott', 1, '1975-09-08', '444 Birch Rd', 1);
 
 -- Insert sample data for ServiceDeliveryMethod
 INSERT INTO ServiceDeliveryMethod (ServiceDeliveryMethodID, Name, Status) 
@@ -259,18 +262,18 @@ VALUES
 ('FB005', 5, 5, 'Koi surgery saved my fish!', 'Active');
 
 -- Insert sample data for Schedule
-INSERT INTO Schedule (ScheduleID, EmployeeID, Date, Note, Slot, SlotCapacity, SlotStatus) 
+INSERT INTO Schedule (ScheduleID, EmployeeID, Firstname, Lastname, Date, Note, Slot, SlotCapacity, SlotStatus) 
 VALUES 
-('SCH001', 'E001', '2024/09/01', 'Regular checkup', 1, 5, 1),
-('SCH002', 'E001', '2024/09/01', 'Consultation', 2, 4, 1),
-('SCH003', 'E001', '2024/09/01', 'Follow-up', 3, 3, 1),
-('SCH004', 'E001', '2024/09/01', 'Emergency', 4, 4, 1),
-('SCH005', 'E002', '2024/09/01', 'Routine check', 5, 1, 1),
-('SCH006', 'E002', '2024/09/01', 'Regular checkup', 6, 5, 0),
-('SCH007', 'E002', '2024/09/01', 'Consultation', 7, 4, 0),
-('SCH008', 'E002', '2024/09/01', 'Follow-up', 8, 3, 0),
-('SCH009', 'E003', '2024/09/02', 'Emergency', 1, 4, 1),
-('SCH010', 'E003', '2024/09/02', 'Routine check', 2, 1, 0);
+('SCH001', 'E003', 'Tom', 'Clark', '2024/09/01', 'Regular checkup', 1, 5, 1),
+('SCH002', 'E003', 'Tom', 'Clark', '2024/09/01', 'Consultation', 2, 4, 1),
+('SCH003', 'E003', 'Tom', 'Clark', '2024/09/01', 'Follow-up', 3, 3, 1),
+('SCH004', 'E003', 'Tom', 'Clark', '2024/09/01', 'Emergency', 4, 4, 1),
+('SCH005', 'E003', 'Tom', 'Clark', '2024/09/01', 'Routine check', 5, 1, 1),
+('SCH006', 'E003', 'Tom', 'Clark', '2024/09/01', 'Regular checkup', 6, 5, 0),
+('SCH007', 'E003', 'Tom', 'Clark', '2024/09/01', 'Consultation', 7, 4, 0),
+('SCH008', 'E003', 'Tom', 'Clark', '2024/09/01', 'Follow-up', 8, 3, 0),
+('SCH009', 'E005', 'Michael', 'Scott', '2024/09/02', 'Emergency', 1, 4, 1),
+('SCH010', 'E005', 'Michael', 'Scott', '2024/09/02', 'Routine check', 2, 1, 0);
 --NumberOfFish int not null,
    -- IncidentalFish 
 -- Insert sample data for Booking

@@ -8,6 +8,7 @@ public class Employee
 
     public string EmployeeID { get; set; }
     public string AccountID { get; set; }
+    public string RoleID { get; set; }
     public string FirstName { get; set; }
     public string Lastname { get; set; }
     public bool Sex { get; set; }
