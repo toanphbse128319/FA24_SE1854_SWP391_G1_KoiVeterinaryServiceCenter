@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿#nullable disable
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Repositories.Model;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,12 @@ namespace API.Controllers
         public AnimalTypeController(UnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<AnimalType>> GetAnimalTypeByID(string id)
+        {
+            return await _unitOfWork.AnimalTypeRepository.GetByIdAsync(id);
         }
 
         [HttpPost]

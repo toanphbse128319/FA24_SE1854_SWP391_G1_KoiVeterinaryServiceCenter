@@ -15,11 +15,6 @@ namespace Repositories.Repository
             _context = context;
         }
 
-        public Task<PoolProfile?> FindPoolProfileByIdAsync(string id)
-        {
-            return _context.PoolProfiles.FirstOrDefaultAsync(poolprofile => poolprofile.PoolProfileID == id)!;
-        }
-
         public async Task<PoolProfile?> AddPoolProfileAsync(PoolProfile poolprofile)
         {
             if (poolprofile.PoolProfileID == "")

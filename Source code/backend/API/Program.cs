@@ -66,6 +66,15 @@ builder.Services.AddAuthorizationBuilder().AddPolicy("manager_policy", policy =>
 builder.Services.AddAuthorizationBuilder().AddPolicy("customer_policy", policy => policy.RequireRole("Customer", "Vet", "Staff", "Manager"));
 builder.Services.AddAuthorizationBuilder().AddPolicy("vet_policy", policy => policy.RequireRole("Vet", "Staff", "Manager"));
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -76,7 +85,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCors("AllowAllOrigins");
 app.UseAuthentication();
 app.UseAuthorization();
 
