@@ -86,7 +86,7 @@ CREATE TABLE Schedule(
     Note nvarchar(MAX),
     Slot int,
     SlotCapacity int,
-    SlotStatus nvarchar(200) NOT NULL
+    SlotStatus bit NOT NULL
 )
 GO
 
@@ -261,11 +261,16 @@ VALUES
 -- Insert sample data for Schedule
 INSERT INTO Schedule (ScheduleID, EmployeeID, Date, Note, Slot, SlotCapacity, SlotStatus) 
 VALUES 
-('SCH001', 'E001', '2024/09/01', 'Regular checkup', 1, 5, 'Morning slot'),
-('SCH002', 'E002', '2024/09/02', 'Consultation', 2, 4, 'Afternoon slot'),
-('SCH003', 'E003', '2024/09/03', 'Follow-up', 3, 3, 'Evening slot'),
-('SCH004', 'E004', '2024/09/04', 'Emergency', 4, 4, 'Night slot'),
-('SCH005', 'E005', '2024/09/05', 'Routine check', 5, 1, 'Early Morning slot');
+('SCH001', 'E001', '2024/09/01', 'Regular checkup', 1, 5, 1),
+('SCH002', 'E001', '2024/09/01', 'Consultation', 2, 4, 1),
+('SCH003', 'E001', '2024/09/01', 'Follow-up', 3, 3, 1),
+('SCH004', 'E001', '2024/09/01', 'Emergency', 4, 4, 1),
+('SCH005', 'E002', '2024/09/01', 'Routine check', 5, 1, 1),
+('SCH006', 'E002', '2024/09/01', 'Regular checkup', 6, 5, 0),
+('SCH007', 'E002', '2024/09/01', 'Consultation', 7, 4, 0),
+('SCH008', 'E002', '2024/09/01', 'Follow-up', 8, 3, 0),
+('SCH009', 'E003', '2024/09/02', 'Emergency', 1, 4, 1),
+('SCH010', 'E003', '2024/09/02', 'Routine check', 2, 1, 0);
 --NumberOfFish int not null,
    -- IncidentalFish 
 -- Insert sample data for Booking
