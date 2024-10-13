@@ -29,6 +29,10 @@ public class Mail{
         SmtpClient.Send(Email);
     }
 
+    public void SetHTMLMail(){
+        Email.IsBodyHtml = true;
+    }
+
     public void SetMessage(string subject, string message){
         Email.Subject = subject;
         Email.Body = message;
