@@ -21,7 +21,7 @@ public class UnitOfWork
     private CustomerRepository _customerRepository;
     private ScheduleRepository _scheduleRepository;
     private FeedbackRepository _feedbackRepository;
-    
+
     public UnitOfWork()
     {
         _context ??= new Context();
@@ -87,8 +87,9 @@ public class UnitOfWork
             return _employeeRepository ??= new EmployeeRepository(_context);
         }
     }
-    
-    public CustomerRepository CustomerRepository{
+
+    public CustomerRepository CustomerRepository
+    {
         get { return _customerRepository ??= new CustomerRepository(_context); }
     }
 
@@ -97,6 +98,7 @@ public class UnitOfWork
         get
         { return _scheduleRepository ??= new ScheduleRepository(_context); }
     }
+
 
     public FeedbackRepository FeedbackRepository
     {
