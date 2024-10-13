@@ -40,10 +40,8 @@ public class Context : DbContext {
     public virtual DbSet<AnimalProfile> AnimalProfiles { get; set; } 
     public virtual DbSet<PoolProfile> PoolProfiles { get; set; } 
     public virtual DbSet<BookingDetail> BookingDetails { get; set; }
-<<<<<<< HEAD
     public virtual DbSet<Schedule> Schedules { get; set; }  
-=======
     public virtual DbSet<Feedback> Feedbacks { get; set; }
->>>>>>> 36fb437061359bd73f17c11d3896d4f673b9b915
+
 
 }
