@@ -8,6 +8,6 @@ public class UpdateSchedule
     public string LastName { get; set; }
     public string Date { get; set; }
     public string Note { get; set; }
-    public string SlotStatus { get; set; }
+    public bool SlotStatus { get; set; }
 }
 

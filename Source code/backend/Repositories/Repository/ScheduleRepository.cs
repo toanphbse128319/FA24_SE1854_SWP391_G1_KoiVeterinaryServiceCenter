@@ -24,9 +24,9 @@ public class ScheduleRepository : GenericRepository<Schedule>
     public Task<List<Schedule>> FindScheduleByDateAsync(string date)
     { 
         return _context.Schedules.Where(schedule => schedule.Date == date &&
-                                                    schedule.SlotStatus == "true").ToListAsync();
+                                                    schedule.SlotStatus == true).ToListAsync();
     }
-    public async Task<Schedule?> UpdateSlotStatusAsync(string id, string msg)
+    public async Task<Schedule?> UpdateSlotStatusAsync(string id, bool msg)
     {
         Schedule schedule = await FindScheduleByIDAsync(id);
         if (schedule == null) 
@@ -74,7 +74,7 @@ public class ScheduleRepository : GenericRepository<Schedule>
                 schedule.EmployeeID = info.EmployeeID;
                 schedule.Date = info.Date;  
                 schedule.Note = info.Note;
-                schedule.Slot = "" + (i + 1);
+                schedule.Slot = (i + 1);
                 schedule.SlotStatus = info.SlotStatus;
 
                 await base.CreateAsync(schedule);

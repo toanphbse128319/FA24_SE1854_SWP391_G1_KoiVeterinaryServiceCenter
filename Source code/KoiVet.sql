@@ -85,7 +85,7 @@ CREATE TABLE Schedule(
     EmployeeID nvarchar(20) FOREIGN KEY REFERENCES Employee(EmployeeID) NOT NULL,
 	Firstname nvarchar(20) NOT NULL,
     Lastname nvarchar(20) NOT NULL,
-    Date date NOT NULL,
+    Date nvarchar(20) NOT NULL,
     Note nvarchar(MAX),
     Slot int,
     SlotCapacity int,
