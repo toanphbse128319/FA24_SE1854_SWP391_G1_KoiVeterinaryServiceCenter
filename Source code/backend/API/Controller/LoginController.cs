@@ -38,11 +38,6 @@ public class LoginController : ControllerBase
             if( account == null )
                 return StatusCode(StatusCodes.Status401Unauthorized, "Invalid username or password!");
 
-            var issuer = Configuration.GetConfiguration()["Jwt:Issuer"];
-            var audience = Configuration.GetConfiguration()["Jwt:Audience"];
-            var key = Encoding.ASCII.GetBytes(Configuration.GetConfiguration()["Jwt:Key"] ?? string.Empty);
-            var currentRole = _unitOfWork.RoleRepository.getRoleName(account.RoleID);
-            
             string firstname = null;
             string lastname = null;
             Customer customer = await _unitOfWork.CustomerRepository.GetByIdAsync(account.AccountID);
@@ -59,6 +54,12 @@ public class LoginController : ControllerBase
                 lastname = customer.Lastname;
             }
 
+
+            var issuer = Configuration.GetConfiguration()["Jwt:Issuer"];
+            var audience = Configuration.GetConfiguration()["Jwt:Audience"];
+            var key = Encoding.ASCII.GetBytes(Configuration.GetConfiguration()["Jwt:Key"] ?? string.Empty);
+            var currentRole = _unitOfWork.RoleRepository.getRoleName(account.RoleID);
+            
             var claims = new List<Claim>{
                 new Claim("Id", Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, account.Email),
