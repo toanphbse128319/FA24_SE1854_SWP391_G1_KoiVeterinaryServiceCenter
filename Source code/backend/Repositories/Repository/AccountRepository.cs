@@ -17,15 +17,15 @@ public class AccountRepository : GenericRepository<Account>
         return _context.Accounts.FirstOrDefault(account => account.Email == email)!;
     }
 
+    public Task<Account?> FindEmailAsync(string email){
+        return _context.Accounts.FirstOrDefaultAsync(account => account.Email == email)!;
+    }
+
     public Account FindPhoneNumber(string phone){
         return _context.Accounts.FirstOrDefault(account => account.PhoneNumber == phone)!;
     }
 
-    public Task<Account?> FindEmailAsync(String email){
-        return _context.Accounts.FirstOrDefaultAsync(account => account.Email == email)!;
-    }
-
-    public Task<Account?> FindPhoneNumberAsync(String PhoneNumber){
+    public Task<Account?> FindPhoneNumberAsync(string PhoneNumber){
         return _context.Accounts.FirstOrDefaultAsync(account => account.PhoneNumber == PhoneNumber)!;
     }
 
@@ -58,31 +58,39 @@ public class AccountRepository : GenericRepository<Account>
         );
     }
 
-    public async Task<Account?> SignUpAsync(Account account){
-        if( account.AccountID == "" ){
-            int index = (await base.GetAllAsync()).Count;
-            account.AccountID = "A" + index;
-        }
-        if( account.RoleID == "")
-            account.RoleID = "R002";
-        if( account.Status == "" )
-            account.Status = "Normal";
-        if( account.IsActive == false )
-            account.IsActive = true;
-        
+    public string PrepareMail(string pass){
+        FileManager file = new FileManager(Constants.Mail.signUpEmailLocation);
+        string result = file.ReadFile();
+        result = result.Replace("000000", pass);
+        return result;
+    }
+
+    public async Task<string?> CustomerSignUpAsync(Account account){
+        int index = (await base.GetAllAsync()).Count;
+        account.AccountID = "A" + index;
+        account.RoleID = "R002";
+        account.IsActive = false;
+        Random rnd = new Random();
+        int luckyNumber = rnd.Next(100000, 999999);
+        Console.WriteLine("Created OTP: " + luckyNumber);
+
+        account.Status = (Constants.Account.WaitingForOTPMessage + luckyNumber + " " + DateTime.Now.ToString()) ;
+
         await base.CreateAsync(account);
 
         try{
             Mail mail = new Mail(account.Email);
-            string subject = "Signup successfully!";
-            string message = $"Thanks for signing up at our website with your email {account.Email}";
+            string subject = "Signup confirmation";
+            string message = PrepareMail(luckyNumber.ToString());
             mail.SetMessage(subject, message);
+            mail.SetHTMLMail();
             mail.Send();
         } catch (Exception ex){
-            account.Status = "Unable to send mail";
             Console.WriteLine(ex);
+            return "Unable to send mail";
         }    
 
-        return await base.GetByIdAsync(account.AccountID);
+        return "Created successfully";
     }
+
 }
