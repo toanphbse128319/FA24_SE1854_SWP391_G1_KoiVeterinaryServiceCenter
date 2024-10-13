@@ -43,13 +43,21 @@ public class ScheduleRepository : GenericRepository<Schedule>
     public async Task<Schedule?> UpdateVetScheduleAsync(string name, string date)
     {
         Schedule schedule = await FindScheduleByDateAsync(date);
+        if (schedule == null)
+            return schedule;
+        else
+        {
+            schedule.EmployeeID = name;
+            await _context.SaveChangesAsync();
+            return schedule;
+        }
     }
 
     public async Task<Schedule?> GenerateVetScheduleAsync(Schedule info)
     {
         int index = base.GetAll().Count;
         if (info.ScheduleID == "")
-            info.ScheduleID = "VS" + index;
+            info.ScheduleID = "SCH" + index;
             
         try
         {   
