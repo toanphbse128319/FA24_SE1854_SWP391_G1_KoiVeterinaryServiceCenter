@@ -40,7 +40,7 @@ public class ScheduleRepository : GenericRepository<Schedule>
         }
     }
 
-    public async Task<Schedule?> UpdateVetScheduleAsync(string name, string date)
+    public async Task<Schedule?> UpdateVetScheduleAsync(string date, string name)
     {
         Schedule schedule = await FindScheduleByDateAsync(date);
         if (schedule == null)
