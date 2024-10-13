@@ -93,4 +93,37 @@ public class AccountRepository : GenericRepository<Account>
         return "Created successfully";
     }
 
+    public async Task<string?> CheckOtp(LoginInformation info){
+        Account? result;
+        string pat = @"\D";
+        MatchCollection matched = Regex.Matches(info.Info, pat);
+        if (matched.Count > 0)
+            result = await FindEmailAsync(info.Info);
+        else
+            result = await FindPhoneNumberAsync(info.Info);
+
+        if( result == null )
+            return "Cannot find account with that ID";
+
+        if( result.Status.Contains(Constants.Account.WaitingForOTPMessage) == false ){
+            return "No Need for OTP";
+        }
+
+        string[] statuses = result.Status.Split(' ');
+
+        string luckyNumber = statuses[3];
+        DateTime timeSinceCreated = DateTime.Parse(statuses[4] + ' ' + statuses[5]);
+        if( timeSinceCreated.AddMinutes(10) <= DateTime.Now ){
+            return "OTP password has expired";
+        }
+        
+        if( luckyNumber != info.Password ){
+            return "Wrong OTP";
+        }
+
+        result.Status = "Normal";
+        result.IsActive = true;
+        await base.UpdateAsync(result);
+        return "OTP verify successfully";
+    }
 }
