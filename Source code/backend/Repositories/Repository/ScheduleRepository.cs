@@ -17,9 +17,9 @@ public class ScheduleRepository : GenericRepository<Schedule>
         return _context.Schedules.FirstOrDefaultAsync(schedule => schedule.ScheduleID.ToLower() == id.ToLower());
     }
 
-    public Task<List<Schedule>> FindScheduleByDateAsync(string date)
+    public Task<Schedule?> FindScheduleByDateAsync(string date)
     {
-        return _context.Schedules.Where(schedule => schedule.Date == date).ToListAsync();
+        return _context.Schedules.FirstOrDefaultAsync(schedule => schedule.Date == date);
     }
     public Task<List<Schedule>> FindSlotAvailableAsync(string date) 
     { 
@@ -38,6 +38,40 @@ public class ScheduleRepository : GenericRepository<Schedule>
             await _context.SaveChangesAsync();
             return schedule;
         }
+    }
+
+    public async Task<Schedule?> UpdateVetScheduleAsync(string name, string date)
+    {
+        Schedule schedule = await FindScheduleByDateAsync(date);
+    }
+
+    public async Task<Schedule?> GenerateVetScheduleAsync(Schedule info)
+    {
+        int index = base.GetAll().Count;
+        if (info.ScheduleID == "")
+            info.ScheduleID = "VS" + index;
+            
+        try
+        {   
+            for (int i = 0; i < 8; i++)
+            {
+                Schedule schedule = new Schedule();
+
+                schedule.ScheduleID = "VS" + (index + i);
+                schedule.EmployeeID = info.EmployeeID;
+                schedule.Date = info.Date;  
+                schedule.Note = info.Note;
+                schedule.Slot = "" + (i + 1);
+                schedule.SlotStatus = info.SlotStatus;
+
+                await base.CreateAsync(schedule);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+        return info;
     }
 }
 
