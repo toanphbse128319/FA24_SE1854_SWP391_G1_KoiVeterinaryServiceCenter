@@ -11,9 +11,9 @@ public class Schedule
     public string LastName { get; set; }
     public string Date { get; set; }
     public string Note { get; set; }
-    public string Slot { get; set; }
-    public string SlotCapacity { get; set; }
-    public string SlotStatus { get; set; }
+    public int Slot { get; set; }
+    public int SlotCapacity { get; set; }
+    public bool SlotStatus { get; set; }
 
 }
 

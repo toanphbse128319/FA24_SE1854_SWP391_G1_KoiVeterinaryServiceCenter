@@ -35,7 +35,7 @@ public class ScheduleController : ControllerBase
         }
     }
 
-    [HttpPut]
+    [HttpPut("{id}")]
     public async Task<ActionResult<Schedule>> UpdateSlotStatusAsync(Schedule info)
     {
         try
@@ -43,7 +43,7 @@ public class ScheduleController : ControllerBase
             var schedule = await _unitOfWork.ScheduleRepository.UpdateSlotStatusAsync(info.Date, info.SlotStatus);
             if (schedule == null)
                 return NotFound("Date is not found!");
-            if (info.SlotStatus == "1")
+            if (info.SlotStatus == true)
                 return Ok("The Slot Status changed to available!");
             return Ok("The Slot Status changed to not available!");
         }
@@ -69,15 +69,19 @@ public class ScheduleController : ControllerBase
         }
     }
 
-    [HttpGet("{id}")]
+    [HttpGet]
     public async Task<ActionResult<List<Schedule>>> GetScheduleByDate(string date)
     {
+        if (await _unitOfWork.ScheduleRepository.FindScheduleByDateAsync(date) == null)
+            return NotFound("Date is not found!");
         return await _unitOfWork.ScheduleRepository.FindScheduleByDateAsync(date);
     }
 
-    [HttpGet]
+    [HttpGet("{id}")]
     public async Task<ActionResult<List<Schedule>>> GetScheduleByName(string firstname, string lastname)
     {
+        if (await _unitOfWork.ScheduleRepository.FindScheduleByNameAsync(firstname, lastname) == null)
+            return NotFound("Name is not found!");
         return await _unitOfWork.ScheduleRepository.FindScheduleByNameAsync(firstname, lastname);
     }
 
