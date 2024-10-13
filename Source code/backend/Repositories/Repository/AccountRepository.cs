@@ -94,6 +94,9 @@ public class AccountRepository : GenericRepository<Account>
     }
 
     public async Task<string?> CheckOtp(LoginInformation info){
+        
+        if( info.IsEmpty() )
+            return "Info and password must not be empty!";
         Account? result;
         string pat = @"\D";
         MatchCollection matched = Regex.Matches(info.Info, pat);
@@ -118,7 +121,7 @@ public class AccountRepository : GenericRepository<Account>
         }
         
         if( luckyNumber != info.Password ){
-            return "Wrong OTP";
+            return "OTP Code is incorrect";
         }
 
         result.Status = "Normal";
