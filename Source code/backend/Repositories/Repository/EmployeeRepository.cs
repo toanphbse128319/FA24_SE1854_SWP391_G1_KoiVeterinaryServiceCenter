@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Repositories.Model;
 
 namespace Repositories.Repository
@@ -16,5 +11,12 @@ namespace Repositories.Repository
             _context = context;
         }
 
+        public async Task<Employee?> SearchByAccountIDAsync(string id){
+            return await _context.Employees.FirstOrDefaultAsync( customer => customer.AccountID == id);
+        }
+
+        public Employee? SearchByAccountID(string id){
+            return _context.Employees.FirstOrDefault( customer => customer.AccountID == id);
+        }
     }
 }
