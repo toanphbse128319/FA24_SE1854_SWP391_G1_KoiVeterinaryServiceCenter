@@ -25,8 +25,8 @@ public class AccountRepository : GenericRepository<Account>
         return _context.Accounts.FirstOrDefaultAsync(account => account.Email == email)!;
     }
 
-    public Task<Account?> FindPhoneNumberAsync(String email){
-        return _context.Accounts.FirstOrDefaultAsync(account => account.Email == email)!;
+    public Task<Account?> FindPhoneNumberAsync(String PhoneNumber){
+        return _context.Accounts.FirstOrDefaultAsync(account => account.PhoneNumber == PhoneNumber)!;
     }
 
     public async Task<Account?> LoginAsync(LoginInformation info)
@@ -45,7 +45,7 @@ public class AccountRepository : GenericRepository<Account>
     public async Task<Account?> LoginByPhoneNumber(string phone, string password)
     {
         return await _context.Accounts.FirstOrDefaultAsync(account => 
-                account.Password == phone && 
+                account.PhoneNumber == phone && 
                 account.Password == password
         );
     }
@@ -60,7 +60,7 @@ public class AccountRepository : GenericRepository<Account>
 
     public async Task<Account?> SignUpAsync(Account account){
         if( account.AccountID == "" ){
-            int index = _context.Accounts.ToList().Count;
+            int index = (await base.GetAllAsync()).Count;
             account.AccountID = "A" + index;
         }
         if( account.RoleID == "")
@@ -70,6 +70,8 @@ public class AccountRepository : GenericRepository<Account>
         if( account.IsActive == false )
             account.IsActive = true;
         
+        await base.CreateAsync(account);
+
         try{
             Mail mail = new Mail(account.Email);
             string subject = "Signup successfully!";
@@ -77,10 +79,10 @@ public class AccountRepository : GenericRepository<Account>
             mail.SetMessage(subject, message);
             mail.Send();
         } catch (Exception ex){
+            account.Status = "Unable to send mail";
             Console.WriteLine(ex);
         }    
 
-        await base.CreateAsync(account);
         return await base.GetByIdAsync(account.AccountID);
     }
 }
