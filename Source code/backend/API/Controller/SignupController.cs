@@ -18,34 +18,30 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Account>> LoggingByEmail(Account info){
+        public async Task<ActionResult<Account>> SignUp(Account info){
+            
+
+
             try{
-                
-                //Check if the paramter is null
-                if( info.Email == null )
-                    return BadRequest("Missing parameter: Email");
-                if( info.PhoneNumber == null ) 
-                    return BadRequest("Missing parameter: PhoneNumber");
-                if( info.Password == null )
-                    return BadRequest("Missing parameter: Password");
-                //Check if parameter is empty
-                if( info.Email == String.Empty )
-                    return BadRequest("Email must not be empty");
-                if( info.PhoneNumber == String.Empty ) 
-                    return BadRequest("PhoneNumber must not be empty");
-                if( info.Password == String.Empty )
-                    return BadRequest("Password must not be empty");
-                if( _unitOfWork.AccountRepository.FindEmail(info.Email) != null )
-                    return Conflict("That email is already used!");
-                if( _unitOfWork.AccountRepository.FindPhoneNumber(info.PhoneNumber) != null )
-                    return Conflict("That phone number is already used!");
-
                 string result = await _unitOfWork.AccountRepository.CustomerSignUpAsync( info );
-                if( result == "Unable to send mail")
-                    return StatusCode(StatusCodes.Status201Created, Constants.Mail.EmailSendFailedMessage);
-
-                Console.WriteLine(info.AccountID);
-                return StatusCode(StatusCodes.Status201Created, "Signup successfully");
+                switch( result ){
+                    case "Missing parameter: Email":
+                    case "Missing parameter: PhoneNumber":
+                    case "Missing parameter: Password":
+                    case "Email must not be empy":
+                    case "PhoneNumber must not be empy":
+                    case "Password must not be empy":
+                        return BadRequest(result);
+                    case "That email is already usd!":
+                    case "That phone number is alreay used!":
+                        return StatusCode(StatusCodes.Status409Conflict, result);
+                    case "Unable to send mail":
+                        return StatusCode(StatusCodes.Status201Created, result);
+                    case "Created successfully": 
+                        return StatusCode(StatusCodes.Status201Created, "Signup successfully");
+                    default: 
+                        return StatusCode(StatusCodes.Status501NotImplemented, "You should not be here");
+                }
             } catch (Exception ex){
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
