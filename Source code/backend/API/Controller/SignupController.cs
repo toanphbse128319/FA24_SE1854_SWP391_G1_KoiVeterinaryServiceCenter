@@ -54,20 +54,23 @@ namespace API.Controllers
         [Route("otp")]
         [HttpPost]
         public async Task<ActionResult<string>> OTPVerify(LoginInformation info){
+            
             try{
                 string result = await _unitOfWork.AccountRepository.CheckOtp(info);
                 
                 switch( result ){
+                    case "Info and password must not be empty!":
+                        return BadRequest(result);
                     case "Cannot find account with that ID": 
-                        return NotFound("Cannot find account with that info");
+                        return NotFound(result);
                     case "No Need for OTP":
-                        return StatusCode(StatusCodes.Status406NotAcceptable, "Account does not need otp verification");
+                        return StatusCode(StatusCodes.Status406NotAcceptable, result);
                     case "OTP password has expired":
-                        return StatusCode(StatusCodes.Status406NotAcceptable, "OTP code expired");
-                    case "Wrong OTP":
-                        return StatusCode(StatusCodes.Status406NotAcceptable, "OTP code invalid");
+                        return StatusCode(StatusCodes.Status406NotAcceptable, result);
+                    case "OTP Code is incorrect":
+                        return StatusCode(StatusCodes.Status406NotAcceptable, result);
                     case "OTP verify successfully":
-                        return StatusCode(StatusCodes.Status200OK, "OTP verification successfully");
+                        return StatusCode(StatusCodes.Status200OK, result);
                     default:
                         return StatusCode(StatusCodes.Status501NotImplemented, "This should not show up!");
                 }
