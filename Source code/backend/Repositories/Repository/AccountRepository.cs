@@ -1,3 +1,8 @@
+using System.Text;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 using Repositories.Model;
@@ -29,24 +34,73 @@ public class AccountRepository : GenericRepository<Account>
         return _context.Accounts.FirstOrDefaultAsync(account => account.PhoneNumber == PhoneNumber)!;
     }
 
-    public async Task<Account?> LoginAsync(LoginInformation info)
+    public async Task<string> LoginAsync(LoginInformation info)
     {
+        if( info.IsEmpty() )
+            return "Info and password cannot be empty";
+
+        Account? found;
         //Check for any character
         string pat = @"\D";
         MatchCollection result = Regex.Matches(info.Info, pat);
         if (result.Count > 0)
-        {
-            return await LoginByEmail(info.Info, info.Password);
-        }
-        return await LoginByPhoneNumber(info.Info, info.Password);
+            found = await LoginByEmail(info.Info, info.Password);
+        else 
+            found = await LoginByPhoneNumber(info.Info, info.Password);
+        if( found == null )
+            return "Invalid username or password!";
+        if( found.Status.Contains(Constants.Account.WaitingForOTPMessage) )
+            return "This account hasn't verify otp code";
+        if( found.IsActive == false )
+            return "Account has been disabled";
 
+        CustomerRepository CustomerRepository = new CustomerRepository(_context);
+
+        string firstname;
+        string lastname;
+        Customer customer = await CustomerRepository.SearchByAccountID(found.AccountID);
+        if( customer != null ){
+            firstname = customer.FirstName;
+            lastname = customer.Lastname;
+        } else {
+            EmployeeRepository EmployeeRepository = new EmployeeRepository(_context);
+            Employee Employee = await EmployeeRepository.SearchByAccountID(found.AccountID);
+            if( Employee == null ){
+                return "Cannot find profile associate with the account";
+            }
+            firstname = Employee.FirstName;
+            lastname = Employee.Lastname;
+        }
+        RoleRepository RoleRepository = new RoleRepository(_context);
+
+        Token token = new Token();
+        var claims = new List<Claim>{
+            new Claim("Id", Guid.NewGuid().ToString()),
+            new Claim(JwtRegisteredClaimNames.Email, found.Email),
+            new Claim(ClaimTypes.Role, RoleRepository.getRoleName(found.RoleID)),
+            new Claim("Firstname", firstname),
+            new Claim("Lastname", lastname)
+                    //new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())  
+                    /*
+                     * The identifier value MUST be assigned in a manner that ensures that
+                     *there is a negligible probability that the same value will be
+                     *accidentally assigned to a different data object; if the application
+                     *uses multiple issuers, collisions MUST be prevented among values
+                     *produced by different issuers as well. The "jti" claim can be used
+                     *to prevent the JWT from being replayed. The "jti" value is a case-
+                     *sensitive string. Use of this claim is OPTIONAL.
+                     */
+        }; 
+        token.Claims = claims;
+        return token.GenerateToken(4);
     }
 
+    //The EF.function.collate just to force EF core to be case sensitive
     public async Task<Account?> LoginByPhoneNumber(string phone, string password)
     {
         return await _context.Accounts.FirstOrDefaultAsync(account => 
                 account.PhoneNumber == phone && 
-                account.Password == password
+                EF.Functions.Collate(account.Password, "SQL_Latin1_General_CP1_CS_AS") == password
         );
     }
 
@@ -54,7 +108,7 @@ public class AccountRepository : GenericRepository<Account>
     {
         return await _context.Accounts.FirstOrDefaultAsync( account =>
                 account.Email == email &&
-                account.Password == password
+                EF.Functions.Collate(account.Password, "SQL_Latin1_General_CP1_CS_AS") == password
         );
     }
 
@@ -85,14 +139,12 @@ public class AccountRepository : GenericRepository<Account>
         if( FindPhoneNumber(info.PhoneNumber) != null )
             return "That phone number is alreay used!";
 
-
         int index = (await base.GetAllAsync()).Count;
         info.AccountID = "A" + index;
         info.RoleID = "R002";
         info.IsActive = false;
         Random rnd = new Random();
         int luckyNumber = rnd.Next(100000, 999999);
-        Console.WriteLine("Created OTP: " + luckyNumber);
 
         info.Status = (Constants.Account.WaitingForOTPMessage + luckyNumber + " " + DateTime.Now.ToString()) ;
 
