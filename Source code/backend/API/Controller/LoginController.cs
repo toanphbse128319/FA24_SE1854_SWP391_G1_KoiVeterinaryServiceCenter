@@ -40,10 +40,10 @@ public class LoginController : ControllerBase
 
             string firstname = null;
             string lastname = null;
-            Customer customer = await _unitOfWork.CustomerRepository.GetByIdAsync(account.AccountID);
+            Customer customer = await _unitOfWork.CustomerRepository.SearchByAccountID(account.AccountID);
             Employee employee = null;
             if( customer == null ){
-                employee = await _unitOfWork.EmployeeRepository.GetByIdAsync(account.AccountID);
+                employee = await _unitOfWork.EmployeeRepository.SearchByAccountID(account.AccountID);
                 if( employee == null ){
                     return StatusCode(StatusCodes.Status404NotFound, "Cannot find profile associate with the account");
                 }
@@ -54,12 +54,10 @@ public class LoginController : ControllerBase
                 lastname = customer.Lastname;
             }
 
-
-            var issuer = Configuration.GetConfiguration()["Jwt:Issuer"];
-            var audience = Configuration.GetConfiguration()["Jwt:Audience"];
-            var key = Encoding.ASCII.GetBytes(Configuration.GetConfiguration()["Jwt:Key"] ?? string.Empty);
             var currentRole = _unitOfWork.RoleRepository.getRoleName(account.RoleID);
             
+            Token token = new Token();
+
             var claims = new List<Claim>{
                 new Claim("Id", Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, account.Email),
@@ -77,18 +75,9 @@ public class LoginController : ControllerBase
                  *sensitive string. Use of this claim is OPTIONAL.
                  */
             }; 
+            token.Claims = claims;
 
-            var tokenDescriptor = new SecurityTokenDescriptor{
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddHours(4),
-                Issuer = issuer,
-                Audience = audience,
-                SigningCredentials = new SigningCredentials( new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var stringToken = tokenHandler.WriteToken(token);
-            return Ok(stringToken);
+            return Ok(token.GenerateToken(4));
 
         } catch ( Exception ex ){
             Console.WriteLine(ex);
