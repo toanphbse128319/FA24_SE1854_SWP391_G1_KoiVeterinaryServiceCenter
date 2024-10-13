@@ -39,7 +39,11 @@ public class LoginController : ControllerBase
                 return StatusCode(StatusCodes.Status401Unauthorized, "Invalid username or password!");
 
             if( account.Status.Contains(Constants.Account.WaitingForOTPMessage) )
-                return StatusCode(StatusCodes.Status403Forbidden, "Did not verify OTP code");
+                return StatusCode(StatusCodes.Status403Forbidden, "This account hasn't verify otp code");
+
+            if( account.IsActive == false )
+                return StatusCode(StatusCodes.Status403Forbidden, "Account has been disabled");
+
             string firstname = null;
             string lastname = null;
             Customer customer = await _unitOfWork.CustomerRepository.SearchByAccountID(account.AccountID);
