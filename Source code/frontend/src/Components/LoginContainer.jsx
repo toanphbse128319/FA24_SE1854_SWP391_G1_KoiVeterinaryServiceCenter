@@ -43,7 +43,6 @@ function Login() {
       general: ''
     });
 
-    // Validate form
     let hasError = false;
     if (!email) {
       setErrors(prev => ({...prev, email: 'Email là bắt buộc'}));
@@ -78,8 +77,6 @@ function Login() {
           password: password 
         })
       });
-      console.log('21312312313as');
-      console.log(response.status); // In mã trạng thái HTTP
       const data = await response.text();
       console.log(data); // Hiển thị dữ liệu trong console để kiểm tra
      

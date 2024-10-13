@@ -1,39 +1,22 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Link } from "react-router-dom"; // Nhập khẩu Link
 
 import Header from "./Components/Header.jsx";
 import Navbar from "./Components/Navbar.jsx";
-import Login from "./pages/Login.jsx"
-import GuestView from "./Components/GuestView.jsx"
+import Login from "./pages/Login.jsx";
+import AboutUs from "./buttonComponents/AboutUs.jsx";
 
+import GuestView from "./Components/GuestView.jsx";
 
- const App = () => {
+const App = () => {
   return (
     <div>
-      <nav>
-      <ul>
-        <li>
-          <a href="/">Home</a>
-        </li>
-        <li>
-          <a href="/AboutUs">AboutUs</a>
-        </li>
-        <li>
-          <a href="/Footer">Footer</a>
-        </li>
-      </ul>
-    </nav>
-    
       <Routes>
-        <Route path= "/" element = {<GuestView/>} />
+       {/*  <Route path="/" element={<GuestView />} /> */}
+        <Route path="/" element={<AboutUs />} />
       </Routes>
     </div>
-    
   );
 };
+
 export default App;
-
-
-
-
-
