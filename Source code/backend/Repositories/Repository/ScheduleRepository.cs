@@ -14,7 +14,7 @@ public class ScheduleRepository : GenericRepository<Schedule>
     }
     public Task<Schedule?> FindScheduleAsync(string id)
     {
-        return _context.Schedules.FirstOrDefaultAsync(schedule => schedule.ScheduleID.ToLower() == id.ToLower());
+        return _context.Schedules.FirstOrDefaultAsync(schedule => schedule.EmployeeID.ToLower() == id.ToLower());
     }
 
     public Task<Schedule?> FindScheduleByDateAsync(string date)
