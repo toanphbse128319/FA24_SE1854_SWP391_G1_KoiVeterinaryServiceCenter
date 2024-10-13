@@ -1,3 +1,4 @@
+using Helper;
 using Microsoft.AspNetCore.Mvc;
 using Repositories;
 using Repositories.Model;
@@ -17,6 +18,29 @@ public class ScheduleController : ControllerBase
 
     [HttpPost]
 
+    [HttpPut]
+    public async Task<ActionResult<Schedule>> UpdateSlotStatusAsync(Schedule info)
+    {
+        try
+        {
+            var schedule = await _unitOfWork.ScheduleRepository.UpdateSlotStatusAsync(info.Date, info.SlotStatus);
+            if (schedule == null)
+                return NotFound("Booking is not found!");
+            if (info.SlotStatus == "true")
+                return Ok("The Slot is available!");
+            return Ok("The Slot is not available!");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest("Unknown Error: " + ex.Message);
+        }
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Schedule?>> GetScheduleByDate(string date)
+    {
+        return await _unitOfWork.ScheduleRepository.FindScheduleByDateAsync(date);
+    }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Booking>>> GetVetBookings(String id)
