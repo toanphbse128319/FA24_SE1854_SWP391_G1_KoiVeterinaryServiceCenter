@@ -1,22 +1,17 @@
 import React from "react";
-import { Routes, Route, Link } from "react-router-dom"; // Nhập khẩu Link
-
-import Header from "./Components/Header.jsx";
-import Navbar from "./Components/Navbar.jsx";
-import Login from "./pages/Login.jsx";
-import AboutUs from "./buttonComponents/AboutUs.jsx";
-
-import GuestView from "./Components/GuestView.jsx";
-
-const App = () => {
+import Login from "./pages/Login"
+import AboutUsPage from "./pages/AboutUsPage"
+import Header from "./Components/Header";
+import LoginContainer from "./Components/LoginContainer" 
+ const App = () => {
   return (
     <div>
-      <Routes>
-       {/*  <Route path="/" element={<GuestView />} /> */}
-        <Route path="/" element={<AboutUs />} />
-      </Routes>
+      <div>
+        <AboutUsPage/>
+      </div>
+
     </div>
+    
   );
 };
-
 export default App;
