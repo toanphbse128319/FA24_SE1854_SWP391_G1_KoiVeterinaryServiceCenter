@@ -1,7 +1,5 @@
-using System.Text;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
 
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
@@ -34,6 +32,24 @@ public class AccountRepository : GenericRepository<Account>
         return _context.Accounts.FirstOrDefaultAsync(account => account.PhoneNumber == PhoneNumber)!;
     }
 
+    public void GetName(ref string? firstname, ref string? lastname, string accountID){
+        CustomerRepository CustomerRepository = new CustomerRepository(_context);
+        Customer? customer = CustomerRepository.SearchByAccountID(accountID);
+        if( customer != null ){
+            firstname = customer.FirstName;
+            lastname = customer.Lastname;
+            return;
+        }
+
+        EmployeeRepository EmployeeRepository = new EmployeeRepository(_context);
+        Employee? Employee = EmployeeRepository.SearchByAccountID(accountID);
+        if( Employee == null ){
+            return;
+        }
+        firstname = Employee.FirstName;
+        lastname = Employee.Lastname;
+    }
+
     public async Task<string> LoginAsync(LoginInformation info)
     {
         if( info.IsEmpty() )
@@ -54,43 +70,23 @@ public class AccountRepository : GenericRepository<Account>
         if( found.IsActive == false )
             return "Account has been disabled";
 
-        CustomerRepository CustomerRepository = new CustomerRepository(_context);
-
-        string firstname;
-        string lastname;
-        Customer customer = await CustomerRepository.SearchByAccountID(found.AccountID);
-        if( customer != null ){
-            firstname = customer.FirstName;
-            lastname = customer.Lastname;
-        } else {
-            EmployeeRepository EmployeeRepository = new EmployeeRepository(_context);
-            Employee Employee = await EmployeeRepository.SearchByAccountID(found.AccountID);
-            if( Employee == null ){
-                return "Cannot find profile associate with the account";
-            }
-            firstname = Employee.FirstName;
-            lastname = Employee.Lastname;
+        string? lastname = null;
+        string? firstname = null;
+        GetName(ref lastname, ref firstname, found.AccountID);
+        if( lastname == null || firstname == null ){
+            return "Cannot find profile associate with this account";
         }
-        RoleRepository RoleRepository = new RoleRepository(_context);
 
         Token token = new Token();
+        RoleRepository RoleRepository = new RoleRepository(_context);
         var claims = new List<Claim>{
             new Claim("Id", Guid.NewGuid().ToString()),
             new Claim(JwtRegisteredClaimNames.Email, found.Email),
             new Claim(ClaimTypes.Role, RoleRepository.getRoleName(found.RoleID)),
             new Claim("Firstname", firstname),
             new Claim("Lastname", lastname)
-                    //new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())  
-                    /*
-                     * The identifier value MUST be assigned in a manner that ensures that
-                     *there is a negligible probability that the same value will be
-                     *accidentally assigned to a different data object; if the application
-                     *uses multiple issuers, collisions MUST be prevented among values
-                     *produced by different issuers as well. The "jti" claim can be used
-                     *to prevent the JWT from being replayed. The "jti" value is a case-
-                     *sensitive string. Use of this claim is OPTIONAL.
-                     */
         }; 
+
         token.Claims = claims;
         return token.GenerateToken(4);
     }
