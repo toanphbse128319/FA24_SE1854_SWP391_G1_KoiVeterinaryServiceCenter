@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Model;
 using Repositories;
+
+using Helper;
 namespace API.Controllers
 {
 
@@ -18,6 +20,7 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<Account>> LoggingByEmail(Account info){
             try{
+                
                 //Check if the paramter is null
                 if( info.Email == null )
                     return BadRequest("Missing parameter: Email");
@@ -36,7 +39,11 @@ namespace API.Controllers
                     return Conflict("That email is already used!");
                 if( _unitOfWork.AccountRepository.FindPhoneNumber(info.PhoneNumber) != null )
                     return Conflict("That phone number is already used!");
+
                 var account = await _unitOfWork.AccountRepository.SignUpAsync( info );
+                if( account.Status == Constants.Mail.EmailSendFailedMessage )
+                    return StatusCode(StatusCodes.Status201Created, Constants.Mail.EmailSendFailedMessage);
+
                 return StatusCode(StatusCodes.Status201Created, "Signup successfully");
             } catch (Exception ex){
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
