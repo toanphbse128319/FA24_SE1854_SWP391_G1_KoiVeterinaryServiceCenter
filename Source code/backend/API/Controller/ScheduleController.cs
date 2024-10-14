@@ -70,7 +70,7 @@ public class ScheduleController : ControllerBase
             return BadRequest("Unknown Error: " + ex.Message);
         }
     }
-    
+
     [Route("GetScheduleByDate")]
     [HttpGet]
     public async Task<ActionResult<List<Schedule>>> GetScheduleByDate(string date)
@@ -79,7 +79,7 @@ public class ScheduleController : ControllerBase
             return NotFound("Date is not found!");
         return await _unitOfWork.ScheduleRepository.FindScheduleByDateAsync(date);
     }
-    
+
     [Route("GetScheduleByName")]
     [HttpGet]
     public async Task<ActionResult<List<Schedule>>> GetScheduleByName(string firstname, string lastname)
