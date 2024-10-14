@@ -112,7 +112,7 @@ console.log(decoded); // In thông tin giải mã
 
   return (
     <Card style={{ 
-      width: 350, 
+      width: "25vw", 
       background: 'linear-gradient(136deg, rgba(100.04, 176.47, 223.98, 0.50) 25%, rgba(25, 200, 254, 0.38) 75%)'
     }}>
       <CardContent>

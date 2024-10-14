@@ -14,8 +14,8 @@ const BackButton = () => {
       onClick={handleBack}
       style={{
         position: 'fixed',    // Định vị cố định
-        top: '90px',          // Cách từ đỉnh 20px
-        left: '50px',         // Cách từ bên trái 20px
+        top: '12vh',          // Cách từ đỉnh 20px
+        left: '5vw',         // Cách từ bên trái 20px
         border: 'none',       // Xóa viền nút
         background: 'none',   // Xóa nền nút
         cursor: 'pointer',    // Chỉ thị con trỏ chuột khi hover
