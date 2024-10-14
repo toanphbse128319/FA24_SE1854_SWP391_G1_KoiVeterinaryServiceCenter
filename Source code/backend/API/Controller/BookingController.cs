@@ -55,5 +55,19 @@ namespace API.Controllers
                 return BadRequest("Unknown Error: " + ex.Message);
             }
         }
+
+        [Route("new")]
+        [HttpPut]
+        public async Task<ActionResult> NewBooking(Booking booking){
+            try{
+                if( (await _unitOfWork.BookingRepository.CreateAsync(booking)) == 0 )
+                    return StatusCode(StatusCodes.Status409Conflict);
+                return Ok();
+
+            } catch (Exception ex){
+                Console.WriteLine(ex);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
     }
 }
