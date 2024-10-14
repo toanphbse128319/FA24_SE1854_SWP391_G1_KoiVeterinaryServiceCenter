@@ -15,26 +15,14 @@ namespace Repositories.Repository
             _context = context; 
         }
 
-        public async Task<int> UpdateAsync(BookingDetail info)
+        public Task<List<BookingDetail?>> GetByBookingID(string id)
         {
-            BookingDetail bookingdetail = await base.GetByIdAsync(info.BookingDetailID);
-            if (bookingdetail == null)
-            {
-                return 0;
-            }
-            else
-            {
-                bookingdetail.DrugList = info.DrugList;
-                bookingdetail.NoteResult = info.NoteResult;
-                bookingdetail.MaterialList = info.MaterialList;
-                bookingdetail.ConsultDoctor = info.ConsultDoctor;
-                bookingdetail.PoolStatusDescription= info.PoolStatusDescription;
-                bookingdetail.AnimalStatusDescription = info.AnimalStatusDescription;
-                bookingdetail.ConsultTechnician = info.ConsultTechnician;
-                bookingdetail.NoteExamination = info.NoteExamination;
-                bookingdetail.Incidental = info.Incidental;
-                return await base.UpdateAsync(bookingdetail);
-            }
+            return _context.BookingDetails.Where(bookingdetail => bookingdetail.BookingID.ToLower() == id.ToLower()).ToListAsync()!;
+        }
+
+        public Task<List<BookingDetail?>> GetByServiceID(string id)
+        {
+            return _context.BookingDetails.Where(bookingdetail => bookingdetail.ServiceID.ToLower() == id.ToLower()).ToListAsync()!;
         }
     }
 }
