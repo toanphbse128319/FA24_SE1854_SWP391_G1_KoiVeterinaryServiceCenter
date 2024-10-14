@@ -12,6 +12,8 @@ public class Booking
     public DateTime BookingDate { get; set; } 
     public DateOnly ExpiredDate { get; set; }
     public decimal Deposit { get; set; }
+    public int NumberOfFish { get; set; }
+    public int IncidentalFish { get; set; }
     public string ServiceDeliveryMethodID { get; set; }
     public double? Vat { get; set; }
     public string BookingAddress { get; set; }
