@@ -54,7 +54,7 @@ public class ScheduleController : ControllerBase
         }
     }
 
-    [Route("GetVetSchedule")]
+    [Route("UpdateVetSchedule")]
     [HttpPut]
     public async Task<ActionResult<Schedule>> UpdateVetScheduleAsync(Schedule info)
     {
