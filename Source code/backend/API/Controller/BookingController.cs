@@ -27,10 +27,13 @@ namespace API.Controllers
         {
             try
             {
-                var booking = await _unitOfWork.BookingRepository.UpdateStatusAsync(info.Id, info.Message);
-                if (booking == null)
-                    return NotFound("Booking is not found!");
-                return Ok($"The Booking Status has been updated to: {info.Message}");
+                if (await _unitOfWork.BookingRepository.GetByIdAsync(info.Id) == null)
+                    return NotFound("The Booking does not existed!");
+                int updated = await _unitOfWork.BookingRepository.UpdateStatusAsync(info.Id, info.Message);
+                if (updated == 0)
+                    return BadRequest("Booking status update failed!");
+                else
+                    return Ok($"The Booking Status has been updated to: {info.Message}");
             }
             catch (Exception ex)
             {
