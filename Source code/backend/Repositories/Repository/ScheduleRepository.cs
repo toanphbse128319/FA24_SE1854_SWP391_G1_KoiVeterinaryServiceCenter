@@ -21,6 +21,15 @@ public class ScheduleRepository : GenericRepository<Schedule>
         return _context.Schedules.Where(schedule => schedule.FirstName.ToLower() == firstname.ToLower()&&
                                                     schedule.LastName.ToLower() == lastname.ToLower()).ToListAsync();
     }
+    public Task<Schedule?> CheckValidDate(string date)
+    {
+        return _context.Schedules.FirstOrDefaultAsync(schedule => schedule.Date == date);
+    }
+    public Task<Schedule?> CheckValidName(string firstname, string lastname)
+    {
+        return _context.Schedules.FirstOrDefaultAsync(schedule => schedule.FirstName == firstname &&
+                                                                  schedule.LastName == lastname);
+    }
     public Task<List<Schedule>> FindScheduleByDateAsync(string date)
     { 
         return _context.Schedules.Where(schedule => schedule.Date == date &&

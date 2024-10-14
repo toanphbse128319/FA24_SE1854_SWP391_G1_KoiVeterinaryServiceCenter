@@ -72,7 +72,7 @@ public class ScheduleController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<Schedule>>> GetScheduleByDate(string date)
     {
-        if (await _unitOfWork.ScheduleRepository.FindScheduleByDateAsync(date) == null)
+        if (await _unitOfWork.ScheduleRepository.CheckValidDate(date) == null)
             return NotFound("Date is not found!");
         return await _unitOfWork.ScheduleRepository.FindScheduleByDateAsync(date);
     }
@@ -80,7 +80,7 @@ public class ScheduleController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<List<Schedule>>> GetScheduleByName(string firstname, string lastname)
     {
-        if (await _unitOfWork.ScheduleRepository.FindScheduleByNameAsync(firstname, lastname) == null)
+        if (await _unitOfWork.ScheduleRepository.CheckValidName(firstname, lastname) == null)
             return NotFound("Name is not found!");
         return await _unitOfWork.ScheduleRepository.FindScheduleByNameAsync(firstname, lastname);
     }
