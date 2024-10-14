@@ -1,4 +1,5 @@
-﻿using Microsoft.Identity.Client;
+﻿#nullable disable
+using Microsoft.Identity.Client;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Repositories.Model;
