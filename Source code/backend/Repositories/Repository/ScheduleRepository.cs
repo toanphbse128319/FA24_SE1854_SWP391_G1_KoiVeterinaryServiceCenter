@@ -12,7 +12,7 @@ public class ScheduleRepository : GenericRepository<Schedule>
     {
         _context = context;
     }
-    public Task<Schedule?> FindScheduleByIDAsync(string id)
+    public Task<Schedule?> FindScheduleByEmpIDAsync(string id)
     {
         return _context.Schedules.FirstOrDefaultAsync(schedule => schedule.EmployeeID.ToLower() == id.ToLower());
     }
@@ -37,7 +37,7 @@ public class ScheduleRepository : GenericRepository<Schedule>
     }
     public async Task<Schedule?> UpdateSlotStatusAsync(string id, bool msg)
     {
-        Schedule schedule = await FindScheduleByIDAsync(id);
+        Schedule schedule = await FindScheduleByEmpIDAsync(id);
         if (schedule == null) 
             return schedule;
         else

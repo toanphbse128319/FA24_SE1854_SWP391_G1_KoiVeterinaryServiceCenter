@@ -35,7 +35,8 @@ public class ScheduleController : ControllerBase
         }
     }
 
-    [HttpPut("{id}")]
+    [Route("UpdateSlotStatus")]
+    [HttpPut]
     public async Task<ActionResult<Schedule>> UpdateSlotStatusAsync(Schedule info)
     {
         try
@@ -53,8 +54,9 @@ public class ScheduleController : ControllerBase
         }
     }
 
+    [Route("UpdateVetSchedule")]
     [HttpPut]
-    public async Task<ActionResult<Schedule>> UpdateVetScheduleAsync(UpdateSchedule info)
+    public async Task<ActionResult<Schedule>> UpdateVetScheduleAsync(Schedule info)
     {
         try
         {
@@ -68,7 +70,8 @@ public class ScheduleController : ControllerBase
             return BadRequest("Unknown Error: " + ex.Message);
         }
     }
-
+    
+    [Route("GetScheduleByDate")]
     [HttpGet]
     public async Task<ActionResult<List<Schedule>>> GetScheduleByDate(string date)
     {
@@ -76,8 +79,9 @@ public class ScheduleController : ControllerBase
             return NotFound("Date is not found!");
         return await _unitOfWork.ScheduleRepository.FindScheduleByDateAsync(date);
     }
-
-    [HttpGet("{id}")]
+    
+    [Route("GetScheduleByName")]
+    [HttpGet]
     public async Task<ActionResult<List<Schedule>>> GetScheduleByName(string firstname, string lastname)
     {
         if (await _unitOfWork.ScheduleRepository.CheckValidName(firstname, lastname) == null)
