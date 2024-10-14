@@ -15,15 +15,21 @@ namespace Repositories.Repository
             _context = context;
         }
 
-        public async Task<PoolProfile?> AddPoolProfileAsync(PoolProfile poolprofile)
+        public Task<List<PoolProfile?>> GetByBookingDetailID(string id)
         {
+            return _context.PoolProfiles.Where(poolprofile => poolprofile.BookingDetailID.ToLower() == id.ToLower()).ToListAsync()!;
+        }
+
+        public async Task<int> AddPoolProfileAsync(PoolProfile poolprofile)
+        {
+            if (poolprofile == null)
+                return 0;
             if (poolprofile.PoolProfileID == "")
             {
                 int index = base.GetAll().Count;
                 poolprofile.PoolProfileID = "PP" + index;
             }
-            await base.CreateAsync(poolprofile);
-            return poolprofile;
+            return await base.CreateAsync(poolprofile);;
         }
     }
 }
