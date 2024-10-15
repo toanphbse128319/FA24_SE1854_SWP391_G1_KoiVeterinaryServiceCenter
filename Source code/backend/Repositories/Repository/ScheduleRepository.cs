@@ -39,6 +39,11 @@ public class ScheduleRepository : GenericRepository<Schedule>
 
     public async Task<List<Schedule>> SearchByDateAsync(DateOnly date, string empID)
     { 
+        return await _context.Schedules.Where(schedule => schedule.Date == date).ToListAsync();
+    }
+
+    public async Task<List<Schedule>> SearchByFreeDateAsync(DateOnly date, string empID)
+    { 
         return await _context.Schedules.Where(schedule => schedule.Date == date &&
                                                     schedule.SlotStatus == true).ToListAsync();
     }
@@ -49,12 +54,13 @@ public class ScheduleRepository : GenericRepository<Schedule>
                                                                   schedule.EmployeeID == employeeID);
     }
 
-    public async Task<Schedule?> UpdateSlotStatusAsync(Schedule info)
+    public async Task<Schedule?> UpdateSlotAsync(Schedule info)
     {
         Schedule? schedule = await SearchSpecificSlotAsync(info.EmployeeID, info.Date, info.Slot);
         if (schedule == null) 
             return schedule;
 
+        schedule.Note = info.Note;
         schedule.SlotCapacity = info.SlotCapacity;
         schedule.SlotStatus = info.SlotStatus;
         await UpdateAsync(schedule);
