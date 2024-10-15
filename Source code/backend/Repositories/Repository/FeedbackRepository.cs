@@ -17,10 +17,14 @@ namespace Repositories.Repository
             return true;
         }
 
-        public async Task<int> SaveFeedbackAsync(Feedback feedback){
+        public async Task<Feedback> SaveAndGetFeedbackAsync(Feedback feedback){
+            if (feedback.Description == null)
+                feedback.Description = "";
+
             int index = base.GetAll().Count+1;          
             feedback.FeedbackID = "F"+ index;
-            return await base.CreateAsync(feedback);
+            await base.CreateAsync(feedback);
+            return feedback;
         }
     }
 }
