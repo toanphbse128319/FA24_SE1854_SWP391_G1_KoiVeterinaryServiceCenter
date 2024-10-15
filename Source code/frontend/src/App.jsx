@@ -1,51 +1,34 @@
+
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
+
 import Login from "./pages/Login";
 import AboutUsPage from "./pages/AboutUsPage";
 import Header from "./Components/Header";
 import LoginContainer from "./Components/LoginContainer";
-import SignUp from "./Components/SignUpContainer";
-import TrackingBookingDetail from "./Components/TrackingBookingDetail";
-import Back from './buttonComponents/BackButton';
 
-// Layout component
-const Layout = () => {
-  return (
-    <>
-      <Header />
-      <Back />
-      <Outlet />
-    </>
-  );
-};
-
-// App component
-// const App = () => {
-//   return (
-//     <Router>
-//       <Layout />
-//       <Routes>
-//         <Route index element={<AboutUsPage />} />
-//         <Route path="login" element={<LoginContainer />} />
-//         <Route path="signup" element={<SignUp />} />
-//         <Route path="booking" element={<TrackingBookingDetail />} />
-//       </Routes>
-//     </Router>
-//   );
-// };
-
+import Banner from "./Components/Banner";
+import NhanHang from "./Components/NhanHang"
+import Navbar from "./Components/Navbar"
+import DoctorBooking from "./Components/Booking'sSummaryInformation"
 const App = () => {
   return (
-    <Router>
-      <Layout />
-      <Routes>
-        <Route index element={<AboutUsPage />} />
-        <Route path="login" element={<LoginContainer />} />
-        <Route path="signup" element={<SignUp />} />
-        <Route path="booking" element={<TrackingBookingDetail />} />
-      </Routes>
-    </Router>
+    <div>
+      <div className="fixed top-0 left-0 w-full z-50">
+        <Navbar />
+      </div>
+      <div >
+        <Banner/>  
+      </div>
+
+      <div>
+        <NhanHang/>
+      </div>
+      
+    </div>
   );
 };
-
 export default App;
+
+
+
