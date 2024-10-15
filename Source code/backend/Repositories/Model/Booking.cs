@@ -10,7 +10,7 @@ public class Booking
     public string CustomerID { get; set; }
     public string EmployeeID { get; set; }
     public DateTime BookingDate { get; set; } 
-    public DateOnly ExpiredDate { get; set; }
+    public DateTime ExpiredDate { get; set; }
     public decimal Deposit { get; set; }
     public string ServiceDeliveryMethodID { get; set; }
     public double? Vat { get; set; }

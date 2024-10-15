@@ -4,7 +4,9 @@ import App from './App.jsx';
 import './index.css';
 import TrackingBookingDetail from  "./Components/TrackingBookingDetail"
 import Docter from "./Components/Doctor'sSummaryInformation";
+
 import BookingPage from './pages/Booking.jsx';
+
 
 import {
   createBrowserRouter,
@@ -18,8 +20,11 @@ const router = createBrowserRouter([
   // },
   {
     path: "/",
-    element: <BookingPage />,
+
+    element: <App />,
+
   },
+  
 ]);
 
 createRoot(document.getElementById('root')).render(
