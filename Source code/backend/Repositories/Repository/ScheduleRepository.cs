@@ -10,15 +10,17 @@ public class ScheduleRepository : GenericRepository<Schedule>
         _context = context;
     }
 
-    public Task<Schedule?> FindScheduleByEmpIDAsync(string id)
+    public async Task<List<Schedule>> SearchByEmpIDAsync(string id)
     {
-        return _context.Schedules.FirstOrDefaultAsync(schedule => schedule.EmployeeID.ToLower() == id.ToLower());
+        return await _context.Schedules.Where(schedule => schedule.EmployeeID.ToLower() == id.ToLower()).ToListAsync()!;
     }
 
-    public Task<List<Schedule>> FindScheduleByNameAsync(string firstname, string lastname)
+    public async Task<List<Schedule>> SearchByNameAsync(string firstname, string lastname)
     {
-        return _context.Schedules.Where(schedule => schedule.FirstName.ToLower() == firstname.ToLower() &&
-                                                    schedule.LastName.ToLower() == lastname.ToLower()).ToListAsync();
+        Employee? emp = await (new EmployeeRepository(_context).SearchByFullNameAsync(firstname, lastname));
+        if( emp == null )
+            return null!;
+        return SearchByEmpIDAsync(emp.EmployeeID);
     }
 
     public Task<Schedule?> CheckValidDate(DateOnly date)
