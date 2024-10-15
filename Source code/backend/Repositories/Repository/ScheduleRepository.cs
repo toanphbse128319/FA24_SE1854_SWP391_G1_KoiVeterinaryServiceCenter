@@ -46,12 +46,12 @@ public class ScheduleRepository : GenericRepository<Schedule>
         else
         {
             schedule.SlotStatus = msg;
-            await _context.SaveChangesAsync();
+            await UpdateAsync(schedule);
             return schedule;
         }
     }
 
-    public async Task<List<Schedule>> UpdateVetScheduleAsync(string date, string firstname, string lastname)
+    public async Task<List<Schedule>> UpdateVetScheduleAsync(DateOnly date, string firstname, string lastname)
     {
         List<Schedule> schedule = await FindScheduleByDateAsync(date);
         try
@@ -60,7 +60,7 @@ public class ScheduleRepository : GenericRepository<Schedule>
             {
                 item.FirstName = firstname;
                 item.LastName = lastname;
-                await _context.SaveChangesAsync();
+                await UpdateAsync(item);
             }
         }
         catch (Exception ex)
