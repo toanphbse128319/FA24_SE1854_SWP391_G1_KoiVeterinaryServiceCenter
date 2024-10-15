@@ -30,6 +30,37 @@ public class BookingRepository : GenericRepository<Booking>
         }
     }
 
+    /*
+     * this will generate Schedule if there's no schedule at the time of booking
+     * or will update the slot status to false if the slot is available
+     */
+    public async Task<string> SetScheduleAsync(Booking info){
+        ScheduleRepository schrepo = new ScheduleRepository(_context);
+        DateOnly date = DateOnly.Parse(info.BookingDate.ToString("yyyy-MM-dd"));
+        Schedule? schedule = await schrepo.CheckValidDateAsync(date, info.EmployeeID);
+        if( schedule == null ){
+            schedule = new Schedule();
+            schedule.EmployeeID = info.EmployeeID;
+            schedule.Date = date;
+            await schrepo.GenerateVetScheduleAsync(schedule);
+        }
+        schedule.Slot = schrepo.SlotByTime(info.BookingDate);
+        if( schedule.Slot == 0 )
+            return "Outside working hour";
+        schedule = await schrepo.SearchSpecificSlotAsync(info.EmployeeID, date, schedule.Slot);
+        if( schedule == null )
+            return "Cannot get the schedule";
+        if( schedule.SlotStatus == false )
+            return "Cannot place order on this slot";
+
+        schedule.SlotCapacity = info.NumberOfFish;
+        schedule.SlotStatus = false;
+        schedule = await schrepo.UpdateSlotAsync(schedule);
+        if( schedule == null )
+            return "Cannot update slot status";
+        return schedule.ScheduleID;
+    }
+
     public async Task<string> AddNewBooking(Booking info){
         if( info.CustomerID == null || info.EmployeeID == null || info.ServiceDeliveryMethodID == null ||
                 info.BookingAddress == null )
@@ -54,25 +85,22 @@ public class BookingRepository : GenericRepository<Booking>
         if( sdm == null )
             return "Cannot detemined the delivery method of the service";
 
-        ScheduleRepository schrepo = new ScheduleRepository(_context);
-        Schedule? schedule = await schrepo.GetByIdAsync(info.ScheduleID);
-        if( schedule == null ){
-            schedule = new Schedule();
-            schedule.EmployeeID = info.EmployeeID;
-            schedule.Date = DateOnly.Parse(info.BookingDate.ToString("yyyy-MM-dd"));
-            await schrepo.GenerateVetScheduleAsync(schedule);
-            schedule.Slot = schrepo.SlotByTime(info.BookingDate);
-            schedule = await schrepo.UpdateSlotAsync(schedule);
-            if( schedule == null )
-                return "Unable to update vet schedule";
-            info.ScheduleID = schedule.ScheduleID;
-        }
-
-
         FeedbackRepository feedbackRepo = new FeedbackRepository(_context);
         info.FeedbackID = (await feedbackRepo.SaveAndGetFeedbackAsync(new Feedback(){Status = "Uncommented"})).FeedbackID;
 
         info.IncidentalFish = 0;
+
+        string temp = await SetScheduleAsync(info);
+        switch (temp){
+            case "Outside working hour":
+            case "Cannot get the schedule":           
+            case "Cannot place order on this slot":
+            case "Cannot update slot status":
+                return temp;
+            default:
+                info.ScheduleID = temp;
+                break;
+        }
 
         int index = base.GetAllAsync().Result.Count;
         info.BookingID = "B" + index;
