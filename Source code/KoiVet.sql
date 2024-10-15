@@ -83,7 +83,7 @@ GO
 CREATE TABLE Schedule(
     ScheduleID nvarchar(20) PRIMARY KEY,
     EmployeeID nvarchar(20) FOREIGN KEY REFERENCES Employee(EmployeeID) NOT NULL,
-    Date nvarchar(20) NOT NULL,
+    Date Date NOT NULL,
     Note nvarchar(MAX),
     Slot int,
     SlotCapacity int,
@@ -260,18 +260,18 @@ VALUES
 ('FB005', 5, 5, 'Koi surgery saved my fish!', 'Active');
 
 -- Insert sample data for Schedule
-INSERT INTO Schedule (ScheduleID, EmployeeID, Firstname, Lastname, Date, Note, Slot, SlotCapacity, SlotStatus) 
+INSERT INTO Schedule (ScheduleID, EmployeeID, Date, Note, Slot, SlotCapacity, SlotStatus) 
 VALUES 
-('SCH001', 'E003', 'Tom', 'Clark', '2024/09/01', 'Regular checkup', 1, 5, 1),
-('SCH002', 'E003', 'Tom', 'Clark', '2024/09/01', 'Consultation', 2, 4, 1),
-('SCH003', 'E003', 'Tom', 'Clark', '2024/09/01', 'Follow-up', 3, 3, 1),
-('SCH004', 'E003', 'Tom', 'Clark', '2024/09/01', 'Emergency', 4, 4, 1),
-('SCH005', 'E003', 'Tom', 'Clark', '2024/09/01', 'Routine check', 5, 1, 1),
-('SCH006', 'E003', 'Tom', 'Clark', '2024/09/01', 'Regular checkup', 6, 5, 0),
-('SCH007', 'E003', 'Tom', 'Clark', '2024/09/01', 'Consultation', 7, 4, 0),
-('SCH008', 'E003', 'Tom', 'Clark', '2024/09/01', 'Follow-up', 8, 3, 0),
-('SCH009', 'E005', 'Michael', 'Scott', '2024/09/02', 'Emergency', 1, 4, 1),
-('SCH010', 'E005', 'Michael', 'Scott', '2024/09/02', 'Routine check', 2, 1, 0);
+('SCH001', 'E003', '2024/09/01', 'Regular checkup', 1, 5, 1),
+('SCH002', 'E003', '2024/09/01', 'Consultation', 2, 4, 1),
+('SCH003', 'E003', '2024/09/01', 'Follow-up', 3, 3, 1),
+('SCH004', 'E003', '2024/09/01', 'Emergency', 4, 4, 1),
+('SCH005', 'E003', '2024/09/01', 'Routine check', 5, 1, 1),
+('SCH006', 'E003', '2024/09/01', 'Regular checkup', 6, 5, 0),
+('SCH007', 'E003', '2024/09/01', 'Consultation', 7, 4, 0),
+('SCH008', 'E003', '2024/09/01', 'Follow-up', 8, 3, 0),
+('SCH009', 'E005', '2024/09/02', 'Emergency', 1, 4, 1),
+('SCH010', 'E005', '2024/09/02', 'Routine check', 2, 1, 0);
 --NumberOfFish int not null,
    -- IncidentalFish 
 -- Insert sample data for Booking
