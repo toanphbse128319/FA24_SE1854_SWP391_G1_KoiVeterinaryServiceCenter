@@ -1,4 +1,4 @@
-
+#nullable disable
 public class PaymentResult{
 
     public long Amount{ get; set; }
