@@ -37,13 +37,13 @@ public class ScheduleController : ControllerBase
         }
     }
 
-    [Route("UpdateSlotStatus")]
+    [Route("UpdateSlot")]
     [HttpPut]
     public async Task<ActionResult<Schedule>> UpdateSlotStatusAsync(Schedule info)
     {
         try
         {
-            var schedule = await _unitOfWork.ScheduleRepository.UpdateSlotStatusAsync(info);
+            var schedule = await _unitOfWork.ScheduleRepository.UpdateSlotAsync(info);
             if (schedule == null)
                 return NotFound("Date is not found!");
             if (info.SlotStatus == true)
