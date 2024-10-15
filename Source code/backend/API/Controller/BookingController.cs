@@ -42,7 +42,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Booking>>> GetVetBookings(string id)
+        public async Task<ActionResult<I﻿Enumerable<Booking>>> GetVetBookings(string id)
         {
             try
             {
@@ -63,9 +63,26 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<string>> AddBooking(Booking info){
             try{
-
+                string result = await _unitOfWork.BookingRepository.AddNewBooking(info);
+                switch (result){
+                    case "Parameters cannot be null":
+                    case "Parameters cannot be empty":
+                        return StatusCode(StatusCodes.Status400BadRequest, result);
+                    case "Cannot place an booking order with that date":
+                    case "Cannot detemined the delivery method of the service":
+                        return StatusCode(StatusCodes.Status406NotAcceptable, result);
+                    case "Customer does not exist":
+                    case "Employee does not exist":
+                        return StatusCode(StatusCodes.Status404NotFound, result);
+                    case "Unable to create new booking order":
+                    case "Unable to update vet schedule":
+                        return StatusCode(StatusCodes.Status408RequestTimeout, result);
+                    default:
+                        return Ok(result);
+                }
             } catch (Exception ex){
-                return 
+                Console.WriteLine(ex);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
     }
