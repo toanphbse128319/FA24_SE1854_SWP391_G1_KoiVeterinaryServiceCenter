@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
 using Repositories.Model;
-using Microsoft.EntityFrameworkCore;
-using Repositories.Repository;
 using Repositories;
-
 
 namespace API.Controllers
 {
@@ -54,16 +50,6 @@ namespace API.Controllers
                 BookingDetail bd = await _unitOfWork.BookingDetailRepository.GetByIdAsync(info.BookingDetailID);
                 if (bd == null)
                     return NotFound("BookingDetail does not existed!");
-                bd.NoteResult = info.NoteResult;
-                bd.DrugList = info.DrugList;
-                bd.MaterialList = info.MaterialList;
-                bd.ConsultDoctor = info.ConsultDoctor;
-                bd.AnimalStatusDescription = info.AnimalStatusDescription;
-                bd.PoolStatusDescription = info.PoolStatusDescription;
-                bd.ConsultTechnician = info.ConsultTechnician;
-                bd.PoolStatusDescription = info.PoolStatusDescription;
-                bd.Incidental = info.Incidental;
-                bd.NoteExamination = info.NoteExamination;
                 if (await _unitOfWork.BookingDetailRepository.UpdateAsync(bd) == 0)
                     return BadRequest("BookingDetail has not been updated!");
                 else
@@ -71,7 +57,7 @@ namespace API.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest("Unknown Error: " + ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 

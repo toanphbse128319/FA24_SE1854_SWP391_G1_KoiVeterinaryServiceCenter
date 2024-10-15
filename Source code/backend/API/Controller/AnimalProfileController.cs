@@ -26,16 +26,16 @@ namespace API.Controllers
         }
 
         [HttpGet("ByBookingDetailID")]
-        public async Task<ActionResult<IEnumerable<AnimalProfile?>>> GetByBookingDetailID(string id)
+        public async Task<ActionResult<IEnumerable<AnimalProfile>>> GetByBookingDetailID(string id)
         {
-            List<AnimalProfile?> list = await _unitOfWork.AnimalProfileRepository.GetByBookingDetailID(id);
+            List<AnimalProfile> list = await _unitOfWork.AnimalProfileRepository.GetByBookingDetailID(id);
             if (list.Count == 0)
                 return NotFound("Animal profile not found!");
             else return Ok(list);
         }
 
         [HttpPost]
-        public async Task<ActionResult<AnimalProfile?>> AddAnimalProfile(AnimalProfile animalprofile)
+        public async Task<ActionResult<AnimalProfile>> AddAnimalProfile(AnimalProfile animalprofile)
         {
             try
             {
