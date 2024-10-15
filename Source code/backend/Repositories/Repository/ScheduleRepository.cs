@@ -38,16 +38,21 @@ public class ScheduleRepository : GenericRepository<Schedule>
                                                     schedule.SlotStatus == true).ToListAsync();
     }
 
-    public async Task<Schedule?> UpdateSlotStatusAsync(string id, bool msg)
+    public Task<Schedule?> FindSpecificSchedule(string employeeID, DateOnly date, int slot){
+        return _context.Schedules.FirstOrDefaultAsync(schedule => schedule.Date == date &&
+                                                                  schedule.Slot == slot &&
+                                                                  schedule.EmployeeID == employeeID);
+    }
+
+    public async Task<Schedule?> UpdateSlotStatusAsync(Schedule info)
     {
-        Schedule? schedule = await FindScheduleByEmpIDAsync(id);
+        Schedule? schedule = await FindSpecificSchedule(info.EmployeeID, info.Date, info.Slot);
         if (schedule == null) 
             return schedule;
         else
         {
-            schedule.SlotStatus = msg;
-            await UpdateAsync(schedule);
-            return schedule;
+            await UpdateAsync(info);
+            return info;
         }
     }
 

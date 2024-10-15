@@ -1,5 +1,4 @@
 #nullable disable
-using Helper;
 using Microsoft.AspNetCore.Mvc;
 using Repositories;
 using Repositories.Model;
@@ -43,7 +42,7 @@ public class ScheduleController : ControllerBase
     {
         try
         {
-            var schedule = await _unitOfWork.ScheduleRepository.UpdateSlotStatusAsync(info.Date, info.SlotStatus);
+            var schedule = await _unitOfWork.ScheduleRepository.UpdateSlotStatusAsync(info);
             if (schedule == null)
                 return NotFound("Date is not found!");
             if (info.SlotStatus == true)
