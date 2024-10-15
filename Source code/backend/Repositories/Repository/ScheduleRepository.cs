@@ -91,7 +91,7 @@ public class ScheduleRepository : GenericRepository<Schedule>
             schedule.Date = info.Date;  
             schedule.Note = info.Note;
             schedule.Slot = (i + 1);
-            schedule.SlotStatus = info.SlotStatus;
+            schedule.SlotStatus = true;
             await base.CreateAsync(schedule);
         }
         return info;
