@@ -1,5 +1,5 @@
 import React from 'react';
-import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
 import Login from "./pages/Login";
 import AboutUsPage from "./pages/AboutUsPage";
 import Header from "./Components/Header";
@@ -19,23 +19,33 @@ const Layout = () => {
   );
 };
 
-// Define routes
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Layout />,
-    children: [
-      { index: true, element: <AboutUsPage /> },
-      { path: "login", element: <LoginContainer /> },
-      { path: "signup", element: <SignUp /> },
-      { path: "booking", element: <TrackingBookingDetail /> },
-    ],
-  },
-]);
-
 // App component
+// const App = () => {
+//   return (
+//     <Router>
+//       <Layout />
+//       <Routes>
+//         <Route index element={<AboutUsPage />} />
+//         <Route path="login" element={<LoginContainer />} />
+//         <Route path="signup" element={<SignUp />} />
+//         <Route path="booking" element={<TrackingBookingDetail />} />
+//       </Routes>
+//     </Router>
+//   );
+// };
+
 const App = () => {
-  return <RouterProvider router={router} />;
+  return (
+    <Router>
+      <Layout />
+      <Routes>
+        <Route index element={<AboutUsPage />} />
+        <Route path="login" element={<LoginContainer />} />
+        <Route path="signup" element={<SignUp />} />
+        <Route path="booking" element={<TrackingBookingDetail />} />
+      </Routes>
+    </Router>
+  );
 };
 
 export default App;

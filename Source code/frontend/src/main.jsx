@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import App from './App.jsx';
 import './index.css';
 import TrackingBookingDetail from  "./Components/TrackingBookingDetail"
+import Docter from "./Components/Doctor'sSummaryInformation";
 
 import {
   createBrowserRouter,
@@ -12,7 +13,7 @@ import {
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <Docter />,
   },
   {
     path: "/booking",
