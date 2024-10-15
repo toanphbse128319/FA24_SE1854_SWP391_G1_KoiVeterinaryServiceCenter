@@ -74,7 +74,7 @@ public class ScheduleController : ControllerBase
 
     [Route("GetScheduleByDate")]
     [HttpGet]
-    public async Task<ActionResult<List<Schedule>>> GetScheduleByDate(string date)
+    public async Task<ActionResult<List<Schedule>>> GetScheduleByDate(DateOnly date)
     {
         if (await _unitOfWork.ScheduleRepository.CheckValidDate(date) == null)
             return NotFound("Date is not found!");
