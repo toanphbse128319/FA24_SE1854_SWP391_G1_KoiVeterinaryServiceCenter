@@ -96,5 +96,24 @@ public class ScheduleRepository : GenericRepository<Schedule>
         }
         return info;
     }
+
+    public int SlotByTime( DateTime target ){
+        if( target.Hour < 7 || target.Hour > 17 )
+            return 0;
+
+        switch(target.Hour){
+            case 16: return 7;
+            case 15: return 6;
+            case 14: return 5;
+            case 13: return 4;
+            case 11: return 3;
+            case 10: return 2;
+            case 9: return 1;
+            case 8: return 0;
+        }
+        return 0;
+
+    }
+
 }
 
