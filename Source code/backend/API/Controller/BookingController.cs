@@ -70,6 +70,10 @@ namespace API.Controllers
                         return StatusCode(StatusCodes.Status400BadRequest, result);
                     case "Cannot place an booking order with that date":
                     case "Cannot detemined the delivery method of the service":
+                    case "Outside working hour":
+                    case "Cannot get the schedule":           
+                    case "Cannot place order on this slot":
+                    case "Cannot update slot status":
                         return StatusCode(StatusCodes.Status406NotAcceptable, result);
                     case "Customer does not exist":
                     case "Employee does not exist":
