@@ -4,6 +4,7 @@ import App from './App.jsx';
 import './index.css';
 import TrackingBookingDetail from  "./Components/TrackingBookingDetail"
 import Docter from "./Components/Doctor'sSummaryInformation";
+import BookingPage from './pages/Booking.jsx';
 
 import {
   createBrowserRouter,
@@ -11,13 +12,13 @@ import {
 } from "react-router-dom";
 
 const router = createBrowserRouter([
+  // {
+  //   path: "/docter",
+  //   element: <Docter />,
+  // },
   {
     path: "/",
-    element: <Docter />,
-  },
-  {
-    path: "/booking",
-    element: <TrackingBookingDetail />,
+    element: <BookingPage />,
   },
 ]);
 
