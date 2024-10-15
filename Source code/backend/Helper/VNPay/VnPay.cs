@@ -1,7 +1,6 @@
 #nullable disable 
 using Microsoft.Extensions.Primitives;
-using System.Collections;
-using System.Collections.Generic;
+
 namespace Helper.VNPay;
 public class VnPay{
     private string _vnpUrl;
