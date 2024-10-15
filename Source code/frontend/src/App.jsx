@@ -6,7 +6,7 @@ import LoginContainer from "./Components/LoginContainer";
 import Banner from "./Components/Banner";
 import NhanHang from "./Components/NhanHang"
 import Navbar from "./Components/Navbar"
-
+import DoctorBooking from "./Components/Booking'sSummaryInformation"
 const App = () => {
   return (
     <div>
@@ -20,6 +20,7 @@ const App = () => {
       <div>
         <NhanHang/>
       </div>
+      
     </div>
   );
 };
