@@ -21,18 +21,19 @@ public class ScheduleController : ControllerBase
     {
         try
         {
-            if (info.FirstName == null || info.LastName == null)
-                return BadRequest("Missing parameter(s)!");
-            if (info.Date == new DateOnly() || info.FirstName.Trim().Length == 0 || info.LastName.Trim().Length == 0)
+            if (info.EmployeeID == null )
+                return BadRequest("Missing id parameter!");
+            if (info.Date == new DateOnly() || info.EmployeeID.Trim().Length == 0)
                 return BadRequest("Parameter(s) cannot be empty!");
-            if (await _unitOfWork.ScheduleRepository.FindScheduleByDateAsync(info.Date) != null)
-                return BadRequest("Date is already existed!");
-            var schedule = await _unitOfWork.ScheduleRepository.GenerateVetScheduleAsync(info);
+            if (await _unitOfWork.ScheduleRepository.CheckValidDateAsync(info.Date, info.EmployeeID) != null)
+                return BadRequest("Working day for that vet is already existed!");
+            await _unitOfWork.ScheduleRepository.GenerateVetScheduleAsync(info);
             return Ok("Added successfully!");
         }
         catch (Exception ex)
         {
-            return BadRequest("Unknown Error: " + ex.Message);
+            Console.WriteLine(ex);
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
 
@@ -51,43 +52,43 @@ public class ScheduleController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest("Unknown Error: " + ex.Message);
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
 
     [Route("UpdateVetSchedule")]
     [HttpPut]
-    public async Task<ActionResult<Schedule>> UpdateVetScheduleAsync(Schedule info)
+    public async Task<ActionResult<Schedule>> UpdateVetScheduleAsync(DateOnly date, string oldID, string newID)
     {
         try
         {
-            var schedule = await _unitOfWork.ScheduleRepository.UpdateVetScheduleAsync(info.Date, info.FirstName, info.LastName);
+            var schedule = await _unitOfWork.ScheduleRepository.UpdateVetScheduleAsync(date, oldID, newID);
             if (schedule == null)
                 return NotFound("Date is not found!");
-            return Ok(info.FirstName + " " + info.LastName + " is updated successfully!");
+            return Ok($"Updated successfully!");
         }
         catch (Exception ex)
         {
-            return BadRequest("Unknown Error: " + ex.Message);
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
 
     [Route("GetScheduleByDate")]
     [HttpGet]
-    public async Task<ActionResult<List<Schedule>>> GetScheduleByDate(DateOnly date)
+    public async Task<ActionResult<List<Schedule>>> GetScheduleByDate(DateOnly date, string empid)
     {
-        if (await _unitOfWork.ScheduleRepository.CheckValidDate(date) == null)
+        if (await _unitOfWork.ScheduleRepository.CheckValidDateAsync(date, empid) == null)
             return NotFound("Date is not found!");
-        return await _unitOfWork.ScheduleRepository.FindScheduleByDateAsync(date);
+        return await _unitOfWork.ScheduleRepository.SearchByDateAsync(date, empid);
     }
 
     [Route("GetScheduleByName")]
     [HttpGet]
     public async Task<ActionResult<List<Schedule>>> GetScheduleByName(string firstname, string lastname)
     {
-        if (await _unitOfWork.ScheduleRepository.CheckValidName(firstname, lastname) == null)
+        if (await _unitOfWork.ScheduleRepository.CheckValidNameAsync(firstname, lastname) == null)
             return NotFound("Name is not found!");
-        return await _unitOfWork.ScheduleRepository.FindScheduleByNameAsync(firstname, lastname);
+        return await _unitOfWork.ScheduleRepository.SearchByNameAsync(firstname, lastname);
     }
 
 
