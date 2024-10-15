@@ -24,6 +24,8 @@ public class ScheduleController : ControllerBase
         {
             if (info.FirstName == null || info.LastName == null)
                 return BadRequest("Missing parameter(s)!");
+            if (info.Date == new DateOnly() || info.FirstName.Trim().Length == 0 || info.LastName.Trim().Length == 0)
+                return BadRequest("Parameter(s) cannot be empty!");
             if (await _unitOfWork.ScheduleRepository.FindScheduleByDateAsync(info.Date) != null)
                 return BadRequest("Date is already existed!");
             var schedule = await _unitOfWork.ScheduleRepository.GenerateVetScheduleAsync(info);
