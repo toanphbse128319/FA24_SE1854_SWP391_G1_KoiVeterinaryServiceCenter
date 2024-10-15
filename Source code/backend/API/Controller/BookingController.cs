@@ -37,7 +37,7 @@ namespace API.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest("Unknown Error: " + ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
@@ -55,7 +55,17 @@ namespace API.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest("Unknown Error: " + ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [Route("add")]
+        [HttpPost]
+        public async Task<ActionResult<string>> AddBooking(Booking info){
+            try{
+
+            } catch (Exception ex){
+                return 
             }
         }
     }
