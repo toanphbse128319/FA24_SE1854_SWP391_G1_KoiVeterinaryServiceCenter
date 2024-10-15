@@ -20,7 +20,7 @@ public class ScheduleRepository : GenericRepository<Schedule>
         Employee? emp = await (new EmployeeRepository(_context).SearchByFullNameAsync(firstname, lastname));
         if( emp == null )
             return null!;
-        return SearchByEmpIDAsync(emp.EmployeeID);
+        return await SearchByEmpIDAsync(emp.EmployeeID);
     }
 
     public Task<Schedule?> CheckValidDate(DateOnly date)
@@ -28,10 +28,12 @@ public class ScheduleRepository : GenericRepository<Schedule>
         return _context.Schedules.FirstOrDefaultAsync(schedule => schedule.Date == date);
     }
 
-    public Task<Schedule?> CheckValidName(string firstname, string lastname)
+    public async Task<Schedule?> CheckValidName(string firstname, string lastname)
     {
-        return _context.Schedules.FirstOrDefaultAsync(schedule => schedule.FirstName == firstname &&
-                                                                  schedule.LastName == lastname);
+        Employee? emp = await (new EmployeeRepository(_context).SearchByFullNameAsync(firstname, lastname));
+        if( emp == null )
+            return null!;
+        return (await SearchByEmpIDAsync(emp.EmployeeID))[0];
     }
 
     public Task<List<Schedule>> FindScheduleByDateAsync(DateOnly date)
