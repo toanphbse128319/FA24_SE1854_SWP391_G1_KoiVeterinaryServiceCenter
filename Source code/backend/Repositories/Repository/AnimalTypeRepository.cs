@@ -23,10 +23,7 @@ namespace Repositories.Repository
         public async Task<AnimalType?> AddAnimalTypeAsync(AnimalType animaltype)
         {
             if (await FindAnimalTypeByNameAsync(animaltype.Name) != null)
-            {
-                animaltype = null;
-                return animaltype;
-            }
+                return null;
             if (animaltype.TypeID == "")
             {
                 int index = base.GetAll().Count;

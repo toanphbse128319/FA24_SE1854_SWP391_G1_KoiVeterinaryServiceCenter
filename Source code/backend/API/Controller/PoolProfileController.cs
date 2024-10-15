@@ -18,6 +18,15 @@ namespace API.Controllers
             _unitOfWork = unitOfWork;
         }
 
+        [HttpGet("ByBookingDetailID")]
+        public async Task<ActionResult<IEnumerable<PoolProfile?>>> GetByBookingDetailID(string id)
+        {
+            List<PoolProfile?> list = await _unitOfWork.PoolProfileRepository.GetByBookingDetailID(id);
+            if (list.Count == 0)
+                return NotFound("Pool profile not found!");
+            else return Ok(list);
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<PoolProfile>> GetPoolProfileByID(string id)
         {
@@ -33,7 +42,7 @@ namespace API.Controllers
                     return BadRequest("Pool profile is already existed!");
                 if (await _unitOfWork.BookingDetailRepository.GetByIdAsync(poolprofile.BookingDetailID) == null)
                     return BadRequest("Booking detail ID does not exist!");
-                if (await _unitOfWork.PoolProfileRepository.AddPoolProfileAsync(poolprofile) != null)
+                if (await _unitOfWork.PoolProfileRepository.AddPoolProfileAsync(poolprofile) != 0)
                     return Ok($"Added {poolprofile.Name} successfully!");
                 else
                     return BadRequest($"Added {poolprofile.Name} failed");
