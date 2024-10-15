@@ -82,14 +82,14 @@ public class ScheduleRepository : GenericRepository<Schedule>
     {
         int index = base.GetAll().Count;
         if (info.ScheduleID == "")
-            info.ScheduleID = "SCH" + index;
+            info.ScheduleID = "SCH" ;
             
         try
         {   
             for (int i = 0; i < 8; i++)
             {
                 Schedule schedule = new Schedule();
-                schedule.ScheduleID = "VS" + (index + i);
+                schedule.ScheduleID = info.ScheduleID + (index + i);
                 schedule.EmployeeID = info.EmployeeID;
                 schedule.Date = info.Date;  
                 schedule.Note = info.Note;
