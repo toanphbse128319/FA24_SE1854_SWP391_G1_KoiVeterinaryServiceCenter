@@ -23,12 +23,12 @@ public class ScheduleRepository : GenericRepository<Schedule>
         return await SearchByEmpIDAsync(emp.EmployeeID);
     }
 
-    public Task<Schedule?> CheckValidDate(DateOnly date)
+    public async Task<Schedule?> CheckValidDateAsync(DateOnly date)
     {
-        return _context.Schedules.FirstOrDefaultAsync(schedule => schedule.Date == date);
+        return await _context.Schedules.FirstOrDefaultAsync(schedule => schedule.Date == date);
     }
 
-    public async Task<Schedule?> CheckValidName(string firstname, string lastname)
+    public async Task<Schedule?> CheckValidNameAsync(string firstname, string lastname)
     {
         Employee? emp = await (new EmployeeRepository(_context).SearchByFullNameAsync(firstname, lastname));
         if( emp == null )
@@ -36,21 +36,21 @@ public class ScheduleRepository : GenericRepository<Schedule>
         return (await SearchByEmpIDAsync(emp.EmployeeID))[0];
     }
 
-    public Task<List<Schedule>> FindScheduleByDateAsync(DateOnly date)
+    public async Task<List<Schedule>> SearchByDateAsync(DateOnly date)
     { 
-        return _context.Schedules.Where(schedule => schedule.Date == date &&
+        return await _context.Schedules.Where(schedule => schedule.Date == date &&
                                                     schedule.SlotStatus == true).ToListAsync();
     }
 
-    public Task<Schedule?> FindSpecificSchedule(string employeeID, DateOnly date, int slot){
-        return _context.Schedules.FirstOrDefaultAsync(schedule => schedule.Date == date &&
+    public async Task<Schedule?> SearchSpecificSlotAsync(string employeeID, DateOnly date, int slot){
+        return await _context.Schedules.FirstOrDefaultAsync(schedule => schedule.Date == date &&
                                                                   schedule.Slot == slot &&
                                                                   schedule.EmployeeID == employeeID);
     }
 
     public async Task<Schedule?> UpdateSlotStatusAsync(Schedule info)
     {
-        Schedule? schedule = await FindSpecificSchedule(info.EmployeeID, info.Date, info.Slot);
+        Schedule? schedule = await SearchSpecificSlotAsync(info.EmployeeID, info.Date, info.Slot);
         if (schedule == null) 
             return schedule;
         else
@@ -60,16 +60,15 @@ public class ScheduleRepository : GenericRepository<Schedule>
         }
     }
 
-    public async Task<List<Schedule>> UpdateVetScheduleAsync(DateOnly date, string firstname, string lastname)
+    public async Task<List<Schedule>> UpdateVetScheduleAsync(DateOnly date, string oldEmpID, string newEmpID)
     {
-        List<Schedule> schedule = await FindScheduleByDateAsync(date);
+        List<Schedule> schedule = await SearchByDateAsync(date);
+        schedule = schedule.Where( schedule => schedule.EmployeeID == oldEmpID ).ToList();
         try
         {
-            foreach (var item in schedule)
-            {
-                item.FirstName = firstname;
-                item.LastName = lastname;
-                await UpdateAsync(item);
+            for( int i = 0; i < schedule.Count; ++i ){
+                schedule[i].EmployeeID = newEmpID;
+                await UpdateAsync(schedule[i]);
             }
         }
         catch (Exception ex)
