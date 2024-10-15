@@ -5,15 +5,24 @@ import './index.css';
 import TrackingBookingDetail from  "./Components/TrackingBookingDetail"
 import Docter from "./Components/Doctor'sSummaryInformation";
 
+import BookingPage from './pages/Booking.jsx';
+
+
 import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
 
 const router = createBrowserRouter([
+  // {
+  //   path: "/docter",
+  //   element: <Docter />,
+  // },
   {
     path: "/",
+
     element: <App />,
+
   },
   
 ]);

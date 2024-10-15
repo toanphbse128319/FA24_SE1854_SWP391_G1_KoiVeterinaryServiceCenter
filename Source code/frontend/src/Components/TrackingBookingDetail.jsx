@@ -10,7 +10,9 @@ const InfoCard = ({ serviceDeliveryMethod, service, employee }) => {
     if (!hasData) return null;
 
     return (
-        <Card sx={{ maxWidth: '25vw', width: '100%', margin: 30, borderRadius: "10px" }}>
+
+        <Card sx={{ maxWidth: '250px', width: '30vw', marginLeft: '15vw', marginTop:'0vh',borderRadius: "10px",  boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', }}>
+
             <CardHeader
                 title="Thông tin"
                 titleTypographyProps={{ fontWeight: 700 }}
@@ -55,9 +57,9 @@ const InfoCard = ({ serviceDeliveryMethod, service, employee }) => {
 
 
 
-const TrackingBookingDetail = () => {
-    const location = useLocation(); 
-    const { employee, serviceDeliveryMethod, service } = location.state || {};
+const TrackingBookingDetail = ({ service, employee, serviceDeliveryMethod }) => {
+    
+
     return (
 
 
