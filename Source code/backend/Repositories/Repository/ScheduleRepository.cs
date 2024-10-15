@@ -1,8 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Text.RegularExpressions;
 using Repositories.Model;
-using Repositories;
-using Repositories.Repository;
 
 namespace Repositories.Repository;
 
@@ -12,32 +9,38 @@ public class ScheduleRepository : GenericRepository<Schedule>
     {
         _context = context;
     }
+
     public Task<Schedule?> FindScheduleByEmpIDAsync(string id)
     {
         return _context.Schedules.FirstOrDefaultAsync(schedule => schedule.EmployeeID.ToLower() == id.ToLower());
     }
+
     public Task<List<Schedule>> FindScheduleByNameAsync(string firstname, string lastname)
     {
         return _context.Schedules.Where(schedule => schedule.FirstName.ToLower() == firstname.ToLower() &&
                                                     schedule.LastName.ToLower() == lastname.ToLower()).ToListAsync();
     }
-    public Task<Schedule?> CheckValidDate(string date)
+
+    public Task<Schedule?> CheckValidDate(DateOnly date)
     {
         return _context.Schedules.FirstOrDefaultAsync(schedule => schedule.Date == date);
     }
+
     public Task<Schedule?> CheckValidName(string firstname, string lastname)
     {
         return _context.Schedules.FirstOrDefaultAsync(schedule => schedule.FirstName == firstname &&
                                                                   schedule.LastName == lastname);
     }
-    public Task<List<Schedule>> FindScheduleByDateAsync(string date)
+
+    public Task<List<Schedule>> FindScheduleByDateAsync(DateOnly date)
     { 
         return _context.Schedules.Where(schedule => schedule.Date == date &&
                                                     schedule.SlotStatus == true).ToListAsync();
     }
+
     public async Task<Schedule?> UpdateSlotStatusAsync(string id, bool msg)
     {
-        Schedule schedule = await FindScheduleByEmpIDAsync(id);
+        Schedule? schedule = await FindScheduleByEmpIDAsync(id);
         if (schedule == null) 
             return schedule;
         else
