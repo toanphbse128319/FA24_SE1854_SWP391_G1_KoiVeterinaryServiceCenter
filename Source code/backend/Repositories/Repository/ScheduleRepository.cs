@@ -54,26 +54,19 @@ public class ScheduleRepository : GenericRepository<Schedule>
         Schedule? schedule = await SearchSpecificSlotAsync(info.EmployeeID, info.Date, info.Slot);
         if (schedule == null) 
             return schedule;
-        else
-        {
-            await UpdateAsync(info);
-            return info;
-        }
+
+        schedule.SlotCapacity = info.SlotCapacity;
+        schedule.SlotStatus = info.SlotStatus;
+        await UpdateAsync(schedule);
+        return schedule;
     }
 
     public async Task<List<Schedule>> UpdateVetScheduleAsync(DateOnly date, string oldEmpID, string newEmpID)
     {
         List<Schedule> schedule = await SearchByDateAsync(date, oldEmpID);
-        try
-        {
-            for( int i = 0; i < schedule.Count; ++i ){
-                schedule[i].EmployeeID = newEmpID;
-                await UpdateAsync(schedule[i]);
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex);
+        for( int i = 0; i < schedule.Count; ++i ){
+            schedule[i].EmployeeID = newEmpID;
+            await UpdateAsync(schedule[i]);
         }
         return schedule;
     }
@@ -83,24 +76,17 @@ public class ScheduleRepository : GenericRepository<Schedule>
         int index = base.GetAll().Count;
         if (info.ScheduleID == "")
             info.ScheduleID = "SCH" ;
-            
-        try
-        {   
-            for (int i = 0; i < 8; i++)
-            {
-                Schedule schedule = new Schedule();
-                schedule.ScheduleID = info.ScheduleID + (index + i);
-                schedule.EmployeeID = info.EmployeeID;
-                schedule.Date = info.Date;  
-                schedule.Note = info.Note;
-                schedule.Slot = (i + 1);
-                schedule.SlotStatus = info.SlotStatus;
-                await base.CreateAsync(schedule);
-            }
-        }
-        catch (Exception ex)
+
+        for (int i = 0; i < 8; i++)
         {
-            Console.WriteLine(ex);
+            Schedule schedule = new Schedule();
+            schedule.ScheduleID = info.ScheduleID + (index + i);
+            schedule.EmployeeID = info.EmployeeID;
+            schedule.Date = info.Date;  
+            schedule.Note = info.Note;
+            schedule.Slot = (i + 1);
+            schedule.SlotStatus = info.SlotStatus;
+            await base.CreateAsync(schedule);
         }
         return info;
     }
