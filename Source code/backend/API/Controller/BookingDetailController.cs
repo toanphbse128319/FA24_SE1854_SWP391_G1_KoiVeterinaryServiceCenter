@@ -50,7 +50,7 @@ namespace API.Controllers
                 BookingDetail bd = await _unitOfWork.BookingDetailRepository.GetByIdAsync(info.BookingDetailID);
                 if (bd == null)
                     return NotFound("BookingDetail does not existed!");
-                if (await _unitOfWork.BookingDetailRepository.UpdateAsync(bd) == 0)
+                if (await _unitOfWork.BookingDetailRepository.UpdateAsync(info) == 0)
                     return BadRequest("BookingDetail has not been updated!");
                 else
                     return Ok("Changes have been saved");
