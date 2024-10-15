@@ -83,8 +83,6 @@ GO
 CREATE TABLE Schedule(
     ScheduleID nvarchar(20) PRIMARY KEY,
     EmployeeID nvarchar(20) FOREIGN KEY REFERENCES Employee(EmployeeID) NOT NULL,
-	Firstname nvarchar(20) NOT NULL,
-    Lastname nvarchar(20) NOT NULL,
     Date nvarchar(20) NOT NULL,
     Note nvarchar(MAX),
     Slot int,
