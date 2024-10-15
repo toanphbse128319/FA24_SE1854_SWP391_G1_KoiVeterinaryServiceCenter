@@ -22,7 +22,7 @@ public class ScheduleController : ControllerBase
     {
         try
         {
-            if (info.Date == null || info.FirstName == null || info.LastName == null || info.SlotStatus == null)
+            if (info.FirstName == null || info.LastName == null)
                 return BadRequest("Missing parameter(s)!");
             if (await _unitOfWork.ScheduleRepository.FindScheduleByDateAsync(info.Date) != null)
                 return BadRequest("Date is already existed!");
