@@ -32,7 +32,8 @@ namespace API.Controllers
                     else if( info.PaymentStatus == "Refunded" )
                         return Ok("The order has been refunded");
 
-                    return StatusCode(StatusCodes.Status200OK, service.PayUrl(info.TotalServiceCost, info.BookingID, Request.Host.ToString() , "vn", $"Thanh toán chi phí cho hóa đơn {info.BookingID} với giá {info.TotalServiceCost}"));
+                    Decimal price = await _unitOfWork.BookingRepository.GetTotalPrice(info.BookingID, info.NumberOfFish);
+                    return StatusCode(StatusCodes.Status200OK, service.PayUrl(price, info.BookingID, Request.Host.ToString() , "vn", $"Thanh toán chi phí cho hóa đơn {info.BookingID} với giá {info.TotalServiceCost}"));
                 } catch ( Exception ex ){
                     return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
                 }
