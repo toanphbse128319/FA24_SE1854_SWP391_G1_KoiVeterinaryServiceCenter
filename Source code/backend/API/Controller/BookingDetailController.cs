@@ -78,6 +78,25 @@ namespace API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-
+        [HttpPost]
+        public async Task<ActionResult<BookingDetail?>> AddBookingDetail(BookingDetail info)
+        {
+            try
+            {
+                if(await _unitOfWork.BookingDetailRepository.GetByIdAsync(info.BookingDetailID) != null)
+                    return NotFound("Booking Detail is existed!");
+                if(await _unitOfWork.BookingRepository.GetByIdAsync(info.BookingID) == null)
+                    return NotFound("BookingID not found!");
+                if(await _unitOfWork.ServiceRepository.GetByIdAsync(info.ServiceID) == null)
+                    return NotFound("ServiceID not found!");
+                if (await _unitOfWork.BookingDetailRepository.AddBookingDetailAsync(info) == 0)
+                    return BadRequest("Added fail!");
+                else return Ok($"Added {info.BookingDetailID} successfully");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
     }
 }

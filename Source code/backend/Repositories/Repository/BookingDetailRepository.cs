@@ -24,5 +24,17 @@ namespace Repositories.Repository
         {
             return _context.BookingDetails.Where(bookingdetail => bookingdetail.ServiceID.ToLower() == id.ToLower()).ToListAsync()!;
         }
+
+        public async Task<int> AddBookingDetailAsync (BookingDetail bd)
+        {
+            if (await _context.BookingDetails.FindAsync(bd.BookingDetailID) != null)
+                return 0;
+            if (bd.BookingDetailID == "")
+            {
+                int index = base.GetAll().Count;
+                bd.BookingDetailID = "BD" + index;
+            }
+            return await base.CreateAsync(bd);
+        }
     }
 }
