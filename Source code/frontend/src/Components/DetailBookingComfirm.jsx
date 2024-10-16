@@ -3,7 +3,6 @@ import { Card, CardHeader, CardContent, Typography, Table, TableBody, TableCell,
 
 const OrderConfirmationFunction = ({ service, employee, ServiceDeliveryMethodID,numberOfFish,appointmentTime,priceService,movingCost,totalPrice }) => {
     
-
     return (
         <Card sx={{ maxWidth: '50vw', position: 'relative', borderRadius: '5px' }}>
             <CardHeader
