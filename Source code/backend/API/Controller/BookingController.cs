@@ -61,9 +61,9 @@ namespace API.Controllers
 
         [Route("add")]
         [HttpPost]
-        public async Task<ActionResult<string>> AddBooking(Booking info){
+        public async Task<ActionResult<string>> AddBooking(Booking info, string serviceID){
             try{
-                string result = await _unitOfWork.BookingRepository.AddNewBooking(info);
+                string result = await _unitOfWork.BookingRepository.AddNewBooking(info, serviceID);
                 switch (result){
                     case "Parameters cannot be null":
                     case "Parameters cannot be empty":
