@@ -12,24 +12,23 @@ public class ScheduleRepository : GenericRepository<Schedule>
     {
         _context = context;
     }
-    public Task<Schedule?> FindScheduleAsync(string id)
+    public Task<Schedule?> FindScheduleByIDAsync(string id)
     {
         return _context.Schedules.FirstOrDefaultAsync(schedule => schedule.EmployeeID.ToLower() == id.ToLower());
     }
-
-    public Task<Schedule?> FindScheduleByDateAsync(string date)
+    public Task<List<Schedule>> FindScheduleByNameAsync(string firstname, string lastname)
     {
-        return _context.Schedules.FirstOrDefaultAsync(schedule => schedule.Date == date);
+        return _context.Schedules.Where(schedule => schedule.FirstName.ToLower() == firstname.ToLower()&&
+                                                    schedule.LastName.ToLower() == lastname.ToLower()).ToListAsync();
     }
-    public Task<List<Schedule>> FindSlotAvailableAsync(string date) 
+    public Task<List<Schedule>> FindScheduleByDateAsync(string date)
     { 
         return _context.Schedules.Where(schedule => schedule.Date == date &&
                                                     schedule.SlotStatus == "true").ToListAsync();
     }
-
     public async Task<Schedule?> UpdateSlotStatusAsync(string id, string msg)
     {
-        Schedule schedule = await FindScheduleAsync(id);
+        Schedule schedule = await FindScheduleByIDAsync(id);
         if (schedule == null) 
             return schedule;
         else
@@ -40,17 +39,23 @@ public class ScheduleRepository : GenericRepository<Schedule>
         }
     }
 
-    public async Task<Schedule?> UpdateVetScheduleAsync(string date, string name)
+    public async Task<List<Schedule>> UpdateVetScheduleAsync(string date, string firstname, string lastname)
     {
-        Schedule schedule = await FindScheduleByDateAsync(date);
-        if (schedule == null)
-            return schedule;
-        else
+        List<Schedule> schedule = await FindScheduleByDateAsync(date);
+        try
         {
-            schedule.EmployeeID = name;
-            await _context.SaveChangesAsync();
-            return schedule;
+            foreach (var item in schedule)
+            {
+                item.FirstName = firstname;
+                item.LastName = lastname;
+                await _context.SaveChangesAsync();
+            }
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+        return schedule;
     }
 
     public async Task<Schedule?> GenerateVetScheduleAsync(Schedule info)
