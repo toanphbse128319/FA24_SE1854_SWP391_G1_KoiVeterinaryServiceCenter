@@ -61,7 +61,7 @@ public class BookingRepository : GenericRepository<Booking>
         return schedule.ScheduleID;
     }
 
-    public async Task<string> AddNewBooking(Booking info){
+    public async Task<string> AddNewBooking(Booking info, string ServiceID){
         if( info.CustomerID == null || info.EmployeeID == null || info.ServiceDeliveryMethodID == null ||
                 info.BookingAddress == null )
             return "Parameters cannot be null";
@@ -113,7 +113,23 @@ public class BookingRepository : GenericRepository<Booking>
 
         if( await base.CreateAsync(info) == 0 )
             return "Unable to create new booking order";
+
+        BookingDetail detail = new BookingDetail(){BookingID = info.BookingID, ServiceID = ServiceID };
         return info.BookingID;
+    }
+
+    public async Task<Decimal> GetTotalPrice(string bookingID, int numberOfFish){
+        BookingDetailRepository bdRepo = new BookingDetailRepository(_context);
+        List<BookingDetail?> details = await bdRepo.GetByBookingID(bookingID);
+        if( details == null || details.Count == 0 )
+            return 0;
+        Decimal total = 0;
+        foreach(BookingDetail? detail in details){
+            if( detail == null )
+                break;
+            total += detail.UnitPrice * numberOfFish;
+        }
+        return total;
     }
 }
 
