@@ -189,3 +189,27 @@ Mật khẩu OTP: 123456
 </details>
     
 </details>
+
+# Cách dùng postman để viết test manual
+
+1. Tạo folder tương ứng với tên model bằng cách bấm dấu "+" và chọn "Blank Collection".
+   
+   ![image](https://github.com/user-attachments/assets/bce0a251-c48f-455e-a183-27e2db732d86)
+
+2. Tạo folder con tương ứng với 1 endpoint = cách nhấn nút "。。。" của folder model / hoặc chuột phải vào, chọn add folder.
+
+    ![image](https://github.com/user-attachments/assets/a06bca7b-7fd3-48b3-aa39-c00448eaaf20)
+
+3. Tạo request tương tự như tạo folder, bấm "Create request" thay vì "Create folder".
+
+Ví dụ mẫu thì có thể kham khải ở Booking/New Booking/"Booking at slot 1" trong postman.
+
+** Nhớ ctrl+s mỗi lần thay đổi, không thì duplicate hoặc tắt mở lại thì postman sẽ quay về bản save gần nhất.
+
+** Cài thêm postman agent để postman nhận được link localhost .
+
+Nếu như không có workspace như ở dưới thì check lại mail postman hoặc yêu cầu Toàn để đc nhận mail mời vào workspace
+
+ ![image](https://github.com/user-attachments/assets/3c7f02d2-a509-4bb5-8b99-9e1996c78537)
+
+   
