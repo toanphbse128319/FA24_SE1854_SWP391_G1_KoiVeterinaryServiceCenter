@@ -41,7 +41,7 @@ public class ScheduleController : ControllerBase
         }
     }
 
-    [Route("UpdateSlot")]
+    [Route("UpdateSlotByEmployeeID")]
     [HttpPut]
     public async Task<ActionResult<SlotTable>> UpdateSlotStatusByEmpIDAsync(UpdateSchedule info)
     {
