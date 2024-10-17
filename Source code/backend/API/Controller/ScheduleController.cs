@@ -1,7 +1,11 @@
 #nullable disable
+using Helper;
 using Microsoft.AspNetCore.Mvc;
 using Repositories;
 using Repositories.Model;
+using System.Security.Cryptography;
+using System.Security.Cryptography.Pkcs;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace API.Controllers;
 [Route("api/[controller]")]
@@ -17,7 +21,7 @@ public class ScheduleController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<Schedule>> AddScheduleAsync(Schedule info)
+    public async Task<ActionResult<Schedule>> AddScheduleAsync(UpdateSchedule info)
     {
         try
         {
@@ -27,7 +31,7 @@ public class ScheduleController : ControllerBase
                 return BadRequest("Parameter(s) cannot be empty!");
             if (await _unitOfWork.ScheduleRepository.CheckValidDateAsync(info.Date, info.EmployeeID) != null)
                 return BadRequest("Working day for that vet is already existed!");
-            await _unitOfWork.ScheduleRepository.GenerateVetScheduleAsync(info);
+            await _unitOfWork.ScheduleRepository.AddNewSchedule(info);
             return Ok("Added successfully!");
         }
         catch (Exception ex)
@@ -39,16 +43,26 @@ public class ScheduleController : ControllerBase
 
     [Route("UpdateSlot")]
     [HttpPut]
-    public async Task<ActionResult<Schedule>> UpdateSlotStatusAsync(Schedule info)
+    public async Task<ActionResult<SlotTable>> UpdateSlotStatusByEmpIDAsync(UpdateSchedule info)
     {
         try
         {
-            var schedule = await _unitOfWork.ScheduleRepository.UpdateSlotAsync(info);
-            if (schedule == null)
+            SlotTable slotTable = new SlotTable();
+            slotTable.Slot = info.Slot;
+            slotTable.ScheduleID = info.ScheduleID;
+            slotTable.Note = info.SlotNote;
+            var slot = await _unitOfWork.SlotTableRepository.UpdateSlotAsync(slotTable);
+            if (slot == null)
                 return NotFound("Date is not found!");
-            if (info.SlotStatus == true)
+            if (info.SlotStatus == "available")
                 return Ok("The Slot Status changed to available!");
-            return Ok("The Slot Status changed to not available!");
+            if (info.SlotStatus == "ordered")
+                return Ok("The Slot Status changed to ordered!");
+            if (info.SlotStatus == "delay")
+                return Ok("The Slot Status changed to delay!");
+            if (info.SlotStatus == "available")
+                return Ok("The Slot Status changed to not available!");
+            return Ok("Not changed");   
         }
         catch (Exception ex)
         {

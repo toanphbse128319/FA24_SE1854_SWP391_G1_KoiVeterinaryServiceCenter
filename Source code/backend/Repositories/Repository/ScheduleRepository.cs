@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Helper;
+using Microsoft.EntityFrameworkCore;
 using Repositories.Model;
 
 namespace Repositories.Repository;
@@ -59,12 +60,18 @@ public class ScheduleRepository : GenericRepository<Schedule>
         return schedule;
     }
 
-    public async Task<Schedule> AddNewSchedule(DateOnly date, Schedule info)
+    public async Task<Schedule> AddNewSchedule(UpdateSchedule info)
     {
-        if (info.ScheduleID == "")
-            info.ScheduleID = "SCH" + base.GetAll().Count;
-        await base.CreateAsync(info);
-        return info;
+        Schedule schedule = new Schedule();
+        schedule.EmployeeID = info.EmployeeID;
+        schedule.Date = info.Date;
+        schedule.Note = info.Note;
+        schedule.Status = info.Status;
+        if (schedule.ScheduleID == "")
+            schedule.ScheduleID = "SCH" + base.GetAll().Count;
+        await base.CreateAsync(schedule);
+        await (new SlotTableRepository(_context).GenerateVetScheduleAsync(info.ScheduleID));
+        return schedule;
     }
 }
 

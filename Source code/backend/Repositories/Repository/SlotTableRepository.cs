@@ -30,22 +30,19 @@ public class SlotTableRepository : GenericRepository<SlotTable>
         return slot;
     }
 
-    public async Task<SlotTable?> GenerateVetScheduleAsync(SlotTable info)
+    public async Task<int?> GenerateVetScheduleAsync(string scheduleID)
     {
         int index = base.GetAll().Count;
-        if (info.SlotID == "")
-            info.SlotID = "ST";
-
+        
         for (int i = 0; i < 8; i++)
         {
             SlotTable slot = new SlotTable();
-            slot.SlotID = info.ScheduleID + (index + i);
-            slot.ScheduleID = info.ScheduleID;
-            slot.Note = info.Note;
+            slot.SlotID = "ST" + (index + i);
+            slot.ScheduleID = scheduleID;
             slot.Slot = (i + 1);
-            slot.SlotStatus = info.SlotStatus;
+            slot.SlotStatus = "available";
             await base.CreateAsync(slot);
         }
-        return info;
+        return 0;
     }
 }
