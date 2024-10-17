@@ -80,6 +80,7 @@ namespace API.Controllers
                         return StatusCode(StatusCodes.Status404NotFound, result);
                     case "Unable to create new booking order":
                     case "Unable to update vet schedule":
+                    case "Unable to create booking detail":
                         return StatusCode(StatusCodes.Status408RequestTimeout, result);
                     default:
                         return Ok(result);
