@@ -143,6 +143,11 @@ public class AccountRepository : GenericRepository<Account>
             if( result != "Ok" )
                 return result;
 
+            if( await FindEmailAsync(info.Email) != null )
+                return "That email is already used!";
+            if( await FindPhoneNumberAsync(info.PhoneNumber) != null )
+                return "That phone number is alreay used!";
+
             Account account = new Account(){
                 AccountID = null,
                 Email = info.Email,
