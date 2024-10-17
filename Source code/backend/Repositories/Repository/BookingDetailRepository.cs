@@ -25,7 +25,7 @@ namespace Repositories.Repository
             return _context.BookingDetails.Where(bookingdetail => bookingdetail.ServiceID.ToLower() == id.ToLower()).ToListAsync()!;
         }
 
-        public async Task<int> AddBookingDetailAsync (BookingDetail bd, string serviceID)
+        public async Task<int> AddBookingDetailAsync (BookingDetail bd)
         {
             if (await _context.BookingDetails.FindAsync(bd.BookingDetailID) != null)
                 return 0;
@@ -36,7 +36,7 @@ namespace Repositories.Repository
             }
 
             ServiceRepository servicerepo = new ServiceRepository(_context);
-            Service? service = await servicerepo.GetByIdAsync(serviceID);
+            Service? service = await servicerepo.GetByIdAsync(bd.ServiceID);
             if (service == null)
                 return 0;
             bd.UnitPrice = service.Price;
