@@ -62,60 +62,70 @@ public class BookingRepository : GenericRepository<Booking>
     }
 
     public async Task<string> AddNewBooking(Booking info, string ServiceID){
-        if( info.CustomerID == null || info.EmployeeID == null || info.ServiceDeliveryMethodID == null ||
-                info.BookingAddress == null )
-            return "Parameters cannot be null";
+        var transaction = _context.Database.BeginTransactionAsync();
+        string result = "";
+        try{
+            if( info.CustomerID == null || info.EmployeeID == null || info.BookingAddress == null )
+                return result = "Parameters cannot be null";
 
-        if( info.CustomerID.Count() == 0 || info.EmployeeID.Count() == 0 || info.ServiceDeliveryMethodID.Count() == 0 ||
-                info.BookingAddress.Count() == 0 )
-            return "Parameters cannot be empty";
+            if( info.CustomerID.Count() == 0 || info.EmployeeID.Count() == 0 ||
+                    info.NumberOfFish == 0 || info.BookingAddress.Count() == 0 )
+                return result = "Parameters cannot be empty";
 
-        if( info.BookingDate < DateTime.Now.AddDays(1) || info.BookingDate > DateTime.Now.AddDays(21) )
-            return "Cannot place an booking order with that date";
+            if( info.BookingDate < DateTime.Now.AddDays(1) || info.BookingDate > DateTime.Now.AddDays(21) )
+                return result = "Cannot place an booking order with that date";
 
-        Customer? customer = await (new CustomerRepository(_context)).GetByIdAsync(info.CustomerID);
-        if( customer == null )
-            return "Customer does not exist";
+            Customer? customer = await (new CustomerRepository(_context)).GetByIdAsync(info.CustomerID);
+            if( customer == null )
+                return result = "Customer does not exist";
 
-        Employee employee = await (new EmployeeRepository(_context)).GetByIdAsync(info.EmployeeID);
-        if( employee == null )
-            return "Employee does not exist";
+            Employee employee = await (new EmployeeRepository(_context)).GetByIdAsync(info.EmployeeID);
+            if( employee == null )
+                return result = "Employee does not exist";
 
-        ServiceDeliveryMethod sdm = await (new ServiceDeliveryMethodRepository(_context)).GetByIdAsync(info.ServiceDeliveryMethodID);
-        if( sdm == null )
-            return "Cannot detemined the delivery method of the service";
+            Service service = await (new ServiceRepository(_context)).GetByIdAsync(ServiceID);
+            if(service == null)
+                return result = "Cannot detemined the delivery method of the service";
+            info.ServiceDeliveryMethodID = service.ServiceDeliveryMethodID;
 
-        FeedbackRepository feedbackRepo = new FeedbackRepository(_context);
-        info.FeedbackID = (await feedbackRepo.SaveAndGetFeedbackAsync(new Feedback(){Status = "Uncommented"})).FeedbackID;
 
-        info.IncidentalFish = 0;
+            FeedbackRepository feedbackRepo = new FeedbackRepository(_context);
+            info.FeedbackID = (await feedbackRepo.SaveAndGetFeedbackAsync(new Feedback(){Status = "Uncommented"})).FeedbackID;
 
-        string temp = await SetScheduleAsync(info);
-        switch (temp){
-            case "Outside working hour":
-            case "Cannot get the schedule":           
-            case "Cannot place order on this slot":
-            case "Cannot update slot status":
-                return temp;
-            default:
-                info.ScheduleID = temp;
-                break;
+            info.IncidentalFish = 0;
+
+            string temp = await SetScheduleAsync(info);
+            switch (temp){
+                case "Outside working hour":
+                case "Cannot get the schedule":           
+                case "Cannot place order on this slot":
+                case "Cannot update slot status":
+                    return result = temp;
+                default:
+                    info.ScheduleID = temp;
+                    break;
+            }
+
+            int index = base.GetAllAsync().Result.Count;
+            info.BookingID = "B" + index;
+
+            TimeSpan remainingTime = (info.BookingDate - DateTime.Now) / 2;
+            info.ExpiredDate = DateTime.Now.Add(remainingTime);
+
+            info.Status = "Waiting for Payment";
+            info.PaymentStatus = "Pending";
+
+            if( await base.CreateAsync(info) == 0 )
+                return result = "Unable to create new booking order";
+
+            BookingDetail detail = new BookingDetail(){BookingDetailID = "", BookingID = info.BookingID, ServiceID = ServiceID };
+            await (new BookingDetailRepository(_context)).AddBookingDetailAsync(detail, ServiceID); 
+            await transaction.Result.CommitAsync();
+            return result = info.BookingID;
+        } finally {
+            if( result != info.BookingID )
+                await transaction.Result.RollbackAsync();
         }
-
-        int index = base.GetAllAsync().Result.Count;
-        info.BookingID = "B" + index;
-
-        TimeSpan remainingTime = (info.BookingDate - DateTime.Now) / 2;
-        info.ExpiredDate = DateTime.Now.Add(remainingTime);
-
-        info.Status = "Waiting for Payment";
-        info.PaymentStatus = "Pending";
-
-        if( await base.CreateAsync(info) == 0 )
-            return "Unable to create new booking order";
-
-        BookingDetail detail = new BookingDetail(){BookingID = info.BookingID, ServiceID = ServiceID };
-        return info.BookingID;
     }
 
     public async Task<Decimal> GetTotalPrice(string bookingID, int numberOfFish){
