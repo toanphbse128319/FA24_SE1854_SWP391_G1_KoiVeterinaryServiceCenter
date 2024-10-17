@@ -158,7 +158,6 @@ public class AccountRepository : GenericRepository<Account>
             if( accountID == "Account is null" )
                 return "Unable to create account"; 
 
-            Console.WriteLine(accountID);
             CustomerRepository customerRepo = new CustomerRepository(_context);
             Customer customer = new Customer(){
                 AccountID = account.AccountID,
