@@ -39,5 +39,6 @@ public class Context : DbContext {
     public virtual DbSet<PoolProfile> PoolProfiles { get; set; } 
     public virtual DbSet<BookingDetail> BookingDetails { get; set; }
     public virtual DbSet<Feedback> Feedbacks { get; set; }
+    public virtual DbSet<Schedule> Schedules { get; set; }
 
 }
