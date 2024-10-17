@@ -79,7 +79,7 @@ namespace API.Controllers
             }
         }
         [HttpPost]
-        public async Task<ActionResult<BookingDetail?>> AddBookingDetail(BookingDetail info, string serviceID)
+        public async Task<ActionResult<BookingDetail?>> AddBookingDetail(BookingDetail info)
         {
             try
             {
@@ -89,7 +89,7 @@ namespace API.Controllers
                     return NotFound("BookingID not found!");
                 if(await _unitOfWork.ServiceRepository.GetByIdAsync(info.ServiceID) == null)
                     return NotFound("ServiceID not found!");
-                if (await _unitOfWork.BookingDetailRepository.AddBookingDetailAsync(info, serviceID) == 0)
+                if (await _unitOfWork.BookingDetailRepository.AddBookingDetailAsync(info) == 0)
                     return BadRequest("Added fail!");
                 else return Ok($"Added {info.BookingDetailID} successfully");
             }
