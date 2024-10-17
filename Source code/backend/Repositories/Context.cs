@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 using Repositories.Model;
+using Repositories.Repository;
 namespace Repositories;
 
 public class Context : DbContext {
@@ -38,7 +39,8 @@ public class Context : DbContext {
     public virtual DbSet<AnimalProfile> AnimalProfiles { get; set; } 
     public virtual DbSet<PoolProfile> PoolProfiles { get; set; } 
     public virtual DbSet<BookingDetail> BookingDetails { get; set; }
-    public virtual DbSet<Schedule> Schedules { get; set; }  
+    public virtual DbSet<Schedule> Schedules { get; set; }
+    public virtual DbSet<SlotTable> SlotTables { get; set; }
     public virtual DbSet<Feedback> Feedbacks { get; set; }
 
 
