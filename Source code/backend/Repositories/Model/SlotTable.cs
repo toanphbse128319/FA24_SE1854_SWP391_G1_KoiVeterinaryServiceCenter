@@ -9,8 +9,9 @@ public class SlotTable
     public string ScheduleID { get; set; }
     public string Note { get; set; }
     public int Slot { get; set; }
+    public int SlotOrdered { get; set; }
     public int SlotCapacity { get; set; }
-    public string SlotStatus {  get; set; }
+    public bool SlotStatus {  get; set; }
 
 }
 

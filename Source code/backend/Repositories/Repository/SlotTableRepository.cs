@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
 using Repositories.Model;
+using System.Runtime.InteropServices;
 
 namespace Repositories.Repository;
 
@@ -17,7 +19,7 @@ public class SlotTableRepository : GenericRepository<SlotTable>
                                                                      slot.Slot == slotInfo);
     }
 
-    public async Task<SlotTable?> UpdateSlotAsync(SlotTable info)
+    public async Task<SlotTable?> UpdateSlotInformationAsync(SlotTable info)    
     {
         SlotTable? slot = await SearchSpecificSlotAsync(info.ScheduleID, info.Slot);
         if (slot == null)
@@ -25,8 +27,25 @@ public class SlotTableRepository : GenericRepository<SlotTable>
 
         slot.Note = info.Note;
         slot.SlotCapacity = info.SlotCapacity;
-        slot.SlotStatus = info.SlotStatus;
         await UpdateAsync(slot);
+        return slot;
+    }
+
+    public async Task<SlotTable> OrderSlot(int num, string scheduleID)
+    {
+        SlotTable? slot = await SearchSpecificSlotAsync(scheduleID, num);
+        if (slot == null)
+            return null!;
+        if (slot.SlotStatus == true)
+        {
+            if (slot.SlotOrdered == slot.SlotCapacity)
+            {
+                slot.SlotStatus = false;
+                return slot;
+            }
+            slot.SlotOrdered++;
+            await UpdateAsync(slot);
+        }
         return slot;
     }
 
@@ -36,11 +55,13 @@ public class SlotTableRepository : GenericRepository<SlotTable>
         
         for (int i = 0; i < 8; i++)
         {
-            SlotTable slot = new SlotTable();
-            slot.SlotID = "ST" + (index + i);
-            slot.ScheduleID = scheduleID;
-            slot.Slot = (i + 1);
-            slot.SlotStatus = "available";
+            SlotTable slot = new()
+            {
+                SlotID = "ST" + (index + i),
+                ScheduleID = scheduleID,
+                Slot = (i + 1),
+                SlotStatus = true
+            };
             await base.CreateAsync(slot);
         }
         return 0;

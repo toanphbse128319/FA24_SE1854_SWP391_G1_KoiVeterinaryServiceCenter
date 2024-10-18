@@ -10,8 +10,9 @@ public class UpdateSchedule
     public DateOnly Date { get; set; }
     public string Status { get; set; }
     public int Slot { get; set; }
+    public int SlotOrdered { get; set; }
     public int SlotCapacity { get; set; }
-    public string SlotStatus { get; set; }
+    public bool SlotStatus { get; set; }
     public string Note { get; set; }
     public string SlotNote { get; set; }
 }

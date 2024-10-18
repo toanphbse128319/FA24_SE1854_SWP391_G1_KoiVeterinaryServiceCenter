@@ -43,16 +43,19 @@ public class ScheduleRepository : GenericRepository<Schedule>
         return await _context.Schedules.Where(schedule => schedule.Date == date).ToListAsync();
     }
 
-    public async Task<List<Schedule>> SearchVetAndDateAsync(DateOnly date, string empID)
+    public async Task<Schedule?> SearchVetAndDateAsync(DateOnly date, string firstName, string lastName)
     {
-        return await _context.Schedules.Where(schedule => schedule.Date == date &&
-                                                          schedule.EmployeeID == empID).ToListAsync();
+        Employee? emp = await (new EmployeeRepository(_context).SearchByFullNameAsync(firstName, lastName));
+        if (emp == null)
+            return null!;
+        return await _context.Schedules.FirstOrDefaultAsync(schedule => schedule.Date == date &&
+                                                                        schedule.EmployeeID == emp.EmployeeID);
     }
 
     public async Task<List<Schedule>> UpdateVetScheduleAsync(DateOnly date, string oldEmpID, string newEmpID)
     {
         List<Schedule> schedule = await SearchByDateAsync(date, oldEmpID);
-        for (int i = 0; i < schedule.Count; ++i)
+        for (int i = 0; i < schedule.Count; i++)
         {
             schedule[i].EmployeeID = newEmpID;
             await UpdateAsync(schedule[i]);
@@ -73,5 +76,6 @@ public class ScheduleRepository : GenericRepository<Schedule>
         await (new SlotTableRepository(_context).GenerateVetScheduleAsync(info.ScheduleID));
         return schedule;
     }
+
 }
 

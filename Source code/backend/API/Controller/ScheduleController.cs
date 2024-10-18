@@ -1,8 +1,10 @@
 #nullable disable
 using Helper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Repositories;
 using Repositories.Model;
+using Repositories.Repository;
 using System.Security.Cryptography;
 using System.Security.Cryptography.Pkcs;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -25,7 +27,7 @@ public class ScheduleController : ControllerBase
     {
         try
         {
-            if (info.EmployeeID == null )
+            if (info.EmployeeID == null)
                 return BadRequest("Missing id parameter!");
             if (info.Date == new DateOnly() || info.EmployeeID.Trim().Length == 0)
                 return BadRequest("Parameter(s) cannot be empty!");
@@ -33,6 +35,28 @@ public class ScheduleController : ControllerBase
                 return BadRequest("Working day for that vet is already existed!");
             await _unitOfWork.ScheduleRepository.AddNewSchedule(info);
             return Ok("Added successfully!");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+
+    [Route("AssignSchedule")]
+    [HttpPut("{date}, {slot}")]
+    public async Task<ActionResult<SlotTable>> AssignVet(string firstName, string lastName, DateOnly date, int slot)
+    {
+        try
+        {
+            if (firstName == null || lastName == null)
+                return BadRequest("Missing parameter!");
+            Schedule schedule = await _unitOfWork.ScheduleRepository.SearchVetAndDateAsync(date, firstName, lastName);
+            if (schedule == null)
+                return BadRequest("The Employee is not exists");
+            await _unitOfWork.SlotTableRepository.OrderSlot(slot, schedule.ScheduleID);
+            return Ok("Assigned successfully!");
+            
         }
         catch (Exception ex)
         {
@@ -51,18 +75,12 @@ public class ScheduleController : ControllerBase
             slotTable.Slot = info.Slot;
             slotTable.ScheduleID = info.ScheduleID;
             slotTable.Note = info.SlotNote;
-            var slot = await _unitOfWork.SlotTableRepository.UpdateSlotAsync(slotTable);
+            var slot = await _unitOfWork.SlotTableRepository.UpdateSlotInformationAsync(slotTable);
             if (slot == null)
                 return NotFound("Date is not found!");
-            if (info.SlotStatus == "available")
+            if (info.SlotStatus == true)
                 return Ok("The Slot Status changed to available!");
-            if (info.SlotStatus == "ordered")
-                return Ok("The Slot Status changed to ordered!");
-            if (info.SlotStatus == "delay")
-                return Ok("The Slot Status changed to delay!");
-            if (info.SlotStatus == "available")
-                return Ok("The Slot Status changed to not available!");
-            return Ok("Not changed");   
+            return Ok("The Slot Status changed to not available!");
         }
         catch (Exception ex)
         {
