@@ -71,10 +71,12 @@ public class ScheduleController : ControllerBase
     {
         try
         {
-            SlotTable slotTable = new SlotTable();
-            slotTable.Slot = info.Slot;
-            slotTable.ScheduleID = info.ScheduleID;
-            slotTable.Note = info.SlotNote;
+            SlotTable slotTable = new()
+            {
+                Slot = info.Slot,
+                ScheduleID = info.ScheduleID,
+                Note = info.SlotNote
+            };
             var slot = await _unitOfWork.SlotTableRepository.UpdateSlotInformationAsync(slotTable);
             if (slot == null)
                 return NotFound("Date is not found!");

@@ -9,7 +9,7 @@ public class SlotTableRepository : GenericRepository<SlotTable>
 {
     public SlotTableRepository(Context context) => _context = context;
 
-    public async Task<List<SlotTable>> SearchBySlotIDAsync(string id)
+    public async Task<List<SlotTable>> SearchByScheduleIDAsync(string id)
     {
         return await _context.SlotTables.Where(slottable => slottable.ScheduleID.ToLower() == id.ToLower()).ToListAsync()!;
     }
