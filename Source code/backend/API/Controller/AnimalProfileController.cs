@@ -25,8 +25,17 @@ namespace API.Controllers
             return await _unitOfWork.AnimalProfileRepository.GetByIdAsync(id);
         }
 
+        [HttpGet("ByBookingDetailID")]
+        public async Task<ActionResult<IEnumerable<AnimalProfile>>> GetByBookingDetailID(string id)
+        {
+            List<AnimalProfile> list = await _unitOfWork.AnimalProfileRepository.GetByBookingDetailID(id);
+            if (list.Count == 0)
+                return NotFound("Animal profile not found!");
+            else return Ok(list);
+        }
+
         [HttpPost]
-        public async Task<ActionResult<AnimalProfile?>> AddAnimalProfile(AnimalProfile animalprofile)
+        public async Task<ActionResult<AnimalProfile>> AddAnimalProfile(AnimalProfile animalprofile)
         {
             try
             {
@@ -35,9 +44,9 @@ namespace API.Controllers
                 AnimalType animalType = await _unitOfWork.AnimalTypeRepository.GetByIdAsync(animalprofile.TypeID);
                 if (animalType == null)
                     return BadRequest("Animal type does not exist!");
-                if(await _unitOfWork.BookingDetailRepository.GetByIdAsync(animalprofile.BookingDetailID) == null)
+                if (await _unitOfWork.BookingDetailRepository.GetByIdAsync(animalprofile.BookingDetailID) == null)
                     return BadRequest("Booking detail ID does not exist!");
-                if (await _unitOfWork.AnimalProfileRepository.AddAnimalProfileAsync(animalprofile) != null)
+                if (await _unitOfWork.AnimalProfileRepository.AddAnimalProfileAsync(animalprofile) != 0)
                     return Ok($"Added {animalprofile.Name} successfully!");
                 else
                     return BadRequest($"Added {animalprofile.Name} failed");

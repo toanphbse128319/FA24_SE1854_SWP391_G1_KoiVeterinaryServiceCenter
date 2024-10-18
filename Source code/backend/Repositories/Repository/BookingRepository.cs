@@ -18,18 +18,17 @@ namespace Repositories.Repository
             return _context.Bookings.Where(booking => booking.EmployeeID.ToLower() == id.ToLower() && booking.BookingDate.Date >= DateTime.Today.Date).ToListAsync();
         }
 
-        public async Task<Booking> UpdateStatusAsync(string id, string msg)
+        public async Task<int> UpdateStatusAsync(string id, string msg)
         {
             Booking booking = await base.GetByIdAsync(id);
             if (booking == null)
             {
-                return booking;
+                return 0;
             }
             else
             {
                 booking.Status = msg;
-                await _context.SaveChangesAsync();
-                return booking;
+                return await _context.SaveChangesAsync(); ;
             }
         }
 

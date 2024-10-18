@@ -14,10 +14,10 @@ namespace Repositories.Repository
         {
         }
 
-        public Boolean  SaveFeedBack(Feedback feedback)
+        public Boolean SaveFeedBack(Feedback feedback)
         {
-            int index = base.GetAll().Count+1;          
-            feedback.FeedbackID = "F"+ index;
+            int index = base.GetAll().Count + 1;
+            feedback.FeedbackID = "F" + index;
             base.Create(feedback);
             return true;
         }

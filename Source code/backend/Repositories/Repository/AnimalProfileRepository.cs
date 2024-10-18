@@ -15,15 +15,21 @@ namespace Repositories.Repository
             _context = context;
         }
 
-        public async Task<AnimalProfile?> AddAnimalProfileAsync(AnimalProfile animalprofile)
+        public Task<List<AnimalProfile?>> GetByBookingDetailID(string id)
         {
+            return _context.AnimalProfiles.Where(animalprofile => animalprofile.BookingDetailID.ToLower() == id.ToLower()).ToListAsync()!;
+        }
+
+        public async Task<int> AddAnimalProfileAsync(AnimalProfile animalprofile)
+        {
+            if (animalprofile == null)
+                return 0;
             if (animalprofile.AnimalProfileID == "")
             {
                 int index = base.GetAll().Count;
                 animalprofile.AnimalProfileID = "AP" + index;
             }
-            await base.CreateAsync(animalprofile);
-            return animalprofile;
+            return await base.CreateAsync(animalprofile); ;
         }
     }
 }

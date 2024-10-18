@@ -4,15 +4,18 @@ using System.Net.Mail;
 
 namespace Helper;
 
-public class Mail{
-    public SmtpClient SmtpClient{ get; }
-    public MailMessage Email{ get; set; }
+public class Mail
+{
+    public SmtpClient SmtpClient { get; }
+    public MailMessage Email { get; set; }
 
     /*
      * This contructor will set the SmtpClient, not the email message, sender, recepient
      */
-    public Mail(string recepient){
-        SmtpClient = new SmtpClient{
+    public Mail(string recepient)
+    {
+        SmtpClient = new SmtpClient
+        {
             Host = Configuration.GetConfiguration()["Mail:Server"],
             Port = int.Parse(Configuration.GetConfiguration()["Mail:Port"]),
             EnableSsl = true,
@@ -25,15 +28,18 @@ public class Mail{
     }
 
 
-    public void Send(){
+    public void Send()
+    {
         SmtpClient.Send(Email);
     }
 
-    public void SetHTMLMail(){
+    public void SetHTMLMail()
+    {
         Email.IsBodyHtml = true;
     }
 
-    public void SetMessage(string subject, string message){
+    public void SetMessage(string subject, string message)
+    {
         Email.Subject = subject;
         Email.Body = message;
     }

@@ -6,14 +6,17 @@ using Repositories.Model;
 using Repositories.Repository;
 namespace Repositories;
 
-public class Context : DbContext {
+public class Context : DbContext
+{
 
-    public Context(){
+    public Context()
+    {
 
     }
 
     public Context(DbContextOptions<Context> options)
-        : base(options){
+        : base(options)
+    {
 
     }
 
