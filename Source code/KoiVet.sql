@@ -244,11 +244,11 @@ VALUES
 -- Insert sample data for Service
 INSERT INTO Service (ServiceID, ServiceDeliveryMethodID, Name, Price, Description, Status) 
 VALUES 
-('S1', 'SDM1', 'Koi Health Check', 100.00, 'Basic health check for koi fish', 1),
-('S2', 'SDM2', 'Virtual Koi Consultation', 75.00, 'Online consultation with koi specialist', 1),
-('S3', 'SDM3', 'Koi Disease Treatment', 150.00, 'Treatment for common koi diseases', 1),
-('S4', 'SDM4', 'Emergency Koi Surgery', 300.00, 'Urgent surgical procedure for koi', 1),
-('S5', 'SDM5', 'Post-Treatment Checkup', 50.00, 'Follow-up checkup after treatment', 1);
+('S001', 'SDM001', 'Koi Health Check', 100000, 'Basic health check for koi fish', 1),
+('S002', 'SDM002', 'Virtual Koi Consultation', 75000, 'Online consultation with koi specialist', 1),
+('S003', 'SDM003', 'Koi Disease Treatment', 150000, 'Treatment for common koi diseases', 1),
+('S004', 'SDM004', 'Emergency Koi Surgery', 300000, 'Urgent surgical procedure for koi', 1),
+('S005', 'SDM005', 'Post-Treatment Checkup', 50000, 'Follow-up checkup after treatment', 1);
 
 -- Insert sample data for Feedback
 INSERT INTO Feedback (FeedbackID, ServiceRating, VetRating, Description, Status) 
@@ -262,26 +262,26 @@ VALUES
 -- Insert sample data for Schedule
 INSERT INTO Schedule (ScheduleID, EmployeeID, Date, Note, Slot, SlotCapacity, SlotStatus) 
 VALUES 
-('SCH1', 'E3', '2024/09/01', 'Regular checkup', 1, 5, 1),
-('SCH2', 'E3', '2024/09/01', 'Consultation', 2, 4, 1),
-('SCH3', 'E3', '2024/09/01', 'Follow-up', 3, 3, 1),
-('SCH4', 'E3', '2024/09/01', 'Emergency', 4, 4, 1),
-('SCH5', 'E3', '2024/09/01', 'Routine check', 5, 1, 1),
-('SCH6', 'E3', '2024/09/01', 'Regular checkup', 6, 5, 0),
-('SCH7', 'E3', '2024/09/01', 'Consultation', 7, 4, 0),
-('SCH8', 'E3', '2024/09/01', 'Follow-up', 8, 3, 0),
-('SCH9', 'E5', '2024/09/02', 'Emergency', 1, 4, 1),
-('SCH10', 'E5', '2024/09/02', 'Routine check', 2, 1, 0);
+('SCH001', 'E003', '2024/09/01', 'Regular checkup', 1, 5, 1),
+('SCH002', 'E003', '2024/09/01', 'Consultation', 2, 4, 1),
+('SCH003', 'E003', '2024/09/01', 'Follow-up', 3, 3, 1),
+('SCH004', 'E003', '2024/09/01', 'Emergency', 4, 4, 1),
+('SCH005', 'E003', '2024/09/01', 'Routine check', 5, 1, 1),
+('SCH006', 'E003', '2024/09/01', 'Regular checkup', 6, 5, 0),
+('SCH007', 'E003', '2024/09/01', 'Consultation', 7, 4, 0),
+('SCH008', 'E003', '2024/09/01', 'Follow-up', 8, 3, 0),
+('SCH009', 'E005', '2024/09/02', 'Emergency', 1, 4, 1),
+('SCH010', 'E005', '2024/09/02', 'Routine check', 2, 1, 0);
 --NumberOfFish int not null,
    -- IncidentalFish 
 -- Insert sample data for Booking
 INSERT INTO Booking (BookingID, CustomerID, EmployeeID, BookingDate, ExpiredDate, Deposit, NumberOfFish, IncidentalFish, ServiceDeliveryMethodID, VAT, BookingAddress, Distance, DistanceCost, TotalServiceCost, Status, FeedbackID, ScheduleID, Note, PaymentMethod, PaymentStatus) 
 VALUES 
-('B1', 'C1', 'E1', '2024-09-01 09:00:00', '2024-09-01 04:00:00', 50.00, 1, 0,'SDM1', 10.00, '250 vo van hat', 5.5, 11.00, 661000, 'Confirmed', 'FB1', 'SCH1', 'Home visit for koi health check', 'Credit Card', 'Pending'),
-('B2', 'C2', 'E2', '2024-09-02 14:00:00', '2024-09-02 04:00:00', 37.50, 1, 0,'SDM2', 7.50, '456 Maple Ave', 0, 0.00, 397500, 'Pending', 'FB2', 'SCH2', 'Online consultation for koi', 'PayPal', 'Pending'),
-('B3', 'C3', 'E3', '2024-09-03 18:00:00', '2024-09-03 04:00:00', 75.00, 1, 0,'SDM3', 15.00, '789 Oak St', 3.2, 6.40, 996000, 'Cancelled', 'FB3', 'SCH3', 'Clinic visit for koi disease treatment', 'Cash', 'Pending'),
-('B4', 'C4', 'E4', '2024-09-04 22:00:00', '2024-09-05 04:00:00', 150.00, 1, 0,'SDM4', 30.00, '321 Birch Ave', 8.7, 17.40, 2000000, 'In Progress', 'FB4', 'SCH4', 'Emergency koi surgery', 'Credit Card', 'Pending'),
-('B5', 'C5', 'E5', '2024-09-05 07:00:00', '2024-09-05 04:00:00', 25.00, 1, 1,'SDM5', 5.00, '654 Pine St', 2.1, 4.20, 867000, 'Completed', 'FB5', 'SCH5', 'Follow-up checkup after treatment', 'Debit Card', 'Pending'); 
+('B001', 'C001', 'E001', '2024-09-01 09:00:00', '2024-09-01 04:00:00', 50.00, 1, 0,'SDM001', 10.00, '250 vo van hat', 5.5, 11.00, 661000, 'Confirmed', 'FB001', 'SCH001', 'Home visit for koi health check', 'Credit Card', 'Pending'),
+('B002', 'C002', 'E002', '2024-09-02 14:00:00', '2024-09-02 04:00:00', 37.50, 1, 0,'SDM002', 7.50, '456 Maple Ave', 0, 0.00, 397500, 'Pending', 'FB002', 'SCH002', 'Online consultation for koi', 'PayPal', 'Pending'),
+('B003', 'C003', 'E003', '2024-09-03 18:00:00', '2024-09-03 04:00:00', 75.00, 1, 0,'SDM003', 15.00, '789 Oak St', 3.2, 6.40, 996000, 'Cancelled', 'FB003', 'SCH003', 'Clinic visit for koi disease treatment', 'Cash', 'Pending'),
+('B004', 'C004', 'E004', '2024-09-04 22:00:00', '2024-09-05 04:00:00', 150.00, 1, 0,'SDM004', 30.00, '321 Birch Ave', 8.7, 17.40, 2000000, 'In Progress', 'FB004', 'SCH004', 'Emergency koi surgery', 'Credit Card', 'Pending'),
+('B005', 'C005', 'E005', '2024-09-05 07:00:00', '2024-09-05 04:00:00', 25.00, 1, 1,'SDM005', 5.00, '654 Pine St', 2.1, 4.20, 867000, 'Completed', 'FB005', 'SCH005', 'Follow-up checkup after treatment', 'Debit Card', 'Pending'); 
 
 -- Insert sample data for AnimalType
 INSERT INTO AnimalType (TypeID, Name) 
@@ -342,8 +342,8 @@ INSERT INTO PostCategory (PostCategoryID, Name) VALUES
 
 -- Insert sample data for Post
 INSERT INTO Post (PostID, PostName, PostCategoryID, Context) VALUES
-('POST1', 'Essential Koi Care Tips', 'CAT1', 'This post discusses the essential tips for properly taking care of your Koi fish.'),
-('POST2', 'Breeding Koi: A Step-by-Step Guide', 'CAT2', 'Learn how to breed Koi fish successfully with this comprehensive guide.'),
-('POST3', 'Common Koi Diseases and Solutions', 'CAT3', 'An overview of common diseases that affect Koi and how to treat them.'),
-('POST4', 'Designing the Perfect Koi Pond', 'CAT4', 'Explore the key elements of designing a beautiful and functional Koi pond.'),
-('POST5', 'A Guide to Popular Koi Varieties', 'CAT5', 'This article highlights some of the most popular Koi varieties and their unique features.');
+('POST001', 'Essential Koi Care Tips', 'CAT001', 'This post discusses the essential tips for properly taking care of your Koi fish.'),
+('POST002', 'Breeding Koi: A Step-by-Step Guide', 'CAT002', 'Learn how to breed Koi fish successfully with this comprehensive guide.'),
+('POST003', 'Common Koi Diseases and Solutions', 'CAT003', 'An overview of common diseases that affect Koi and how to treat them.'),
+('POST004', 'Designing the Perfect Koi Pond', 'CAT004', 'Explore the key elements of designing a beautiful and functional Koi pond.'),
+('POST005', 'A Guide to Popular Koi Varieties', 'CAT005', 'This article highlights some of the most popular Koi varieties and their unique features.');

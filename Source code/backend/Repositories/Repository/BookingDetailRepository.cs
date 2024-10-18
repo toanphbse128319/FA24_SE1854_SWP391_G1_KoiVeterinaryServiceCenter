@@ -24,5 +24,23 @@ namespace Repositories.Repository
         {
             return _context.BookingDetails.Where(bookingdetail => bookingdetail.ServiceID.ToLower() == id.ToLower()).ToListAsync()!;
         }
+
+        public async Task<int> AddBookingDetailAsync (BookingDetail bd, string serviceID)
+        {
+            if (await _context.BookingDetails.FindAsync(bd.BookingDetailID) != null)
+                return 0;
+            if (bd.BookingDetailID == "")
+            {
+                int index = base.GetAll().Count;
+                bd.BookingDetailID = "BD" + index;
+            }
+
+            ServiceRepository servicerepo = new ServiceRepository(_context);
+            Service? service = await servicerepo.GetByIdAsync(serviceID);
+            if (service == null)
+                return 0;
+            bd.UnitPrice = service.Price;
+            return await base.CreateAsync(bd);
+        }
     }
 }

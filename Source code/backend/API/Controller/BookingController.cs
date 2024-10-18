@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Repositories.Model;
 using Repositories;
 using Helper;
+using Helper.Objects;
 
 namespace API.Controllers
 {
@@ -61,13 +62,13 @@ namespace API.Controllers
 
         [Route("add")]
         [HttpPost]
-        public async Task<ActionResult<string>> AddBooking(Booking info){
+        public async Task<ActionResult<string>> AddBooking(NewBookingInformation info){
             try{
                 string result = await _unitOfWork.BookingRepository.AddNewBooking(info);
-                switch (result){
-                    case "Parameters cannot be null":
-                    case "Parameters cannot be empty":
+                if( result.Contains("cannot be") )
                         return StatusCode(StatusCodes.Status400BadRequest, result);
+                    
+                switch (result){
                     case "Cannot place an booking order with that date":
                     case "Cannot detemined the delivery method of the service":
                     case "Outside working hour":
@@ -80,6 +81,7 @@ namespace API.Controllers
                         return StatusCode(StatusCodes.Status404NotFound, result);
                     case "Unable to create new booking order":
                     case "Unable to update vet schedule":
+                    case "Unable to create booking detail":
                         return StatusCode(StatusCodes.Status408RequestTimeout, result);
                     default:
                         return Ok(result);

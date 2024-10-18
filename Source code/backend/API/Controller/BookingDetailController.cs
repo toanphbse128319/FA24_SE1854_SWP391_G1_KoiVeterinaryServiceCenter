@@ -50,7 +50,25 @@ namespace API.Controllers
                 BookingDetail bd = await _unitOfWork.BookingDetailRepository.GetByIdAsync(info.BookingDetailID);
                 if (bd == null)
                     return NotFound("BookingDetail does not existed!");
-                if (await _unitOfWork.BookingDetailRepository.UpdateAsync(info) == 0)
+                if (info.PoolStatusDescription != "" && bd.PoolStatusDescription != info.PoolStatusDescription)
+                    bd.PoolStatusDescription = info.PoolStatusDescription;
+                if (info.AnimalStatusDescription != "" && bd.AnimalStatusDescription != info.AnimalStatusDescription)
+                    bd.AnimalStatusDescription = info.AnimalStatusDescription;
+                if (info.ConsultDoctor != "" && bd.ConsultDoctor != info.ConsultDoctor)
+                    bd.ConsultDoctor = info.ConsultDoctor;
+                if (info.DrugList != "" && bd.DrugList != info.DrugList)
+                    bd.DrugList = info.DrugList;
+                if (info.MaterialList != "" && bd.MaterialList != info.MaterialList)
+                    bd.MaterialList = info.MaterialList;
+                if (info.ConsultTechnician != "" && bd.ConsultTechnician != info.ConsultTechnician)
+                    bd.ConsultTechnician = info.ConsultTechnician;
+                if (info.Incidental != info.Incidental)
+                    bd.Incidental = info.Incidental;
+                if (info.NoteResult != "" && bd.NoteResult != info.NoteResult)
+                    bd.NoteResult = info.NoteResult;
+                if (info.NoteExamination != "" && bd.NoteExamination != info.NoteExamination)
+                    bd.NoteExamination = info.NoteExamination;
+                if (await _unitOfWork.BookingDetailRepository.UpdateAsync(bd) == 0)
                     return BadRequest("BookingDetail has not been updated!");
                 else
                     return Ok("Changes have been saved");
@@ -60,6 +78,25 @@ namespace API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-
+        [HttpPost]
+        public async Task<ActionResult<BookingDetail?>> AddBookingDetail(BookingDetail info, string serviceID)
+        {
+            try
+            {
+                if(await _unitOfWork.BookingDetailRepository.GetByIdAsync(info.BookingDetailID) != null)
+                    return NotFound("Booking Detail is existed!");
+                if(await _unitOfWork.BookingRepository.GetByIdAsync(info.BookingID) == null)
+                    return NotFound("BookingID not found!");
+                if(await _unitOfWork.ServiceRepository.GetByIdAsync(info.ServiceID) == null)
+                    return NotFound("ServiceID not found!");
+                if (await _unitOfWork.BookingDetailRepository.AddBookingDetailAsync(info, serviceID) == 0)
+                    return BadRequest("Added fail!");
+                else return Ok($"Added {info.BookingDetailID} successfully");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
     }
 }
