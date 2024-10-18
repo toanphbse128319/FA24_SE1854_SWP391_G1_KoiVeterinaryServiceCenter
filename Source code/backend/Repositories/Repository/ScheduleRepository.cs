@@ -18,7 +18,7 @@ public class ScheduleRepository : GenericRepository<Schedule>
 
     public async Task<List<Schedule>> SearchByNameAsync(string firstname, string lastname)
     {
-        Employee? emp = await (new EmployeeRepository(_context).SearchByFullNameAsync(firstname, lastname));
+        Employee? emp = await new EmployeeRepository(_context).SearchByFullNameAsync(firstname, lastname);
         if (emp == null)
             return null!;
         return await SearchByEmpIDAsync(emp.EmployeeID);
@@ -32,34 +32,38 @@ public class ScheduleRepository : GenericRepository<Schedule>
 
     public async Task<Schedule?> CheckValidNameAsync(string firstname, string lastname)
     {
-        Employee? emp = await (new EmployeeRepository(_context).SearchByFullNameAsync(firstname, lastname));
+        Employee? emp = await new EmployeeRepository(_context).SearchByFullNameAsync(firstname, lastname);
         if (emp == null)
             return null!;
         return (await SearchByEmpIDAsync(emp.EmployeeID))[0];
     }
 
-    public async Task<List<Schedule>> SearchByDateAsync(DateOnly date, string empID)
+    public async Task<List<Schedule>> SearchByDateAsync(DateOnly date)
     {
         return await _context.Schedules.Where(schedule => schedule.Date == date).ToListAsync();
     }
 
     public async Task<Schedule?> SearchVetAndDateAsync(DateOnly date, string firstName, string lastName)
     {
-        Employee? emp = await (new EmployeeRepository(_context).SearchByFullNameAsync(firstName, lastName));
+        Employee? emp = await new EmployeeRepository(_context).SearchByFullNameAsync(firstName, lastName);
         if (emp == null)
             return null!;
         return await _context.Schedules.FirstOrDefaultAsync(schedule => schedule.Date == date &&
                                                                         schedule.EmployeeID == emp.EmployeeID);
     }
 
-    public async Task<List<Schedule>> UpdateVetScheduleAsync(DateOnly date, string oldEmpID, string newEmpID)
+    public async Task<Schedule> UpdateVetScheduleAsync(DateOnly date, string oldFirstName, 
+                                                                            string oldLastName, 
+                                                                            string newFirstName, 
+                                                                            string newLastName)
     {
-        List<Schedule> schedule = await SearchByDateAsync(date, oldEmpID);
-        for (int i = 0; i < schedule.Count; i++)
-        {
-            schedule[i].EmployeeID = newEmpID;
-            await UpdateAsync(schedule[i]);
-        }
+        Schedule? schedule = await SearchVetAndDateAsync(date, oldFirstName, oldLastName);
+        Employee? newEmpID = await new EmployeeRepository(_context).SearchByFullNameAsync(newFirstName, newLastName);
+        if (newEmpID == null || schedule == null)
+            return null!;
+        schedule.EmployeeID = newEmpID.EmployeeID;
+        await UpdateAsync(schedule);
+        
         return schedule;
     }
 
