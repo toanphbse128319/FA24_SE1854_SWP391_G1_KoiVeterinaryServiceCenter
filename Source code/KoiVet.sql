@@ -273,10 +273,11 @@ INSERT INTO Schedule (ScheduleID, EmployeeID, Date, Note, Status) VALUES
 ('SCH001', 'E003', '2024-09-01', 'Regular shift', 'Active'),
 ('SCH002', 'E003', '2024-09-02', 'Overtime shift', 'Active'),
 ('SCH003', 'E003', '2024-09-03', 'Night shift', 'Inactive'),
-('SCH004', 'E003', '2024-09-04', 'Morning shift', 'Active');
+('SCH004', 'E003', '2024-09-04', 'Morning shift', 'Active'),
+('SCH005', 'E003', '2024-09-05', 'Morning shift', 'Active');
 
 -- Insert data into SlotTable table
-INSERT INTO SlotTable (SlotID, ScheduleID, Note, Slot, SlotCapacity, SlotOrdered, SlotStatus) 
+INSERT INTO SlotTable (SlotTableID, ScheduleID, Note, Slot, SlotCapacity, SlotOrdered, SlotStatus) 
 VALUES
 ('ST001', 'SCH001', 'Morning slot', 1, 10, 5, 1),
 ('ST002', 'SCH001', 'Afternoon slot', 2, 10, 8, 1),
