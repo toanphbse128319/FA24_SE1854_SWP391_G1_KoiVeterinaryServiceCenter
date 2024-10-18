@@ -27,8 +27,6 @@ public class SlotTableRepository : GenericRepository<SlotTable>
 
         if( info.Note != null )
             slot.Note = info.Note;
-        if( info.Slot > 0 && info.Slot < 9 )
-            slot.Slot = info.Slot;
         if( info.SlotCapacity != 0 )
             slot.SlotCapacity = info.SlotCapacity;
 
