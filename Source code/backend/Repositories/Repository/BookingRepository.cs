@@ -100,6 +100,7 @@ public class BookingRepository : GenericRepository<Booking>
             newOrder.Status = Constants.Customer.WaitingForPayment;
             newOrder.PaymentMethod = "Bank Transfer";
             newOrder.PaymentStatus = "Pending";
+            newOrder.Vat = 0.1;
 
             string temp = await SetScheduleAsync(info.BookingDate, info.EmployeeID);
             switch (temp){
@@ -132,18 +133,52 @@ public class BookingRepository : GenericRepository<Booking>
         }
     }
 
-    public async Task<Decimal> GetTotalPrice(string bookingID, int numberOfFish){
+    public async Task<Decimal> GetTotalPrice(string bookingID){
         BookingDetailRepository bdRepo = new BookingDetailRepository(_context);
         List<BookingDetail?> details = await bdRepo.GetByBookingID(bookingID);
         if( details == null || details.Count == 0 )
             return 0;
-        Decimal total = 0;
+
+        Booking info = await GetByIdAsync(bookingID);
+        if( info == null )
+            return 0;
+
+        if( info.Vat == null )
+            return 0;
+
+        int total = 0;
         foreach(BookingDetail? detail in details){
             if( detail == null )
                 break;
-            total += detail.UnitPrice * numberOfFish;
+            total += (int)(detail.UnitPrice * info.NumberOfFish);
         }
+        total += (int)(info.Vat * total);
+
         return total;
     }
+
+    public async Task<Decimal> GetDepositPrice(string bookingID){
+        Booking info = await GetByIdAsync(bookingID);
+        if( info == null )
+            return 0;
+
+        info.Deposit = await GetTotalPrice(bookingID);
+
+        await UpdateAsync(info);
+
+        return info.Deposit;
+    }
+    
+    public async Task<string> CheckExpiration(string bookingID){
+        Booking info = await GetByIdAsync(bookingID);
+        if( info == null )
+            return "Cannot find booking order";
+
+        if( info.ExpiredDate < DateTime.Now )
+            return "Payment expired";
+
+        return "Payment pending";
+    }
+
 }
 
