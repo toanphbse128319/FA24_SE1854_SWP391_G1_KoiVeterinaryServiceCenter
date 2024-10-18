@@ -21,5 +21,13 @@ public static class Constants{
             get => _waitingForOTPMessage;
         }
     }
+    
+    public static class Customer{
+        private static string _waitingForPayment = "Waiting for payment";
+
+        public static string WaitingForPayment{
+            get => _waitingForPayment;
+        }   
+    }
 
 }
