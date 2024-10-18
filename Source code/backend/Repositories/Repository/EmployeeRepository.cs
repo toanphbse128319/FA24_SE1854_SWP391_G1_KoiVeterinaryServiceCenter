@@ -13,12 +13,18 @@ namespace Repositories.Repository
 
         public async Task<Employee?> SearchByAccountIDAsync(string id)
         {
-            return await _context.Employees.FirstOrDefaultAsync(customer => customer.AccountID == id);
+            return await _context.Employees.FirstOrDefaultAsync(employee => employee.AccountID == id);
         }
 
         public Employee? SearchByAccountID(string id)
         {
-            return _context.Employees.FirstOrDefault(customer => customer.AccountID == id);
+            return _context.Employees.FirstOrDefault(employee => employee.AccountID == id);
+        }
+
+        public async Task<Employee?> SearchByFullNameAsync(string firstname, string lastname)
+        {
+            return await _context.Employees.FirstOrDefaultAsync(employee => employee.FirstName == firstname &&
+                                                                       employee.Lastname == lastname);
         }
     }
 }

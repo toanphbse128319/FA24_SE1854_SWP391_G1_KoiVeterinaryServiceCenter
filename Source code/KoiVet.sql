@@ -83,12 +83,19 @@ GO
 CREATE TABLE Schedule(
     ScheduleID nvarchar(20) PRIMARY KEY,
     EmployeeID nvarchar(20) FOREIGN KEY REFERENCES Employee(EmployeeID) NOT NULL,
-	Firstname nvarchar(20) NOT NULL,
-    Lastname nvarchar(20) NOT NULL,
     Date date NOT NULL,
     Note nvarchar(MAX),
-    Slot int,
+	Status nvarchar(50) NOT NULL
+)
+GO
+
+CREATE TABLE SlotTable(
+	SlotTableID nvarchar(20) PRIMARY KEY,
+	ScheduleID nvarchar(20) FOREIGN KEY REFERENCES Schedule(ScheduleID) NOT NULL,
+	Note nvarchar(MAX),
+	Slot int,
     SlotCapacity int,
+	SlotOrdered int,
     SlotStatus bit NOT NULL
 )
 GO
@@ -261,19 +268,26 @@ VALUES
 ('FB004', 4, 5, 'Prompt and professional.', 'Active'),
 ('FB005', 5, 5, 'Koi surgery saved my fish!', 'Active');
 
--- Insert sample data for Schedule
-INSERT INTO Schedule (ScheduleID, EmployeeID, Firstname, Lastname, Date, Note, Slot, SlotCapacity, SlotStatus) 
-VALUES 
-('SCH001', 'E003', 'Tom', 'Clark', '2024/09/01', 'Regular checkup', 1, 5, 1),
-('SCH002', 'E003', 'Tom', 'Clark', '2024/09/01', 'Consultation', 2, 4, 1),
-('SCH003', 'E003', 'Tom', 'Clark', '2024/09/01', 'Follow-up', 3, 3, 1),
-('SCH004', 'E003', 'Tom', 'Clark', '2024/09/01', 'Emergency', 4, 4, 1),
-('SCH005', 'E003', 'Tom', 'Clark', '2024/09/01', 'Routine check', 5, 1, 1),
-('SCH006', 'E003', 'Tom', 'Clark', '2024/09/01', 'Regular checkup', 6, 5, 0),
-('SCH007', 'E003', 'Tom', 'Clark', '2024/09/01', 'Consultation', 7, 4, 0),
-('SCH008', 'E003', 'Tom', 'Clark', '2024/09/01', 'Follow-up', 8, 3, 0),
-('SCH009', 'E005', 'Michael', 'Scott', '2024/09/02', 'Emergency', 1, 4, 1),
-('SCH010', 'E005', 'Michael', 'Scott', '2024/09/02', 'Routine check', 2, 1, 0);
+-- Insert data into Schedule table
+INSERT INTO Schedule (ScheduleID, EmployeeID, Date, Note, Status) VALUES
+('SCH001', 'E003', '2024-09-01', 'Regular shift', 'Active'),
+('SCH002', 'E003', '2024-09-02', 'Overtime shift', 'Active'),
+('SCH003', 'E003', '2024-09-03', 'Night shift', 'Inactive'),
+('SCH004', 'E003', '2024-09-04', 'Morning shift', 'Active'),
+('SCH005', 'E003', '2024-09-05', 'Morning shift', 'Active');
+
+-- Insert data into SlotTable table
+INSERT INTO SlotTable (SlotTableID, ScheduleID, Note, Slot, SlotCapacity, SlotOrdered, SlotStatus) 
+VALUES
+('ST001', 'SCH001', 'Morning slot', 1, 10, 5, 1),
+('ST002', 'SCH001', 'Afternoon slot', 2, 10, 8, 1),
+('ST003', 'SCH002', 'Night slot', 3, 15, 7, 1),
+('ST004', 'SCH003', 'Overnight slot', 4, 12, 6, 0),
+('ST005', 'SCH004', 'Early morning slot', 6, 8, 8, 0),
+('ST006', 'SCH004', 'Early morning slot', 7, 8, 8, 1),
+('ST007', 'SCH004', 'Early morning slot', 8, 8, 8, 1),
+('ST008', 'SCH004', 'Early morning slot', 1, 8, 8, 1);
+
 --NumberOfFish int not null,
    -- IncidentalFish 
 -- Insert sample data for Booking

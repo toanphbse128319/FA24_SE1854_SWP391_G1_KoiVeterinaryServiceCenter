@@ -20,6 +20,7 @@ public class UnitOfWork
     private EmployeeRepository _employeeRepository;
     private CustomerRepository _customerRepository;
     private ScheduleRepository _scheduleRepository;
+    private SlotTableRepository _slotTableRepository;
     private FeedbackRepository _feedbackRepository;
 
     public UnitOfWork()
@@ -98,6 +99,10 @@ public class UnitOfWork
         get { return _scheduleRepository ??= new ScheduleRepository(_context); }
     }
 
+    public SlotTableRepository SlotTableRepository
+    {
+        get { return _slotTableRepository ??= new SlotTableRepository(_context); }
+    }
 
     public FeedbackRepository FeedbackRepository
     {
