@@ -1,10 +1,8 @@
 
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
-
 import Login from "./pages/Login";
 import AboutUsPage from "./pages/AboutUsPage";
-import Header from "./Components/Header";
 import LoginContainer from "./Components/LoginContainer";
 
 import Banner from "./Components/Banner";
@@ -23,6 +21,7 @@ const App = () => {
       <div>
         <NhanHang/>
       </div>
+      <Outlet/>
     </div>
   );
 };
