@@ -57,7 +57,7 @@ public class SlotTableRepository : GenericRepository<SlotTable>
         {
             SlotTable slot = new()
             {
-                SlotID = "ST" + (index + i),
+                SlotTableID = "ST" + (index + i),
                 ScheduleID = scheduleID,
                 Slot = (i + 1),
                 SlotStatus = true

@@ -90,7 +90,7 @@ CREATE TABLE Schedule(
 GO
 
 CREATE TABLE SlotTable(
-	SlotID nvarchar(20) PRIMARY KEY,
+	SlotTableID nvarchar(20) PRIMARY KEY,
 	ScheduleID nvarchar(20) FOREIGN KEY REFERENCES Schedule(ScheduleID) NOT NULL,
 	Note nvarchar(MAX),
 	Slot int,

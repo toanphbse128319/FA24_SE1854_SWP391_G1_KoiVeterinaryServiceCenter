@@ -5,7 +5,7 @@ namespace Repositories.Model;
 [Table("SlotTable")]
 public class SlotTable
 {
-    public string SlotID { get; set; }
+    public string SlotTableID { get; set; }
     public string ScheduleID { get; set; }
     public string Note { get; set; }
     public int Slot { get; set; }
