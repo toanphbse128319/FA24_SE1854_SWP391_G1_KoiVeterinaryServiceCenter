@@ -45,13 +45,13 @@ public class ScheduleController : ControllerBase
 
     [Route("AssignSchedule")]
     [HttpPut]
-    public async Task<ActionResult<SlotTable>> AssignVet(string firstName, string lastName, DateOnly date, int slot)
+    public async Task<ActionResult<SlotTable>> AssignVet(string EmpID, DateOnly date, int slot)
     {
         try
         {
-            if (firstName == null || lastName == null)
+            if (EmpID== null)
                 return BadRequest("Missing parameter!");
-            Schedule schedule = await _unitOfWork.ScheduleRepository.SearchVetAndDateAsync(date, firstName, lastName);
+            Schedule schedule = await _unitOfWork.ScheduleRepository.SearchVetAndDateAsync(date, EmpID);
             if (schedule == null)
                 return BadRequest("The Employee is not exists");
             await _unitOfWork.SlotTableRepository.OrderSlot(slot, schedule.ScheduleID);
@@ -92,11 +92,11 @@ public class ScheduleController : ControllerBase
 
     [Route("UpdateVetSchedule")]
     [HttpPut]
-    public async Task<ActionResult<Schedule>> UpdateVetScheduleAsync(DateOnly date, string oldID, string newID)
+    public async Task<ActionResult<Schedule>> UpdateVetScheduleAsync(DateOnly date, string oldEmpID, string newEmpID)
     {
         try
         {
-            var schedule = await _unitOfWork.ScheduleRepository.UpdateVetScheduleAsync(date, oldID, newID);
+            var schedule = await _unitOfWork.ScheduleRepository.UpdateVetScheduleAsync(date, oldEmpID, newEmpID);
             if (schedule == null)
                 return NotFound("Date is not found!");
             return Ok($"Updated successfully!");
@@ -109,11 +109,11 @@ public class ScheduleController : ControllerBase
 
     [Route("GetScheduleByDate")]
     [HttpGet]
-    public async Task<ActionResult<List<Schedule>>> GetScheduleByDate(DateOnly date, string empid)
+    public async Task<ActionResult<List<Schedule>>> GetScheduleByDate(DateOnly date)
     {
-        if (await _unitOfWork.ScheduleRepository.CheckValidDateAsync(date, empid) == null)
+        if (await _unitOfWork.ScheduleRepository.CheckValidScheduleAsync(date) == null)
             return NotFound("Date is not found!");
-        return await _unitOfWork.ScheduleRepository.SearchByDateAsync(date, empid);
+        return await _unitOfWork.ScheduleRepository.SearchByDateAsync(date);
     }
 
     [Route("GetScheduleByName")]
@@ -125,6 +125,15 @@ public class ScheduleController : ControllerBase
         return await _unitOfWork.ScheduleRepository.SearchByNameAsync(firstname, lastname);
     }
 
+    [Route("GetScheduleByNameAndDate")]
+    [HttpGet]
+    public async Task<ActionResult<List<SlotTable>>> GetScheduleByEmpIDAndDate(string EmpID, DateOnly date)
+    {
+        Schedule schedule = await _unitOfWork.ScheduleRepository.SearchVetAndDateAsync(date, EmpID);
+        if (schedule == null)
+            return NotFound("Name is not found!");
+        return await _unitOfWork.SlotTableRepository.SearchByScheduleIDAsync(schedule.ScheduleID);
+    }
 
     //[HttpGet]
     //public async Task<ActionResult<IEnumerable<Booking>>> GetVetBookings(String id)
