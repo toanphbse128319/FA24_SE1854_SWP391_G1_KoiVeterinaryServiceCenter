@@ -28,7 +28,7 @@ namespace Repositories.Repository
             else
             {
                 booking.Status = msg;
-                return await _context.SaveChangesAsync();;
+                return await _context.SaveChangesAsync(); ;
             }
         }
 

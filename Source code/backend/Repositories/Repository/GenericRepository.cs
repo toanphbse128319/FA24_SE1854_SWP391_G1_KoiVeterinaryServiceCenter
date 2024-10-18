@@ -2,23 +2,27 @@
 using Microsoft.EntityFrameworkCore;
 namespace Repositories.Repository;
 
-public class GenericRepository<T> where T : class{
+public class GenericRepository<T> where T : class
+{
     protected Context _context;
 
     public GenericRepository() => _context ??= new Context();
 
     public GenericRepository(Context context) => _context = context;
 
-    public List<T> GetAll(){
+    public List<T> GetAll()
+    {
         return _context.Set<T>().ToList();
     }
 
-    public void Create(T entity){
+    public void Create(T entity)
+    {
         _context.Add(entity);
         _context.SaveChanges();
     }
 
-    public void Update(T entity){
+    public void Update(T entity)
+    {
         var tracker = _context.Attach(entity);
         tracker.State = EntityState.Modified;
         _context.SaveChanges();
@@ -27,23 +31,27 @@ public class GenericRepository<T> where T : class{
     //The code Teacher provided used bool and return true, despite the .Remove(entity) 
     //only return an object despite being available in the context or not
     //And SaveChange only throw Exception
-    public void Remove(T entity){
+    public void Remove(T entity)
+    {
         _context.Remove(entity);
         _context.SaveChanges();
     }
 
-    public T GetById(int id){
+    public T GetById(int id)
+    {
         return _context.Set<T>().Find(id);
     }
 
-    public T GetById(string code){
+    public T GetById(string code)
+    {
         return _context.Set<T>().Find(code);
     }
 
     //Use guids when you have multiple independent systems or clients generating ID's that need to be unique. 
     //http://stackoverflow.com/questions/371762/ddg#371788
-//    //Still don't know why we use here?
-    public T GetById(Guid code){
+    //    //Still don't know why we use here?
+    public T GetById(Guid code)
+    {
         return _context.Set<T>().Find(code);
     }
 
@@ -91,35 +99,35 @@ public class GenericRepository<T> where T : class{
 
     #endregion
 
-    
+
     #region Separating asigned entities and save operators        
     //
-//This will ONLY MODIFY data to the context. but now save down to the database
+    //This will ONLY MODIFY data to the context. but now save down to the database
     public void PrepareCreate(T entity)
     {
         _context.Add(entity);
     }
 
-//This will ONLY MODIFY data to the context. but now save down to the database
+    //This will ONLY MODIFY data to the context. but now save down to the database
     public void PrepareUpdate(T entity)
     {
         var tracker = _context.Attach(entity);
         tracker.State = EntityState.Modified;
     }
 
-//This will ONLY MODIFY data to the context. but now save down to the database
+    //This will ONLY MODIFY data to the context. but now save down to the database
     public void PrepareRemove(T entity)
     {
         _context.Remove(entity);
     }
 
-//This will save the context down to the database
+    //This will save the context down to the database
     public int Save()
     {
         return _context.SaveChanges();
     }
 
-//This will save the context down to the database
+    //This will save the context down to the database
     public async Task<int> SaveAsync()
     {
         return await _context.SaveChangesAsync();

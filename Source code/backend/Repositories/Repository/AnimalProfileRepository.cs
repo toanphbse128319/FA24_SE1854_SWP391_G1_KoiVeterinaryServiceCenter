@@ -29,7 +29,7 @@ namespace Repositories.Repository
                 int index = base.GetAll().Count;
                 animalprofile.AnimalProfileID = "AP" + index;
             }
-            return await base.CreateAsync(animalprofile);;
+            return await base.CreateAsync(animalprofile); ;
         }
     }
 }

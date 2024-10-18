@@ -5,14 +5,17 @@ using Microsoft.Extensions.Configuration;
 using Repositories.Model;
 namespace Repositories;
 
-public class Context : DbContext {
+public class Context : DbContext
+{
 
-    public Context(){
+    public Context()
+    {
 
     }
 
     public Context(DbContextOptions<Context> options)
-        : base(options){
+        : base(options)
+    {
 
     }
 
@@ -33,12 +36,12 @@ public class Context : DbContext {
     public virtual DbSet<Post> Posts { get; set; }
     public virtual DbSet<Service> Services { get; set; }
     public virtual DbSet<ServiceDeliveryMethod> ServiceDeliveryMethods { get; set; }
-    public virtual DbSet<AnimalType> AnimalTypes { get; set; }  
+    public virtual DbSet<AnimalType> AnimalTypes { get; set; }
 
     public virtual DbSet<Role> Roles { get; set; }
 
-    public virtual DbSet<AnimalProfile> AnimalProfiles { get; set; } 
-    public virtual DbSet<PoolProfile> PoolProfiles { get; set; } 
+    public virtual DbSet<AnimalProfile> AnimalProfiles { get; set; }
+    public virtual DbSet<PoolProfile> PoolProfiles { get; set; }
     public virtual DbSet<BookingDetail> BookingDetails { get; set; }
     public virtual DbSet<Feedback> Feedbacks { get; set; }
 

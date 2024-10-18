@@ -18,13 +18,16 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Account>> SignUp(Account info){
-            
+        public async Task<ActionResult<Account>> SignUp(Account info)
+        {
 
 
-            try{
-                string result = await _unitOfWork.AccountRepository.CustomerSignUpAsync( info );
-                switch( result ){
+
+            try
+            {
+                string result = await _unitOfWork.AccountRepository.CustomerSignUpAsync(info);
+                switch (result)
+                {
                     case "Missing parameter: Email":
                     case "Missing parameter: PhoneNumber":
                     case "Missing parameter: Password":
@@ -37,27 +40,32 @@ namespace API.Controllers
                         return StatusCode(StatusCodes.Status409Conflict, result);
                     case "Unable to send mail":
                         return StatusCode(StatusCodes.Status201Created, result);
-                    case "Created successfully": 
+                    case "Created successfully":
                         return StatusCode(StatusCodes.Status201Created, "Signup successfully");
-                    default: 
+                    default:
                         return StatusCode(StatusCodes.Status501NotImplemented, "You should not be here");
                 }
-            } catch (Exception ex){
+            }
+            catch (Exception ex)
+            {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
         [Route("otp")]
         [HttpPost]
-        public async Task<ActionResult<string>> OTPVerify(LoginInformation info){
-            
-            try{
+        public async Task<ActionResult<string>> OTPVerify(LoginInformation info)
+        {
+
+            try
+            {
                 string result = await _unitOfWork.AccountRepository.CheckOtp(info);
-                
-                switch( result ){
+
+                switch (result)
+                {
                     case "Info and password must not be empty!":
                         return BadRequest(result);
-                    case "Cannot find account with that ID": 
+                    case "Cannot find account with that ID":
                         return NotFound(result);
                     case "No Need for OTP":
                         return StatusCode(StatusCodes.Status406NotAcceptable, result);
@@ -71,7 +79,9 @@ namespace API.Controllers
                         return StatusCode(StatusCodes.Status501NotImplemented, "This should not show up!");
                 }
 
-            } catch (Exception ex){
+            }
+            catch (Exception ex)
+            {
                 Console.WriteLine(ex);
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }

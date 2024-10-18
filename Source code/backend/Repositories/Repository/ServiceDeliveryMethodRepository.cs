@@ -1,9 +1,11 @@
 namespace Repositories.Repository;
 
-public class ServiceDeliveryMethodRepository : GenericRepository<ServiceDeliveryMethod> {
+public class ServiceDeliveryMethodRepository : GenericRepository<ServiceDeliveryMethod>
+{
 
-    public ServiceDeliveryMethodRepository( Context context )
-        : base( context ){
+    public ServiceDeliveryMethodRepository(Context context)
+        : base(context)
+    {
     }
 
 }

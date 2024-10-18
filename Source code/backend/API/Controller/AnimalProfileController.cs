@@ -44,7 +44,7 @@ namespace API.Controllers
                 AnimalType animalType = await _unitOfWork.AnimalTypeRepository.GetByIdAsync(animalprofile.TypeID);
                 if (animalType == null)
                     return BadRequest("Animal type does not exist!");
-                if(await _unitOfWork.BookingDetailRepository.GetByIdAsync(animalprofile.BookingDetailID) == null)
+                if (await _unitOfWork.BookingDetailRepository.GetByIdAsync(animalprofile.BookingDetailID) == null)
                     return BadRequest("Booking detail ID does not exist!");
                 if (await _unitOfWork.AnimalProfileRepository.AddAnimalProfileAsync(animalprofile) != 0)
                     return Ok($"Added {animalprofile.Name} successfully!");

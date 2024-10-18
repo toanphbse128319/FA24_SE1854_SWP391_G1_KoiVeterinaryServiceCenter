@@ -31,14 +31,15 @@ public class FeedbackController : ControllerBase
     [HttpPut]
     public ActionResult<Feedback> SaveFeedback(Feedback feedback)
     {
-        try {
+        try
+        {
             feedback.FeedbackID = null;
             _unitOfWork.FeedbackRepository.SaveFeedBack(feedback);
-            return  Ok("them feedback thanh cong");
+            return Ok("them feedback thanh cong");
         }
-        catch(Exception ex)
-        {   
-            return StatusCode (StatusCodes.Status500InternalServerError,ex.Message);
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
 
     }

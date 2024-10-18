@@ -3,7 +3,8 @@ using Microsoft.Extensions.Primitives;
 using System.Collections;
 using System.Collections.Generic;
 namespace Helper.VNPay;
-public class VnPay{
+public class VnPay
+{
     private string _vnpUrl;
     private string _tmnCode;
     private string _hashSecret;
@@ -11,30 +12,32 @@ public class VnPay{
     private string _bankCode;
     private string _returnURL;
 
-    public VnPay(string bankCode){
+    public VnPay(string bankCode)
+    {
         var config = Configuration.GetConfiguration();
         _vnpUrl = config["VnPay:vnp_Url"];
         _tmnCode = config["VnPay:vnp_TmnCode"];
         _hashSecret = config["VnPay:vnp_HashSecret"];
         _vnpVersion = config["VnPay:vnp_Version"];
-        if( bankCode == null )
+        if (bankCode == null)
             _bankCode = "VNBANK";
         else
             _bankCode = bankCode;
         _returnURL = config["VnPay:vnp_returnUrl"];
     }
 
-    public string PayUrl(Decimal amount, string orderID,  string customerAddress, string locale, string transferInfo){
+    public string PayUrl(Decimal amount, string orderID, string customerAddress, string locale, string transferInfo)
+    {
         VnPayLibrary vnpay = new VnPayLibrary();
         vnpay.AddRequestData("vnp_Version", _vnpVersion);
         vnpay.AddRequestData("vnp_Command", "pay");
         vnpay.AddRequestData("vnp_TmnCode", _tmnCode);
-        vnpay.AddRequestData("vnp_Amount", ((Decimal.ToInt64(amount))*100).ToString());
+        vnpay.AddRequestData("vnp_Amount", ((Decimal.ToInt64(amount)) * 100).ToString());
         vnpay.AddRequestData("vnp_BankCode", _bankCode);
         vnpay.AddRequestData("vnp_CreateDate", DateTime.Now.ToString("yyyyMMddHHmmss"));
         vnpay.AddRequestData("vnp_CurrCode", "VND");
         vnpay.AddRequestData("vnp_IpAddr", customerAddress);
-        if( locale == null )
+        if (locale == null)
             locale = "vn";
         vnpay.AddRequestData("vnp_Locale", locale);
         vnpay.AddRequestData("vnp_OrderInfo", transferInfo);
@@ -45,13 +48,14 @@ public class VnPay{
         return vnpay.CreateRequestUrl(_vnpUrl, _hashSecret);
     }
 
-    public PaymentResult CheckResult( List<KeyValuePair<string, StringValues>> query){
+    public PaymentResult CheckResult(List<KeyValuePair<string, StringValues>> query)
+    {
         VnPayLibrary vnpay = new VnPayLibrary();
-        foreach( KeyValuePair<string, StringValues> sub in query )
+        foreach (KeyValuePair<string, StringValues> sub in query)
             vnpay.AddResponseData(sub.Key, sub.Value);
 
         PaymentResult result = new PaymentResult();
-        
+
         result.OrderID = Convert.ToString(vnpay.GetResponseData("vnp_TxnRef"));
         result.TransactionNo = Convert.ToString(vnpay.GetResponseData("vnp_TransactionNo"));
         result.BankCode = vnpay.GetResponseData("vnp_BankCode");
@@ -60,7 +64,7 @@ public class VnPay{
         result.PayTime = DateTime.ParseExact(vnpay.GetResponseData("vnp_PayDate"), "yyyyMMddHHmmss", System.Globalization.CultureInfo.InvariantCulture);
         result.VnpayNo = vnpay.GetResponseData("vnp_TransactionNo");
         result.OrderInfo = vnpay.GetResponseData("vnp_OrderInfo");
-        result.Amount = Convert.ToInt64(vnpay.GetResponseData("vnp_Amount"))/100;
+        result.Amount = Convert.ToInt64(vnpay.GetResponseData("vnp_Amount")) / 100;
 
         string vnp_ResponseCode = vnpay.GetResponseData("vnp_ResponseCode");
         string vnp_TransactionStatus = vnpay.GetResponseData("vnp_TransactionStatus");
@@ -69,9 +73,9 @@ public class VnPay{
         String bankCode = vnpay.GetResponseData("vnp_BankCode");
 
         bool validateSignature = vnpay.ValidateSignature(vnp_SecureHash, _hashSecret);
-        if( validateSignature == false )
+        if (validateSignature == false)
             result.Result = "Có lỗi xảy ra trong quá trình xử lý";
-        else if( vnp_ResponseCode == "00" && vnp_TransactionStatus == "00" )
+        else if (vnp_ResponseCode == "00" && vnp_TransactionStatus == "00")
             result.Result = "Giao dịch được thực hiện thành công. Cảm ơn quý khách đã sử dụng dịch vụ";
         else result.Result = $"Có lỗi xảy ra trong quá trình xử lý. Mã lỗi: {vnp_ResponseCode}";
         return result;
