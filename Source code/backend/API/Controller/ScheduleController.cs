@@ -44,7 +44,7 @@ public class ScheduleController : ControllerBase
     }
 
     [Route("AssignSchedule")]
-    [HttpPut("{date}, {slot}")]
+    [HttpPut]
     public async Task<ActionResult<SlotTable>> AssignVet(string firstName, string lastName, DateOnly date, int slot)
     {
         try
