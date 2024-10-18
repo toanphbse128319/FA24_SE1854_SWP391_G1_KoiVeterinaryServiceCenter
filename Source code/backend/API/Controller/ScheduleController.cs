@@ -67,20 +67,21 @@ public class ScheduleController : ControllerBase
 
     [Route("UpdateSlotByEmployeeID")]
     [HttpPut]
-    public async Task<ActionResult<SlotTable>> UpdateSlotStatusByEmpIDAsync(UpdateSchedule info)
+    public async Task<ActionResult<SlotTable>> UpdateSlotStatusByEmpIDAsync(int slotNo, string scheduleID, string note, int slotCapacity)
     {
         try
         {
             SlotTable slotTable = new()
             {
-                Slot = info.Slot,
-                ScheduleID = info.ScheduleID,
-                Note = info.SlotNote
+                Slot = slotNo,
+                ScheduleID = scheduleID,
+                Note = note,
+                SlotCapacity = slotCapacity
             };
             var slot = await _unitOfWork.SlotTableRepository.UpdateSlotInformationAsync(slotTable);
             if (slot == null)
                 return NotFound("Date is not found!");
-            if (info.SlotStatus == true)
+            if (slot.SlotStatus == true)
                 return Ok("The Slot Status changed to available!");
             return Ok("The Slot Status changed to not available!");
         }

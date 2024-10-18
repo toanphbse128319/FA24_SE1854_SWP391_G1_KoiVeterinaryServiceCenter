@@ -25,7 +25,15 @@ public class SlotTableRepository : GenericRepository<SlotTable>
         if (slot == null)
             return slot;
 
-        slot.Note = info.Note;
+        if( info.Note != null )
+            slot.Note = info.Note;
+        if( info.Slot > 0 && info.Slot < 9 )
+            slot.Slot = info.Slot;
+        if( info.SlotOrdered != 0 )
+            slot.SlotOrdered = info.SlotOrdered;
+        if( info.SlotOrdered != 0 )
+            slot.SlotOrdered = info.SlotOrdered;
+
         slot.SlotCapacity = info.SlotCapacity;
         await UpdateAsync(slot);
         return slot;
