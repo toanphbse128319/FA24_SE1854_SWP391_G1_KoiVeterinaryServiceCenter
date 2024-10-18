@@ -9,6 +9,7 @@ import Banner from "./Components/Banner";
 import NhanHang from "./Components/NhanHang"
 import Navbar from "./Components/Navbar"
 import Booking from "./pages/Booking"
+import Footer from './Components/Footer';
 const App = () => {
   return (
     <div>
@@ -20,6 +21,9 @@ const App = () => {
       </div>
       <div>
         <NhanHang/>
+      </div>
+      <div className=' h-5'>
+        <Footer/>
       </div>
       <Outlet/>
     </div>

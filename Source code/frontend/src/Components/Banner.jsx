@@ -10,7 +10,7 @@ function Banner() {
   return (
     <div
         className="relative w-full h-screen bg-cover bg-center"
-        style={{ backgroundImage: "url('img/TrangChu/nh-banner.png')" }}
+        style={{ backgroundImage: "url('img/nh-banner.png')" }}
       >
         <div className="absolute inset-0 bg-blue-900 bg-opacity-40 flex flex-col justify-center items-center text-center text-white px-4">
           <h1 className="text-4xl font-bold mb-4">
