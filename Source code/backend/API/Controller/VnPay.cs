@@ -18,25 +18,54 @@ namespace API.Controllers
             _unitOfWork = unitOfWork;
         }
 
+        [Route("all")]
         [HttpGet("{id}")]
         //[Authorize(Policy = "customer_policy")]
-            public async Task<ActionResult> GetServiceByID(string id){
-                try{
-                    VnPay service = new VnPay(null);
-                    //Response.Redirect(service.PayUrl(10000, id, "127.0.0.1", "vn", "Testing first transaction"));
-                    Booking info = await _unitOfWork.BookingRepository.GetByIdAsync(id);
-                    if( info == null )
-                        return Ok("Cannot find any booking information with that ID");
-                    else if( info.PaymentStatus == "Paid" )
-                        return Ok("The order has been paid");
-                    else if( info.PaymentStatus == "Refunded" )
-                        return Ok("The order has been refunded");
+        public async Task<ActionResult> GetFullPaymentLink(string id){
+            try{
+                VnPay service = new VnPay(null);
+                //Response.Redirect(service.PayUrl(10000, id, "127.0.0.1", "vn", "Testing first transaction"));
+                Booking info = await _unitOfWork.BookingRepository.GetByIdAsync(id);
+                if( info == null )
+                    return Ok("Cannot find any booking information with that ID");
+                else if( info.PaymentStatus == "Paid" )
+                    return Ok("The order has been paid");
+                else if( info.PaymentStatus == "Refunded" )
+                    return Ok("The order has been refunded");
 
-                    Decimal price = await _unitOfWork.BookingRepository.GetTotalPrice(info.BookingID, info.NumberOfFish);
-                    return StatusCode(StatusCodes.Status200OK, service.PayUrl(price, info.BookingID, Request.Host.ToString() , "vn", $"Thanh toán chi phí cho hóa đơn {info.BookingID} với giá {info.TotalServiceCost}"));
-                } catch ( Exception ex ){
-                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-                }
+                Decimal price = await _unitOfWork.BookingRepository.GetTotalPrice(id);
+                return StatusCode(StatusCodes.Status200OK, service.PayUrl(price, info.BookingID, Request.Host.ToString() , "vn", $"Thanh toán chi phí cho hóa đơn {info.BookingID} với giá {info.TotalServiceCost}"));
+            } catch ( Exception ex ){
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+
+        [Route("deposit")]
+        [HttpGet("{id}")]
+        //[Authorize(Policy = "customer_policy")]
+        public async Task<ActionResult> GetDepositPaymentLink(string id){
+            try{
+                VnPay service = new VnPay(null);
+                //Response.Redirect(service.PayUrl(10000, id, "127.0.0.1", "vn", "Testing first transaction"));
+                Booking info = await _unitOfWork.BookingRepository.GetByIdAsync(id);
+                if( info == null )
+                    return Ok("Cannot find any booking information with that ID");
+                else if( info.PaymentStatus == "Paid" )
+                    return Ok("The order has been paid");
+                else if( info.PaymentStatus == "Refunded" )
+                    return Ok("The order has been refunded");
+                string result = await _unitOfWork.BookingRepository.CheckExpiration(id);
+                if( result == "Cannot find booking order" )
+                    return StatusCode(StatusCodes.Status409Conflict, result);
+                else if ( result == "Payment expired" )
+                    return StatusCode(StatusCodes.Status406NotAcceptable, result);
+
+                Decimal price = await _unitOfWork.BookingRepository.GetDepositPrice(id);
+                return StatusCode(StatusCodes.Status200OK, service.PayUrl(price, info.BookingID, Request.Host.ToString() , "vn", $"Thanh toán chi phí cho hóa đơn {info.BookingID} với giá {info.TotalServiceCost}"));
+            } catch ( Exception ex ){
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
 
         [Route("result")]
