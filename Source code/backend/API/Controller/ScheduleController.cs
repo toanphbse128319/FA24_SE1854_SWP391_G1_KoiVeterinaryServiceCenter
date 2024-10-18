@@ -33,7 +33,14 @@ public class ScheduleController : ControllerBase
                 return BadRequest("Parameter(s) cannot be empty!");
             if (await _unitOfWork.ScheduleRepository.CheckValidDateAsync(info.Date, info.EmployeeID) != null)
                 return BadRequest("Working day for that vet is already existed!");
-            await _unitOfWork.ScheduleRepository.AddNewSchedule(info);
+            Schedule schedule = new Schedule(){
+                ScheduleID = info.ScheduleID,
+                Status = info.Status,
+                Date = info.Date,
+                EmployeeID = info.EmployeeID,
+                Note = info.Note
+            };
+            await _unitOfWork.ScheduleRepository.AddNewSchedule(schedule);
             return Ok("Added successfully!");
         }
         catch (Exception ex)
