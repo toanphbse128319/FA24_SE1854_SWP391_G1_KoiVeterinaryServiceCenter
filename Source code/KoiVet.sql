@@ -244,11 +244,11 @@ VALUES
 -- Insert sample data for Service
 INSERT INTO Service (ServiceID, ServiceDeliveryMethodID, Name, Price, Description, Status) 
 VALUES 
-('S001', 'SDM001', 'Koi Health Check', 100.00, 'Basic health check for koi fish', 1),
-('S002', 'SDM002', 'Virtual Koi Consultation', 75.00, 'Online consultation with koi specialist', 1),
-('S003', 'SDM003', 'Koi Disease Treatment', 150.00, 'Treatment for common koi diseases', 1),
-('S004', 'SDM004', 'Emergency Koi Surgery', 300.00, 'Urgent surgical procedure for koi', 1),
-('S005', 'SDM005', 'Post-Treatment Checkup', 50.00, 'Follow-up checkup after treatment', 1);
+('S001', 'SDM001', 'Koi Health Check', 100000, 'Basic health check for koi fish', 1),
+('S002', 'SDM002', 'Virtual Koi Consultation', 75000, 'Online consultation with koi specialist', 1),
+('S003', 'SDM003', 'Koi Disease Treatment', 150000, 'Treatment for common koi diseases', 1),
+('S004', 'SDM004', 'Emergency Koi Surgery', 300000, 'Urgent surgical procedure for koi', 1),
+('S005', 'SDM005', 'Post-Treatment Checkup', 50000, 'Follow-up checkup after treatment', 1);
 
 -- Insert sample data for Feedback
 INSERT INTO Feedback (FeedbackID, ServiceRating, VetRating, Description, Status) 

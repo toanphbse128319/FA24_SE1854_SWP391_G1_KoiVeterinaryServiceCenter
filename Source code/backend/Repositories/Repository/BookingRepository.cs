@@ -162,7 +162,8 @@ public class BookingRepository : GenericRepository<Booking>
         if( info == null )
             return 0;
 
-        info.Deposit = await GetTotalPrice(bookingID);
+        info.Deposit = (int) GetTotalPrice(bookingID).Result * 30 / 100;
+        info.Status = Constants.Customer.WaitingForPayment + ": Deposit";
 
         await UpdateAsync(info);
 

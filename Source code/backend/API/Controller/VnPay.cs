@@ -18,8 +18,7 @@ namespace API.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        [Route("all")]
-        [HttpGet("{id}")]
+        [HttpGet("all/{id}")]
         //[Authorize(Policy = "customer_policy")]
         public async Task<ActionResult> GetFullPaymentLink(string id){
             try{
@@ -34,6 +33,8 @@ namespace API.Controllers
                     return Ok("The order has been refunded");
 
                 Decimal price = await _unitOfWork.BookingRepository.GetTotalPrice(id);
+                if( price == 0 )
+                    return StatusCode( StatusCodes.Status422UnprocessableEntity, "Unable to get pricing");
                 return StatusCode(StatusCodes.Status200OK, service.PayUrl(price, info.BookingID, Request.Host.ToString() , "vn", $"Thanh toán chi phí cho hóa đơn {info.BookingID} với giá {info.TotalServiceCost}"));
             } catch ( Exception ex ){
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
@@ -41,8 +42,7 @@ namespace API.Controllers
         }
 
 
-        [Route("deposit")]
-        [HttpGet("{id}")]
+        [HttpGet("deposit/{id}")]
         //[Authorize(Policy = "customer_policy")]
         public async Task<ActionResult> GetDepositPaymentLink(string id){
             try{
@@ -62,6 +62,8 @@ namespace API.Controllers
                     return StatusCode(StatusCodes.Status406NotAcceptable, result);
 
                 Decimal price = await _unitOfWork.BookingRepository.GetDepositPrice(id);
+                if( price == 0 )
+                    return StatusCode( StatusCodes.Status422UnprocessableEntity, "Unable to get pricing");
                 return StatusCode(StatusCodes.Status200OK, service.PayUrl(price, info.BookingID, Request.Host.ToString() , "vn", $"Thanh toán chi phí cho hóa đơn {info.BookingID} với giá {info.TotalServiceCost}"));
             } catch ( Exception ex ){
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
