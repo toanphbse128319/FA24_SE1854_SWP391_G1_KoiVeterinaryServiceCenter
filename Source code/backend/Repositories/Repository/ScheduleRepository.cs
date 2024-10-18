@@ -74,7 +74,7 @@ public class ScheduleRepository : GenericRepository<Schedule>
         schedule.Date = info.Date;
         schedule.Note = info.Note;
         schedule.Status = info.Status;
-        if (schedule.ScheduleID == "")
+        if (schedule.ScheduleID == null || schedule.ScheduleID == "")
             schedule.ScheduleID = "SCH" + base.GetAll().Count;
         await base.CreateAsync(schedule);
         await (new SlotTableRepository(_context).GenerateVetScheduleAsync(info.ScheduleID));
