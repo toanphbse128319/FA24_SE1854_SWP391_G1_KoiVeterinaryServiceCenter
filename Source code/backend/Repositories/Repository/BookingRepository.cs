@@ -41,23 +41,28 @@ public class BookingRepository : GenericRepository<Booking>
         DateOnly date = DateOnly.Parse(bookingDate.ToString("yyyy-MM-dd"));
         Schedule? schedule = await schrepo.CheckValidDateAsync(date, employeeID);
         if( schedule == null ){
-            schedule = new Schedule();
-            schedule.EmployeeID = employeeID;
-            schedule.Date = date;
-            await schrepo.GenerateVetScheduleAsync(schedule);
+            schedule = new Schedule(){
+                ScheduleID = "",
+                Date = date,
+                EmployeeID = employeeID,
+                Note = "",
+                Status = "Active"
+            };
+            schedule.ScheduleID = (await schrepo.AddNewSchedule(schedule)).ScheduleID;
         }
-        schedule.Slot = schrepo.SlotByTime(bookingDate);
-        if( schedule.Slot == 0 )
+        SlotTableRepository slotManager = new SlotTableRepository(_context);
+        SlotTable? slot = new SlotTable();
+        int slotNo = slotManager.SlotByTime(bookingDate.Hour);
+        if( slotNo == 0 )
             return "Outside working hour";
-        schedule = await schrepo.SearchSpecificSlotAsync(employeeID, date, schedule.Slot);
-        if( schedule == null )
+        slot = await slotManager.SearchSpecificSlotAsync(schedule.ScheduleID, slotNo);
+        if( slot == null )
             return "Cannot get the schedule";
-        if( schedule.SlotStatus == false )
+        if( slot.SlotStatus == false )
             return "Cannot place order on this slot";
-
-        schedule.SlotStatus = false;
-        schedule = await schrepo.UpdateSlotAsync(schedule);
-        if( schedule == null )
+        
+        slot = await slotManager.OrderSlot(slotNo, schedule.ScheduleID);
+        if( slot == null )
             return "Cannot update slot status";
         return schedule.ScheduleID;
     }
@@ -124,7 +129,7 @@ public class BookingRepository : GenericRepository<Booking>
                 return result = "Unable to create new booking order";
 
             BookingDetail detail = new BookingDetail(){BookingDetailID = "", BookingID = newOrder.BookingID, ServiceID = info.ServiceID };
-            await (new BookingDetailRepository(_context)).AddBookingDetailAsync(detail, info.ServiceID); 
+            await (new BookingDetailRepository(_context)).AddBookingDetailAsync(detail); 
             await transaction.Result.CommitAsync();
             return result = newOrder.BookingID;
         } finally {
