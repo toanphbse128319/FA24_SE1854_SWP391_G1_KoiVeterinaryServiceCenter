@@ -119,16 +119,15 @@ public class AccountRepository : GenericRepository<Account>
     public async Task<string> AddAsync(Account account){
         if( account == null )
             return "Account is null";
-        int index = (await base.GetAllAsync()).Count + 1;
 
         if( account.AccountID == null ) 
-            account.AccountID = "A" + index;
+            account.AccountID = GetNextID("A");
         else if (account.AccountID.Count() == 0)
-            account.AccountID = "A" + index;
+            account.AccountID = GetNextID("A");
         if( account.RoleID == null )
-            account.RoleID = "R002";
+            account.RoleID = "R2";
         if( account.RoleID.ElementAt(0) != 'R' )
-            account.RoleID = "R002";
+            account.RoleID = "R2";
 
         await base.CreateAsync(account);
         return account.AccountID;

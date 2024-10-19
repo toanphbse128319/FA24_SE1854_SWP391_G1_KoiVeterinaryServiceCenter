@@ -27,9 +27,9 @@ namespace Repositories.Repository
             if( customer.Firstname == null || customer.Address == null )
                 return "customer name, address cannot be null";
             if( customer.CustomerID == null ) 
-                customer.CustomerID = "C" + base.GetAllAsync().Result.Count;
+                customer.CustomerID = "C" + base.GetAllAsync().Result.Count + 1;
             if( customer.CustomerID.Count() == 0 )
-                customer.CustomerID = "C" + base.GetAllAsync().Result.Count;
+                customer.CustomerID = "C" + base.GetAllAsync().Result.Count + 1;
             await base.CreateAsync(customer);
             return customer.CustomerID;
         }
