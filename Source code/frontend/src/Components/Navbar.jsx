@@ -78,7 +78,7 @@ export default function Example() {
             <span className="sr-only">Your Company</span>
             <img
               alt=""
-              src="img\TrangChu\logo-c-s-2.png"
+              src="img\logo-c-s-2.png"
               className="h-8 w-auto"
             />
           </a>
