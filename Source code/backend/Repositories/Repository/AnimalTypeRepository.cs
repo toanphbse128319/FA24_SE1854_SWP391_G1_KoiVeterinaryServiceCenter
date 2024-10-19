@@ -10,7 +10,7 @@ namespace Repositories.Repository
 {
     public class AnimalTypeRepository : GenericRepository<AnimalType>
     {
-        public AnimalTypeRepository(Context context) 
+        public AnimalTypeRepository(Context context)
         {
             _context = context;
         }

@@ -28,7 +28,7 @@ namespace API.Controllers
         public async Task<ActionResult<IEnumerable<BookingDetail?>>> GetBookingDetailsByBookingID(string id)
         {
             List<BookingDetail?> list = await _unitOfWork.BookingDetailRepository.GetByBookingID(id);
-            if(list.Count == 0)
+            if (list.Count == 0)
                 return NotFound("Booking Detail not found!");
             else return Ok(list);
         }
@@ -79,17 +79,17 @@ namespace API.Controllers
             }
         }
         [HttpPost]
-        public async Task<ActionResult<BookingDetail?>> AddBookingDetail(BookingDetail info, string serviceID)
+        public async Task<ActionResult<BookingDetail?>> AddBookingDetail(BookingDetail info)
         {
             try
             {
-                if(await _unitOfWork.BookingDetailRepository.GetByIdAsync(info.BookingDetailID) != null)
+                if (await _unitOfWork.BookingDetailRepository.GetByIdAsync(info.BookingDetailID) != null)
                     return NotFound("Booking Detail is existed!");
-                if(await _unitOfWork.BookingRepository.GetByIdAsync(info.BookingID) == null)
+                if (await _unitOfWork.BookingRepository.GetByIdAsync(info.BookingID) == null)
                     return NotFound("BookingID not found!");
-                if(await _unitOfWork.ServiceRepository.GetByIdAsync(info.ServiceID) == null)
+                if (await _unitOfWork.ServiceRepository.GetByIdAsync(info.ServiceID) == null)
                     return NotFound("ServiceID not found!");
-                if (await _unitOfWork.BookingDetailRepository.AddBookingDetailAsync(info, serviceID) == 0)
+                if (await _unitOfWork.BookingDetailRepository.AddBookingDetailAsync(info) == 0)
                     return BadRequest("Added fail!");
                 else return Ok($"Added {info.BookingDetailID} successfully");
             }

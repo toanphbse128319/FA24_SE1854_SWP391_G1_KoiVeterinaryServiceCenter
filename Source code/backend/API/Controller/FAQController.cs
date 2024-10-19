@@ -17,13 +17,15 @@ namespace API.Controllers
         }
 
         [HttpGet("all")]
-        public async Task<ActionResult<IEnumerable<FAQ>>> GetAll(){
+        public async Task<ActionResult<IEnumerable<FAQ>>> GetAll()
+        {
             return await _unitOfWork.FAQRepository.GetAllAsync();
 
         }
 
         [HttpGet]
-        public async Task<ActionResult<FAQ>> GetFAQByID(string id){
+        public async Task<ActionResult<FAQ>> GetFAQByID(string id)
+        {
             return await _unitOfWork.FAQRepository.GetByIdAsync(id);
         }
 

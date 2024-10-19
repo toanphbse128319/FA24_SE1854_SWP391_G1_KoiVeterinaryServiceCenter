@@ -18,12 +18,14 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ServiceDeliveryMethod>>> GetAll(){
+        public async Task<ActionResult<IEnumerable<ServiceDeliveryMethod>>> GetAll()
+        {
             return await _unitOfWork.ServiceDeliveryMethodRepository.GetAllAsync();
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ServiceDeliveryMethod>> GetDeliveryMethodByID(string id){
+        public async Task<ActionResult<ServiceDeliveryMethod>> GetDeliveryMethodByID(string id)
+        {
             return await _unitOfWork.ServiceDeliveryMethodRepository.GetByIdAsync(id);
         }
     }

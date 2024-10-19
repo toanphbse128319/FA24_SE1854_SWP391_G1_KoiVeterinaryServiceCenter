@@ -19,24 +19,32 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Service>>> GetAll(){
-            try{ 
+        public async Task<ActionResult<IEnumerable<Service>>> GetAll()
+        {
+            try
+            {
                 return await _unitOfWork.ServiceRepository.GetAllAsync();
-            } catch( Exception ex ){
+            }
+            catch (Exception ex)
+            {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
         [HttpGet("{id}")]
         [Authorize(Policy = "customer_policy")]
-        public async Task<ActionResult<Service>> GetServiceByID(string id){
-            try{ 
+        public async Task<ActionResult<Service>> GetServiceByID(string id)
+        {
+            try
+            {
                 var service = await _unitOfWork.ServiceRepository.GetByIdAsync(id);
-                if( service == null )
+                if (service == null)
                     return NotFound("Cannot find service with that id");
 
                 return Ok(service);
-            } catch( Exception ex ) {
+            }
+            catch (Exception ex)
+            {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }

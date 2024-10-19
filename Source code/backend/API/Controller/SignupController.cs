@@ -33,27 +33,58 @@ namespace API.Controllers
                     case "That email is already used!":
                     case "That phone number is alreay used!":
                         return StatusCode(StatusCodes.Status409Conflict, result);
+<<<<<<< HEAD
                     case "Created successfully": 
+||||||| ca233e6
+                    case "Unable to send mail":
+                        return StatusCode(StatusCodes.Status201Created, result);
+                    case "Created successfully": 
+=======
+                    case "Unable to send mail":
+                        return StatusCode(StatusCodes.Status201Created, result);
+                    case "Created successfully":
+>>>>>>> origin/Dev
                         return StatusCode(StatusCodes.Status201Created, "Signup successfully");
-                    default: 
+                    default:
                         return StatusCode(StatusCodes.Status501NotImplemented, "You should not be here");
                 }
+<<<<<<< HEAD
             } catch (Exception ex){
                 Console.WriteLine(ex);
+||||||| ca233e6
+            } catch (Exception ex){
+=======
+            }
+            catch (Exception ex)
+            {
+>>>>>>> origin/Dev
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
         [Route("otp/check")]
         [HttpPost]
+<<<<<<< HEAD
         public async Task<ActionResult<string>> OTPVerify(LoginInformation info){
             try{
+||||||| ca233e6
+        public async Task<ActionResult<string>> OTPVerify(LoginInformation info){
+            
+            try{
+=======
+        public async Task<ActionResult<string>> OTPVerify(LoginInformation info)
+        {
+
+            try
+            {
+>>>>>>> origin/Dev
                 string result = await _unitOfWork.AccountRepository.CheckOtp(info);
-                
-                switch( result ){
+
+                switch (result)
+                {
                     case "Info and password must not be empty!":
                         return BadRequest(result);
-                    case "Cannot find account with that ID": 
+                    case "Cannot find account with that ID":
                         return NotFound(result);
                     case "No need for OTP":
                         return StatusCode(StatusCodes.Status406NotAcceptable, result);
@@ -67,7 +98,9 @@ namespace API.Controllers
                         return StatusCode(StatusCodes.Status501NotImplemented, "This should not show up!");
                 }
 
-            } catch (Exception ex){
+            }
+            catch (Exception ex)
+            {
                 Console.WriteLine(ex);
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }

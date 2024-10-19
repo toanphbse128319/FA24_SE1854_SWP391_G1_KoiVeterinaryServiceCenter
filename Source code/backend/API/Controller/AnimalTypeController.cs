@@ -32,7 +32,7 @@ namespace API.Controllers
             {
                 if (animaltype.Name.Equals(""))
                     return BadRequest("Animal type are empty!");
-                if(await _unitOfWork.AnimalTypeRepository.AddAnimalTypeAsync(animaltype) == null)
+                if (await _unitOfWork.AnimalTypeRepository.AddAnimalTypeAsync(animaltype) == null)
                     return Conflict("Animal type already exists!");
                 return Ok($"Added {animaltype.Name} successfully!");
             }
