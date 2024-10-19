@@ -74,13 +74,11 @@ public class SlotTableRepository : GenericRepository<SlotTable>
 
     public async Task<int?> GenerateVetScheduleAsync(string scheduleID)
     {
-        string index = GetNextID("ST");
-        
         for (int i = 0; i < 8; i++)
         {
             SlotTable slot = new()
             {
-                SlotTableID = "ST" + (index + i),
+                SlotTableID = GetNextID("ST"),
                 ScheduleID = scheduleID,
                 Slot = (i + 1),
                 SlotStatus = true
