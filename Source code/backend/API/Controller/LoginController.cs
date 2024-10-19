@@ -18,11 +18,14 @@ public class LoginController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<Account>> LoggingByEmail(LoginInformation info){
-        try{
-            var result = await _unitOfWork.AccountRepository.LoginAsync( info );
+    public async Task<ActionResult<Account>> LoggingByEmail(LoginInformation info)
+    {
+        try
+        {
+            var result = await _unitOfWork.AccountRepository.LoginAsync(info);
 
-            switch( result ){
+            switch (result)
+            {
                 case "Info and password cannot be empty":
                     return BadRequest(result);
                 case "Invalid username or password!":
@@ -35,8 +38,10 @@ public class LoginController : ControllerBase
                     return StatusCode(StatusCodes.Status417ExpectationFailed, result);
                 default:
                     return Ok(result);
-            }   
-        } catch ( Exception ex ){
+            }
+        }
+        catch (Exception ex)
+        {
             Console.WriteLine(ex);
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }

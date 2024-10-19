@@ -15,13 +15,15 @@ public class PostController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Post>>> GetAll(){
+    public async Task<ActionResult<IEnumerable<Post>>> GetAll()
+    {
         return await _unitOfWork.PostReposity.GetAllAsync();
 
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Post>> GetPostByID(string id){
+    public async Task<ActionResult<Post>> GetPostByID(string id)
+    {
         return await _unitOfWork.PostReposity.GetByIdAsync(id);
     }
 

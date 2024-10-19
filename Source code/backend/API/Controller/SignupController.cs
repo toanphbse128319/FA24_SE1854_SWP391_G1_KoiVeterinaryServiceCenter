@@ -35,7 +35,7 @@ namespace API.Controllers
                         return StatusCode(StatusCodes.Status409Conflict, result);
                     case "Created successfully": 
                         return StatusCode(StatusCodes.Status201Created, "Signup successfully");
-                    default: 
+                    default:
                         return StatusCode(StatusCodes.Status501NotImplemented, "You should not be here");
                 }
             } catch (Exception ex){
@@ -49,11 +49,12 @@ namespace API.Controllers
         public async Task<ActionResult<string>> OTPVerify(LoginInformation info){
             try{
                 string result = await _unitOfWork.AccountRepository.CheckOtp(info);
-                
-                switch( result ){
+
+                switch (result)
+                {
                     case "Info and password must not be empty!":
                         return BadRequest(result);
-                    case "Cannot find account with that ID": 
+                    case "Cannot find account with that ID":
                         return NotFound(result);
                     case "No need for OTP":
                         return StatusCode(StatusCodes.Status406NotAcceptable, result);
@@ -67,7 +68,9 @@ namespace API.Controllers
                         return StatusCode(StatusCodes.Status501NotImplemented, "This should not show up!");
                 }
 
-            } catch (Exception ex){
+            }
+            catch (Exception ex)
+            {
                 Console.WriteLine(ex);
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }

@@ -10,7 +10,7 @@ namespace Repositories.Repository
 {
     public class PoolProfileRepository : GenericRepository<PoolProfile>
     {
-        public PoolProfileRepository(Context context) 
+        public PoolProfileRepository(Context context)
         {
             _context = context;
         }
@@ -29,6 +29,7 @@ namespace Repositories.Repository
                 int index = base.GetAll().Count;
                 poolprofile.PoolProfileID = "PP" + index;
             }
+
             return await base.CreateAsync(poolprofile);;
         }
     }

@@ -11,12 +11,14 @@ namespace Repositories.Repository
             _context = context;
         }
 
-        public async Task<Customer?> SearchByAccountIDAsync(string id){
-            return await _context.Customers.FirstOrDefaultAsync( customer => customer.AccountID == id);
+        public async Task<Customer?> SearchByAccountIDAsync(string id)
+        {
+            return await _context.Customers.FirstOrDefaultAsync(customer => customer.AccountID == id);
         }
 
-        public Customer? SearchByAccountID(string id){
-            return _context.Customers.FirstOrDefault( customer => customer.AccountID == id);
+        public Customer? SearchByAccountID(string id)
+        {
+            return _context.Customers.FirstOrDefault(customer => customer.AccountID == id);
         }
 
         public async Task<string> AddAsync(Customer customer){

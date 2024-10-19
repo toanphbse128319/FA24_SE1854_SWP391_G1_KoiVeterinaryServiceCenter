@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Repositories.Model;
 using Repositories;
 using Helper;
+using Helper.Objects;
 
 namespace API.Controllers
 {
@@ -37,12 +38,12 @@ namespace API.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest("Unknown Error: " + ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Booking>>> GetVetBookings(string id)
+        public async Task<ActionResult<I﻿Enumerable<Booking>>> GetVetBookings(string id)
         {
             try
             {
@@ -55,7 +56,39 @@ namespace API.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest("Unknown Error: " + ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [Route("add")]
+        [HttpPost]
+        public async Task<ActionResult<string>> AddBooking(NewBookingInformation info){
+            try{
+                string result = await _unitOfWork.BookingRepository.AddNewBooking(info);
+                if( result.Contains("cannot be") )
+                        return StatusCode(StatusCodes.Status400BadRequest, result);
+                    
+                switch (result){
+                    case "Cannot place an booking order with that date":
+                    case "Cannot detemined the delivery method of the service":
+                    case "Outside working hour":
+                    case "Cannot get the schedule":           
+                    case "Cannot place order on this slot":
+                    case "Cannot update slot status":
+                        return StatusCode(StatusCodes.Status406NotAcceptable, result);
+                    case "Customer does not exist":
+                    case "Employee does not exist":
+                        return StatusCode(StatusCodes.Status404NotFound, result);
+                    case "Unable to create new booking order":
+                    case "Unable to update vet schedule":
+                    case "Unable to create booking detail":
+                        return StatusCode(StatusCodes.Status408RequestTimeout, result);
+                    default:
+                        return Ok(result);
+                }
+            } catch (Exception ex){
+                Console.WriteLine(ex);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
     }
