@@ -40,9 +40,8 @@ public class AccountRepository : GenericRepository<Account>
     {
         CustomerRepository CustomerRepository = new CustomerRepository(_context);
         Customer? customer = CustomerRepository.SearchByAccountID(accountID);
-        if (customer != null)
-        {
-            firstname = customer.FirstName;
+        if( customer != null ){
+            firstname = customer.Firstname;
             lastname = customer.Lastname;
             return;
         }
@@ -70,7 +69,8 @@ public class AccountRepository : GenericRepository<Account>
             found = await LoginByEmail(info.Info, info.Password);
         else
             found = await LoginByPhoneNumber(info.Info, info.Password);
-        if (found == null)
+
+        if( found == null )
             return "Invalid username or password!";
         if (found.Status.Contains(Constants.Account.WaitingForOTPMessage))
             return "This account hasn't verify otp code";
@@ -116,49 +116,105 @@ public class AccountRepository : GenericRepository<Account>
         );
     }
 
-    public string PrepareMail(string pass)
-    {
+    public async Task<string> AddAsync(Account account){
+        if( account == null )
+            return "Account is null";
+        int index = (await base.GetAllAsync()).Count + 1;
+
+        if( account.AccountID == null ) 
+            account.AccountID = "A" + index;
+        else if (account.AccountID.Count() == 0)
+            account.AccountID = "A" + index;
+        if( account.RoleID == null )
+            account.RoleID = "R002";
+        if( account.RoleID.ElementAt(0) != 'R' )
+            account.RoleID = "R002";
+
+        await base.CreateAsync(account);
+        return account.AccountID;
+    }
+
+    public string PrepareMail(string pass){
         FileManager file = new FileManager(Constants.Mail.signUpEmailLocation);
         string result = file.ReadFile();
         result = result.Replace("000000", pass);
         return result;
     }
 
-    public async Task<string?> CustomerSignUpAsync(Account info)
-    {
-        //Check if the paramter is null
-        if (info.Email == null)
-            return "Missing parameter: Email";
-        if (info.PhoneNumber == null)
-            return "Missing parameter: PhoneNumber";
-        if (info.Password == null)
-            return "Missing parameter: Password";
-        //Check if parameter is empty
-        if (info.Email == String.Empty)
-            return "Email must not be empy";
-        if (info.PhoneNumber == String.Empty)
-            return "PhoneNumber must not be empy";
-        if (info.Password == String.Empty)
-            return "Password must not be empy";
-        if (FindEmail(info.Email) != null)
-            return "That email is already usd!";
-        if (FindPhoneNumber(info.PhoneNumber) != null)
-            return "That phone number is alreay used!";
+    public async Task<string?> CustomerSignUpAsync(CustomerSignupInformation info ){
 
-        int index = (await base.GetAllAsync()).Count;
-        info.AccountID = "A" + index;
-        info.RoleID = "R002";
-        info.IsActive = false;
+        var transaction = await _context.Database.BeginTransactionAsync();
+        string result = "";
+        try{
+            result = info.CheckEmpty();
+            if( result != "Ok" )
+                return result;
+
+            if( await FindEmailAsync(info.Email) != null )
+                return "That email is already used!";
+            if( await FindPhoneNumberAsync(info.PhoneNumber) != null )
+                return "That phone number is alreay used!";
+
+            Account account = new Account(){
+                AccountID = null,
+                Email = info.Email,
+                PhoneNumber = info.PhoneNumber,
+                RoleID = null,
+                Password = info.Password,
+                Status = Constants.Account.WaitingForOTPMessage
+            };
+            //Planned to use the account.AccountID but for some reason,  
+            //the runtime complain
+            string accountID = await AddAsync(account);
+            if( accountID == "Account is null" )
+                return "Unable to create account"; 
+
+            CustomerRepository customerRepo = new CustomerRepository(_context);
+            Customer customer = new Customer(){
+                AccountID = account.AccountID,
+                Firstname = info.Firstname,
+                Lastname = info.Lastname,
+                Sex = info.Sex,
+                BirthDay = info.Birthday,
+                Address = info.Address,
+                Status = "Normal"
+            };
+            result = await customerRepo.AddAsync(customer);
+            if( result[0] != 'C' )
+                return result;
+
+            await transaction.CommitAsync();
+            return result = "Created successfully";
+        } finally {
+            if( result != "Created successfully" )
+                await transaction.RollbackAsync();
+        }
+    }
+
+    public async Task<string> SendOtpMail(string info){
+        if( info == null )
+            return "Info cannot be null!";
+        if( info.Count() == 0 )
+            return "Info must not be empty!";
+        Account? account;
+        string pat = @"\D";
+        MatchCollection matched = Regex.Matches(info, pat);
+        if (matched.Count > 0)
+            account = await FindEmailAsync(info);
+        else
+            account = await FindPhoneNumberAsync(info);
+        if( account == null )
+            return "Unable to find the account";
+
+        if( account.Status.Contains(Constants.Account.WaitingForOTPMessage) == false )
+            return "No need for OTP";
+
         Random rnd = new Random();
         int luckyNumber = rnd.Next(100000, 999999);
-
-        info.Status = (Constants.Account.WaitingForOTPMessage + luckyNumber + " " + DateTime.Now.ToString());
-
-        await base.CreateAsync(info);
-
-        try
-        {
-            Mail mail = new Mail(info.Email);
+        account.Status = (Constants.Account.WaitingForOTPMessage + luckyNumber + " " + DateTime.Now.ToString()) ;
+        await base.UpdateAsync(account);
+        try{
+            Mail mail = new Mail(account.Email);
             string subject = "Signup confirmation";
             string message = PrepareMail(luckyNumber.ToString());
             mail.SetMessage(subject, message);
@@ -169,9 +225,8 @@ public class AccountRepository : GenericRepository<Account>
         {
             Console.WriteLine(ex);
             return "Unable to send mail";
-        }
-
-        return "Created successfully";
+        }    
+        return "Send mail successfully";
     }
 
     public async Task<string?> CheckOtp(LoginInformation info)
@@ -190,9 +245,8 @@ public class AccountRepository : GenericRepository<Account>
         if (result == null)
             return "Cannot find account with that ID";
 
-        if (result.Status.Contains(Constants.Account.WaitingForOTPMessage) == false)
-        {
-            return "No Need for OTP";
+        if( result.Status.Contains(Constants.Account.WaitingForOTPMessage) == false ){
+            return "No need for OTP";
         }
 
         string[] statuses = result.Status.Split(' ');
