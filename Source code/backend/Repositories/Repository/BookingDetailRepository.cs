@@ -24,7 +24,7 @@ namespace Repositories.Repository
         {
             return _context.BookingDetails.Where(bookingdetail => bookingdetail.ServiceID.ToLower() == id.ToLower()).ToListAsync()!;
         }
-
+        
         public async Task<int> AddBookingDetailAsync(BookingDetail bd)
         {
             if (await _context.BookingDetails.FindAsync(bd.BookingDetailID) != null)

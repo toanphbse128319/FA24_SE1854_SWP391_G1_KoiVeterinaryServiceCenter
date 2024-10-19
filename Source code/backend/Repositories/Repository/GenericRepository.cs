@@ -135,5 +135,8 @@ public class GenericRepository<T> where T : class
 
     #endregion Separating asign entity and save operators
 
+    public string GetNextID(string prefix){
+        return prefix + GetAll().Count.ToString();
+    }
 }
 

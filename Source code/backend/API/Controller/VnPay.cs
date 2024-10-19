@@ -18,26 +18,54 @@ namespace API.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("all/{id}")]
         //[Authorize(Policy = "customer_policy")]
-        public async Task<ActionResult> GetServiceByID(string id)
-        {
-            try
-            {
+        public async Task<ActionResult> GetFullPaymentLink(string id){
+            try{
                 VnPay service = new VnPay(null);
                 //Response.Redirect(service.PayUrl(10000, id, "127.0.0.1", "vn", "Testing first transaction"));
                 Booking info = await _unitOfWork.BookingRepository.GetByIdAsync(id);
-                if (info == null)
+                if( info == null )
                     return Ok("Cannot find any booking information with that ID");
-                else if (info.PaymentStatus == "Paid")
+                else if( info.PaymentStatus == "Paid" )
                     return Ok("The order has been paid");
-                else if (info.PaymentStatus == "Refunded")
+                else if( info.PaymentStatus == "Refunded" )
                     return Ok("The order has been refunded");
 
-                return StatusCode(StatusCodes.Status200OK, service.PayUrl(info.TotalServiceCost, info.BookingID, Request.Host.ToString(), "vn", $"Thanh toán chi phí cho hóa đơn {info.BookingID} với giá {info.TotalServiceCost}"));
+                Decimal price = await _unitOfWork.BookingRepository.GetTotalPrice(id);
+                if( price == 0 )
+                    return StatusCode( StatusCodes.Status422UnprocessableEntity, "Unable to get pricing");
+                return StatusCode(StatusCodes.Status200OK, service.PayUrl(price, info.BookingID, Request.Host.ToString() , "vn", $"Thanh toán chi phí cho hóa đơn {info.BookingID} với giá {info.TotalServiceCost}"));
+            } catch ( Exception ex ){
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-            catch (Exception ex)
-            {
+        }
+
+
+        [HttpGet("deposit/{id}")]
+        //[Authorize(Policy = "customer_policy")]
+        public async Task<ActionResult> GetDepositPaymentLink(string id){
+            try{
+                VnPay service = new VnPay(null);
+                //Response.Redirect(service.PayUrl(10000, id, "127.0.0.1", "vn", "Testing first transaction"));
+                Booking info = await _unitOfWork.BookingRepository.GetByIdAsync(id);
+                if( info == null )
+                    return Ok("Cannot find any booking information with that ID");
+                else if( info.PaymentStatus == "Paid" )
+                    return Ok("The order has been paid");
+                else if( info.PaymentStatus == "Refunded" )
+                    return Ok("The order has been refunded");
+                string result = await _unitOfWork.BookingRepository.CheckExpiration(id);
+                if( result == "Cannot find booking order" )
+                    return StatusCode(StatusCodes.Status409Conflict, result);
+                else if ( result == "Payment expired" )
+                    return StatusCode(StatusCodes.Status406NotAcceptable, result);
+
+                Decimal price = await _unitOfWork.BookingRepository.GetDepositPrice(id);
+                if( price == 0 )
+                    return StatusCode( StatusCodes.Status422UnprocessableEntity, "Unable to get pricing");
+                return StatusCode(StatusCodes.Status200OK, service.PayUrl(price, info.BookingID, Request.Host.ToString() , "vn", $"Thanh toán chi phí cho hóa đơn {info.BookingID} với giá {info.TotalServiceCost}"));
+            } catch ( Exception ex ){
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }

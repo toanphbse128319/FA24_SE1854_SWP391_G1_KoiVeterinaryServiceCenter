@@ -1,6 +1,5 @@
-
-public class PaymentResult
-{
+#nullable disable
+public class PaymentResult{
 
     public long Amount { get; set; }
     public string OrderID { get; set; }
