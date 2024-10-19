@@ -112,7 +112,7 @@ public class AccountRepository : GenericRepository<Account>
     public async Task<string> AddAsync(Account account){
         if( account == null )
             return "Account is null";
-        int index = (await base.GetAllAsync()).Count;
+        int index = (await base.GetAllAsync()).Count + 1;
 
         if( account.AccountID == null ) 
             account.AccountID = "A" + index;
@@ -153,7 +153,6 @@ public class AccountRepository : GenericRepository<Account>
                 Email = info.Email,
                 PhoneNumber = info.PhoneNumber,
                 RoleID = null,
-                Avatar = info.Avatar,
                 Password = info.Password,
                 Status = Constants.Account.WaitingForOTPMessage
             };
