@@ -68,22 +68,15 @@ public class ScheduleRepository : GenericRepository<Schedule>
 
     public async Task<Schedule> AddNewSchedule(Schedule info)
     {
-        var transaction = await _context.Database.BeginTransactionAsync();
-        try{
-            Schedule schedule = new Schedule();
-            schedule.ScheduleID = "SCH" + base.GetAll().Count;
-            schedule.EmployeeID = info.EmployeeID;
-            schedule.Date = info.Date;
-            schedule.Note = info.Note;
-            schedule.Status = info.Status;
-            await base.CreateAsync(schedule);
-            await (new SlotTableRepository(_context).GenerateVetScheduleAsync(schedule.ScheduleID));
-            await transaction.CommitAsync();
-            return schedule;
-        } catch (Exception ex){
-            await transaction.RollbackAsync();
-            throw new Exception(ex.ToString());
-        }
+        Schedule schedule = new Schedule();
+        schedule.ScheduleID = GetNextID("SCH");
+        schedule.EmployeeID = info.EmployeeID;
+        schedule.Date = info.Date;
+        schedule.Note = info.Note;
+        schedule.Status = info.Status;
+        await base.CreateAsync(schedule);
+        await (new SlotTableRepository(_context).GenerateVetScheduleAsync(schedule.ScheduleID));
+        return schedule;
     }
 
 }
