@@ -1,6 +1,5 @@
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
-
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 using Repositories.Model;
@@ -45,7 +44,6 @@ public class AccountRepository : GenericRepository<Account>
             lastname = customer.Lastname;
             return;
         }
-
         EmployeeRepository EmployeeRepository = new EmployeeRepository(_context);
         Employee? Employee = EmployeeRepository.SearchByAccountID(accountID);
         if (Employee == null)
@@ -60,7 +58,6 @@ public class AccountRepository : GenericRepository<Account>
     {
         if (info.IsEmpty())
             return "Info and password cannot be empty";
-
         Account? found;
         //Check for any character
         string pat = @"\D";
@@ -69,14 +66,12 @@ public class AccountRepository : GenericRepository<Account>
             found = await LoginByEmail(info.Info, info.Password);
         else
             found = await LoginByPhoneNumber(info.Info, info.Password);
-
         if( found == null )
             return "Invalid username or password!";
         if (found.Status.Contains(Constants.Account.WaitingForOTPMessage))
             return "This account hasn't verify otp code";
         if (found.IsActive == false)
             return "Account has been disabled";
-
         string? lastname = null;
         string? firstname = null;
         GetName(ref lastname, ref firstname, found.AccountID);
@@ -84,7 +79,6 @@ public class AccountRepository : GenericRepository<Account>
         {
             return "Cannot find profile associate with this account";
         }
-
         Token token = new Token();
         RoleRepository RoleRepository = new RoleRepository(_context);
         var claims = new List<Claim>{
@@ -94,7 +88,6 @@ public class AccountRepository : GenericRepository<Account>
             new Claim("Firstname", firstname),
             new Claim("Lastname", lastname)
         };
-
         token.Claims = claims;
         return token.GenerateToken(4);
     }
@@ -119,7 +112,6 @@ public class AccountRepository : GenericRepository<Account>
     public async Task<string> AddAsync(Account account){
         if( account == null )
             return "Account is null";
-
         if( account.AccountID == null ) 
             account.AccountID = GetNextID("A");
         else if (account.AccountID.Count() == 0)
@@ -128,7 +120,6 @@ public class AccountRepository : GenericRepository<Account>
             account.RoleID = "R2";
         if( account.RoleID.ElementAt(0) != 'R' )
             account.RoleID = "R2";
-
         await base.CreateAsync(account);
         return account.AccountID;
     }
@@ -141,19 +132,16 @@ public class AccountRepository : GenericRepository<Account>
     }
 
     public async Task<string?> CustomerSignUpAsync(CustomerSignupInformation info ){
-
         var transaction = await _context.Database.BeginTransactionAsync();
         string result = "";
         try{
             result = info.CheckEmpty();
             if( result != "Ok" )
                 return result;
-
             if( await FindEmailAsync(info.Email) != null )
                 return "That email is already used!";
             if( await FindPhoneNumberAsync(info.PhoneNumber) != null )
                 return "That phone number is alreay used!";
-
             Account account = new Account(){
                 AccountID = null,
                 Email = info.Email,
@@ -167,7 +155,6 @@ public class AccountRepository : GenericRepository<Account>
             string accountID = await AddAsync(account);
             if( accountID == "Account is null" )
                 return "Unable to create account"; 
-
             CustomerRepository customerRepo = new CustomerRepository(_context);
             Customer customer = new Customer(){
                 AccountID = account.AccountID,
@@ -181,7 +168,6 @@ public class AccountRepository : GenericRepository<Account>
             result = await customerRepo.AddAsync(customer);
             if( result[0] != 'C' )
                 return result;
-
             await transaction.CommitAsync();
             return result = "Created successfully";
         } finally {
@@ -204,10 +190,8 @@ public class AccountRepository : GenericRepository<Account>
             account = await FindPhoneNumberAsync(info);
         if( account == null )
             return "Unable to find the account";
-
         if( account.Status.Contains(Constants.Account.WaitingForOTPMessage) == false )
             return "No need for OTP";
-
         Random rnd = new Random();
         int luckyNumber = rnd.Next(100000, 999999);
         account.Status = (Constants.Account.WaitingForOTPMessage + luckyNumber + " " + DateTime.Now.ToString()) ;
@@ -230,7 +214,6 @@ public class AccountRepository : GenericRepository<Account>
 
     public async Task<string?> CheckOtp(LoginInformation info)
     {
-
         if (info.IsEmpty())
             return "Info and password must not be empty!";
         Account? result;
@@ -240,28 +223,22 @@ public class AccountRepository : GenericRepository<Account>
             result = await FindEmailAsync(info.Info);
         else
             result = await FindPhoneNumberAsync(info.Info);
-
         if (result == null)
             return "Cannot find account with that ID";
-
         if( result.Status.Contains(Constants.Account.WaitingForOTPMessage) == false ){
             return "No need for OTP";
         }
-
         string[] statuses = result.Status.Split(' ');
-
         string luckyNumber = statuses[3];
         DateTime timeSinceCreated = DateTime.Parse(statuses[4] + ' ' + statuses[5]);
         if (timeSinceCreated.AddMinutes(10) <= DateTime.Now)
         {
             return "OTP password has expired";
         }
-
         if (luckyNumber != info.Password)
         {
             return "OTP Code is incorrect";
         }
-
         result.Status = "Normal";
         result.IsActive = true;
         await base.UpdateAsync(result);

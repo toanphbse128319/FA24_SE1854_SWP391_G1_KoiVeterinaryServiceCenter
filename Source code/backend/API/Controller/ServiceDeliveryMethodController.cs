@@ -20,13 +20,23 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ServiceDeliveryMethod>>> GetAll()
         {
-            return await _unitOfWork.ServiceDeliveryMethodRepository.GetAllAsync();
+            try{
+                return await _unitOfWork.ServiceDeliveryMethodRepository.GetAllAsync();
+            } catch ( Exception ex ){
+                Console.WriteLine( ex );
+                return StatusCode( StatusCodes.Status500InternalServerError, ex.Message );
+            }
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<ServiceDeliveryMethod>> GetDeliveryMethodByID(string id)
         {
-            return await _unitOfWork.ServiceDeliveryMethodRepository.GetByIdAsync(id);
+            try{
+                return await _unitOfWork.ServiceDeliveryMethodRepository.GetByIdAsync(id);
+            } catch ( Exception ex ){
+                Console.WriteLine( ex );
+                return StatusCode( StatusCodes.Status500InternalServerError, ex.Message );
+            }
         }
     }
 }

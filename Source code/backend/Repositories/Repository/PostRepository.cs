@@ -1,4 +1,3 @@
-
 namespace Repositories.Repository;
 
 public class PostReposity : GenericRepository<Post>
@@ -9,6 +8,5 @@ public class PostReposity : GenericRepository<Post>
     {
 
     }
-
 
 }

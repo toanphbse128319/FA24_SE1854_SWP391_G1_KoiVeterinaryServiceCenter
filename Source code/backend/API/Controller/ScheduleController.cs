@@ -1,13 +1,8 @@
 #nullable disable
 using Helper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Repositories;
 using Repositories.Model;
-using Repositories.Repository;
-using System.Security.Cryptography;
-using System.Security.Cryptography.Pkcs;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace API.Controllers;
 [Route("api/[controller]")]
@@ -119,28 +114,43 @@ public class ScheduleController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<Schedule>>> GetScheduleByDate(DateOnly date)
     {
-        if (await _unitOfWork.ScheduleRepository.CheckValidScheduleAsync(date) == null)
-            return NotFound("Date is not found!");
-        return await _unitOfWork.ScheduleRepository.SearchByDateAsync(date);
+        try{
+            if (await _unitOfWork.ScheduleRepository.CheckValidScheduleAsync(date) == null)
+                return NotFound("Date is not found!");
+            return await _unitOfWork.ScheduleRepository.SearchByDateAsync(date);
+        } catch ( Exception ex ){
+            Console.WriteLine( ex );
+            return StatusCode( StatusCodes.Status500InternalServerError, ex.Message );
+        }
     }
 
     [Route("GetScheduleByName")]
     [HttpGet]
     public async Task<ActionResult<List<Schedule>>> GetScheduleByName(string firstname, string lastname)
     {
-        if (await _unitOfWork.ScheduleRepository.CheckValidNameAsync(firstname, lastname) == null)
-            return NotFound("Name is not found!");
-        return await _unitOfWork.ScheduleRepository.SearchByNameAsync(firstname, lastname);
+        try{
+            if (await _unitOfWork.ScheduleRepository.CheckValidNameAsync(firstname, lastname) == null)
+                return NotFound("Name is not found!");
+            return await _unitOfWork.ScheduleRepository.SearchByNameAsync(firstname, lastname);
+        } catch ( Exception ex ){
+            Console.WriteLine( ex );
+            return StatusCode( StatusCodes.Status500InternalServerError, ex.Message );
+        }
     }
 
     [Route("GetScheduleByNameAndDate")]
     [HttpGet]
     public async Task<ActionResult<List<SlotTable>>> GetScheduleByEmpIDAndDate(string EmpID, DateOnly date)
     {
-        Schedule schedule = await _unitOfWork.ScheduleRepository.SearchVetAndDateAsync(date, EmpID);
-        if (schedule == null)
-            return NotFound("Name is not found!");
-        return await _unitOfWork.SlotTableRepository.SearchByScheduleIDAsync(schedule.ScheduleID);
+        try{
+            Schedule schedule = await _unitOfWork.ScheduleRepository.SearchVetAndDateAsync(date, EmpID);
+            if (schedule == null)
+                return NotFound("Name is not found!");
+            return await _unitOfWork.SlotTableRepository.SearchByScheduleIDAsync(schedule.ScheduleID);
+        } catch ( Exception ex ){
+            Console.WriteLine( ex );
+            return StatusCode( StatusCodes.Status500InternalServerError, ex.Message );
+        }
     }
 
     //[HttpGet]

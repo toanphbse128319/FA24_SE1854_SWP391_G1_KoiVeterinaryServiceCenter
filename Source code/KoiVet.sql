@@ -231,6 +231,7 @@ VALUES
 ('C4', 'Bob', 'Brown', 1, '1982-11-02', '321 Birch Ave', 'A4', 1),
 ('C5', 'Carol', 'White', 0, '1979-08-14', '654 Pine St', 'A5', 1);
 GO
+
 -- Insert sample data for Employee
 INSERT INTO Employee (EmployeeID, AccountID, RoleID, Firstname, Lastname, Sex, Birthday, Address, Status) 
 VALUES 
@@ -293,10 +294,10 @@ VALUES
 INSERT INTO Booking (BookingID, CustomerID, EmployeeID, BookingDate, ExpiredDate, Deposit, NumberOfFish, IncidentalFish, ServiceDeliveryMethodID, VAT, BookingAddress, Distance, DistanceCost, TotalServiceCost, Status, FeedbackID, ScheduleID, Note, PaymentMethod, PaymentStatus) 
 VALUES 
 ('B1', 'C1', 'E1', '2024-09-01 09:00:00', '2024-09-01 04:00:00', 50.00, 1, 0,'SDM1', 10.00, '250 vo van hat', 5.5, 11.00, 661000, 'Confirmed', 'FB1', 'SCH1', 'Home visit for koi health check', 'Credit Card', 'Pending'),
-('B2', 'C2', 'E2', '2024-09-02 14:00:00', '2024-09-02 04:00:00', 37.50, 1, 0,'SDM2', 7.50, '456 Maple Ave', 0, 0.00, 397500, 'Pending', 'FB002', 'SC02', 'Onle consultation for koi', 'PayPal', 'Pending'),
-('B3', 'C3', 'E3', '2024-09-03 18:00:00', '2024-09-03 04:00:00', 75.00, 1, 0,'SDM3', 15.00, '789 Oak St', 3.2, 6.40, 996000, 'Cancelled', 'FB003', 'SC03', 'Clic visit for koi disease treatment', 'Cash', 'Pending'),
+('B2', 'C2', 'E2', '2024-09-02 14:00:00', '2024-09-02 04:00:00', 37.50, 1, 0,'SDM2', 7.50, '456 Maple Ave', 0, 0.00, 397500, 'Pending', 'FB2', 'SCH2', 'Onle consultation for koi', 'PayPal', 'Pending'),
+('B3', 'C3', 'E3', '2024-09-03 18:00:00', '2024-09-03 04:00:00', 75.00, 1, 0,'SDM3', 15.00, '789 Oak St', 3.2, 6.40, 996000, 'Cancelled', 'FB3', 'SCH3', 'Clic visit for koi disease treatment', 'Cash', 'Pending'),
 ('B4', 'C4', 'E4', '2024-09-04 22:00:00', '2024-09-05 04:00:00', 150.00, 1, 0,'SDM4', 30.00, '321 Birch Ave', 8.7, 17.40, 2000000, 'In Progress', 'FB4', 'SCH4', 'Emergency koi surgery', 'Credit Card', 'Pending'),
-('B5', 'C5', 'E5', '2024-09-05 07:00:00', '2024-09-05 04:00:00', 25.00, 1, 1,'SDM5', 5.00, '654 Pine St', 2.1, 4.20, 867000, 'Completed', 'FB005', 'SC05', 'Folw-up checkup after treatment', 'Debit Card', 'Pending'); 
+('B5', 'C5', 'E5', '2024-09-05 07:00:00', '2024-09-05 04:00:00', 25.00, 1, 1,'SDM5', 5.00, '654 Pine St', 2.1, 4.20, 867000, 'Completed', 'FB5', 'SCH5', 'Folw-up checkup after treatment', 'Debit Card', 'Pending'); 
 
 -- Insert sample data for AnimalType
 INSERT INTO AnimalType (TypeID, Name) 
@@ -311,13 +312,9 @@ VALUES
 INSERT INTO BookingDetail (BookingDetailID, BookingID, ServiceID, UnitPrice, Incidental, NoteResult, NoteExamination, AnimalStatusDescription, ConsultDoctor, DrugList, PoolStatusDescription, ConsultTechnician, MaterialList)
 VALUES 
 ('BD1', 'B1', 'S1', 100.00, 0,'Koi appears healthy overall', 'Routine health check performed', 'Nishiki shows good coloration and active behavior', 'Dr. Amelia Fish', 'Probiotic supplement', 'Zen Garden Koi Pond maintains good water quality', 'Tech John Doe', 'Water testing kit, net'),
-
 ('BD2', 'B2', 'S2', 75.00, 0,'Goldfish exhibiting signs of stress', 'Observed labored breathing and loss of appetite', 'Bubbles has clamped fins and reduced activity', 'Dr. Michael Scales', 'Antibiotics, stress coat additive', 'Indoor Goldfish Tank requires improved filtration', 'Tech Jane Smith', 'New filter system, air pump'),
-
 ('BD3', 'B3', 'S3', 150.00, 0,'Tropical fish recovering from minor infection', 'Treated for bacterial infection', 'Nemo shows improvement in fin condition and appetite', 'Dr. Sarah Coral', 'Broad-spectrum antibiotic, vitamin supplements', 'Tropical Reef Aquarium parameters stable', 'Tech Robert Johnson', 'UV sterilizer, coral food'),
-
 ('BD4', 'B4', 'S4', 300.00, 0,'Emergency surgery successful', 'Removed foreign object from blue tang', 'Azure is stable post-surgery, requires close monitoring', 'Dr. David Finn', 'Pain medication, antibiotics', 'Saltwater Lagoon quarantine section set up', 'Tech Emily Waters', 'Surgical tools, quarantine tank'),
-
 ('BD5', 'B5', 'S5', 50.00, 0,'Betta fish in excellent condition', 'Regular check-up completed', 'Crimson displays vibrant colors and active behavior', 'Dr. Lisa Gills', 'None required', 'Betta Paradise tank environment optimal', 'Tech Mark River', 'Water conditioner, betta-specific food');
 
 -- Insert sample data for AnimalProfile
@@ -349,16 +346,16 @@ INSERT INTO FAQ (FaqID, Question, Answer) VALUES
 
 -- Insert sample data for PostCategory
 INSERT INTO PostCategory (PostCategoryID, Name) VALUES
-('CAT1', 'Koi Care'),
-('CAT2', 'Koi Breeding'),
-('CAT3', 'Koi Health'),
-('CAT4', 'Koi Pond Design'),
-('CAT5', 'Koi Varieties');
+('PC1', 'Koi Care'),
+('PC2', 'Koi Breeding'),
+('PC3', 'Koi Health'),
+('PC4', 'Koi Pond Design'),
+('PC5', 'Koi Varieties');
 
 -- Insert sample data for Post
 INSERT INTO Post (PostID, PostName, PostCategoryID, Context) VALUES
-('POST1', 'Essential Koi Care Tips', 'CAT001', 'This post discusses the essential tips for properly taking care of your Koi fish.'),
-('POST2', 'Breeding Koi: A Step-by-Step Guide', 'CAT002', 'Learn how to breed Koi fish successfully with this comprehensive guide.'),
-('POST3', 'Common Koi Diseases and Solutions', 'CAT003', 'An overview of common diseases that affect Koi and how to treat them.'),
-('POST4', 'Designing the Perfect Koi Pond', 'CAT004', 'Explore the key elements of designing a beautiful and functional Koi pond.'),
-('POST5', 'A Guide to Popular Koi Varieties', 'CAT005', 'This article highlights some of the most popular Koi varieties and their unique features.');
+('P1', 'Essential Koi Care Tips', 'PC1', 'This post discusses the essential tips for properly taking care of your Koi fish.'),
+('P2', 'Breeding Koi: A Step-by-Step Guide', 'PC2', 'Learn how to breed Koi fish successfully with this comprehensive guide.'),
+('P3', 'Common Koi Diseases and Solutions', 'PC3', 'An overview of common diseases that affect Koi and how to treat them.'),
+('P4', 'Designing the Perfect Koi Pond', 'PC4', 'Explore the key elements of designing a beautiful and functional Koi pond.'),
+('P5', 'A Guide to Popular Koi Varieties', 'PC5', 'This article highlights some of the most popular Koi varieties and their unique features.');

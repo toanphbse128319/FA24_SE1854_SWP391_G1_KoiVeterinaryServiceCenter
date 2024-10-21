@@ -26,8 +26,7 @@ namespace Repositories.Repository
                 return null;
             if (animaltype.TypeID == "")
             {
-                int index = base.GetAll().Count;
-                animaltype.TypeID = "AT" + index;
+                animaltype.TypeID = GetNextID("AT");
             }
             await base.CreateAsync(animaltype);
             return animaltype;

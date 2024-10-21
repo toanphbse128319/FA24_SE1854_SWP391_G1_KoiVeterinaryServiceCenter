@@ -7,8 +7,8 @@ namespace API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class FeedbackController : ControllerBase
-{
+public class FeedbackController : ControllerBase {
+
     private UnitOfWork _unitOfWork;
     public FeedbackController(UnitOfWork unitOfWork)
     {
@@ -16,31 +16,34 @@ public class FeedbackController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Feedback>>> GetAll()
-    {
-        return await _unitOfWork.FeedbackRepository.GetAllAsync();
-
+    public async Task<ActionResult<IEnumerable<Feedback>>> GetAll() {
+        try{
+            return await _unitOfWork.FeedbackRepository.GetAllAsync();
+        } catch ( Exception ex ){
+            Console.WriteLine( ex );
+            return StatusCode( StatusCodes.Status500InternalServerError, ex.Message );
+        }
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Feedback>> GetFeedbackByID(string id)
-    {
-        return await _unitOfWork.FeedbackRepository.GetByIdAsync(id);
+    public async Task<ActionResult<Feedback>> GetFeedbackByID(string id) {
+        try{
+            return await _unitOfWork.FeedbackRepository.GetByIdAsync(id);
+        } catch ( Exception ex ){
+            Console.WriteLine( ex );
+            return StatusCode( StatusCodes.Status500InternalServerError, ex.Message );
+        }
     }
 
     [HttpPut]
-    public ActionResult<Feedback> SaveFeedback(Feedback feedback)
-    {
-        try
-        {
+    public ActionResult<Feedback> SaveFeedback(Feedback feedback) {
+        try {
             feedback.FeedbackID = null;
             _unitOfWork.FeedbackRepository.SaveFeedBack(feedback);
             return Ok("them feedback thanh cong");
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
-
     }
+
 }
