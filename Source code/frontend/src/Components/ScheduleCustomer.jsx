@@ -170,7 +170,7 @@ const ScheduleCalendar = () => {
     if (availableMonths.some(month => month.getFullYear() === prevMonth.getFullYear() && month.getMonth() === prevMonth.getMonth())) {
       setCurrentDate(prevMonth);
       setIsWeekView(false);
-      setSelectedDate(null);
+      setSelectedDay(null);
     }
   };
 
@@ -180,7 +180,7 @@ const ScheduleCalendar = () => {
     if (availableMonths.some(month => month.getFullYear() === nextMonth.getFullYear() && month.getMonth() === nextMonth.getMonth())) {
       setCurrentDate(nextMonth);
       setIsWeekView(false);
-      setSelectedDate(null);
+      setSelectedDay(null);
     }
   };
 
@@ -204,7 +204,7 @@ const ScheduleCalendar = () => {
   // Xử lý khi đóng chế độ xem tuần
   const handleCloseWeekView = () => {
     setIsWeekView(false);
-    setSelectedDate(null);
+    setSelectedDay(null);
   };
 
   // Hàm để lấy style cho mỗi ngày trong lịch
