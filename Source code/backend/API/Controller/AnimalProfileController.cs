@@ -24,7 +24,7 @@ public class AnimalProfileController : ControllerBase {
         }
     }
 
-    [HttpGet("ByBookingDetailID")]
+    [HttpGet("bybookingdetailid")]
     public async Task<ActionResult<IEnumerable<AnimalProfile>>> GetByBookingDetailID(string id) {
         try{
             List<AnimalProfile> list = await _unitOfWork.AnimalProfileRepository.GetByBookingDetailID(id);
@@ -37,7 +37,7 @@ public class AnimalProfileController : ControllerBase {
         }
     }
 
-    [HttpPost]
+    [HttpPost("add")]
     public async Task<ActionResult<AnimalProfile>> AddAnimalProfile(AnimalProfile animalprofile) {
         try{
             if ((await _unitOfWork.AnimalProfileRepository.GetByIdAsync(animalprofile.AnimalProfileID) != null))

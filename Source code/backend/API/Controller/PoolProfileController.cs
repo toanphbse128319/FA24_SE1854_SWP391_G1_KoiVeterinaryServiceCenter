@@ -40,7 +40,7 @@ public class PoolProfileController : ControllerBase {
         }
     }
 
-    [HttpPost]
+    [HttpPost("add")]
     public async Task<ActionResult<PoolProfile?>> AddPoolProfile(PoolProfile poolprofile)
     {
         try {

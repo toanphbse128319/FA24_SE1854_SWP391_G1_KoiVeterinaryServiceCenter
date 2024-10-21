@@ -27,7 +27,7 @@ public class BookingRepository : GenericRepository<Booking>
         else
         {
             booking.Status = msg;
-            return await _context.SaveChangesAsync();;
+            return await UpdateAsync( booking );
         }
     }
 

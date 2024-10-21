@@ -19,14 +19,17 @@ public class BookingController : ControllerBase {
     [HttpGet("{id}")]
     public async Task<ActionResult<Booking>> GetBookingByID(string id) {
         try{
-            return await _unitOfWork.BookingRepository.GetByIdAsync(id);
+            Booking booking = await _unitOfWork.BookingRepository.GetByIdAsync(id);
+            if( booking == null )
+                return StatusCode( StatusCodes.Status404NotFound, "Unable to find the booking order" );
+            return Ok( booking );
         } catch ( Exception ex ){
             Console.WriteLine( ex );
             return StatusCode( StatusCodes.Status500InternalServerError, ex.Message );
         }
     }
 
-    [HttpPut]
+    [HttpPut("updatestatus")]
     public async Task<ActionResult<Booking>> UpdateStatusAsync(UpdateStatusInformation info) {
         try{
             if (await _unitOfWork.BookingRepository.GetByIdAsync(info.Id) == null)

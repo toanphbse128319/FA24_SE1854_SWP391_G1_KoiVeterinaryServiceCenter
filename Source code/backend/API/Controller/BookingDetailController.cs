@@ -53,7 +53,7 @@ public class BookingDetailController : ControllerBase {
         }
     }
 
-    [HttpPut]
+    [HttpPut("update")]
     public async Task<ActionResult<BookingDetail?>> UpdateBookingDetail(BookingDetail info) {
         try{
             BookingDetail bd = await _unitOfWork.BookingDetailRepository.GetByIdAsync(info.BookingDetailID);
@@ -87,7 +87,7 @@ public class BookingDetailController : ControllerBase {
         }
     }
 
-    [HttpPost]
+    [HttpPost("add")]
     public async Task<ActionResult<BookingDetail?>> AddBookingDetail(BookingDetail info) {
         try{
             if (await _unitOfWork.BookingDetailRepository.GetByIdAsync(info.BookingDetailID) != null)

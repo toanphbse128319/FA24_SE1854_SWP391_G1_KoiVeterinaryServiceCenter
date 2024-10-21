@@ -17,14 +17,17 @@ public class AnimalTypeController : ControllerBase {
     [HttpGet("{id}")]
     public async Task<ActionResult<AnimalType>> GetAnimalTypeByID(string id) {
         try{
-            return await _unitOfWork.AnimalTypeRepository.GetByIdAsync(id);
+            AnimalType data  = await _unitOfWork.AnimalTypeRepository.GetByIdAsync(id);
+            if( data == null )
+                return StatusCode( StatusCodes.Status404NotFound, "Cannot find animal type" );
+            return Ok( data );
         } catch ( Exception ex ){
             Console.WriteLine( ex );
             return StatusCode( StatusCodes.Status500InternalServerError, ex.Message );
         }
     }
 
-    [HttpPost]
+    [HttpPost("add")]
     public async Task<ActionResult<AnimalType>> AddAnimalType(AnimalType animaltype) {
         try{
             if (animaltype.Name.Equals(""))
