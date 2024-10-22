@@ -1,84 +1,153 @@
 import React from 'react';
-import { Card, CardHeader, CardContent, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Box } from '@mui/material';
+import { Card, CardHeader, CardContent, Typography } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 
-const OrderConfirmation = () => {
-  const location = useLocation();
-  const { service, doctor } = location.state || {};
+const OrderConfirmation = ({ service, doctor, time, scheduleId, fishCount, movingCost }) => {
+  // Kiểm tra service trước khi sử dụng
+  if (!service) {
+    return (
+      <Card className="max-w-4xl mt-4">
+        <CardContent>
+          <Typography>Không tìm thấy thông tin dịch vụ</Typography>
+        </CardContent>
+      </Card>
+    );
+  }
 
-  // Mock data (replace with actual data from location.state)
-  const orderDetails = {
-    format: "trực tuyến",
-    service: service?.name || "Tư vấn trực tuyến",
-    doctor: doctor?.name || "Nguyễn Văn A",
-    appointmentTime: "9:00-10:00 08/10/2024",
-    serviceFee: 1000,
-    totalAmount: 1000
+  const formatTime = (timeString) => {
+    if (!timeString) return '';
+    const [timeSlot, dateStr] = timeString.split(' ');
+    return (
+      <div className="flex flex-col">
+        <span>{timeSlot}</span>
+        <span>{dateStr}</span>
+      </div>
+    );
+  };
+
+  const calculateTotal = () => {
+    const servicePrice = service?.price || 0;
+    const moving = movingCost || 0;
+    return servicePrice + moving;
+  };
+
+  const getColumns = () => {
+    // Khởi tạo columns với các giá trị mặc định và kiểm tra null safety
+    const columns = [
+      { 
+        key: 'format', 
+        label: 'Hình thức', 
+        value: service?.serviceDeliveryMethod || 'Chưa xác định'
+      },
+      { 
+        key: 'service', 
+        label: 'Dịch vụ', 
+        value: service?.name || 'Chưa xác định'
+      },
+      { 
+        key: 'fishCount', 
+        label: 'Số cá', 
+        value: fishCount || 0
+      }, 
+    ];
+
+    if (doctor) {
+      columns.push({ 
+        key: 'doctor', 
+        label: 'Bác sĩ', 
+        value: doctor 
+      });
+    }
+
+    if (time) {
+      columns.push({ 
+        key: 'time', 
+        label: 'Thời gian', 
+        value: time,
+        isTime: true 
+      });
+    }
+
+    if (movingCost) {
+      columns.push({ 
+        key: 'movingCost', 
+        label: 'Phí di chuyển', 
+        value: movingCost 
+      });
+    }
+
+    // Thêm các cột tính tiền với kiểm tra null safety
+    columns.push(
+      { 
+        key: 'service-fee', 
+        label: 'Phí dịch vụ', 
+        value: service?.price || 0
+      },
+      { 
+        key: 'total', 
+        label: 'Tổng tiền', 
+        value: calculateTotal()
+      }
+    );
+
+    return columns;
   };
 
   return (
-    <Card sx={{ maxWidth: 900, margin: 'auto', mt: 4, position: 'relative' , borderRadius: 5,}}>
-      <CardHeader
-        title="Xác nhận thông tin đơn hàng"
-        sx={{
-        background: 'linear-gradient(90deg, #69B0E0 25%, rgba(50, 200, 254, 0.75) 75%)',
-        color: 'white',
-          '& .MuiCardHeader-title': {
-            fontSize: '1.25rem',
-            fontWeight: 'bold',
-          },
+    <Card 
+    
+      style={{
+        width:'60vw',
+        fontWeight: '625',
+        borderRadius: '10px',
+        boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.25)',
+      }}
+    >
+      <CardHeader 
+        style={{
+          background: 'linear-gradient(90deg, #64B0E0 25%, rgba(25, 200, 254, 0.75) 75%)',
+          color: 'white',
         }}
+        title={
+          <Typography variant="h6" component="div" color="inherit" fontWeight='700'>
+            Xác nhận thông tin đơn hàng
+          </Typography>
+        }
       />
       <CardContent>
-        <TableContainer>
-          <Table sx={{ 
-            '& .MuiTableCell-root': { 
-              border: 'none',
-              padding: '8px 16px 8px 0',
-            },
-            '& .MuiTableRow-root': { 
-              '&:last-child td, &:last-child th': { border: 0 } 
-            },
-          }}>
-            <TableHead>
-              <TableRow>
-                <TableCell>Hình thức</TableCell>
-                <TableCell>Dịch vụ</TableCell>
-                <TableCell>Bác sĩ</TableCell>
-                <TableCell>Thời gian đặt lịch</TableCell>
-                <TableCell>Phí dịch vụ</TableCell>
-                <TableCell>Tổng tiền</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <TableRow>
-                <TableCell>{orderDetails.format}</TableCell>
-                <TableCell>{orderDetails.service}</TableCell>
-                <TableCell>{orderDetails.doctor}</TableCell>
-                <TableCell>{orderDetails.appointmentTime}</TableCell>
-                <TableCell>{orderDetails.serviceFee}</TableCell>
-                <TableCell>{orderDetails.totalAmount}</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <Typography variant="caption" sx={{ display: 'block', marginTop:1, pl: 1 ,color:'gray'}}>
+        <div>
+          <table className="w-full">
+            <thead>
+              <tr className="border-b">
+                {getColumns().map((column) => (
+                  <th key={column.key} className="text-left p-2">
+                    {column.label}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                {getColumns().map((column) => (
+                  <td key={column.key} className="p-2">
+                    {column.isTime ? (
+                      formatTime(column.value)
+                    ) : column.key.includes('fee') || column.key === 'total' || column.key === 'movingCost' ? (
+                      `${Number(column.value).toLocaleString()} đ`
+                    ) : (
+                      column.value
+                    )}
+                  </td>
+                ))}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <Typography variant="body2" className="text-gray-500 mt-4 pl-2">
           **Lưu ý: tiền dịch vụ tính trên 1 con, chưa bao gồm chi phí phát sinh khác
         </Typography>
       </CardContent>
-      
-      {/* Horizontal line */}
-      <Box
-        sx={{
-          position: 'absolute',
-          left: '10px',
-          right: '10px',
-         
-          height: '2px',
-          backgroundColor: 'black',
-          top: 'calc(64px + 48px)', // Adjust based on CardHeader height and TableHead height
-        }}
-      />
     </Card>
   );
 };

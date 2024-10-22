@@ -1,43 +1,51 @@
 import React from 'react';
-import { Card, CardHeader, CardContent, Typography, Button } from '@mui/material'; // Import từ MUI
+import { Card, CardHeader, CardContent, Typography, Button } from '@mui/material';
 
 const CustomerSummary = ({ name, phone, address }) => {
   return (
-    <div className="max-w-md w-full mx-auto relative">
+    <div style={{ maxWidth: '450px', width: '100%' }}>
       {/* Main Card */}
-      <Card elevation={3} className="rounded-2xl overflow-hidden">
+      <Card elevation={3} style={{ borderRadius: '15px', overflow: 'hidden' }}>
         {/* Header */}
         <CardHeader
           style={{
             background: 'linear-gradient(90deg, #64B0E0 25%, rgba(25, 200, 254, 0.75) 75%)',
             color: 'white',
           }}
-          title={<Typography variant="h6" component="div">Thông tin khách đặt hẹn</Typography>}
+          title={
+            <Typography variant="h6" component="div" style={{ fontWeight: '700' }}>
+              Thông tin khách đặt hẹn
+            </Typography>
+          }
         />
         
         {/* Content */}
         <CardContent>
-          <div className="space-y-2">
-            <div className="flex">
-              <span className="font-semibold">Tên: </span>
-              <span className="ml-2">{name}</span>
-            </div>
-            <div className="flex">
-              <span className="font-semibold">Số điện thoại: </span>
-              <span className="ml-2">{phone}</span>
-            </div>
-            <div className="flex">
-              <span className="font-semibold">Địa chỉ: </span>
-              <span className="ml-2">{address}</span>
-            </div>
+          <div style={{ marginBottom: '10px', display: 'flex', alignItems: 'center' }}>
+            <span style={{ fontWeight: 'bold',fontSize: '20px'  }}>Tên: </span>
+            <span style={{ marginLeft: '8px', fontSize: '20px' }}>{name}</span>
+          </div>
+          <div style={{ marginBottom: '10px', display: 'flex', alignItems: 'center' }}>
+            <span style={{ fontWeight: 'bold',fontSize: '20px'  }}>Số điện thoại: </span>
+            <span style={{ marginLeft: '8px', fontSize: '20px' }}>{phone}</span>
+          </div>
+          <div style={{ marginBottom: '0px', display: 'flex', alignItems: 'center' }}>
+            <span style={{ fontWeight: 'bold',fontSize: '20px'  }}>Địa chỉ: </span>
+            <span style={{ marginLeft: '8px', fontSize: '20px' }}>{address}</span>
           </div>
         </CardContent>
 
         {/* Change Info Button */}
-        <div className="flex justify-end p-4">
+        <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '15px' }}>
           <Button 
             variant="outlined" 
-            style={{ color: '#64B0E0', borderColor: '#64B0E0' }}
+            style={{ color: 'white',
+              padding:'12px',
+               background: 'linear-gradient(90deg, #64B0E0 25%, rgba(25, 200, 254, 0.75) 75%)',
+               fontWeight: 'bold',
+               border:'none',
+               borderRadius: '10px'
+               }}
             onClick={() => { /* Handle button click here */ }}
           >
             Thay đổi thông tin<br />liên lạc

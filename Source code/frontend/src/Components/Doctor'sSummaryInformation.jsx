@@ -1,8 +1,5 @@
 import React from 'react';
-
 import { Card, CardContent, Avatar,Button } from '@mui/material';
-
-
 // useEffect(() => {
 //   const fetchDoctors = async () => {
 //     try {
@@ -15,21 +12,11 @@ import { Card, CardContent, Avatar,Button } from '@mui/material';
 
 //   fetchDoctors();
 // }, []); 
-const doctors = [
-  { name: "Nguyễn Văn A", degree: "Thạc sĩ", schedule: "Thứ 2, 5" },
-  { name: "Nguyễn Văn B", degree: "Thạc sĩ", schedule: "Thứ 2, 5" },
-  { name: "Nguyễn Văn C", degree: "Thạc sĩ", schedule: "Thứ 2, 5" },
-  { name: "Nguyễn Văn D", degree: "Thạc sĩ", schedule: "Thứ 2, 5" },
-  { name: "Nguyễn Văn E", degree: "Thạc sĩ", schedule: "Thứ 2, 5" },
-  { name: "Nguyễn Văn F", degree: "Thạc sĩ", schedule: "Thứ 2, 5" },
-  { name: "Nguyễn Văn G", degree: "Thạc sĩ", schedule: "Thứ 2, 5" },
-  { name: "Nguyễn Văn H", degree: "Thạc sĩ", schedule: "Thứ 2, 5" },
-  { name: "Nguyễn Văn I", degree: "Thạc sĩ", schedule: "Thứ 2, 5" }
-];
 
-const DoctorList = ({ onSelectDoctor }) => {
+
+const DoctorList = ({ onSelectDoctor  , doctors}) => {
   return (
-    <div style={{ width: '30vw', maxHeight: '400px', overflowY: 'auto',boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', borderRadius: 10 }}>
+    <div style={{ width: '55vw', maxHeight: '400px', overflowY: 'auto',boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', borderRadius: 10 }}>
       {doctors.map((doctor, index) => (
         <Card key={index} style={{
           display: 'flex',
