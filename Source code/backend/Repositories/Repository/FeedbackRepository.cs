@@ -11,8 +11,7 @@ namespace Repositories.Repository
 
         public Boolean SaveFeedBack(Feedback feedback)
         {
-            int index = base.GetAll().Count + 1;
-            feedback.FeedbackID = "F" + index;
+            feedback.FeedbackID = GetNextID("F");
             base.Create(feedback);
             return true;
         }
@@ -20,9 +19,7 @@ namespace Repositories.Repository
         public async Task<Feedback> SaveAndGetFeedbackAsync(Feedback feedback){
             if (feedback.Description == null)
                 feedback.Description = "";
-
-            int index = base.GetAll().Count+1;          
-            feedback.FeedbackID = "F"+ index;
+            feedback.FeedbackID = GetNextID("F");
             await base.CreateAsync(feedback);
             return feedback;
         }

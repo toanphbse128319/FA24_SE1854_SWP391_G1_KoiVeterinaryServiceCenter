@@ -1,10 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Repositories.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Repositories.Repository
 {
@@ -24,17 +19,15 @@ namespace Repositories.Repository
         {
             return _context.BookingDetails.Where(bookingdetail => bookingdetail.ServiceID.ToLower() == id.ToLower()).ToListAsync()!;
         }
-        
+
         public async Task<int> AddBookingDetailAsync(BookingDetail bd)
         {
             if (await _context.BookingDetails.FindAsync(bd.BookingDetailID) != null)
                 return 0;
-            if (bd.BookingDetailID == "")
+            if (bd.BookingDetailID == null || bd.BookingDetailID == "")
             {
-                int index = base.GetAll().Count;
-                bd.BookingDetailID = "BD" + index;
+                bd.BookingDetailID = GetNextID("BD");
             }
-
             ServiceRepository servicerepo = new ServiceRepository(_context);
             Service? service = await servicerepo.GetByIdAsync(bd.ServiceID);
             if (service == null)

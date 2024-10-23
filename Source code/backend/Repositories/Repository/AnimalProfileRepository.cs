@@ -1,10 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Repositories.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Repositories.Repository
 {
@@ -26,8 +21,7 @@ namespace Repositories.Repository
                 return 0;
             if (animalprofile.AnimalProfileID == "")
             {
-                int index = base.GetAll().Count;
-                animalprofile.AnimalProfileID = "AP" + index;
+                animalprofile.AnimalProfileID = GetNextID("AP");
             }
             return await base.CreateAsync(animalprofile);;
         }

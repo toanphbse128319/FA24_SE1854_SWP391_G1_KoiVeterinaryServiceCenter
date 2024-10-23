@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Repositories.Model;
-using System.Runtime.InteropServices;
 
 namespace Repositories.Repository;
 
@@ -19,17 +17,32 @@ public class SlotTableRepository : GenericRepository<SlotTable>
                                                                      slot.Slot == slotInfo);
     }
 
+    public int SlotByTime(int hour){
+        if( hour <= 6 || hour >= 18 ){
+            return 0;
+        }
+        switch( hour ){
+            case 7: return 1;
+            case 8: return 2;
+            case 9: return 3;
+            case 11: return 4;
+            case 12: return 5;
+            case 14: return 6;
+            case 15: return 7;
+            case 16: return 8;
+            default: return 0;
+        }
+    }
+
     public async Task<SlotTable?> UpdateSlotInformationAsync(SlotTable info)    
     {
         SlotTable? slot = await SearchSpecificSlotAsync(info.ScheduleID, info.Slot);
         if (slot == null)
             return slot;
-
         if( info.Note != null )
             slot.Note = info.Note;
         if( info.SlotCapacity != 0 )
             slot.SlotCapacity = info.SlotCapacity;
-
         slot.SlotCapacity = info.SlotCapacity;
         await UpdateAsync(slot);
         return slot;
@@ -55,13 +68,11 @@ public class SlotTableRepository : GenericRepository<SlotTable>
 
     public async Task<int?> GenerateVetScheduleAsync(string scheduleID)
     {
-        int index = base.GetAll().Count;
-        
         for (int i = 0; i < 8; i++)
         {
             SlotTable slot = new()
             {
-                SlotTableID = "ST" + (index + i),
+                SlotTableID = GetNextID("ST"),
                 ScheduleID = scheduleID,
                 Slot = (i + 1),
                 SlotStatus = true

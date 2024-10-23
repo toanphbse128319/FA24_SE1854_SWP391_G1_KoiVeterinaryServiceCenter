@@ -1,10 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Repositories.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Repositories.Repository
 {
@@ -26,8 +21,7 @@ namespace Repositories.Repository
                 return 0;
             if (poolprofile.PoolProfileID == "")
             {
-                int index = base.GetAll().Count;
-                poolprofile.PoolProfileID = "PP" + index;
+                poolprofile.PoolProfileID = GetNextID("PP");
             }
 
             return await base.CreateAsync(poolprofile);;

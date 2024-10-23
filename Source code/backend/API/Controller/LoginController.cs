@@ -8,8 +8,8 @@ namespace API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class LoginController : ControllerBase
-{
+public class LoginController : ControllerBase {
+
     private UnitOfWork _unitOfWork;
 
     public LoginController(UnitOfWork unitOfWork)
@@ -18,14 +18,10 @@ public class LoginController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<Account>> LoggingByEmail(LoginInformation info)
-    {
-        try
-        {
+    public async Task<ActionResult<Account>> LoggingByEmail(LoginInformation info) {
+        try {
             var result = await _unitOfWork.AccountRepository.LoginAsync(info);
-
-            switch (result)
-            {
+            switch (result) {
                 case "Info and password cannot be empty":
                     return BadRequest(result);
                 case "Invalid username or password!":
@@ -39,9 +35,7 @@ public class LoginController : ControllerBase
                 default:
                     return Ok(result);
             }
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             Console.WriteLine(ex);
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }

@@ -216,7 +216,6 @@ VALUES
 ('A3', '0111111111', 'arandomvet@gmail.com', 'R2', 'avatar3.jpg', 'vet', 'Normal', 1),
 ('A4', '0121111111', 'manager2@gmail.com', 'R2', 'avatar4.jpg', 'manager', 'Normal', 1),
 ('A5', '0123212313', 'Test@gmail.com', 'R2', 'avatar5.jpg', 'test', 'Normal', 1),
-
 ('A6', '0000000000', 'longtnhse173174@fpt.edu.vn', 'R1', 'avatar1.jpg', 'tangdeptrai', 'Normal', 1),
 ('A7', '0835377623', 'vet2@gmail.com', 'R5', 'avatar2.jpg', 'admin', 'Normal', 1),
 ('A8', '1122334455', 'Manager@gmail.com', 'R3', 'avatar3.jpg', 'vet', 'Normal', 1),
@@ -232,6 +231,7 @@ VALUES
 ('C4', 'Bob', 'Brown', 1, '1982-11-02', '321 Birch Ave', 'A4', 1),
 ('C5', 'Carol', 'White', 0, '1979-08-14', '654 Pine St', 'A5', 1);
 GO
+
 -- Insert sample data for Employee
 INSERT INTO Employee (EmployeeID, AccountID, RoleID, Firstname, Lastname, Sex, Birthday, Address, Status) 
 VALUES 
@@ -253,11 +253,11 @@ VALUES
 -- Insert sample data for Service
 INSERT INTO Service (ServiceID, ServiceDeliveryMethodID, Name, Price, Description, Status) 
 VALUES 
-('S001', 'SDM001', 'Koi Health Check', 100000, 'Basic health check for koi fish', 1),
-('S002', 'SDM002', 'Virtual Koi Consultation', 75000, 'Online consultation with koi specialist', 1),
-('S003', 'SDM003', 'Koi Disease Treatment', 150000, 'Treatment for common koi diseases', 1),
-('S004', 'SDM004', 'Emergency Koi Surgery', 300000, 'Urgent surgical procedure for koi', 1),
-('S005', 'SDM005', 'Post-Treatment Checkup', 50000, 'Follow-up checkup after treatment', 1);
+('S1', 'SDM1', 'Koi Health Check', 100000, 'Basic health check for koi fish', 1),
+('S2', 'SDM2', 'Virtual Koi Consultation', 75000, 'Online consultation with koi specialist', 1),
+('S3', 'SDM3', 'Koi Disease Treatment', 150000, 'Treatment for common koi diseases', 1),
+('S4', 'SDM4', 'Emergency Koi Surgery', 300000, 'Urgent surgical procedure for koi', 1),
+('S5', 'SDM5', 'Post-Treatment Checkup', 50000, 'Follow-up checkup after treatment', 1);
 
 -- Insert sample data for Feedback
 INSERT INTO Feedback (FeedbackID, ServiceRating, VetRating, Description, Status) 
@@ -270,34 +270,34 @@ VALUES
 
 -- Insert data into Schedule table
 INSERT INTO Schedule (ScheduleID, EmployeeID, Date, Note, Status) VALUES
-('SCH001', 'E003', '2024-09-01', 'Regular shift', 'Active'),
-('SCH002', 'E003', '2024-09-02', 'Overtime shift', 'Active'),
-('SCH003', 'E003', '2024-09-03', 'Night shift', 'Inactive'),
-('SCH004', 'E003', '2024-09-04', 'Morning shift', 'Active'),
-('SCH005', 'E003', '2024-09-05', 'Morning shift', 'Active');
+('SCH1', 'E3', '2024-09-01', 'Regular shift', 'Active'),
+('SCH2', 'E3', '2024-09-02', 'Overtime shift', 'Active'),
+('SCH3', 'E3', '2024-09-03', 'Night shift', 'Inactive'),
+('SCH4', 'E3', '2024-09-04', 'Morning shift', 'Active'),
+('SCH5', 'E3', '2024-09-05', 'Morning shift', 'Active');
 
 -- Insert data into SlotTable table
 INSERT INTO SlotTable (SlotTableID, ScheduleID, Note, Slot, SlotCapacity, SlotOrdered, SlotStatus) 
 VALUES
-('ST001', 'SCH001', 'Morning slot', 1, 10, 5, 1),
-('ST002', 'SCH001', 'Afternoon slot', 2, 10, 8, 1),
-('ST003', 'SCH002', 'Night slot', 3, 15, 7, 1),
-('ST004', 'SCH003', 'Overnight slot', 4, 12, 6, 0),
-('ST005', 'SCH004', 'Early morning slot', 6, 8, 8, 0),
-('ST006', 'SCH004', 'Early morning slot', 7, 8, 8, 1),
-('ST007', 'SCH004', 'Early morning slot', 8, 8, 8, 1),
-('ST008', 'SCH004', 'Early morning slot', 1, 8, 8, 1);
+('ST1', 'SCH1', 'Morning slot', 1, 10, 5, 1),
+('ST2', 'SCH1', 'Afternoon slot', 2, 10, 8, 1),
+('ST3', 'SCH2', 'Night slot', 3, 15, 7, 1),
+('ST4', 'SCH3', 'Overnight slot', 4, 12, 6, 0),
+('ST5', 'SCH4', 'Early morning slot', 6, 8, 8, 0),
+('ST6', 'SCH4', 'Early morning slot', 7, 8, 8, 1),
+('ST7', 'SCH4', 'Early morning slot', 8, 8, 8, 1),
+('ST8', 'SCH4', 'Early morning slot', 1, 8, 8, 1);
 
 --NumberOfFish int not null,
    -- IncidentalFish 
 -- Insert sample data for Booking
 INSERT INTO Booking (BookingID, CustomerID, EmployeeID, BookingDate, ExpiredDate, Deposit, NumberOfFish, IncidentalFish, ServiceDeliveryMethodID, VAT, BookingAddress, Distance, DistanceCost, TotalServiceCost, Status, FeedbackID, ScheduleID, Note, PaymentMethod, PaymentStatus) 
 VALUES 
-('B001', 'C001', 'E001', '2024-09-01 09:00:00', '2024-09-01 04:00:00', 50.00, 1, 0,'SDM001', 10.00, '250 vo van hat', 5.5, 11.00, 661000, 'Confirmed', 'FB001', 'SCH001', 'Home visit for koi health check', 'Credit Card', 'Pending'),
-('B002', 'C002', 'E002', '2024-09-02 14:00:00', '2024-09-02 04:00:00', 37.50, 1, 0,'SDM002', 7.50, '456 Maple Ave', 0, 0.00, 397500, 'Pending', 'FB002', 'SCH002', 'Online consultation for koi', 'PayPal', 'Pending'),
-('B003', 'C003', 'E003', '2024-09-03 18:00:00', '2024-09-03 04:00:00', 75.00, 1, 0,'SDM003', 15.00, '789 Oak St', 3.2, 6.40, 996000, 'Cancelled', 'FB003', 'SCH003', 'Clinic visit for koi disease treatment', 'Cash', 'Pending'),
-('B004', 'C004', 'E004', '2024-09-04 22:00:00', '2024-09-05 04:00:00', 150.00, 1, 0,'SDM004', 30.00, '321 Birch Ave', 8.7, 17.40, 2000000, 'In Progress', 'FB004', 'SCH004', 'Emergency koi surgery', 'Credit Card', 'Pending'),
-('B005', 'C005', 'E005', '2024-09-05 07:00:00', '2024-09-05 04:00:00', 25.00, 1, 1,'SDM005', 5.00, '654 Pine St', 2.1, 4.20, 867000, 'Completed', 'FB005', 'SCH005', 'Follow-up checkup after treatment', 'Debit Card', 'Pending'); 
+('B1', 'C1', 'E1', '2024-09-01 09:00:00', '2024-09-01 04:00:00', 50.00, 1, 0,'SDM1', 10.00, '250 vo van hat', 5.5, 11.00, 661000, 'Confirmed', 'FB1', 'SCH1', 'Home visit for koi health check', 'Credit Card', 'Pending'),
+('B2', 'C2', 'E2', '2024-09-02 14:00:00', '2024-09-02 04:00:00', 37.50, 1, 0,'SDM2', 7.50, '456 Maple Ave', 0, 0.00, 397500, 'Pending', 'FB2', 'SCH2', 'Onle consultation for koi', 'PayPal', 'Pending'),
+('B3', 'C3', 'E3', '2024-09-03 18:00:00', '2024-09-03 04:00:00', 75.00, 1, 0,'SDM3', 15.00, '789 Oak St', 3.2, 6.40, 996000, 'Cancelled', 'FB3', 'SCH3', 'Clic visit for koi disease treatment', 'Cash', 'Pending'),
+('B4', 'C4', 'E4', '2024-09-04 22:00:00', '2024-09-05 04:00:00', 150.00, 1, 0,'SDM4', 30.00, '321 Birch Ave', 8.7, 17.40, 2000000, 'In Progress', 'FB4', 'SCH4', 'Emergency koi surgery', 'Credit Card', 'Pending'),
+('B5', 'C5', 'E5', '2024-09-05 07:00:00', '2024-09-05 04:00:00', 25.00, 1, 1,'SDM5', 5.00, '654 Pine St', 2.1, 4.20, 867000, 'Completed', 'FB5', 'SCH5', 'Folw-up checkup after treatment', 'Debit Card', 'Pending'); 
 
 -- Insert sample data for AnimalType
 INSERT INTO AnimalType (TypeID, Name) 
@@ -312,13 +312,9 @@ VALUES
 INSERT INTO BookingDetail (BookingDetailID, BookingID, ServiceID, UnitPrice, Incidental, NoteResult, NoteExamination, AnimalStatusDescription, ConsultDoctor, DrugList, PoolStatusDescription, ConsultTechnician, MaterialList)
 VALUES 
 ('BD1', 'B1', 'S1', 100.00, 0,'Koi appears healthy overall', 'Routine health check performed', 'Nishiki shows good coloration and active behavior', 'Dr. Amelia Fish', 'Probiotic supplement', 'Zen Garden Koi Pond maintains good water quality', 'Tech John Doe', 'Water testing kit, net'),
-
 ('BD2', 'B2', 'S2', 75.00, 0,'Goldfish exhibiting signs of stress', 'Observed labored breathing and loss of appetite', 'Bubbles has clamped fins and reduced activity', 'Dr. Michael Scales', 'Antibiotics, stress coat additive', 'Indoor Goldfish Tank requires improved filtration', 'Tech Jane Smith', 'New filter system, air pump'),
-
 ('BD3', 'B3', 'S3', 150.00, 0,'Tropical fish recovering from minor infection', 'Treated for bacterial infection', 'Nemo shows improvement in fin condition and appetite', 'Dr. Sarah Coral', 'Broad-spectrum antibiotic, vitamin supplements', 'Tropical Reef Aquarium parameters stable', 'Tech Robert Johnson', 'UV sterilizer, coral food'),
-
 ('BD4', 'B4', 'S4', 300.00, 0,'Emergency surgery successful', 'Removed foreign object from blue tang', 'Azure is stable post-surgery, requires close monitoring', 'Dr. David Finn', 'Pain medication, antibiotics', 'Saltwater Lagoon quarantine section set up', 'Tech Emily Waters', 'Surgical tools, quarantine tank'),
-
 ('BD5', 'B5', 'S5', 50.00, 0,'Betta fish in excellent condition', 'Regular check-up completed', 'Crimson displays vibrant colors and active behavior', 'Dr. Lisa Gills', 'None required', 'Betta Paradise tank environment optimal', 'Tech Mark River', 'Water conditioner, betta-specific food');
 
 -- Insert sample data for AnimalProfile
@@ -350,16 +346,16 @@ INSERT INTO FAQ (FaqID, Question, Answer) VALUES
 
 -- Insert sample data for PostCategory
 INSERT INTO PostCategory (PostCategoryID, Name) VALUES
-('CAT1', 'Koi Care'),
-('CAT2', 'Koi Breeding'),
-('CAT3', 'Koi Health'),
-('CAT4', 'Koi Pond Design'),
-('CAT5', 'Koi Varieties');
+('PC1', 'Koi Care'),
+('PC2', 'Koi Breeding'),
+('PC3', 'Koi Health'),
+('PC4', 'Koi Pond Design'),
+('PC5', 'Koi Varieties');
 
 -- Insert sample data for Post
 INSERT INTO Post (PostID, PostName, PostCategoryID, Context) VALUES
-('POST001', 'Essential Koi Care Tips', 'CAT001', 'This post discusses the essential tips for properly taking care of your Koi fish.'),
-('POST002', 'Breeding Koi: A Step-by-Step Guide', 'CAT002', 'Learn how to breed Koi fish successfully with this comprehensive guide.'),
-('POST003', 'Common Koi Diseases and Solutions', 'CAT003', 'An overview of common diseases that affect Koi and how to treat them.'),
-('POST004', 'Designing the Perfect Koi Pond', 'CAT004', 'Explore the key elements of designing a beautiful and functional Koi pond.'),
-('POST005', 'A Guide to Popular Koi Varieties', 'CAT005', 'This article highlights some of the most popular Koi varieties and their unique features.');
+('P1', 'Essential Koi Care Tips', 'PC1', 'This post discusses the essential tips for properly taking care of your Koi fish.'),
+('P2', 'Breeding Koi: A Step-by-Step Guide', 'PC2', 'Learn how to breed Koi fish successfully with this comprehensive guide.'),
+('P3', 'Common Koi Diseases and Solutions', 'PC3', 'An overview of common diseases that affect Koi and how to treat them.'),
+('P4', 'Designing the Perfect Koi Pond', 'PC4', 'Explore the key elements of designing a beautiful and functional Koi pond.'),
+('P5', 'A Guide to Popular Koi Varieties', 'PC5', 'This article highlights some of the most popular Koi varieties and their unique features.');
