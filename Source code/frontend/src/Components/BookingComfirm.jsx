@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 
 const OrderConfirmation = ({ service, doctor, time, scheduleId, fishCount, movingCost }) => {
   // Kiểm tra service trước khi sử dụng
+  console.log(service);
   if (!service) {
     return (
       <Card className="max-w-4xl mt-4">
@@ -55,7 +56,7 @@ const OrderConfirmation = ({ service, doctor, time, scheduleId, fishCount, movin
       columns.push({ 
         key: 'doctor', 
         label: 'Bác sĩ', 
-        value: doctor 
+        value: doctor.name 
       });
     }
 
