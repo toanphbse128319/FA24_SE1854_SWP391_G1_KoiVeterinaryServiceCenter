@@ -21,7 +21,7 @@ public class MapController : ControllerBase {
         try{
             Map map = new Map();
             string result =  map.getUrlGetLocation("Tp, Nguyễn Xiển, Long Thạnh Mỹ, Quận 9, Hồ Chí Minh 71200, Vietnam");
-            result = await map.GetCoordinate( result );
+            //result = await map.GetCoordinate( result );
             return Ok( result );
         } catch ( Exception ex ){
             Console.WriteLine( ex );
