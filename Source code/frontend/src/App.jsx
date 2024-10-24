@@ -1,35 +1,24 @@
-
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
-import Login from "./pages/Login";
-import AboutUsPage from "./pages/AboutUsPage";
-import LoginContainer from "./Components/LoginContainer";
-
+import React from "react";
+import Navbar from "./Components/Navbar";
 import Banner from "./Components/Banner";
-import NhanHang from "./Components/NhanHang"
-import Navbar from "./Components/Navbar"
-import Booking from "./pages/Booking"
-import Footer from './Components/Footer';
+import NhanHang from "./Components/NhanHang";
+import Footer from "./Components/Footer";
+import AboutUsFake from "./Components/AboutUsFake";
+import Doctor  from "./Components/DoctorList";
+import { Outlet } from "react-router-dom";
+
 const App = () => {
   return (
     <div>
-      <div className="fixed top-0 left-0 w-full z-50">
-        <Navbar />
-      </div>
-      <div >
-        <Banner/>  
-      </div>
-      <div>
-        <NhanHang/>
-      </div>
-      <div className=' h-5'>
-        <Footer/>
-      </div>
-      <Outlet/>
+      <Navbar />
+      <Banner />
+      <NhanHang />
+      <AboutUsFake />
+      <Doctor/>
+      <Footer />
+      
     </div>
   );
 };
+
 export default App;
-
-
-

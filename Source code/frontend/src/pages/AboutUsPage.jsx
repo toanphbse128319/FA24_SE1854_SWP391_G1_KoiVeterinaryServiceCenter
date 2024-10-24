@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom";
 
 const AboutUs = () => {
-  const navigate = useNavigate();
+  let navigate = useNavigate();
 
-  const handleClick = () => {
-    navigate("/Login");
+  const handleGoBackToHome = () => {
+    navigate("/");
   };
 
   return (
@@ -74,7 +74,7 @@ const AboutUs = () => {
                 </div>
               </div>
             </div>
-            <button class="sm:w-fit w-full group px-3.5 py-2 bg-indigo-50 hover:bg-indigo-100 rounded-lg shadow-[0px_1px_2px_0px_rgba(16,_24,_40,_0.05)] transition-all duration-700 ease-in-out justify-center items-center flex">
+            <button onClick={handleGoBackToHome} class="sm:w-fit w-full group px-3.5 py-2 bg-indigo-50 hover:bg-indigo-100 rounded-lg shadow-[0px_1px_2px_0px_rgba(16,_24,_40,_0.05)] transition-all duration-700 ease-in-out justify-center items-center flex">
               <span class="px-1.5 text-indigo-600 text-sm font-medium leading-6 group-hover:-translate-x-0.5 transition-all duration-700 ease-in-out">
                 Trở về trang chủ
               </span>
@@ -100,7 +100,7 @@ const AboutUs = () => {
             <div class="sm:w-[564px] w-full sm:h-[646px] h-full sm:bg-gray-100 rounded-3xl sm:border border-gray-200 relative">
               <img
                 class="sm:mt-5 sm:ml-5 w-full h-full rounded-3xl object-cover"
-                src="img\TrangChu\tin-1-2.png"
+                src="img\tin-1-2.png"
                 alt="about Us image"
               />
             </div>
