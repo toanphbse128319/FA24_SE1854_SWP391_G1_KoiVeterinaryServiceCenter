@@ -201,6 +201,7 @@ USE [FA24_SE1854_SWP391_G1_KoiVeterinaryServiceCenter]
 -- Insert sample data for Role
 INSERT INTO Role (RoleID, Rolename) 
 VALUES 
+('R0', 'Default'),
 ('R1', 'Manager'),
 ('R2', 'Staff'),
 ('R3', 'Veterinarian'),
@@ -211,12 +212,13 @@ GO
 -- Insert sample data for Customer
 INSERT INTO Account (AccountID, PhoneNumber, Email, RoleID, Avatar, Password, Status, isActive )
 VALUES
+('A0', '0000000000', 'null', 'R0', 'null', '', 'Default', 0),
 ('A1', '0123456789', 'phbtoan9185@gmail.com', 'R2', 'avatar1.jpg', 'caniskip', 'Normal', 1),
 ('A2', '0987654321', 'admin2@gmail.com', 'R2', 'avatar2.jpg', 'admin', 'Normal', 1),
 ('A3', '0111111111', 'arandomvet@gmail.com', 'R2', 'avatar3.jpg', 'vet', 'Normal', 1),
 ('A4', '0121111111', 'manager2@gmail.com', 'R2', 'avatar4.jpg', 'manager', 'Normal', 1),
 ('A5', '0123212313', 'Test@gmail.com', 'R2', 'avatar5.jpg', 'test', 'Normal', 1),
-('A6', '0000000000', 'longtnhse173174@fpt.edu.vn', 'R1', 'avatar1.jpg', 'tangdeptrai', 'Normal', 1),
+('A6', '8765785746', 'longtnhse173174@fpt.edu.vn', 'R1', 'avatar1.jpg', 'tangdeptrai', 'Normal', 1),
 ('A7', '0835377623', 'vet2@gmail.com', 'R5', 'avatar2.jpg', 'admin', 'Normal', 1),
 ('A8', '1122334455', 'Manager@gmail.com', 'R3', 'avatar3.jpg', 'vet', 'Normal', 1),
 ('A9', '1234554321', 'reception1@gmai.com', 'R1', 'avatar4.jpg', 'manager', 'Normal', 1),
@@ -235,6 +237,7 @@ GO
 -- Insert sample data for Employee
 INSERT INTO Employee (EmployeeID, AccountID, RoleID, Firstname, Lastname, Sex, Birthday, Address, Status) 
 VALUES 
+('E0', 'A0', 'R0', 'Null', 'Null', 1, '2003-01-02', 'Null', 1),
 ('E1', 'A6', 'R1', 'Duong', 'Tang', 1, '2003-01-02', 'VinHome Q9', 1),
 ('E2', 'A7', 'R2', 'Lily', 'Anderson', 0, '1988-04-25', '111 Maple St', 1),
 ('E3', 'A8', 'R3', 'Tom', 'Clark', 1, '1991-02-19', '222 Oak Dr', 1),
@@ -262,6 +265,7 @@ VALUES
 -- Insert sample data for Feedback
 INSERT INTO Feedback (FeedbackID, ServiceRating, VetRating, Description, Status) 
 VALUES 
+('FB0', 0, 0, 'Null', 'Default'),
 ('FB1', 5, 5, 'Great service!', 'Active'),
 ('FB2', 3, 3, 'Needs improvement.', 'Active'),
 ('FB3', 5, 5, 'Very satisfied with the consultation.', 'Active'),

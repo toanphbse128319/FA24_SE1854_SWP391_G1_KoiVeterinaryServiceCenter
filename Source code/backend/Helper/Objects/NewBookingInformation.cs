@@ -30,8 +30,8 @@ public class NewBookingInformation(){
             return result;
         if( CustomerID.Count() == 0 )
             return "Customer id cannot be empty";
-        if( EmployeeID.Count() == 0 )
-            return "Employee id cannot be empty";
+        if( EmployeeID == null || EmployeeID.Count() == 0 )
+            EmployeeID = "E0";
         if( ServiceID.Count() == 0 )
             return "Service id cannot be empty";
         if( SDM.Count() == 0 )

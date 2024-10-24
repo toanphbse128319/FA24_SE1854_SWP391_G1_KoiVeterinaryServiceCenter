@@ -110,8 +110,7 @@ public class BookingRepository : GenericRepository<Booking>
                     newOrder.ScheduleID = temp;
                     break;
             }
-            FeedbackRepository feedbackRepo = new FeedbackRepository(_context);
-            newOrder.FeedbackID = (await feedbackRepo.SaveAndGetFeedbackAsync(new Feedback(){Status = "Uncommented"})).FeedbackID;
+            newOrder.FeedbackID = "FB0";
             newOrder.BookingID = GetNextID("B");
             if( await base.CreateAsync(newOrder) == 0 )
                 return result = "Unable to create new booking order";
