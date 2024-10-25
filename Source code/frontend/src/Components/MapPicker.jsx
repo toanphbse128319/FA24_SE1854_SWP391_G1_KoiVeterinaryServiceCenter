@@ -3,58 +3,17 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import maplibregl from 'maplibre-gl';
 import './Styling/Map.css'
 
-import { GeoapifyContext, GeoapifyGeocoderAutocomplete } from '@geoapify/react-geocoder-autocomplete';
 import React, { useState, useRef, useEffect } from "react";
 
-//function MapPicker( {mapIsReadyCallback} ){
-//    let address = "411 Nguyễn Văn Tăng, Long Thạnh Mỹ, Quận 9, Hồ Chí Minh, Vietnam";
-//    let mapContainer;
-//    useEffect(() => {
-//        let ApiKey = "1e375620e6474ac2b7bd4eb2570e3091";
-//        //let ApiKey = "temp";
-//        
-//        let mapStyle = "https://maps.geoapify.com/v1/styles/osm-carto/style.json";
-//        let initialState = {
-//            lng: 11,
-//            lat: 49,
-//            zoom: 4
-//        };
-//        let map = new Maplibre.Map( { 
-//            container: mapContainer,
-//            style: `${mapStyle}?apiKey=${ApiKey}`,
-//            center: [initialState.lng, initialState.lat],
-//            zoom: initialState.zoom
-//        } );
-//
-//    }, [mapContainer]);
-//
-//    return (
-//        <div className="map-container" ref={el => mapContainer = el}>
-//        </div>
-//    );
-//}
-//
-//
-//export default function Map() {
-//
-//  const mapIsReadyCallback = (map) => {
-//    console.log(map);
-//  };
-//
-//  return (
-//    <MapPicker mapIsReadyCallback={mapIsReadyCallback}/>
-//  );
-//}
-//
-
-export default function Map(){
+//setDistance is the setter for distance as there's no way to return the result
+export default function Map( {setDistance}){
     let marker = useRef(null); 
     const mapContainer = useRef(null);
     const map = useRef(null);
     let lng = useRef(106.84452525554275);
     let lat = useRef(10.846653659695292);
     const zoom = 18;
-    const APIKey = "1e375620e6474ac2b7bd4eb2570e3091";
+    const APIKey = import.meta.env.VITE_GEOAPIFY_APIKEY;
     const url = "https://maps.geoapify.com/v1/styles/osm-carto/style.json?";
     const style = "osm-bright";
 
@@ -62,14 +21,12 @@ export default function Map(){
         if( map.current ){
             return; //Stop map from initialing twice
         }
-
         map.current = new maplibregl.Map({
             container: mapContainer.current,
             style: `${url}style=${style}&apiKey=${APIKey}`,
             center: [lng.current, lat.current],
             zoom: zoom
         });
-
         map.current.addControl( new maplibregl.NavigationControl() );
         marker = new maplibregl.Marker({
             color: "#FF0000",
@@ -82,7 +39,6 @@ export default function Map(){
     }, [lng, lat, zoom]);
 
     function OnMapClick( e ){
-        console.log( marker );
         if (marker) {
             marker.remove();
             lng.current = e.lngLat.lng;
@@ -90,7 +46,9 @@ export default function Map(){
             marker.setLngLat([lng.current, lat.current]);
             marker.addTo(map.current);
         }
-        console.log('A click event has occurred at ' + e.lngLat);
+        //this line below will get result in syncronous function
+        //CalculateDistance( { lng: lng.current, lat: lat.current } ).then( result => console.log( result ) );
+        CalculateDistance( { lng: lng.current, lat: lat.current } ).then( result => setDistance( result ) );
     }
 
     return (
@@ -98,5 +56,15 @@ export default function Map(){
         <div ref={mapContainer} className="map" />
         </div>
     );
+}
+
+async function CalculateDistance( {lng, lat} ){
+    const APIKey = import.meta.env.VITE_GEOAPIFY_APIKEY;
+    const currentLng = import.meta.env.VITE_HEADQUARTER_LNG;
+    const currentLat = import.meta.env.VITE_HEADQUARTER_LAT;
+    let url = `https://api.geoapify.com/v1/routing?waypoints=${currentLat},${currentLng}|${lat},${lng}&mode=medium_truck&apiKey=${APIKey}`    
+    const response = await fetch(url).catch( error => console.error(error) );
+    const json = await response.json();
+    return json.features[0].properties.distance ;
 }
 
