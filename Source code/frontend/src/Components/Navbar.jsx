@@ -1,5 +1,5 @@
 "use client";
-
+import LogOut from "../Helper/Utilities"
 import { useState, useEffect } from "react";
 import {
   Dialog,
@@ -42,69 +42,8 @@ function GetService({ setServices }) {
         }, [] );
 }
 
-function ServiceDropdown(){
-    const [services, setServices] = useState([]);
-    GetService( { setServices: setServices } );
-    console.log( services );
-    
+function Logo(){
     return (
-        <>
-            <PopoverGroup className="hidden lg:flex lg:gap-x-12">
-              <Popover className="relative">
-                <PopoverButton className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900">
-                  Service
-                  <ChevronDownIcon
-                    aria-hidden="true"
-                    className="h-5 w-5 flex-none text-gray-400" />
-                </PopoverButton>
-
-                <PopoverPanel
-                  transition
-                  className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5 transition data-[closed]:translate-y-1 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150 data-[enter]:ease-out data-[leave]:ease-in" >
-                  <div className="p-4">
-                    {services.map((service) => (
-                      <div
-                        key={service.name}
-                        className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50" >
-                        <div className="flex-auto">
-                          <a href="#" className="block font-semibold text-gray-900" >
-                            {service.name}
-                            <span className="absolute inset-0" />
-                          </a>
-                          <p className="mt-1 text-gray-600">{service.description}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </PopoverPanel>
-              </Popover>
-              <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
-                Pet Care
-              </a>
-              <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
-                News
-              </a>
-              <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
-                Contact
-              </a>
-              <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
-                AboutUs
-              </a>
-            </PopoverGroup>
-        </>
-    );
-}
-
-export default function Example() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  return (
-    
-    <header className="bg-white bg-gradient-to-b from-inherit to-teal-100 fixed top-0 left-0 w-full z-50 ">
-      <nav
-        aria-label="Global"
-        className=" mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
-      >
         <div className="flex lg:flex-1">
           <a href="#" className="-m-1.5 p-1.5">
             <span className="sr-only">Your Company</span>
@@ -115,6 +54,12 @@ export default function Example() {
             />
           </a>
         </div>
+
+    );
+}
+
+function MainMenu( {setMobileMenuOpen} ){
+    return (
         <div className="flex lg:hidden">
           <button
             type="button"
@@ -125,14 +70,11 @@ export default function Example() {
             <Bars3Icon aria-hidden="true" className="h-6 w-6" />
           </button>
         </div>
+    );
+}
 
-      <ServiceDropdown />
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
-            Log in <span aria-hidden="true">&rarr;</span>
-          </a>
-        </div>
-      </nav>
+function MobileDropdownToolBox( {mobileMenuOpen, setMobileMenuOpen} ) {
+    return (
       <Dialog
         open={mobileMenuOpen}
         onClose={setMobileMenuOpen}
@@ -192,6 +134,122 @@ export default function Example() {
           </div>
         </DialogPanel>
       </Dialog>
+
+    );
+}
+
+function AccountButton(){
+    return (
+      <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+  <Popover className="relative">
+    <PopoverButton className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900">
+      Account
+      <ChevronDownIcon
+        aria-hidden="true"
+        className="h-5 w-5 flex-none text-gray-400"
+      />
+    </PopoverButton>
+
+    <PopoverPanel className="absolute right-0 z-10 mt-2 w-40 bg-white rounded-md shadow-lg">
+      <div className="p-2">
+        <a
+          href="#"
+          className="block text-gray-900 hover:bg-gray-50 rounded-lg px-4 py-2 text-sm"
+        >
+          View Profile
+        </a>
+        <a
+          href="#"
+          className="block text-gray-900 hover:bg-gray-50 rounded-lg px-4 py-2 text-sm"
+          onClick={LogOut}
+        >
+          Logout
+        </a>
+      </div>
+    </PopoverPanel>
+  </Popover>
+</div>
+    );
+}
+
+function LoginButton(){
+    return (
+
+        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+          <a href="/Login" className="text-sm font-semibold leading-6 text-gray-900">
+            Log in <span aria-hidden="true">&rarr;</span>
+          </a>
+        </div>
+    );
+}
+function ServiceDropdown(){
+    const [services, setServices] = useState([]);
+    GetService( { setServices: setServices } );
+    console.log( services );
+    
+    return (
+        <>
+            <PopoverGroup className="hidden lg:flex lg:gap-x-12">
+              <Popover className="relative">
+                <PopoverButton className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900">
+                  Service
+                  <ChevronDownIcon
+                    aria-hidden="true"
+                    className="h-5 w-5 flex-none text-gray-400" />
+                </PopoverButton>
+
+                <PopoverPanel
+                  transition
+                  className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5 transition data-[closed]:translate-y-1 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150 data-[enter]:ease-out data-[leave]:ease-in" >
+                  <div className="p-4">
+                    {services.map((service) => (
+                      <div
+                        key={service.name}
+                        className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50" >
+                        <div className="flex-auto">
+                          <a href="#" className="block font-semibold text-gray-900" >
+                            {service.name}
+                            <span className="absolute inset-0" />
+                          </a>
+                          <p className="mt-1 text-gray-600">{service.description}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </PopoverPanel>
+              </Popover>
+              <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
+                Pet Care
+              </a>
+              <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
+                News
+              </a>
+              <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
+                Contact
+              </a>
+              <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
+                AboutUs
+              </a>
+            </PopoverGroup>
+        </>
+    );
+}
+
+export default function Example() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  return (
+    <header className="bg-white bg-gradient-to-b from-inherit to-teal-100 fixed top-0 left-0 w-full z-50 ">
+      <nav
+        aria-label="Global"
+        className=" mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
+      >
+      <Logo />
+      <MainMenu setMobileMenuOpen={setMobileMenuOpen}/>
+      <ServiceDropdown />
+        { window.sessionStorage.getItem("token") == undefined ? <LoginButton /> : <AccountButton /> }
+      </nav>
+      <MobileDropdownToolBox setMobileMenuOpen={setMobileMenuOpen} mobileMenuOpen={mobileMenuOpen} />
     </header>
   );
 }

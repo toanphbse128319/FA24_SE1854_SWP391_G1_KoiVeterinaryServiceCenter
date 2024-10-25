@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import getAPIURL from "../Helper/Utilities"
 import { jwtDecode } from 'jwt-decode';
+import { useNavigate } from 'react-router-dom'
 import { 
   Button, 
   TextField, 
@@ -10,15 +12,64 @@ import {
   Alert,
   CircularProgress
 } from '@mui/material';
+import { Navigate } from 'react-router-dom';
+
+async function CheckLogin({ info, password ,setErrors }) {
+    try {
+        let url = getAPIURL("/login");
+        const response = await fetch( url , {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+
+            body: JSON.stringify({
+                info: info, 
+                password: password 
+            })
+        });
+        const data = await response.text();
+        console.log(data); // Hiển thị dữ liệu trong console để kiểm tra
+
+        if (!response.ok) {
+            // Handle different types of errors
+            switch (response.status) {
+                case 401:
+                    setErrors(prev => ({
+                        ...prev,
+                        general: 'Thông tin đăng nhập hoặc mật khẩu không chính xác'
+                    }));
+                    break;
+                default:
+                    setErrors(prev => ({
+                        ...prev,
+                        general:'Đã có lỗi xảy ra khi đăng nhập'
+                    }));
+            }
+            return;
+        }
+        const token = data;
+        const decoded = jwtDecode(token);
+        console.log(decoded); // In thông tin giải mã
+        window.sessionStorage.setItem('token', data); // Store token in session storage
+        window.sessionStorage.setItem('firstname', JSON.stringify(decoded.Firstname)); // Store first name in session storage
+        window.sessionStorage.setItem('lastname', JSON.stringify(decoded.Lastname)); // Store last name in session storage
+        return 'success';
+    } catch( error ) {
+        console.error( error );
+        return 'failed';
+    }
+}
 
 function Login() {
+    let navigate = useNavigate();
   // Form states
-  const [email, setEmail] = useState('phbtoan9185@gmail.com');
-  const [password, setPassword] = useState('caniskip');
+  const [info, setInfo] = useState('');
+  const [password, setPassword] = useState('');
   
   // Error states
   const [errors, setErrors] = useState({
-    email: '',
+    info: '',
     password: '',
     general: ''
   });
@@ -38,17 +89,17 @@ function Login() {
     
     // Reset errors
     setErrors({
-      email: '',
+      info: '',
       password: '',
       general: ''
     });
 
     let hasError = false;
-    if (!email) {
-      setErrors(prev => ({...prev, email: 'Email là bắt buộc'}));
+    if (!info) {
+      setErrors(prev => ({...prev, info: 'Email/số điện thoại là bắt buộc'}));
       hasError = true;
-    } else if (!validateEmail(email)) {
-      setErrors(prev => ({...prev, email: 'Email không hợp lệ'}));
+    } else if (!validateEmail(info)) {
+      setErrors(prev => ({...prev, info: 'Email/só điện thoại không hợp lệ'}));
       hasError = true;
     }
 
@@ -63,51 +114,13 @@ function Login() {
     if (hasError) return;
 
     setIsLoading(true);
-  
-    try {
-     
-      const response = await fetch('http://localhost:5173/api/Login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        
-        body: JSON.stringify({
-          info: email, 
-          password: password 
-        })
-      });
-      const data = await response.text();
-      console.log(data); // Hiển thị dữ liệu trong console để kiểm tra
-     
-      if (!response.ok) {
-        // Handle different types of errors
-        switch (response.status) {
-          case 401:
-            setErrors(prev => ({
-              ...prev,
-              general: 'Email hoặc mật khẩu không chính xác'
-            }));
-            break;
-          default:
-            setErrors(prev => ({
-              ...prev,
-              general:'Đã có lỗi xảy ra khi đăng nhập'
-            }));
-        }
-        return;
+      CheckLogin( { info: info, password: password, setErrors: setErrors } ).then( result => {
+        if( result == "success" )
+            navigate("/");
+        else 
+          setIsLoading(false);
       }
-      const token = data;
-      const decoded = jwt_decode(token);
-
-console.log(decoded); // In thông tin giải mã
-      localStorage.setItem('token', data);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      
-    
-    } finally {
-      setIsLoading(false);
-    }
+      );
   };
 
   return (
@@ -135,19 +148,19 @@ console.log(decoded); // In thông tin giải mã
           }}>
             <TextField
               id="email"
-              label="Email"
+              label="Thông tin đăng nhập"
               type="email"
               placeholder="your@email.com"
-              value={email}
+              value={info}
               onChange={(e) => {
-                setEmail(e.target.value);
+                setInfo(e.target.value);
                 // Clear error when typing
-                if (errors.email) {
-                  setErrors(prev => ({...prev, email: ''}));
+                if (errors.info) {
+                  setErrors(prev => ({...prev, info: ''}));
                 }
               }}
-              error={Boolean(errors.email)}
-              helperText={errors.email}
+              error={Boolean(errors.info)}
+              helperText={errors.info}
               fullWidth
               required
             />

@@ -11,8 +11,8 @@ import NhanHang from "./Components/NhanHang.jsx";
 import Footer from "./Components/Footer.jsx";
 import NotFound from "./Components/NotFound.jsx";
 import AboutUs from "./pages/AboutUsPage.jsx";
-import Login from "./Components/LoginContainer.jsx";
-import Test from "./Components/VetBookingList.jsx";
+import Login from "./pages/Login.jsx";
+import Test from "./Components/BookingList.jsx";
 import {
   BrowserRouter,
   createBrowserRouter,
@@ -25,8 +25,7 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Test />}>
-          <Route index element={<App />} />
+        <Route path="/" element={<App />}>
           <Route path="/Navbar" element={<Navbar />} />
           <Route path="/NhanHang" element={<NhanHang />} />
           <Route path="/Banner" element={<Banner />} />

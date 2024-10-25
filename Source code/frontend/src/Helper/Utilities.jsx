@@ -1,6 +1,9 @@
 function getAPIURL( endpoint ){
-    let url = window.location.protocol + "//" + window.location.hostname + ":5145" + "/api" + endpoint; 
+    let url = import.meta.env.VITE_BACKEND_URL + endpoint; 
     return url;
 }
 
+export function LogOut(){
+    window.sessionStorage.clear();
+}
 export default getAPIURL;
