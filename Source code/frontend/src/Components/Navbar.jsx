@@ -99,10 +99,11 @@ export default function Example() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="bg-white">
+    
+    <header className="bg-white bg-gradient-to-b from-inherit to-teal-100 fixed top-0 left-0 w-full z-50 ">
       <nav
         aria-label="Global"
-        className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
+        className=" mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
       >
         <div className="flex lg:flex-1">
           <a href="#" className="-m-1.5 p-1.5">
@@ -110,7 +111,7 @@ export default function Example() {
             <img
               alt=""
               src="img\logo-c-s-2.png"
-              className="h-8 w-auto"
+              className="h-14 w-auto"
             />
           </a>
         </div>
