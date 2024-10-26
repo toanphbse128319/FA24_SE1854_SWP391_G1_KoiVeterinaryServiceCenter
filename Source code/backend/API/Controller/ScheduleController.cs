@@ -28,7 +28,8 @@ public class ScheduleController : ControllerBase
                 return BadRequest("Parameter(s) cannot be empty!");
             if (await _unitOfWork.ScheduleRepository.CheckValidDateAsync(info.Date, info.EmployeeID) != null)
                 return BadRequest("Working day for that vet is already existed!");
-            Schedule schedule = new Schedule(){
+            Schedule schedule = new Schedule()
+            {
                 ScheduleID = info.ScheduleID,
                 Status = info.Status,
                 Date = info.Date,
@@ -51,14 +52,14 @@ public class ScheduleController : ControllerBase
     {
         try
         {
-            if (EmpID== null)
+            if (EmpID == null)
                 return BadRequest("Missing parameter!");
             Schedule schedule = await _unitOfWork.ScheduleRepository.SearchVetAndDateAsync(date, EmpID);
             if (schedule == null)
                 return BadRequest("The Employee is not exists");
             await _unitOfWork.SlotTableRepository.OrderSlot(slot, schedule.ScheduleID);
             return Ok("Assigned successfully!");
-            
+
         }
         catch (Exception ex)
         {
@@ -67,9 +68,9 @@ public class ScheduleController : ControllerBase
         }
     }
 
-    [Route("UpdateSlotByEmployeeID")]
+    [Route("UpdateSlotInforByEmployeeID")]
     [HttpPut]
-    public async Task<ActionResult<SlotTable>> UpdateSlotStatusByEmpIDAsync(int slotNo, string scheduleID, string note, int slotCapacity)
+    public async Task<ActionResult<SlotTable>> UpdateSlotInforByEmpIDAsync(int slotNo, string scheduleID, string note, int slotCapacity)
     {
         try
         {
@@ -83,9 +84,7 @@ public class ScheduleController : ControllerBase
             var slot = await _unitOfWork.SlotTableRepository.UpdateSlotInformationAsync(slotTable);
             if (slot == null)
                 return NotFound("Date is not found!");
-            if (slot.SlotStatus == true)
-                return Ok("The Slot Status changed to available!");
-            return Ok("The Slot Status changed to not available!");
+            return Ok("Updated successfully!");
         }
         catch (Exception ex)
         {
@@ -114,13 +113,16 @@ public class ScheduleController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<Schedule>>> GetScheduleByDate(DateOnly date)
     {
-        try{
+        try
+        {
             if (await _unitOfWork.ScheduleRepository.CheckValidScheduleAsync(date) == null)
                 return NotFound("Date is not found!");
             return await _unitOfWork.ScheduleRepository.SearchByDateAsync(date);
-        } catch ( Exception ex ){
-            Console.WriteLine( ex );
-            return StatusCode( StatusCodes.Status500InternalServerError, ex.Message );
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
 
@@ -128,13 +130,16 @@ public class ScheduleController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<Schedule>>> GetScheduleByName(string firstname, string lastname)
     {
-        try{
+        try
+        {
             if (await _unitOfWork.ScheduleRepository.CheckValidNameAsync(firstname, lastname) == null)
                 return NotFound("Name is not found!");
             return await _unitOfWork.ScheduleRepository.SearchByNameAsync(firstname, lastname);
-        } catch ( Exception ex ){
-            Console.WriteLine( ex );
-            return StatusCode( StatusCodes.Status500InternalServerError, ex.Message );
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
 
@@ -142,14 +147,17 @@ public class ScheduleController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<SlotTable>>> GetScheduleByEmpIDAndDate(string EmpID, DateOnly date)
     {
-        try{
+        try
+        {
             Schedule schedule = await _unitOfWork.ScheduleRepository.SearchVetAndDateAsync(date, EmpID);
             if (schedule == null)
                 return NotFound("Name is not found!");
             return await _unitOfWork.SlotTableRepository.SearchByScheduleIDAsync(schedule.ScheduleID);
-        } catch ( Exception ex ){
-            Console.WriteLine( ex );
-            return StatusCode( StatusCodes.Status500InternalServerError, ex.Message );
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
 
