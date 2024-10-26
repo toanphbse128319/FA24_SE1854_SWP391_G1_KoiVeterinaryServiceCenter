@@ -13,6 +13,8 @@ import NotFound from "./Components/NotFound.jsx";
 import AboutUs from "./pages/AboutUsPage.jsx";
 import Login from "./Components/LoginContainer.jsx";
 import Test from "./Components/BookingList.jsx";
+import Booking from "./pages/Booking.jsx";
+import Confirm from "./pages/Confirm.jsx";
 import {
   BrowserRouter,
   createBrowserRouter,
@@ -25,7 +27,7 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Test />}>
+        <Route path="/" element={<Booking />}>
           <Route index element={<App />} />
           <Route path="/Navbar" element={<Navbar />} />
           <Route path="/NhanHang" element={<NhanHang />} />
@@ -33,8 +35,9 @@ createRoot(document.getElementById("root")).render(
           <Route path="/Footer" element={<Footer />} />
           <Route path="/DoctorList" element={<DocterList />} />
           <Route path="/*" element={<NotFound />} />
-
         </Route>
+        
+        <Route path="/Confirm" element={<Confirm />} />
         <Route path="/AboutUs" element={<AboutUs />} />
         <Route path="/Login" element={<Login />} />
       </Routes>
