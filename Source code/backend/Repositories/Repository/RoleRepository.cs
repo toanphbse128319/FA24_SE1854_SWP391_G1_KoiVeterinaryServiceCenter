@@ -12,7 +12,18 @@ public class RoleRepository : GenericRepository<Role>
 
     public string getRoleName(string id)
     {
-        return _context.Roles.FirstOrDefault(role => role.RoleId == id).RoleName;
+        Role role =  _context.Roles.FirstOrDefault(role => role.RoleId == id);
+        if( role == null )
+            return "";
+        return role.RoleId;
+    }
+
+    public string getRoleID( string rolename ){
+        Role role =  _context.Roles.FirstOrDefault(role => role.RoleName == rolename);
+        if( role == null )
+            return "";
+        return role.RoleId;
+               
     }
 
 }

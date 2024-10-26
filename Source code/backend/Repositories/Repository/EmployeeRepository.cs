@@ -24,7 +24,18 @@ namespace Repositories.Repository
         public async Task<Employee?> SearchByFullNameAsync(string firstname, string lastname)
         {
             return await _context.Employees.FirstOrDefaultAsync(employee => employee.FirstName == firstname &&
-                                                                       employee.Lastname == lastname);
+                                                                       employee.LastName == lastname);
+        }
+
+        public async Task<List<Employee?>> SearchByRoleName( string rolename ){
+            string role = (new RoleRepository( _context )).getRoleID( rolename );
+            Console.WriteLine( "Rolename : " + role );
+            if( role == "" )
+                return new List<Employee?>();
+            List<Employee?> list = (await _context.Employees.Where( employee => employee.RoleID == role ).ToListAsync())!;
+            if( list == null )
+                return new List<Employee?>();
+            return list;
         }
     }
 }

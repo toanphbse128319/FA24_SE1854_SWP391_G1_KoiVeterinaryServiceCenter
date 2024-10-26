@@ -48,12 +48,13 @@ async function CheckLogin({ info, password ,setErrors }) {
             }
             return;
         }
-        const token = data;
-        const decoded = jwtDecode(token);
+        const decoded = jwtDecode(data);
         console.log(decoded); // In thông tin giải mã
         window.sessionStorage.setItem('token', data); // Store token in session storage
-        window.sessionStorage.setItem('firstname', JSON.stringify(decoded.Firstname)); // Store first name in session storage
-        window.sessionStorage.setItem('lastname', JSON.stringify(decoded.Lastname)); // Store last name in session storage
+        window.sessionStorage.setItem('firstname', (decoded.FirstName)); // Store first name in session storage
+        window.sessionStorage.setItem('lastname', (decoded.LastName)); // Store last name in session storage
+        window.sessionStorage.setItem('address', (decoded.Address));
+        window.sessionStorage.setItem('phonenumber', (decoded.PhoneNumber));
         return 'success';
     } catch( error ) {
         console.error( error );

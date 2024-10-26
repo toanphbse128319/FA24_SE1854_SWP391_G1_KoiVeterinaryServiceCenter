@@ -40,8 +40,8 @@ public class AccountRepository : GenericRepository<Account>
         CustomerRepository CustomerRepository = new CustomerRepository(_context);
         Customer? customer = CustomerRepository.SearchByAccountID(accountID);
         if( customer != null ){
-            firstname = customer.Firstname;
-            lastname = customer.Lastname;
+            firstname = customer.FirstName;
+            lastname = customer.LastName;
             return;
         }
         EmployeeRepository EmployeeRepository = new EmployeeRepository(_context);
@@ -51,7 +51,7 @@ public class AccountRepository : GenericRepository<Account>
             return;
         }
         firstname = Employee.FirstName;
-        lastname = Employee.Lastname;
+        lastname = Employee.LastName;
     }
 
     public async Task<string> LoginAsync(LoginInformation info)
@@ -85,8 +85,10 @@ public class AccountRepository : GenericRepository<Account>
             new Claim("Id", Guid.NewGuid().ToString()),
             new Claim(JwtRegisteredClaimNames.Email, found.Email),
             new Claim(ClaimTypes.Role, RoleRepository.getRoleName(found.RoleID)),
-            new Claim("Firstname", firstname),
-            new Claim("Lastname", lastname)
+            new Claim("FirstName", firstname),
+            new Claim("LastName", lastname),
+            new Claim("PhoneNumber", found.PhoneNumber),
+            new Claim("Address", (new CustomerRepository(_context)).SearchByAccountIDAsync(found.AccountID).Result!.Address)
         };
         token.Claims = claims;
         return token.GenerateToken(4);
@@ -158,8 +160,8 @@ public class AccountRepository : GenericRepository<Account>
             CustomerRepository customerRepo = new CustomerRepository(_context);
             Customer customer = new Customer(){
                 AccountID = account.AccountID,
-                Firstname = info.Firstname,
-                Lastname = info.Lastname,
+                FirstName = info.Firstname,
+                LastName = info.Lastname,
                 Sex = info.Sex,
                 BirthDay = info.Birthday,
                 Address = info.Address,

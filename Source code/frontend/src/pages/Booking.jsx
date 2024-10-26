@@ -1,11 +1,12 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@mui/material';
 import TrackingBookingDetail from '../Components/TrackingBookingDetail';
 import DoctorList from "../Components/Doctor'sSummaryInformation";
 import Lich from "../Components/ScheduleCustomer";
 import { LineChart } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
+import GetAPIURL from '../Helper/Utilities'
 
 const STEPS = {
   SELECT_DOCTOR: 'selectDoctor',
@@ -21,11 +22,25 @@ const SERVICES = {
   price: 75.00,
 };
 
+function GetVetList( { setDoctors } ){
+    let url = GetAPIURL("/Employee/getbyrolename?info=Veterinarian");
+    let data;
+    console.log("sending: " + url); 
+    useEffect(() => {
+        console.log("sending: " + url); 
+        fetch(url)
+            .then( response => response.json() )
+            .then( json => setDoctors( json ) )
+            .catch( error => console.error( error ) );
+        }, [] );
+}
+
 const BookingPage = () => {
   const [selectedService] = useState(SERVICES);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [currentStep, setCurrentStep] = useState(STEPS.SELECT_SCHEDULE);
   const [role, setRole] = useState('R1');
+  const [doctors, setDoctors] = useState([]);
   const [isFull, setIsFull] = useState(true);
 
   const handleDoctorSelect = (doctor) => {
@@ -42,19 +57,20 @@ const BookingPage = () => {
     }
     setCurrentStep(step);
   };
-
-  
-  const doctors = [
-    { name: "Nguyễn Văn A", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E1" },
-    { name: "Nguyễn Văn B", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E2" },
-    { name: "Nguyễn Văn C", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E3" },
-    { name: "Nguyễn Văn D", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E4" },
-    { name: "Nguyễn Văn E", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E5" },
-    { name: "Nguyễn Văn F", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E6" },
-    { name: "Nguyễn Văn G", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E7" },
-    { name: "Nguyễn Văn H", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E8" },
-    { name: "Nguyễn Văn I", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E9" }
-  ];
+    
+    GetVetList( { setDoctors } );
+    console.log( doctors );
+        //[
+//    { name: "Nguyễn Văn A", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E1" },
+//    { name: "Nguyễn Văn B", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E2" },
+//    { name: "Nguyễn Văn C", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E3" },
+//    { name: "Nguyễn Văn D", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E4" },
+//    { name: "Nguyễn Văn E", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E5" },
+//    { name: "Nguyễn Văn F", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E6" },
+//    { name: "Nguyễn Văn G", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E7" },
+//    { name: "Nguyễn Văn H", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E8" },
+//    { name: "Nguyễn Văn I", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E9" }
+  //];
 
   const StepButton = ({ step, label }) => {
     const isActive = currentStep === step || 

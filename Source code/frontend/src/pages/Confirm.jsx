@@ -2,10 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import OrderConfirmation from '../Components/BookingComfirm';
 import Customer from '../Components/CustomerSummary';
+import GetAPIURL from '../Helper/Utilities';
 
 const CLINIC_ADDRESS = "1491 Lê Văn Lương, Nhà Bè, TP HCM";
 const PRICE_PER_KM = 5000; // 5000 VND per km
 
+function SetCustomer( { setCustomer } ){
+    useEffect(() => {
+        setCustomer({
+            name: window.sessionStorage.getItem('firstname') + " " + window.sessionStorage.getItem('lastname'),
+            phone: window.sessionStorage.getItem('phonenumber'),
+            address: window.sessionStorage.getItem('address')
+        });
+    }, [] );
+}
 const Confirm = () => {
   const location = useLocation();
   const { service, doctor, time, scheduleId, fishCount } = location.state;
@@ -16,6 +26,7 @@ const Confirm = () => {
     phone: "0923213123",
     address: "100 Cô Giang, Quận 1, TP HCM"
   });
+    SetCustomer( { setCustomer: setCustomerInfo } );
   
   const [movingCost, setMovingCost] = useState(0);
   const [isRead, setIsRead] = useState(false); // State để theo dõi trạng thái đã đọc thông tin
@@ -70,10 +81,49 @@ const Confirm = () => {
     setIsRead(event.target.checked);
   };
 
+    function SaveBookingInfo(){
+        function SlotToTime( { slotNo } ){
+            let time = "T";
+            switch( slotNo ){
+                case 1:
+                    time += "07:00:00";
+                    break;
+                case 2:
+                    time += "08:00:00";
+                    break;
+                case 3:
+                    time += "09:00:00";
+                    break;
+                case 4:
+                    time += "10:00:00";
+                    break;
+                case 5:
+                    time += "11:00:00";
+                    break;
+                case 6:
+                    time += "14:00:00";
+                    break;
+                case 7:
+                    time += "15:00:00";
+                    break;
+                case 8:
+                    time += "16:00:00";
+                    break;
+                default:
+                    time += "00:00:00";
+            }
+            return time;
+        }
+
+        
+    }
   // Hàm điều hướng đến trang thanh toán
   const handlePayment = () => {
     // Chuyển đến trang thanh toán
     // navigate('/payment'); // Uncomment this line when using in a real app
+    useEffect(() => {
+        let url = GetAPIURL('/vnpay/all/')
+    }, []);
   };
 
   return (

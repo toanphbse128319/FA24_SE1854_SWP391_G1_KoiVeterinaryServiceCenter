@@ -15,6 +15,7 @@ import { Card, CardContent, Avatar,Button } from '@mui/material';
 
 
 const DoctorList = ({ onSelectDoctor  , doctors}) => {
+
   return (
     <div style={{ width: '55vw', maxHeight: '400px', overflowY: 'auto',boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', borderRadius: 10 }}>
       {doctors.map((doctor, index) => (
@@ -30,7 +31,7 @@ const DoctorList = ({ onSelectDoctor  , doctors}) => {
             margin: "20px"
           }} />
           <CardContent style={{ flexGrow: 1, padding: '16px' }}>
-            <h3 style={{ fontWeight: '600', fontSize: '24px' }}>{doctor.name}</h3>
+            <h3 style={{ fontWeight: '600', fontSize: '24px' }}>{doctor.firstName + " " + doctor.lastName}</h3>
             <p style={{ fontSize: '1.3vw' }}>Lịch khám: {doctor.schedule}</p>
           </CardContent>
           <Button 

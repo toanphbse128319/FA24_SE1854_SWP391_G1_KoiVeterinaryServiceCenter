@@ -24,7 +24,7 @@ namespace Repositories.Repository
         public async Task<string> AddAsync(Customer customer){
             if( customer == null )
                 return "Customer is empty";
-            if( customer.Firstname == null || customer.Address == null )
+            if( customer.FirstName == null || customer.Address == null )
                 return "customer name, address cannot be null";
             if( customer.CustomerID == null ) 
                 customer.CustomerID = GetNextID("C");
