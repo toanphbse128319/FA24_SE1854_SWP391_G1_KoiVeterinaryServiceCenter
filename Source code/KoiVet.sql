@@ -109,6 +109,8 @@ CREATE TABLE Booking(
     Deposit money not null,
     NumberOfFish int not null,
     IncidentalFish int not null,
+    NumberOfPool int not null,
+    IncidentalPool int not null,
     ServiceDeliveryMethodID nvarchar(20) FOREIGN KEY REFERENCES ServiceDeliveryMethod(ServiceDeliveryMethodID) NOT NULL,
     VAT float,
     BookingAddress nvarchar(200) NOT NULL,
@@ -137,7 +139,6 @@ CREATE TABLE BookingDetail(
     UnitPrice money NOT NULL,
     Incidental bit NOT NULL,
     NoteResult nvarchar(MAX),
-    NoteExamination nvarchar(MAX),
     AnimalStatusDescription nvarchar(MAX) ,
     ConsultDoctor nvarchar(MAX),
     DrugList nvarchar(MAX),
@@ -247,20 +248,24 @@ VALUES
 -- Insert sample data for ServiceDeliveryMethod
 INSERT INTO ServiceDeliveryMethod (ServiceDeliveryMethodID, Name, Status) 
 VALUES 
-('SDM1', 'Home Visit', 1),
-('SDM2', 'Online Consultation', 1),
-('SDM3', 'Clinic Appointment', 1),
-('SDM4', 'Emergency Visit', 1),
-('SDM5', 'Follow-up Consultation', 1);
+('SDM1', 'Fish examination at home', 1),
+('SDM2', 'Pool examination at home', 1),
+('SDM3', 'Online Consultation', 1),
+('SDM4', 'Fish examination at center', 1);
 
 -- Insert sample data for Service
 INSERT INTO Service (ServiceID, ServiceDeliveryMethodID, Name, Price, Description, Status) 
 VALUES 
 ('S1', 'SDM1', 'Koi Health Check', 100000, 'Basic health check for koi fish', 1),
-('S2', 'SDM2', 'Virtual Koi Consultation', 75000, 'Online consultation with koi specialist', 1),
-('S3', 'SDM3', 'Koi Disease Treatment', 150000, 'Treatment for common koi diseases', 1),
-('S4', 'SDM4', 'Emergency Koi Surgery', 300000, 'Urgent surgical procedure for koi', 1),
-('S5', 'SDM5', 'Post-Treatment Checkup', 50000, 'Follow-up checkup after treatment', 1);
+('S2', 'SDM2', 'Koi Health Check', 100000, 'Basic health check for koi fish', 1),
+('S3', 'SDM4', 'Koi Health Check', 100000, 'Basic health check for koi fish', 1),
+('S4', 'SDM2', 'Koi Consultation', 75000, 'Online consultation with koi specialist', 1),
+('S5', 'SDM1', 'Koi Disease Treatment', 150000, 'Treatment for common koi diseases', 1),
+('S6', 'SDM2', 'Koi Disease Treatment', 150000, 'Treatment for common koi diseases', 1),
+('S7', 'SDM4', 'Koi Disease Treatment', 150000, 'Treatment for common koi diseases', 1),
+('S8', 'SDM4', 'blood test for fish', 150000, 'Treatment for common koi diseases', 1),
+('S8', 'SDM2', 'Check ph level', 150000, 'Treatment for common koi diseases', 1),
+('S9', 'SDM2', 'Eliminate parasitic fungi in the tank', 100000, 'Basic health check for koi fish', 1),
 
 -- Insert sample data for Feedback
 INSERT INTO Feedback (FeedbackID, ServiceRating, VetRating, Description, Status) 
@@ -274,23 +279,133 @@ VALUES
 
 -- Insert data into Schedule table
 INSERT INTO Schedule (ScheduleID, EmployeeID, Date, Note, Status) VALUES
-('SCH1', 'E3', '2024-09-01', 'Regular shift', 'Active'),
-('SCH2', 'E3', '2024-09-02', 'Overtime shift', 'Active'),
-('SCH3', 'E3', '2024-09-03', 'Night shift', 'Inactive'),
-('SCH4', 'E3', '2024-09-04', 'Morning shift', 'Active'),
-('SCH5', 'E3', '2024-09-05', 'Morning shift', 'Active');
+('SCH001', 'E3', '2024-10-25', 'Morning shift', 'Active'),
+('SCH002', 'E4', '2024-10-25', 'Morning shift', 'Active'),
+('SCH003', 'E3', '2024-10-26', 'Morning shift', 'Active'),
+('SCH004', 'E4', '2024-10-26', 'Morning shift', 'Active'),
+('SCH005', 'E3', '2024-10-27', 'Morning shift', 'Active'),
+('SCH006', 'E4', '2024-10-27', 'Morning shift', 'Active'),
+('SCH007', 'E3', '2024-10-28', 'Morning shift', 'Active'),
+('SCH008', 'E4', '2024-10-28', 'Morning shift', 'Active'),
+('SCH009', 'E3', '2024-10-29', 'Morning shift', 'Active'),
+('SCH010', 'E4', '2024-10-29', 'Morning shift', 'Active'),
+('SCH011', 'E3', '2024-10-30', 'Morning shift', 'Active'),
+('SCH012', 'E4', '2024-10-30', 'Morning shift', 'Active'),
+('SCH013', 'E3', '2024-10-31', 'Morning shift', 'Active'),
+('SCH014', 'E4', '2024-10-31', 'Morning shift', 'Active'),
+('SCH015', 'E3', '2024-11-01', 'Morning shift', 'Active'),
+('SCH016', 'E4', '2024-11-01', 'Morning shift', 'Active'),
+('SCH017', 'E3', '2024-11-02', 'Morning shift', 'Active'),
+('SCH018', 'E4', '2024-11-02', 'Morning shift', 'Active'),
+('SCH019', 'E3', '2024-11-03', 'Morning shift', 'Active'),
+('SCH020', 'E4', '2024-11-03', 'Morning shift', 'Active');
+('SCH021', 'E3', '2024-11-04', 'Morning shift', 'Active'),
+('SCH022', 'E4', '2024-11-04', 'Morning shift', 'Active'),
+('SCH023', 'E3', '2024-11-05', 'Morning shift', 'Active'),
+('SCH024', 'E4', '2024-11-05', 'Morning shift', 'Active'),
+('SCH025', 'E3', '2024-11-06', 'Morning shift', 'Active'),
+('SCH026', 'E4', '2024-11-06', 'Morning shift', 'Active'),
+('SCH027', 'E3', '2024-11-07', 'Morning shift', 'Active'),
+('SCH028', 'E4', '2024-11-07', 'Morning shift', 'Active'),
+('SCH029', 'E3', '2024-11-08', 'Morning shift', 'Active'),
+('SCH030', 'E4', '2024-11-08', 'Morning shift', 'Active'),
+('SCH031', 'E3', '2024-11-09', 'Morning shift', 'Active'),
+('SCH032', 'E4', '2024-11-09', 'Morning shift', 'Active'),
+('SCH033', 'E3', '2024-11-10', 'Morning shift', 'Active'),
+('SCH034', 'E4', '2024-11-10', 'Morning shift', 'Active'),
+('SCH035', 'E3', '2024-11-11', 'Morning shift', 'Active'),
+('SCH036', 'E4', '2024-11-11', 'Morning shift', 'Active'),
+('SCH037', 'E3', '2024-11-12', 'Morning shift', 'Active'),
+('SCH038', 'E4', '2024-11-12', 'Morning shift', 'Active'),
+('SCH039', 'E3', '2024-11-13', 'Morning shift', 'Active'),
+('SCH040', 'E4', '2024-11-13', 'Morning shift', 'Active'),
+('SCH041', 'E3', '2024-11-14', 'Morning shift', 'Active'),
+('SCH042', 'E4', '2024-11-14', 'Morning shift', 'Active'),
+('SCH043', 'E3', '2024-11-15', 'Morning shift', 'Active'),
+('SCH044', 'E4', '2024-11-15', 'Morning shift', 'Active'),
+('SCH045', 'E3', '2024-11-16', 'Morning shift', 'Active'),
+('SCH046', 'E4', '2024-11-16', 'Morning shift', 'Active'),
+('SCH047', 'E3', '2024-11-17', 'Morning shift', 'Active'),
+('SCH048', 'E4', '2024-11-17', 'Morning shift', 'Active'),
+('SCH049', 'E3', '2024-11-18', 'Morning shift', 'Active'),
+('SCH050', 'E4', '2024-11-18', 'Morning shift', 'Active'),
+('SCH051', 'E3', '2024-11-19', 'Morning shift', 'Active'),
+('SCH052', 'E4', '2024-11-19', 'Morning shift', 'Active'),
+('SCH053', 'E3', '2024-11-20', 'Morning shift', 'Active'),
+('SCH054', 'E4', '2024-11-20', 'Morning shift', 'Active'),
+('SCH055', 'E3', '2024-11-21', 'Morning shift', 'Active'),
+('SCH056', 'E4', '2024-11-21', 'Morning shift', 'Active'),
+('SCH057', 'E3', '2024-11-22', 'Morning shift', 'Active'),
+('SCH058', 'E4', '2024-11-22', 'Morning shift', 'Active'),
+('SCH059', 'E3', '2024-11-23', 'Morning shift', 'Active'),
+('SCH060', 'E4', '2024-11-23', 'Morning shift', 'Active'),
+('SCH061', 'E3', '2024-11-24', 'Morning shift', 'Active'),
+('SCH062', 'E4', '2024-11-24', 'Morning shift', 'Active');
 
--- Insert data into SlotTable table
-INSERT INTO SlotTable (SlotTableID, ScheduleID, Note, Slot, SlotCapacity, SlotOrdered, SlotStatus) 
-VALUES
-('ST1', 'SCH1', 'Morning slot', 1, 10, 5, 1),
-('ST2', 'SCH1', 'Afternoon slot', 2, 10, 8, 1),
-('ST3', 'SCH2', 'Night slot', 3, 15, 7, 1),
-('ST4', 'SCH3', 'Overnight slot', 4, 12, 6, 0),
-('ST5', 'SCH4', 'Early morning slot', 6, 8, 8, 0),
-('ST6', 'SCH4', 'Early morning slot', 7, 8, 8, 1),
-('ST7', 'SCH4', 'Early morning slot', 8, 8, 8, 1),
-('ST8', 'SCH4', 'Early morning slot', 1, 8, 8, 1);
+-- SlotTable data for each schedule
+INSERT INTO SlotTable (SlotTableID, ScheduleID, Note, Slot, SlotCapacity, SlotOrdered, SlotStatus) VALUES
+('ST001', 'SCH001', 'Morning slot', 1, 10, 5, 1),
+('ST002', 'SCH001', 'Morning slot', 2, 10, 6, 1),
+('ST003', 'SCH001', 'Afternoon slot', 3, 10, 4, 1),
+('ST004', 'SCH001', 'Afternoon slot', 4, 10, 7, 1),
+('ST005', 'SCH001', 'Afternoon slot', 5, 10, 3, 1),
+('ST006', 'SCH001', 'Evening slot', 6, 10, 5, 1),
+('ST007', 'SCH001', 'Evening slot', 7, 10, 4, 1),
+('ST008', 'SCH001', 'Evening slot', 8, 10, 6, 1),
+
+('ST009', 'SCH002', 'Morning slot', 1, 10, 4, 1),
+('ST010', 'SCH002', 'Morning slot', 2, 10, 5, 1),
+('ST011', 'SCH002', 'Afternoon slot', 3, 10, 6, 1),
+('ST012', 'SCH002', 'Afternoon slot', 4, 10, 3, 1),
+('ST013', 'SCH002', 'Afternoon slot', 5, 10, 7, 1),
+('ST014', 'SCH002', 'Evening slot', 6, 10, 5, 1),
+('ST015', 'SCH002', 'Evening slot', 7, 10, 4, 1),
+('ST016', 'SCH002', 'Evening slot', 8, 10, 6, 1),
+
+('ST017', 'SCH003', 'Morning slot', 1, 10, 5, 1),
+('ST018', 'SCH003', 'Morning slot', 2, 10, 4, 1),
+('ST019', 'SCH003', 'Afternoon slot', 3, 10, 6, 1),
+('ST020', 'SCH003', 'Afternoon slot', 4, 10, 7, 1),
+('ST021', 'SCH003', 'Afternoon slot', 5, 10, 3, 1),
+('ST022', 'SCH003', 'Evening slot', 6, 10, 5, 1),
+('ST023', 'SCH003', 'Evening slot', 7, 10, 4, 1),
+('ST024', 'SCH003', 'Evening slot', 8, 10, 6, 1);
+('ST025', 'SCH004', 'Morning slot', 1, 10, 5, 1),
+('ST026', 'SCH004', 'Morning slot', 2, 10, 6, 1),
+('ST027', 'SCH004', 'Afternoon slot', 3, 10, 4, 1),
+('ST028', 'SCH004', 'Afternoon slot', 4, 10, 7, 1),
+('ST029', 'SCH004', 'Afternoon slot', 5, 10, 3, 1),
+('ST030', 'SCH004', 'Evening slot', 6, 10, 5, 1),
+('ST031', 'SCH004', 'Evening slot', 7, 10, 4, 1),
+('ST032', 'SCH004', 'Evening slot', 8, 10, 6, 1),
+
+('ST033', 'SCH005', 'Morning slot', 1, 10, 4, 1),
+('ST034', 'SCH005', 'Morning slot', 2, 10, 5, 1),
+('ST035', 'SCH005', 'Afternoon slot', 3, 10, 6, 1),
+('ST036', 'SCH005', 'Afternoon slot', 4, 10, 3, 1),
+('ST037', 'SCH005', 'Afternoon slot', 5, 10, 7, 1),
+('ST038', 'SCH005', 'Evening slot', 6, 10, 5, 1),
+('ST039', 'SCH005', 'Evening slot', 7, 10, 4, 1),
+('ST040', 'SCH005', 'Evening slot', 8, 10, 6, 1),
+
+('ST041', 'SCH006', 'Morning slot', 1, 10, 5, 1),
+('ST042', 'SCH006', 'Morning slot', 2, 10, 4, 1),
+('ST043', 'SCH006', 'Afternoon slot', 3, 10, 6, 1),
+('ST044', 'SCH006', 'Afternoon slot', 4, 10, 7, 1),
+('ST045', 'SCH006', 'Afternoon slot', 5, 10, 3, 1),
+('ST046', 'SCH006', 'Evening slot', 6, 10, 5, 1),
+('ST047', 'SCH006', 'Evening slot', 7, 10, 4, 1),
+('ST048', 'SCH006', 'Evening slot', 8, 10, 6, 1),
+
+('ST049', 'SCH007', 'Morning slot', 1, 10, 5, 1),
+('ST050', 'SCH007', 'Morning slot', 2, 10, 6, 1),
+('ST051', 'SCH007', 'Afternoon slot', 3, 10, 4, 1),
+('ST052', 'SCH007', 'Afternoon slot', 4, 10, 7, 1),
+('ST053', 'SCH007', 'Afternoon slot', 5, 10, 3, 1),
+('ST054', 'SCH007', 'Evening slot', 6, 10, 5, 1),
+('ST055', 'SCH007', 'Evening slot', 7, 10, 4, 1),
+('ST056', 'SCH007', 'Evening slot', 8, 10, 6, 1);
+
 
 --NumberOfFish int not null,
    -- IncidentalFish 
@@ -313,13 +428,13 @@ VALUES
 ('AT5', 'Betta Fish');
 
 -- Insert sample data for BookingDetail
-INSERT INTO BookingDetail (BookingDetailID, BookingID, ServiceID, UnitPrice, Incidental, NoteResult, NoteExamination, AnimalStatusDescription, ConsultDoctor, DrugList, PoolStatusDescription, ConsultTechnician, MaterialList)
+INSERT INTO BookingDetail (BookingDetailID, BookingID, ServiceID, UnitPrice, Incidental, NoteResult, AnimalStatusDescription, ConsultDoctor, DrugList, PoolStatusDescription, ConsultTechnician, MaterialList)
 VALUES 
-('BD1', 'B1', 'S1', 100.00, 0,'Koi appears healthy overall', 'Routine health check performed', 'Nishiki shows good coloration and active behavior', 'Dr. Amelia Fish', 'Probiotic supplement', 'Zen Garden Koi Pond maintains good water quality', 'Tech John Doe', 'Water testing kit, net'),
-('BD2', 'B2', 'S2', 75.00, 0,'Goldfish exhibiting signs of stress', 'Observed labored breathing and loss of appetite', 'Bubbles has clamped fins and reduced activity', 'Dr. Michael Scales', 'Antibiotics, stress coat additive', 'Indoor Goldfish Tank requires improved filtration', 'Tech Jane Smith', 'New filter system, air pump'),
-('BD3', 'B3', 'S3', 150.00, 0,'Tropical fish recovering from minor infection', 'Treated for bacterial infection', 'Nemo shows improvement in fin condition and appetite', 'Dr. Sarah Coral', 'Broad-spectrum antibiotic, vitamin supplements', 'Tropical Reef Aquarium parameters stable', 'Tech Robert Johnson', 'UV sterilizer, coral food'),
-('BD4', 'B4', 'S4', 300.00, 0,'Emergency surgery successful', 'Removed foreign object from blue tang', 'Azure is stable post-surgery, requires close monitoring', 'Dr. David Finn', 'Pain medication, antibiotics', 'Saltwater Lagoon quarantine section set up', 'Tech Emily Waters', 'Surgical tools, quarantine tank'),
-('BD5', 'B5', 'S5', 50.00, 0,'Betta fish in excellent condition', 'Regular check-up completed', 'Crimson displays vibrant colors and active behavior', 'Dr. Lisa Gills', 'None required', 'Betta Paradise tank environment optimal', 'Tech Mark River', 'Water conditioner, betta-specific food');
+('BD1', 'B1', 'S1', 100.00, 0,'Koi appears healthy overall', 'Nishiki shows good coloration and active behavior', 'Dr. Amelia Fish', 'Probiotic supplement', 'Zen Garden Koi Pond maintains good water quality', 'Tech John Doe', 'Water testing kit, net'),
+('BD2', 'B2', 'S2', 75.00, 0,'Goldfish exhibiting signs of stress', 'Bubbles has clamped fins and reduced activity', 'Dr. Michael Scales', 'Antibiotics, stress coat additive', 'Indoor Goldfish Tank requires improved filtration', 'Tech Jane Smith', 'New filter system, air pump'),
+('BD3', 'B3', 'S3', 150.00, 0,'Tropical fish recovering from minor infection', 'Nemo shows improvement in fin condition and appetite', 'Dr. Sarah Coral', 'Broad-spectrum antibiotic, vitamin supplements', 'Tropical Reef Aquarium parameters stable', 'Tech Robert Johnson', 'UV sterilizer, coral food'),
+('BD4', 'B4', 'S4', 300.00, 0,'Emergency surgery successful',  'Azure is stable post-surgery, requires close monitoring', 'Dr. David Finn', 'Pain medication, antibiotics', 'Saltwater Lagoon quarantine section set up', 'Tech Emily Waters', 'Surgical tools, quarantine tank'),
+('BD5', 'B5', 'S5', 50.00, 0,'Betta fish in excellent condition',  'Crimson displays vibrant colors and active behavior', 'Dr. Lisa Gills', 'None required', 'Betta Paradise tank environment optimal', 'Tech Mark River', 'Water conditioner, betta-specific food');
 
 -- Insert sample data for AnimalProfile
 INSERT INTO AnimalProfile (AnimalProfileID, Name, TypeID, BookingDetailID, Size, Age, Color, Description, Sex, Picture) 
