@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function NhanHang() {
-  const navigate = useNavigate();
+  
   const brands = [
     { name: 'My Koi', image: 'img/screenshot-2024-09-29-174738-1.png' },
     { name: 'Tetra', image: 'img/screenshot-2024-09-29-174659-1.png' },
