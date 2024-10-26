@@ -369,7 +369,7 @@ INSERT INTO SlotTable (SlotTableID, ScheduleID, Note, Slot, SlotCapacity, SlotOr
 ('ST021', 'SCH003', 'Afternoon slot', 5, 10, 3, 1),
 ('ST022', 'SCH003', 'Evening slot', 6, 10, 5, 1),
 ('ST023', 'SCH003', 'Evening slot', 7, 10, 4, 1),
-('ST024', 'SCH003', 'Evening slot', 8, 10, 6, 1);
+('ST024', 'SCH003', 'Evening slot', 8, 10, 6, 1),
 ('ST025', 'SCH004', 'Morning slot', 1, 10, 5, 1),
 ('ST026', 'SCH004', 'Morning slot', 2, 10, 6, 1),
 ('ST027', 'SCH004', 'Afternoon slot', 3, 10, 4, 1),
