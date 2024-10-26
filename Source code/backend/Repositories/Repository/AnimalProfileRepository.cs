@@ -1,10 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Repositories.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Repositories.Repository
 {
@@ -15,20 +10,20 @@ namespace Repositories.Repository
             _context = context;
         }
 
-        public Task<AnimalProfile?> FindAnimalProfileByIdAsync(string id)
+        public Task<List<AnimalProfile?>> GetByBookingDetailID(string id)
         {
-            return _context.AnimalProfiles.FirstOrDefaultAsync(animalprofile => animalprofile.AnimalProfileID == id)!;
+            return _context.AnimalProfiles.Where(animalprofile => animalprofile.BookingDetailID.ToLower() == id.ToLower()).ToListAsync()!;
         }
 
-        public async Task<AnimalProfile?> AddAnimalProfileAsync(AnimalProfile animalprofile)
+        public async Task<int> AddAnimalProfileAsync(AnimalProfile animalprofile)
         {
+            if (animalprofile == null)
+                return 0;
             if (animalprofile.AnimalProfileID == "")
             {
-                int index = base.GetAll().Count;
-                animalprofile.AnimalProfileID = "AP" + index;
+                animalprofile.AnimalProfileID = GetNextID("AP");
             }
-            await base.CreateAsync(animalprofile);
-            return animalprofile;
+            return await base.CreateAsync(animalprofile);;
         }
     }
 }
