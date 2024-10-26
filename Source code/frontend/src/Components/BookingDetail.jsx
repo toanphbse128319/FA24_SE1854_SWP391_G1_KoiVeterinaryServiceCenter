@@ -1,0 +1,549 @@
+import React, { useState, useEffect } from 'react';
+import { TextField, Button, Card, CardContent, Typography, IconButton, Badge, Box, Dialog, DialogTitle, DialogContent, DialogActions, Tooltip } from '@mui/material';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import CloseIcon from '@mui/icons-material/Close';
+import SearchIcon from '@mui/icons-material/Search';
+
+const ServiceSelection = ({ services = [], isOpen, onClose, deliveryMethod }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredServices, setFilteredServices] = useState([]);
+  const [selectedService, setSelectedService] = useState(null);
+  const [cartItems, setCartItems] = useState([]);
+  const [showCart, setShowCart] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [bookingData, setBookingData] = useState(null);
+  const [showPreview, setShowPreview] = useState(false);
+  const [totalAmount, setTotalAmount] = useState(0);
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({
+    serviceID: '',
+    NoteResult: '',
+    AnimalStatusDescription: '',
+    ConsultDoctor: '',
+    DrugList: '',
+    PoolStatusDescription: '',
+    ConsultTechnician: '',
+    MaterialList: ''
+  });
+
+  useEffect(() => {
+    const total = cartItems.reduce((sum, item) => sum + item.Price, 0);
+    setTotalAmount(total);
+  }, [cartItems]);
+
+
+  const handleConfirmServices = () => {
+    setShowPreview(true);
+  };
+
+  useEffect(() => {
+    setFilteredServices(services);
+  }, [services]);
+
+  useEffect(() => {
+    const filtered = services.filter(service =>
+      service.Name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredServices(filtered);
+  }, [searchTerm, services]);
+
+  const handleServiceSelect = (service) => {
+    // Kiểm tra xem dịch vụ đã có trong giỏ hàng chưa
+    const existingService = cartItems.find(item => item.ServiceID === service.ServiceID);
+    if (existingService && !isEditing) {
+      alert('Dịch vụ này đã có trong giỏ hàng!');
+      return;
+    }
+    setSelectedService(service);
+    setFormData({
+      ...formData,
+      serviceID: service.ServiceID
+    });
+  };
+
+  const handleSubmit = () => {
+    if (isEditing) {
+      // Cập nhật item hiện có
+      const updatedCartItems = cartItems.map(item =>
+        item.serviceID === formData.serviceID ? { ...selectedService, ...formData } : item
+      );
+      setCartItems(updatedCartItems);
+      setIsEditing(false);
+    } else {
+      // Thêm item mới
+      const newCartItem = {
+        ...selectedService,
+        ...formData
+      };
+      setCartItems([...cartItems, newCartItem]);
+    }
+    // Reset form
+    setSelectedService(null);
+    setFormData({
+      serviceID: '',
+      NoteResult: '',
+      AnimalStatusDescription: '',
+      ConsultDoctor: '',
+      DrugList: '',
+      PoolStatusDescription: '',
+      ConsultTechnician: '',
+      MaterialList: ''
+    });
+  };
+
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
+  const handleRemoveFromCart = (serviceID) => {
+    setCartItems(cartItems.filter(item => item.serviceID !== serviceID));
+    // Nếu đang chỉnh sửa item bị xóa, reset form
+    if (formData.serviceID === serviceID) {
+      setSelectedService(null);
+      setFormData({
+        serviceID: '',
+        NoteResult: '',
+        AnimalStatusDescription: '',
+        ConsultDoctor: '',
+        DrugList: '',
+        PoolStatusDescription: '',
+        ConsultTechnician: '',
+        MaterialList: ''
+      });
+      setIsEditing(false);
+    }
+  };
+  const handleUpdateService = (item) => {
+    setSelectedService({
+      ...item,
+      ServiceID: item.serviceID
+    });
+    setFormData(item);
+    setShowCart(false);
+    setIsEditing(true);
+  };
+
+
+  const handleSendToAPI = async () => {
+    try {
+      const response = await fetch('/api/submit-services', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          services: cartItems
+        }),
+      });
+
+      const data = await response.json();
+      setBookingData(data);
+      setShowPreview(false);
+      setShowConfirmation(true);
+    } catch (error) {
+      console.error('Error submitting services:', error);
+    }
+  };
+
+
+  const ServicePreviewDialog = () => (
+    <Dialog
+      open={showPreview}
+      onClose={() => setShowPreview(false)}
+      maxWidth="md"
+      fullWidth
+    >
+      <DialogTitle>
+        <div className="flex justify-between items-center">
+          <span>Xem lại danh sách dịch vụ đã chọn</span>
+          <IconButton onClick={() => setShowPreview(false)}>
+            <CloseIcon />
+          </IconButton>
+        </div>
+      </DialogTitle>
+      <DialogContent dividers>
+        {cartItems.map((item, index) => (
+          <Box
+            key={item.serviceID}
+            className="p-4 mb-3 bg-gray-50 rounded-lg"
+          >
+            <Typography variant="subtitle1" className="font-semibold">
+              {index + 1}. {item.Name}
+            </Typography>
+            <Typography variant="body1" className="text-blue-600 my-1">
+              {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.Price)}
+            </Typography>
+            <div className="mt-2 space-y-1 text-gray-700">
+              {item.NoteResult && (
+                <Typography variant="body2">Kết quả: {item.NoteResult}</Typography>
+              )}
+              {item.AnimalStatusDescription && (
+                <Typography variant="body2">Tình trạng động vật: {item.AnimalStatusDescription}</Typography>
+              )}
+              {item.ConsultDoctor && (
+                <Typography variant="body2">Bác sĩ: {item.ConsultDoctor}</Typography>
+              )}
+              {item.DrugList && (
+                <Typography variant="body2">Thuốc: {item.DrugList}</Typography>
+              )}
+              {item.PoolStatusDescription && (
+                <Typography variant="body2">Tình trạng hồ: {item.PoolStatusDescription}</Typography>
+              )}
+              {item.ConsultTechnician && (
+                <Typography variant="body2">Kỹ thuật viên: {item.ConsultTechnician}</Typography>
+              )}
+              {item.MaterialList && (
+                <Typography variant="body2">Vật tư: {item.MaterialList}</Typography>
+              )}
+            </div>
+          </Box>
+        ))}
+        <Box className="mt-4 p-4 bg-blue-50 rounded-lg">
+          <Typography variant="h6" className="text-blue-800">
+            Tổng tiền: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalAmount)}
+          </Typography>
+        </Box>
+      </DialogContent>
+      <DialogActions className="p-4">
+        <Button
+          onClick={() => setShowPreview(false)}
+          variant="outlined"
+          className="w-32"
+        >
+          Quay lại
+        </Button>
+        <Button
+          onClick={handleSendToAPI}
+          variant="contained"
+          className="bg-blue-600 hover:bg-blue-700 w-32"
+        >
+          Xác nhận
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+
+  const handleFinalSubmit = async () => {
+    try {
+      // Mock API call - replace with your actual API endpoint
+      await fetch('/api/confirm-booking', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          bookingId: bookingData.bookingId,
+          services: cartItems
+        }),
+      });
+
+      setShowConfirmation(false);
+      onClose();
+      // Handle successful submission (e.g., show success message, redirect, etc.)
+    } catch (error) {
+      console.error('Error confirming booking:', error);
+      // Handle error appropriately
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      onClick={handleOverlayClick}
+    >
+      <ServicePreviewDialog />
+      <div className="bg-white rounded-lg w-11/12 max-w-6xl h-5/6 overflow-hidden relative flex flex-col" onClick={e => e.stopPropagation()}>
+        {/* Header with close button */}
+        <div className="absolute top-4 right-4 z-10">
+          <IconButton onClick={onClose}>
+            <CloseIcon />
+          </IconButton>
+        </div>
+
+        {/* Main content area */}
+        <div className="flex flex-1 overflow-hidden">
+          {/* Left Panel */}
+          <div className="w-1/2 p-6 overflow-y-auto">
+            <div className="flex items-center mb-4">
+              <TextField
+                fullWidth
+                variant="outlined"
+                placeholder="Tìm kiếm dịch vụ..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                InputProps={{
+                  startAdornment: <SearchIcon className="mr-2" />
+                }}
+              />
+              <Badge badgeContent={cartItems.length} color="primary" className="ml-2">
+                <IconButton onClick={() => setShowCart(true)}>
+                  <ShoppingCartIcon />
+                </IconButton>
+              </Badge>
+            </div>
+
+            <div className="space-y-4">
+              {filteredServices.map((service) => (
+                <Card
+                  key={service.ServiceID}
+                  className="hover:shadow-lg transition-shadow cursor-pointer"
+                  onClick={() => handleServiceSelect(service)}
+                >
+                  <CardContent>
+                    <Typography variant="h6" className="font-bold">{service.Name}</Typography>
+                    <Typography variant="body2" className="mt-2">{service.Description}</Typography>
+                    <Typography variant="subtitle1" className="mt-2 text-blue-600">
+                      {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(service.Price)}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+
+          {/* Right Panel */}
+          <div className="w-1/2 p-6 bg-gray-50 overflow-y-auto">
+            {selectedService ? (
+              <Card className="p-4">
+                <Typography variant="h6" className="mb-4 font-bold">
+                  {isEditing ? 'Chỉnh sửa dịch vụ: ' : 'Chi tiết dịch vụ: '}{selectedService.Name}
+                </Typography>
+
+
+                <TextField
+                  fullWidth
+                  label="Kết quả khám"
+                  variant="outlined"
+                  className="mb-4"
+                  value={formData.NoteResult}
+                  onChange={(e) => setFormData({ ...formData, NoteResult: e.target.value })}
+                  multiline
+                  rows={4}
+                />
+
+                {selectedService.ServiceDeliveryMethodID === 'SDM001' && (
+                  <div className="space-y-4">
+                    <TextField
+                      fullWidth
+                      label="Tình trạng động vật"
+                      variant="outlined"
+                      value={formData.AnimalStatusDescription}
+                      onChange={(e) => setFormData({ ...formData, AnimalStatusDescription: e.target.value })}
+                      multiline
+                      rows={2}
+                    />
+                    <TextField
+                      fullWidth
+                      label="Bác sĩ tư vấn"
+                      variant="outlined"
+                      value={formData.ConsultDoctor}
+                      onChange={(e) => setFormData({ ...formData, ConsultDoctor: e.target.value })}
+                    />
+                    <TextField
+                      fullWidth
+                      label="Danh sách thuốc"
+                      variant="outlined"
+                      value={formData.DrugList}
+                      onChange={(e) => setFormData({ ...formData, DrugList: e.target.value })}
+                      multiline
+                      rows={2}
+                    />
+                  </div>
+                )}
+
+                {selectedService.ServiceDeliveryMethodID === 'SDM003' && (
+                  <div className="space-y-4">
+                    <TextField
+                      fullWidth
+                      label="Tình trạng hồ"
+                      variant="outlined"
+                      value={formData.PoolStatusDescription}
+                      onChange={(e) => setFormData({ ...formData, PoolStatusDescription: e.target.value })}
+                      multiline
+                      rows={2}
+                    />
+                    <TextField
+                      fullWidth
+                      label="Kỹ thuật viên tư vấn"
+                      variant="outlined"
+                      value={formData.ConsultTechnician}
+                      onChange={(e) => setFormData({ ...formData, ConsultTechnician: e.target.value })}
+                    />
+                    <TextField
+                      fullWidth
+                      label="Danh sách vật tư"
+                      variant="outlined"
+                      value={formData.MaterialList}
+                      onChange={(e) => setFormData({ ...formData, MaterialList: e.target.value })}
+                      multiline
+                      rows={2}
+                    />
+                  </div>
+                )}
+
+                <Button
+                  variant="contained"
+                  className="mt-4 w-full bg-blue-600 hover:bg-blue-700"
+                  onClick={handleSubmit}
+                >
+                  {isEditing ? 'Cập nhật dịch vụ' : 'Thêm vào giỏ'}
+                </Button>
+              </Card>
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <Typography variant="h6" className="text-gray-400">
+                  Chọn một dịch vụ để xem chi tiết
+                </Typography>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Footer with submit button */}
+        <div className="p-4 bg-gray-100 border-t mt-auto">
+          <Button
+            variant="contained"
+            fullWidth
+            className="bg-green-600 hover:bg-green-700 h-12 text-lg"
+            onClick={handleConfirmServices}
+            disabled={cartItems.length === 0}
+          >
+            Xem lại dịch vụ đã chọn ({cartItems.length} dịch vụ)
+          </Button>
+        </div>
+        {/* Cart Dialog */}
+        <Dialog
+          open={showCart}
+          onClose={() => setShowCart(false)}
+          maxWidth="md"
+          fullWidth
+        >
+          <DialogTitle>
+            <div className="flex justify-between items-center">
+              <span>Giỏ dịch vụ đã chọn</span>
+              <IconButton onClick={() => setShowCart(false)}>
+                <CloseIcon />
+              </IconButton>
+            </div>
+          </DialogTitle>
+          <DialogContent dividers>
+            {cartItems.map((item) => (
+              <Box
+                key={item.serviceID}
+                className="p-3 mb-2 relative hover:bg-gray-100 rounded"
+              >
+                <Tooltip
+                  title={
+                    <div>
+                      {item.NoteResult && <p>Kết quả: {item.NoteResult}</p>}
+                      {item.AnimalStatusDescription && <p>Tình trạng động vật: {item.AnimalStatusDescription}</p>}
+                      {item.ConsultDoctor && <p>Bác sĩ: {item.ConsultDoctor}</p>}
+                      {item.DrugList && <p>Thuốc: {item.DrugList}</p>}
+                      {item.PoolStatusDescription && <p>Tình trạng hồ: {item.PoolStatusDescription}</p>}
+                      {item.ConsultTechnician && <p>Kỹ thuật viên: {item.ConsultTechnician}</p>}
+                      {item.MaterialList && <p>Vật tư: {item.MaterialList}</p>}
+                    </div>
+                  }
+                >
+                  <div className="cursor-pointer" onClick={() => handleUpdateService(item)}>
+                    <Typography variant="subtitle1">{item.Name}</Typography>
+                    <Typography variant="body2">
+                      {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.Price)}
+                    </Typography>
+                  </div>
+                </Tooltip>
+                <IconButton
+                  size="small"
+                  className="absolute top-2 right-2"
+                  onClick={() => handleRemoveFromCart(item.serviceID)}
+                >
+                  <CloseIcon />
+                </IconButton>
+              </Box>
+            ))}
+          </DialogContent>
+        </Dialog>
+
+        {/* Confirmation Dialog */}
+        <Dialog
+          open={showConfirmation}
+          onClose={() => setShowConfirmation(false)}
+          maxWidth="md"
+          fullWidth
+        >
+          <DialogTitle>
+            <div className="flex justify-between items-center">
+              <span>Vui lòng kiểm tra lại thông tin</span>
+              <IconButton onClick={() => setShowConfirmation(false)}>
+                <CloseIcon />
+              </IconButton>
+            </div>
+          </DialogTitle>
+          <DialogContent dividers>
+            <Typography variant="h6" className="mb-4">
+              Mã đặt lịch: {bookingData?.bookingId}
+            </Typography>
+            <Typography variant="h6" className="mb-2">Danh sách dịch vụ:</Typography>
+            {cartItems.map((item) => (
+              <Box
+                key={item.serviceID}
+                className="p-4 mb-3 bg-gray-50 rounded-lg"
+              >
+                <Typography variant="subtitle1" className="font-semibold">
+                  {item.Name}
+                </Typography>
+                <Typography variant="body1" className="text-blue-600 my-1">
+                  {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.Price)}
+                </Typography>
+                <div className="mt-2 space-y-1 text-gray-700">
+                  {item.NoteResult && (
+                    <Typography variant="body2">Kết quả: {item.NoteResult}</Typography>
+                  )}
+                  {item.AnimalStatusDescription && (
+                    <Typography variant="body2">Tình trạng động vật: {item.AnimalStatusDescription}</Typography>
+                  )}
+                  {item.ConsultDoctor && (
+                    <Typography variant="body2">Bác sĩ: {item.ConsultDoctor}</Typography>
+                  )}
+                  {item.DrugList && (
+                    <Typography variant="body2">Thuốc: {item.DrugList}</Typography>
+                  )}
+                  {item.PoolStatusDescription && (
+                    <Typography variant="body2">Tình trạng hồ: {item.PoolStatusDescription}</Typography>
+                  )}
+                  {item.ConsultTechnician && (
+                    <Typography variant="body2">Kỹ thuật viên: {item.ConsultTechnician}</Typography>
+                  )}
+                  {item.MaterialList && (
+                    <Typography variant="body2">Vật tư: {item.MaterialList}</Typography>
+                  )}
+                </div>
+              </Box>
+            ))}
+          </DialogContent>
+          <DialogActions className="p-4">
+            <Button
+              onClick={() => setShowConfirmation(false)}
+              variant="outlined"
+              className="w-32"
+            >
+              Hủy
+            </Button>
+            <Button
+              onClick={handleFinalSubmit}
+              variant="contained"
+              className="bg-blue-600 hover:bg-blue-700 w-32"
+            >
+              Xác nhận
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+    </div>
+  );
+}
+export default ServiceSelection;

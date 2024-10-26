@@ -10,14 +10,9 @@ namespace Repositories.Repository
 {
     public class AnimalTypeRepository : GenericRepository<AnimalType>
     {
-        public AnimalTypeRepository(Context context) 
+        public AnimalTypeRepository(Context context)
         {
             _context = context;
-        }
-
-        public Task<AnimalType?> FindAnimalTypeByIdAsync(string id)
-        {
-            return _context.AnimalTypes.FirstOrDefaultAsync(animaltype => animaltype.TypeID == id)!;
         }
 
         public Task<AnimalType?> FindAnimalTypeByNameAsync(string name)
@@ -28,14 +23,10 @@ namespace Repositories.Repository
         public async Task<AnimalType?> AddAnimalTypeAsync(AnimalType animaltype)
         {
             if (await FindAnimalTypeByNameAsync(animaltype.Name) != null)
-            {
-                animaltype = null;
-                return animaltype;
-            }
+                return null;
             if (animaltype.TypeID == "")
             {
-                int index = base.GetAll().Count;
-                animaltype.TypeID = "AT" + index;
+                animaltype.TypeID = GetNextID("AT");
             }
             await base.CreateAsync(animaltype);
             return animaltype;
