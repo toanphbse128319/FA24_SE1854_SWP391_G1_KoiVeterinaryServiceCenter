@@ -101,7 +101,7 @@ export default function Example() {
           </button>
         </div>
 
-        {/* Truyền hàm handleGoAboutUs vào ServiceDropdown */}
+        
         <ServiceDropdown handleGoAboutUs={handleGoAboutUs} />
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           <button

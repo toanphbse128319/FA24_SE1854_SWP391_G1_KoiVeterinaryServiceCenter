@@ -11,14 +11,11 @@ import NhanHang from "./Components/NhanHang.jsx";
 import Footer from "./Components/Footer.jsx";
 import NotFound from "./Components/NotFound.jsx";
 import AboutUs from "./pages/AboutUsPage.jsx";
-import Login from "./Components/LoginContainer.jsx";
-<<<<<<< HEAD
-import VetBookingList from './Components/VetBookingList.jsx'
+import Login from "./pages/Login.jsx";
+import Booking from "./pages/Booking.jsx"
+import Confirm from "./pages/Confirm.jsx"
 import DoctorList from "./Components/Doctor'sSummaryInformation.jsx";
 import News from "./Components/News.jsx";
-=======
-import Test from "./Components/VetBookingList.jsx";
->>>>>>> d874de5277f2ce542c54ec5bcd593955f0016c37
 import {
   BrowserRouter,
   createBrowserRouter,
@@ -31,7 +28,7 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Test />}>
+        <Route path="/" element={<App />}>
           <Route index element={<App />} />
           <Route path="/Navbar" element={<Navbar />} />
           <Route path="/NhanHang" element={<NhanHang />} />
@@ -45,7 +42,8 @@ createRoot(document.getElementById("root")).render(
         <Route path="/Doctor'sSummaryInformation" element={<DoctorList />} />
         <Route path="/AboutUs" element={<AboutUs />} />
         <Route path="/Login" element={<Login />} />
-        <Route path="/VetBookingList" element={<VetBookingList />} />
+        <Route path="/Booking" element={<Booking />} />
+        <Route path="/Confirm" element={<Confirm />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>

@@ -8,6 +8,7 @@ import Doctor  from "./Components/DoctorLanding";
 import { Outlet } from "react-router-dom";
 import News from "./Components/News";
 
+
 const App = () => {
   return (
     <div className="overflow-x-hidden">

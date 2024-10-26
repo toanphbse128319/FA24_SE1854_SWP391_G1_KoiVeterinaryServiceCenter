@@ -37,7 +37,7 @@ function Login() {
         display: 'flex',
       }}>
         <img
-          src='\img\TrangChu\sloganLogin.png'
+          src='\img\sloganLogin.png'
           alt="Slogan"
           style={{ cursor: 'pointer' }} // Để con trỏ chuột thay đổi khi hover
           onClick={handleSwitchPage} // Chuyển đổi khi nhấn vào hình ảnh
