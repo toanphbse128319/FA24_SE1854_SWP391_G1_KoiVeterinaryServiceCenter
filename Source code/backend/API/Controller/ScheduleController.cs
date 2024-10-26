@@ -161,6 +161,22 @@ public class ScheduleController : ControllerBase
         }
     }
 
+    [Route("get30daysschedule")]
+    [HttpGet]
+    public async Task<ActionResult<List<Schedule>>> Get30DaysSchedule( DateOnly date ){
+        try
+        {
+            List<Schedule> list = await _unitOfWork.ScheduleRepository.Get30DaysSchedule( date );
+            if (list.Count == 0)
+                return NotFound("There's no schedule at that date");
+            return list;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
     //[HttpGet]
     //public async Task<ActionResult<IEnumerable<Booking>>> GetVetBookings(String id)
     //{
