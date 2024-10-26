@@ -11,12 +11,18 @@ import NhanHang from "./Components/NhanHang.jsx";
 import Footer from "./Components/Footer.jsx";
 import NotFound from "./Components/NotFound.jsx";
 import AboutUs from "./pages/AboutUsPage.jsx";
+<<<<<<< Updated upstream
 import Login from "./pages/Login.jsx";
 import Booking from "./pages/Booking.jsx"
 import Confirm from "./pages/Confirm.jsx"
 import DoctorList from "./Components/Doctor'sSummaryInformation.jsx";
 import News from "./Components/News.jsx";
 import PaymentStatusPage from "./pages/PaymentConfirmation.jsx";
+=======
+import Login from "./Components/LoginContainer.jsx";
+import Test from "./Components/BookingList.jsx";
+import Confirm from "./pages/Confirm.jsx";
+>>>>>>> Stashed changes
 import {
   BrowserRouter,
   createBrowserRouter,
@@ -40,9 +46,13 @@ createRoot(document.getElementById("root")).render(
           <Route path="/*" element={<NotFound />} />
 
         </Route>
+<<<<<<< Updated upstream
         <Route path="/Doctor'sSummaryInformation" element={<DoctorList />} />
         <Route path="/AboutUs" element={<AboutUs />} />
         <Route path="/paymentstatus" element={ <PaymentStatusPage /> } />
+=======
+        <Route path="/Confirm" element={<Confirm />} />
+>>>>>>> Stashed changes
         <Route path="/Login" element={<Login />} />
         <Route path="/Booking" element={<Booking />} />
         <Route path="/Confirm" element={<Confirm />} />

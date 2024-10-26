@@ -4,7 +4,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
 
-const ServiceSelection = ({ services = [], isOpen, onClose, deliveryMethod }) => {
+const ServiceSelection = ({bookingId, services = [], isOpen, onClose, deliveryMethod }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredServices, setFilteredServices] = useState([]);
   const [selectedService, setSelectedService] = useState(null);
@@ -121,6 +121,7 @@ const ServiceSelection = ({ services = [], isOpen, onClose, deliveryMethod }) =>
 
   const handleFinalSubmit = () => {
     console.log("Cart Items:", cartItems);
+    console.log("Id booking:", bookingId);
     setShowConfirmation(false);
     onClose();
   };
@@ -132,10 +133,14 @@ const ServiceSelection = ({ services = [], isOpen, onClose, deliveryMethod }) =>
       className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
       onClick={handleOverlayClick}
     >
-      <div className="bg-white rounded-lg w-11/12 max-w-6xl h-5/6 overflow-hidden relative flex flex-col" onClick={e => e.stopPropagation()}>
+      <div className=" rounded-lg w-11/12 max-w-6xl h-5/6 overflow-hidden relative flex flex-col" onClick={e => e.stopPropagation()}
+         style={{
+          background: '#E8F2F7',
+      }}
+      >
         <div className="absolute top-4 right-4 z-10">
           <IconButton onClick={onClose}>
-            <CloseIcon />
+          <CloseIcon sx={{ color: '#64B0E0', fontSize: '25px', }} />
           </IconButton>
         </div>
 
@@ -149,12 +154,13 @@ const ServiceSelection = ({ services = [], isOpen, onClose, deliveryMethod }) =>
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 InputProps={{
-                  startAdornment: <SearchIcon className="mr-2" />
+                  startAdornment: <SearchIcon className="mr-2" sx={{ color: '#64B0E0', fontSize: '26px', }} />
                 }}
               />
               <Badge badgeContent={cartItems.length} color="primary" className="ml-2">
                 <IconButton onClick={() => setShowCart(true)}>
-                  <ShoppingCartIcon />
+                  <ShoppingCartIcon sx={{ color: '#64B0E0', fontSize: '25px', }} />
+              
                 </IconButton>
               </Badge>
             </div>
@@ -178,9 +184,12 @@ const ServiceSelection = ({ services = [], isOpen, onClose, deliveryMethod }) =>
             </div>
           </div>
 
-          <div className="w-1/2 p-6 bg-gray-50 overflow-y-auto">
+          <div className="w-1/2 p-6 bg-gray-50 overflow-y-auto"
+          style={{
+            background: '#E8F2F7',
+        }}>
             {selectedService ? (
-              <Card className="p-4">
+              <Card className="p-4" >
                 <Typography variant="h6" className="mb-4 font-bold">
                   {isEditing ? 'Chỉnh sửa dịch vụ: ' : 'Chi tiết dịch vụ: '}{selectedService.Name}
                 </Typography>
@@ -260,6 +269,11 @@ const ServiceSelection = ({ services = [], isOpen, onClose, deliveryMethod }) =>
                   variant="contained"
                   className="mt-4 w-full bg-blue-600 hover:bg-blue-700"
                   onClick={handleSubmit}
+                  style={{
+                    fontSize:'17px',
+                    
+                    background: 'linear-gradient(90deg, #64B0E0 25%, rgba(25, 200, 254, 0.75) 75%)',
+                }}
                 >
                   {isEditing ? 'Cập nhật dịch vụ' : 'Thêm vào giỏ'}
                 </Button>
@@ -278,11 +292,16 @@ const ServiceSelection = ({ services = [], isOpen, onClose, deliveryMethod }) =>
           <Button
             variant="contained"
             fullWidth
-            className="bg-green-600 hover:bg-green-700 h-12 text-lg"
+            className="h-12 "
+            style={{
+              fontSize:'17px',
+              fontWeight:'550',
+              background: 'linear-gradient(90deg, #64B0E0 25%, rgba(25, 200, 254, 0.75) 75%)',
+          }}
             onClick={handleConfirmServices}
             disabled={cartItems.length === 0}
           >
-            Xem lại dịch vụ đã chọn ({cartItems.length} dịch vụ)
+            Gửi ({cartItems.length} dịch vụ)
           </Button>
         </div>
 
@@ -296,7 +315,7 @@ const ServiceSelection = ({ services = [], isOpen, onClose, deliveryMethod }) =>
             <div className="flex justify-between items-center">
               <span>Giỏ dịch vụ đã chọn</span>
               <IconButton onClick={() => setShowCart(false)}>
-                <CloseIcon />
+              <CloseIcon sx={{ color: '#64B0E0', fontSize: '25px', }} />
               </IconButton>
             </div>
           </DialogTitle>
@@ -311,10 +330,10 @@ const ServiceSelection = ({ services = [], isOpen, onClose, deliveryMethod }) =>
                     <div>
                       {item.NoteResult && <p>Kết quả: {item.NoteResult}</p>}
                       {item.AnimalStatusDescription && <p>Tình trạng động vật: {item.AnimalStatusDescription}</p>}
-                      {item.ConsultDoctor && <p>Bác sĩ: {item.ConsultDoctor}</p>}
+                      {item.ConsultDoctor && <p>Lời dặn: {item.ConsultDoctor}</p>}
                       {item.DrugList && <p>Thuốc: {item.DrugList}</p>}
                       {item.PoolStatusDescription && <p>Tình trạng hồ: {item.PoolStatusDescription}</p>}
-                      {item.ConsultTechnician && <p>Kỹ thuật viên: {item.ConsultTechnician}</p>}
+                      {item.ConsultTechnician && <p>Lời dặn: {item.ConsultTechnician}</p>}
                       {item.MaterialList && <p>Vật tư: {item.MaterialList}</p>}
                     </div>
                   }
@@ -348,7 +367,10 @@ const ServiceSelection = ({ services = [], isOpen, onClose, deliveryMethod }) =>
             <div className="flex justify-between items-center">
               <span>Xác nhận dịch vụ</span>
               <IconButton onClick={() => setShowConfirmation(false)}>
-                <CloseIcon />
+              <CloseIcon style={{ 
+              
+              
+                fontSize: '64px' }} />
               </IconButton>
             </div>
           </DialogTitle>
