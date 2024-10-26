@@ -25,7 +25,7 @@ function Banner() {
           {/* Button 1: Đặt lịch tư vấn trực tiếp với bác sĩ */}
           <button
             onClick={handleGoBooking}
-            className="bg-white text-blue-900 w-36 h-36 p-4 rounded-lg shadow-md hover:bg-blue-100 transition duration-300 flex flex-col items-center"
+            className="bg-white text-blue-900 w-36 h-36 p-4 rounded-2xl  shadow-md hover:bg-blue-100 transition duration-300 flex flex-col items-center"
           >
             <img
               src="img/LogoService1.png"
@@ -40,7 +40,7 @@ function Banner() {
           </button>
 
           {/* Button 2: Đặt lịch khám tại cơ sở */}
-          <button className="bg-white text-blue-900 w-36 h-36 p-4 rounded-lg shadow-md hover:bg-blue-100 transition duration-300 flex flex-col items-center">
+          <button className="bg-white text-blue-900 w-36 h-36 p-4 rounded-2xl shadow-md hover:bg-blue-100 transition duration-300 flex flex-col items-center">
             <img
               src="img/LogoService2.png"
               alt="Clinic Icon"
@@ -54,7 +54,7 @@ function Banner() {
           </button>
 
           {/* Button 3: Đặt lịch khám tại nhà */}
-          <button className="bg-white text-blue-900 w-36 h-36 p-4 rounded-lg shadow-md hover:bg-blue-100 transition duration-300 flex flex-col items-center">
+          <button className="bg-white text-blue-900 w-36 h-36 p-4 rounded-2xl shadow-md hover:bg-blue-100 transition duration-300 flex flex-col items-center">
             <img
               src="img/LogoService3.png"
               alt="Home Icon"
@@ -68,7 +68,7 @@ function Banner() {
           </button>
 
           {/* Button 4: Đặt lịch tư vấn kiểm tra hồ cá */}
-          <button className="bg-white text-blue-900 w-36 h-36 p-4 rounded-lg shadow-md hover:bg-blue-100 transition duration-300 flex flex-col items-center">
+          <button className="bg-white text-blue-900 w-36 h-36 p-4 rounded-2xl shadow-md hover:bg-blue-100 transition duration-300 flex flex-col items-center">
             <img
               src="img/LogoService4.png"
               alt="Aquarium Icon"
