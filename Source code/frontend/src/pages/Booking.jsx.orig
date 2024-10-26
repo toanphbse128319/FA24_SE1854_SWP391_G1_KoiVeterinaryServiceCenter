@@ -1,9 +1,28 @@
+<<<<<<< HEAD
+
 import React, { useState, useEffect } from 'react';
+import { Button } from '@mui/material';
+||||||| a8d9f90
+
+import React, { useState } from 'react';
+import { Button } from '@mui/material';
+=======
+import React, { useState, useEffect } from 'react';
+>>>>>>> frontend
 import TrackingBookingDetail from '../Components/TrackingBookingDetail';
 import DoctorList from "../Components/Doctor'sSummaryInformation";
 import Lich from "../Components/ScheduleCustomer";
+<<<<<<< HEAD
+import { LineChart } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 import GetAPIURL from '../Helper/Utilities'
 
+||||||| a8d9f90
+import { LineChart } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
+
+=======
+>>>>>>> frontend
 const STEPS = {
   SELECT_DOCTOR: 'selectDoctor',
   SELECT_SCHEDULE: 'selectSchedule',
@@ -18,6 +37,7 @@ const SERVICES = {
   price: 75.00,
 };
 
+<<<<<<< HEAD
 function GetVetList( { setDoctors } ){
     let url = GetAPIURL("/Employee/getbyrolename?info=Veterinarian");
     let data;
@@ -30,6 +50,15 @@ function GetVetList( { setDoctors } ){
             .catch( error => console.error( error ) );
         }, [] );
 }
+
+||||||| a8d9f90
+=======
+const doctors = [
+  { name: "Nguyễn Văn A", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E1" },
+  { name: "Nguyễn Văn B", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E2" },
+  { name: "Nguyễn Văn C", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E3" },
+  // ... other doctors
+];
 
 const DocterSchedule = [
   { ScheduleID: 'SCH1', EmployeeID: 'E3', Date: '2024-11-01', Status: 'Active' },
@@ -45,12 +74,19 @@ const SlotSchedule = [
   { SlotTableID: 'ST4', ScheduleID: 'SCH1', Slot: 4, SlotCapacity: 10, SlotOrdered: 8, SlotStatus: 1 },
 ];
 
+>>>>>>> frontend
 const BookingPage = () => {
   const [selectedService] = useState(SERVICES);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [currentStep, setCurrentStep] = useState(STEPS.SELECT_SCHEDULE);
+<<<<<<< HEAD
+  const [role, setRole] = useState('R1');
   const [doctors, setDoctors] = useState([]);
+||||||| a8d9f90
+  const [role, setRole] = useState('R1');
+=======
   const [role] = useState('R1');
+>>>>>>> frontend
   const [isFull, setIsFull] = useState(true);
   const [filteredDoctorSchedule, setFilteredDoctorSchedule] = useState([]);
   const [filteredSlotSchedule, setFilteredSlotSchedule] = useState([]);
@@ -87,6 +123,7 @@ const BookingPage = () => {
     }
     setCurrentStep(step);
   };
+<<<<<<< HEAD
     
     GetVetList( { setDoctors } );
     console.log( doctors );
@@ -102,6 +139,24 @@ const BookingPage = () => {
 //    { name: "Nguyễn Văn I", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E9" }
   //];
 
+||||||| a8d9f90
+
+  
+  const doctors = [
+    { name: "Nguyễn Văn A", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E1" },
+    { name: "Nguyễn Văn B", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E2" },
+    { name: "Nguyễn Văn C", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E3" },
+    { name: "Nguyễn Văn D", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E4" },
+    { name: "Nguyễn Văn E", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E5" },
+    { name: "Nguyễn Văn F", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E6" },
+    { name: "Nguyễn Văn G", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E7" },
+    { name: "Nguyễn Văn H", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E8" },
+    { name: "Nguyễn Văn I", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E9" }
+  ];
+
+=======
+
+>>>>>>> frontend
   const StepButton = ({ step, label }) => {
     const isActive = currentStep === step || 
                     (step === STEPS.SELECT_DOCTOR && currentStep === STEPS.SELECT_DOCTERSCHEDUEL);

@@ -2,11 +2,11 @@ import React from "react";
 
 function Footer() {
   return (
-    <div className="flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-10 relative bg-white w-full px-4 py-6 lg:py-10">
+    <div className="flex flex-col lg:flex-row items-center justify-between gap-5 lg:gap-10 relative bg-white w-full px-4 py-6 lg:py-10">
       {/* Logo and hotline section */}
       <div className="flex flex-col items-center w-full max-w-md lg:max-w-lg">
         <img
-          className="w-3/4 lg:w-4/5 object-contain mb-4"  // Giảm kích thước logo một chút
+          className="w-full lg:w-3/4 object-contain mb-4" 
           alt="Company Logo"
           src={'img/logo-c-s.png'}
         />
@@ -19,7 +19,7 @@ function Footer() {
 
       {/* Map and address section */}
       <div className="flex flex-col items-center w-full max-w-lg">
-        <div className="w-full h-40 lg:h-48 overflow-hidden rounded-lg shadow-md"> {/* Giảm chiều cao của iframe */}
+        <div className="w-full h-32 lg:h-36 overflow-hidden rounded-lg shadow-md"> {/* Giảm chiều cao của iframe */}
           <iframe
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3592.5733582042144!2d106.70488407462743!3d10.79821668935185!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317529527e3968b3%3A0x6474cca92e5cc978!2zMjM2LzI5IMSQaeG7h24gQmnDqm4gUGjhu6csIFBoxrDhu51uZyAxNywgQsOsbmggVGjhuqFuaCwgSOG7kyBDaMOtIE1pbmgsIFZp4buHdCBOYW0!5e1!3m2!1svi!2s!4v1729289457637!5m2!1svi!2s"
             width="100%"

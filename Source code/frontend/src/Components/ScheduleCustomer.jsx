@@ -1,6 +1,6 @@
 
 import React, { useState, useMemo } from 'react'; // Import các thư viện cần thiết
-import { BoldIcon, ChevronLeft, ChevronRight } from 'lucide-react'; // Import biểu tượng điều hướng
+import { ChevronLeft, ChevronRight } from 'lucide-react'; // Import biểu tượng điều hướng
 import { useNavigate } from 'react-router-dom';
 
 
@@ -32,25 +32,12 @@ useEffect(() => {
 }, []);
 */
 
-const ScheduleCalendar = ({ doctor, role, isFull, service }) => {
+const ScheduleCalendar = ({ doctor, service,SlotSchedule ,DocterSchedule}) => {
   const navigate = useNavigate();
 
   //khi truyền docter thì phải gọi toàn bộ  ScheduleID của doctor đó trong 30 ngày tiếp,
   //và gửi lun các slot SlotTableID liên quan tới những ScheduleID
-  const DocterSchedule = [
-    { ScheduleID: 'SCH1', EmployeeID: 'E3', Date: '2024-11-01', Status: 'Active' },
-    { ScheduleID: 'SCH2', EmployeeID: 'E3', Date: '2024-11-02', Status: 'Active' },
-    { ScheduleID: 'SCH3', EmployeeID: 'E3', Date: '2024-11-03', Status: 'Active' },
-    { ScheduleID: 'SCH4', EmployeeID: 'E3', Date: '2024-11-04', Status: 'Active' },
-
-  ];
-  const SlotSchedule = [
-    { SlotTableID: 'ST1', ScheduleID: 'SCH1', Slot: 1, SlotCapacity: 10, SlotOrdered: 5, SlotStatus: 1 },
-    { SlotTableID: 'ST2', ScheduleID: 'SCH1', Slot: 2, SlotCapacity: 10, SlotOrdered: 6, SlotStatus: 1 },
-    { SlotTableID: 'ST3', ScheduleID: 'SCH1', Slot: 3, SlotCapacity: 10, SlotOrdered: 7, SlotStatus: 1 },
-    { SlotTableID: 'ST4', ScheduleID: 'SCH1', Slot: 4, SlotCapacity: 10, SlotOrdered: 8, SlotStatus: 1 },
-
-  ];
+ 
 
 
   // Khai báo các state

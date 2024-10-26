@@ -6,7 +6,7 @@ const AboutUsFake = () => {
         navigate('/AboutUs')
     }
   return (
-    <div className="bg-blue-50 py-10">
+    <div className="bg-blue-50 py-10"  >
     <div className="container mx-auto flex flex-col md:flex-row items-center">
       {/* Left side - Images */}
       <div className="flex flex-col md:flex-row gap-4 md:w-1/2">

@@ -22,7 +22,7 @@ const BackButton = () => {
         zIndex: 1000          // Đảm bảo nút luôn nằm trên các phần tử khác
       }}
     >
-      <img src='\img\TrangChu\backButton.png' alt="Back" />
+      <img src='\img\backButton.png' alt="Back" />
     </button>
   );
 };

@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function NhanHang() {
-  const navigate = useNavigate();
+  
   const brands = [
     { name: 'My Koi', image: 'img/screenshot-2024-09-29-174738-1.png' },
     { name: 'Tetra', image: 'img/screenshot-2024-09-29-174659-1.png' },
@@ -12,7 +12,7 @@ function NhanHang() {
   ];
 
   return (
-    <div className="bg-blue-50 py-10">
+    <div className="bg-blue-50 py-10 " style={{ backgroundImage: "url('img/Slice3.png')" }}>
       <h2 className="text-center text-xl font-semibold mb-6 text-blue-600">
         Được tin tưởng hợp tác và đồng hành
       </h2>
