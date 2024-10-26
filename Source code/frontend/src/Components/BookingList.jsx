@@ -1,17 +1,21 @@
 import React, { useState } from 'react';
 import FeedbackModal from './Feedback.jsx';
-import { 
+import {
   Box,
-  Card, 
-  CardContent, 
-  Button, 
+  Card,
+  CardContent,
+  Button,
   Typography,
+  Dialog,
+  IconButton,
   styled
 } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import ServiceSelection from './BookingDetail.jsx';
 
 const DELIVERY_METHODS = {
   'SDM1': 'Home Visit',
-  'SDM2': 'Online Consultation', 
+  'SDM2': 'Online Consultation',
   'SDM3': 'Clinic Appointment',
   'SDM4': 'Emergency Visit',
   'SDM5': 'Follow-up Consultation'
@@ -131,6 +135,73 @@ const SAMPLE_BOOKINGS = [
   }
 ];
 
+// Move these inside the component since we're not using props
+export const SERVICES_DATA = [
+  {
+    ServiceID: 'S001',
+    ServiceDeliveryMethodID: 'SDM001',
+    Name: 'Khám sức khỏe Koi cơ bản',
+    Price: 100.00,
+    Description: 'Kiểm tra sức khỏe cơ bản cho cá Koi, bao gồm kiểm tra các dấu hiệu bệnh lý và tình trạng dinh dưỡng',
+    Status: 1
+  },
+  {
+    ServiceID: 'S002',
+    ServiceDeliveryMethodID: 'SDM002',
+    Name: 'Tư vấn Koi trực tuyến',
+    Price: 75.00,
+    Description: 'Tư vấn trực tuyến với chuyên gia về cá Koi để giải đáp các thắc mắc về chăm sóc và nuôi dưỡng',
+    Status: 1
+  },
+  {
+    ServiceID: 'S003',
+    ServiceDeliveryMethodID: 'SDM001',
+    Name: 'Điều trị bệnh Koi',
+    Price: 150.00,
+    Description: 'Điều trị các bệnh phổ biến ở cá Koi như bệnh nấm, ký sinh trùng, vi khuẩn',
+    Status: 1
+  },
+  {
+    ServiceID: 'S004',
+    ServiceDeliveryMethodID: 'SDM003',
+    Name: 'Bảo trì hồ Koi',
+    Price: 200.00,
+    Description: 'Dịch vụ bảo trì định kỳ hồ cá Koi, bao gồm kiểm tra và điều chỉnh các thông số nước',
+    Status: 1
+  },
+  {
+    ServiceID: 'S005',
+    ServiceDeliveryMethodID: 'SDM003',
+    Name: 'Lắp đặt hệ thống lọc',
+    Price: 500.00,
+    Description: 'Tư vấn và lắp đặt hệ thống lọc phù hợp cho hồ cá Koi',
+    Status: 1
+  },
+  {
+    ServiceID: 'S006',
+    ServiceDeliveryMethodID: 'SDM001',
+    Name: 'Tiêm vaccine Koi',
+    Price: 120.00,
+    Description: 'Tiêm phòng các bệnh phổ biến cho cá Koi',
+    Status: 1
+  },
+  {
+    ServiceID: 'S007',
+    ServiceDeliveryMethodID: 'SDM002',
+    Name: 'Đánh giá chất lượng Koi',
+    Price: 80.00,
+    Description: 'Đánh giá chất lượng và giá trị của cá Koi dựa trên các tiêu chuẩn chuyên môn',
+    Status: 1
+  },
+  {
+    ServiceID: 'S008',
+    ServiceDeliveryMethodID: 'SDM003',
+    Name: 'Thiết kế hồ Koi',
+    Price: 300.00,
+    Description: 'Tư vấn và thiết kế hồ cá Koi theo yêu cầu của khách hàng',
+    Status: 1
+  }
+];
 const ROLE_STATUS_CONFIG = {
   customer: [
     { label: 'chờ xác nhận', value: 'Pending', isActive: false },
@@ -152,11 +223,11 @@ const ROLE_STATUS_CONFIG = {
 
 const styles = {
   statusButton: {
-    width:'10vw',
-    height:'6.5vh',
+    width: '10vw',
+    height: '6.5vh',
     borderRadius: '15px',
     padding: '8px 32px',
-    fontSize:'0.9vw',
+    fontSize: '0.9vw',
     textTransform: 'none',
     border: 'none',
     cursor: 'pointer',
@@ -192,7 +263,7 @@ const styles = {
     backgroundColor: '#f0f7ff',
     minHeight: '0vh',
     padding: '32px',
-    width:'100vw'
+    width: '100vw'
   },
   title: {
     marginBottom: '32px',
@@ -204,12 +275,12 @@ const styles = {
     display: 'flex',
     gap: '10px',
     marginBottom: '24px',
-    
+
   },
-  
+
   bookingCard: {
-    width:"35%",
-    height:'100%',
+    width: "35%",
+    height: '100%',
     position: 'relative',
     border: '1px solid #e0e0e0',
     borderRadius: '16px',
@@ -219,13 +290,13 @@ const styles = {
   cardContent: {
     padding: '24px',
     paddingBottom: '64px',
-    width:"30vw",
+    width: "30vw",
   },
   actionButtonContainer: {
     position: 'absolute',
     bottom: '15px',
     right: '15px',
-    gap:"5px"
+    gap: "5px"
   },
   infoRow: {
     display: 'flex',
@@ -248,21 +319,38 @@ const InfoRow = ({ label, value }) => (
   </div>
 );
 
-// Rest of the constants remain the same
-
-
-const BookingList = ({ 
+const BookingList = ({
   //userRole = 'customer',
   userRole = 'veterinarian',
-
-  onFeedback = () => {},
-  onEditBooking = () => {},
-  onStartExamination = () => {}
+  onFeedback = () => { },
+  onEditBooking = () => { },
+  onStartExamination = () => { }
 }) => {
   const [activeStatus, setActiveStatus] = useState(null);
   const [bookings, setBookings] = useState(SAMPLE_BOOKINGS);
-const [showFeedbackModal, setShowFeedbackModal] = useState(false);
-const [selectedBookingId, setSelectedBookingId] = useState(null);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [selectedBookingId, setSelectedBookingId] = useState(null);
+  const [showServiceSelection, setShowServiceSelection] = useState(false);
+  const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState(null);
+  const [cartItems, setCartItems] = useState([]); // Persist cart items
+
+  // Handlers
+  const handleStartExamination = (bookingId, deliveryMethod) => {
+    setSelectedBookingId(bookingId);
+    setSelectedDeliveryMethod(deliveryMethod);
+    setShowServiceSelection(true);
+  };
+
+  const handleCloseServiceSelection = () => {
+    setShowServiceSelection(false);
+    setSelectedBookingId(null);
+    setSelectedDeliveryMethod(null);
+  };
+
+  const handleCartUpdate = (updatedCart) => {
+    setCartItems(updatedCart);
+  };
+
   const handleConfirmBooking = (bookingId) => {
     setBookings(prevBookings =>
       prevBookings.map(booking =>
@@ -272,7 +360,18 @@ const [selectedBookingId, setSelectedBookingId] = useState(null);
       )
     );
   };
-console.log(bookings);
+
+  const handleFeedbackClick = (bookingId) => {
+    setSelectedBookingId(bookingId);
+    setShowFeedbackModal(true);
+  };
+
+  const handleCloseFeedback = () => {
+    setShowFeedbackModal(false);
+    setSelectedBookingId(null);
+  };
+
+  // Utility functions
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleString('vi-VN', {
       year: 'numeric',
@@ -290,36 +389,26 @@ console.log(bookings);
     }).format(amount);
   };
 
-  const handleFeedbackClick = (bookingId) => {
-    setSelectedBookingId(bookingId);
-    setShowFeedbackModal(true);
-  };
-  
-  const handleCloseFeedback = () => {
-    setShowFeedbackModal(false);
-    setSelectedBookingId(null);
-  };
-  
   const renderBookingContent = (booking) => {
     const isCustomerOrVet = userRole === 'customer' || userRole === 'veterinarian';
-    
+
     return (
       <div>
         <InfoRow label="Mã đơn" value={booking.id} />
-        
+
         {isCustomerOrVet && (
           <>
             <InfoRow label="Ngày khám" value={formatDate(booking.bookingDate)} />
             <InfoRow label="Bác sĩ" value="Nguyễn Văn A" />
           </>
         )}
-        
-        <InfoRow 
-          label="Hình thức" 
-          value={DELIVERY_METHODS[booking.serviceDeliveryMethodId] || 'Home Visit'} 
+
+        <InfoRow
+          label="Hình thức"
+          value={DELIVERY_METHODS[booking.serviceDeliveryMethodId] || 'Home Visit'}
         />
         <InfoRow label="Tổng tiền" value={formatCurrency(booking.totalServiceCost)} />
-        
+
         {!isCustomerOrVet && (
           <>
             <InfoRow label="Địa chỉ" value={booking.address} />
@@ -330,85 +419,99 @@ console.log(bookings);
     );
   };
 
-  const filteredBookings = activeStatus 
+  const filteredBookings = activeStatus
     ? bookings.filter(booking => booking.status === activeStatus)
     : bookings;
 
   return (
-    <div style={styles.container}>
-    <Typography variant="h4" style={styles.title}>
-      Danh sách đơn đặt
-    </Typography>
-    
-    <div style={styles.statusButtonContainer}>
-      {ROLE_STATUS_CONFIG[userRole]?.map((status, index) => (
-        <button
-          key={index}
-          style={{
-            ...styles.statusButton,
-            ...(activeStatus === status.value ? styles.statusButtonActive : styles.statusButtonInactive)
-          }}
-          onClick={() => setActiveStatus(status.value)}
-        >
-          {status.label}
-        </button>
-      ))}
-    </div>
+    <Box sx={{ position: 'relative' }}>
+      <div style={styles.container}>
+        <Typography variant="h4" style={styles.title}>
+          Danh sách đơn đặt
+        </Typography>
 
-    <div>
-      {filteredBookings.map(booking => (
-        <Card key={booking.id} style={styles.bookingCard}>
-          <CardContent style={styles.cardContent}>
-            {renderBookingContent(booking)}
-            
-            <div style={styles.actionButtonContainer}>
-              {userRole === 'customer' && booking.status === 'Completed' && booking.feedbackID === 'FB0' && (
-                <button
-                  style={{...styles.actionButton, ...styles.primaryActionButton}}
-                  onClick={() => handleFeedbackClick(booking.id)}
-                >
-                  Đánh giá
-                </button>
-              )}
+        <div style={styles.statusButtonContainer}>
+          {ROLE_STATUS_CONFIG[userRole]?.map((status, index) => (
+            <button
+              key={index}
+              style={{
+                ...styles.statusButton,
+                ...(activeStatus === status.value ? styles.statusButtonActive : styles.statusButtonInactive)
+              }}
+              onClick={() => setActiveStatus(status.value)}
+            >
+              {status.label}
+            </button>
+          ))}
+        </div>
 
-              {userRole === 'staff' && booking.status === 'Pending' && (
-                <>
-                  <button
-                    style={{...styles.actionButton, ...styles.primaryActionButton}}
-                    onClick={() => onEditBooking(booking.id)}
-                  >
-                    Thay đổi thông tin
-                  </button>
-                  <button
-                    style={{...styles.actionButton, ...styles.secondaryActionButton}}
-                    onClick={() => handleConfirmBooking(booking.id)}
-                  >
-                    Xác nhận đơn
-                  </button>
-                </>
-              )}
+        <div>
+          {filteredBookings.map(booking => (
+            <Card key={booking.id} style={styles.bookingCard}>
+              <CardContent style={styles.cardContent}>
+                {renderBookingContent(booking)}
 
-              {userRole === 'veterinarian' && booking.status === 'Confirmed'&&(
-                <button
-                  style={{...styles.actionButton, ...styles.primaryActionButton}}
-                  onClick={() => onStartExamination(booking.id,booking.serviceDeliveryMethodID)}
-                >
-                  Bắt đầu khám
-                </button>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
+                <div style={styles.actionButtonContainer}>
+                  {userRole === 'customer' && booking.status === 'Completed' && booking.feedbackID === 'FB0' && (
+                    <button
+                      style={{ ...styles.actionButton, ...styles.primaryActionButton }}
+                      onClick={() => handleFeedbackClick(booking.id)}
+                    >
+                      Đánh giá
+                    </button>
+                  )}
 
-    {showFeedbackModal && (
-      <FeedbackModal
-        bookingId={selectedBookingId}
-        onClose={handleCloseFeedback}
-      />
-    )}
-  </div>
+                  {userRole === 'staff' && booking.status === 'Pending' && (
+                    <>
+                      <button
+                        style={{ ...styles.actionButton, ...styles.primaryActionButton }}
+                        onClick={() => onEditBooking(booking.id)}
+                      >
+                        Thay đổi thông tin
+                      </button>
+                      <button
+                        style={{ ...styles.actionButton, ...styles.secondaryActionButton }}
+                        onClick={() => handleConfirmBooking(booking.id)}
+                      >
+                        Xác nhận đơn
+                      </button>
+                    </>
+                  )}
+
+{userRole === 'veterinarian' && booking.status === 'Confirmed' && (
+  <button
+    style={{ ...styles.actionButton, ...styles.primaryActionButton }}
+    onClick={() => handleStartExamination(booking.id, booking.serviceDeliveryMethodID)}
+  >
+    Bắt đầu khám
+  </button>
+)}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Service Selection Dialog */}
+        {showServiceSelection && (
+          <ServiceSelection
+            services={SERVICES_DATA}
+            isOpen={showServiceSelection}
+            onClose={handleCloseServiceSelection}
+            deliveryMethod={selectedDeliveryMethod}
+          />
+        )}
+
+
+        {/* Feedback Modal */}
+        {showFeedbackModal && (
+          <FeedbackModal
+            bookingId={selectedBookingId}
+            onClose={handleCloseFeedback}
+          />
+        )}
+      </div>
+    </Box>
   );
 };
 
