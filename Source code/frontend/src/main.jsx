@@ -12,7 +12,7 @@ import Footer from "./Components/Footer.jsx";
 import NotFound from "./Components/NotFound.jsx";
 import AboutUs from "./pages/AboutUsPage.jsx";
 import Login from "./Components/LoginContainer.jsx";
-import Test from "./Components/VetBookingList.jsx";
+import Test from "./Components/BookingList.jsx";
 import {
   BrowserRouter,
   createBrowserRouter,

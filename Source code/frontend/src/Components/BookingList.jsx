@@ -495,6 +495,7 @@ const BookingList = ({
         {/* Service Selection Dialog */}
         {showServiceSelection && (
           <ServiceSelection
+            bookingId={selectedBookingId}
             services={SERVICES_DATA}
             isOpen={showServiceSelection}
             onClose={handleCloseServiceSelection}
