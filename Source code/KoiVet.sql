@@ -264,8 +264,8 @@ VALUES
 ('S6', 'SDM2', 'Koi Disease Treatment', 150000, 'Treatment for common koi diseases', 1),
 ('S7', 'SDM4', 'Koi Disease Treatment', 150000, 'Treatment for common koi diseases', 1),
 ('S8', 'SDM4', 'blood test for fish', 150000, 'Treatment for common koi diseases', 1),
-('S8', 'SDM2', 'Check ph level', 150000, 'Treatment for common koi diseases', 1),
-('S9', 'SDM2', 'Eliminate parasitic fungi in the tank', 100000, 'Basic health check for koi fish', 1),
+('S9', 'SDM2', 'Check ph level', 150000, 'Treatment for common koi diseases', 1),
+('S10', 'SDM2', 'Eliminate parasitic fungi in the tank', 100000, 'Basic health check for koi fish', 1),
 
 -- Insert sample data for Feedback
 INSERT INTO Feedback (FeedbackID, ServiceRating, VetRating, Description, Status) 
@@ -298,7 +298,7 @@ INSERT INTO Schedule (ScheduleID, EmployeeID, Date, Note, Status) VALUES
 ('SCH017', 'E3', '2024-11-02', 'Morning shift', 'Active'),
 ('SCH018', 'E4', '2024-11-02', 'Morning shift', 'Active'),
 ('SCH019', 'E3', '2024-11-03', 'Morning shift', 'Active'),
-('SCH020', 'E4', '2024-11-03', 'Morning shift', 'Active');
+('SCH020', 'E4', '2024-11-03', 'Morning shift', 'Active'),
 ('SCH021', 'E3', '2024-11-04', 'Morning shift', 'Active'),
 ('SCH022', 'E4', '2024-11-04', 'Morning shift', 'Active'),
 ('SCH023', 'E3', '2024-11-05', 'Morning shift', 'Active'),
@@ -410,14 +410,13 @@ INSERT INTO SlotTable (SlotTableID, ScheduleID, Note, Slot, SlotCapacity, SlotOr
 --NumberOfFish int not null,
    -- IncidentalFish 
 -- Insert sample data for Booking
-INSERT INTO Booking (BookingID, CustomerID, EmployeeID, BookingDate, ExpiredDate, Deposit, NumberOfFish, IncidentalFish, ServiceDeliveryMethodID, VAT, BookingAddress, Distance, DistanceCost, TotalServiceCost, Status, FeedbackID, ScheduleID, Note, PaymentMethod, PaymentStatus) 
+INSERT INTO Booking (BookingID, CustomerID, EmployeeID, BookingDate, ExpiredDate, Deposit, NumberOfFish, IncidentalFish, NumberOfPool, IncidentalPool, ServiceDeliveryMethodID, VAT, BookingAddress, Distance, DistanceCost, TotalServiceCost, Status, FeedbackID, ScheduleID, Note, PaymentMethod, PaymentStatus) 
 VALUES 
-('B1', 'C1', 'E1', '2024-09-01 09:00:00', '2024-09-01 04:00:00', 50.00, 1, 0,'SDM1', 10.00, '250 vo van hat', 5.5, 11.00, 661000, 'Confirmed', 'FB1', 'SCH1', 'Home visit for koi health check', 'Credit Card', 'Pending'),
-('B2', 'C2', 'E2', '2024-09-02 14:00:00', '2024-09-02 04:00:00', 37.50, 1, 0,'SDM2', 7.50, '456 Maple Ave', 0, 0.00, 397500, 'Pending', 'FB2', 'SCH2', 'Onle consultation for koi', 'PayPal', 'Pending'),
-('B3', 'C3', 'E3', '2024-09-03 18:00:00', '2024-09-03 04:00:00', 75.00, 1, 0,'SDM3', 15.00, '789 Oak St', 3.2, 6.40, 996000, 'Cancelled', 'FB3', 'SCH3', 'Clic visit for koi disease treatment', 'Cash', 'Pending'),
-('B4', 'C4', 'E4', '2024-09-04 22:00:00', '2024-09-05 04:00:00', 150.00, 1, 0,'SDM4', 30.00, '321 Birch Ave', 8.7, 17.40, 2000000, 'In Progress', 'FB4', 'SCH4', 'Emergency koi surgery', 'Credit Card', 'Pending'),
-('B5', 'C5', 'E5', '2024-09-05 07:00:00', '2024-09-05 04:00:00', 25.00, 1, 1,'SDM5', 5.00, '654 Pine St', 2.1, 4.20, 867000, 'Completed', 'FB5', 'SCH5', 'Folw-up checkup after treatment', 'Debit Card', 'Pending'); 
-
+('B1', 'C1', 'E1', '2024-09-01 09:00:00', '2024-09-01 10:00:00', 50.00, 1, 0, 0, 0, 'SDM1', 10.00, '250 Vo Van Hat', 5.5, 11.00, 661000, 'Confirmed', 'FB1', 'SCH1', 'Home visit for koi health check', 'Credit Card', 'Pending'),
+('B2', 'C2', 'E2', '2024-09-02 14:00:00', '2024-09-02 15:00:00', 37.50, 1, 0, 0, 0, 'SDM2', 7.50, '456 Maple Ave', 0, 0.00, 397500, 'Pending', 'FB2', 'SCH2', 'Online consultation for koi', 'PayPal', 'Pending'),
+('B3', 'C3', 'E3', '2024-09-03 18:00:00', '2024-09-03 19:00:00', 75.00, 1, 0, 0, 0, 'SDM3', 15.00, '789 Oak St', 3.2, 6.40, 996000, 'Cancelled', 'FB3', 'SCH3', 'Clinic visit for koi disease treatment', 'Cash', 'Pending'),
+('B4', 'C4', 'E4', '2024-09-04 22:00:00', '2024-09-05 01:00:00', 150.00, 1, 0, 0, 0, 'SDM4', 30.00, '321 Birch Ave', 8.7, 17.40, 2000000, 'In Progress', 'FB4', 'SCH4', 'Emergency koi surgery', 'Credit Card', 'Pending'),
+('B5', 'C5', 'E5', '2024-09-05 07:00:00', '2024-09-05 08:00:00', 25.00, 1, 1, 0, 0, 'SDM5', 5.00, '654 Pine St', 2.1, 4.20, 867000, 'Completed', 'FB5', 'SCH5', 'Follow-up checkup after treatment', 'Debit Card', 'Pending');
 -- Insert sample data for AnimalType
 INSERT INTO AnimalType (TypeID, Name) 
 VALUES 
