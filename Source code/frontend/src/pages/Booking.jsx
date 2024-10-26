@@ -3,6 +3,7 @@ import TrackingBookingDetail from '../Components/TrackingBookingDetail';
 import DoctorList from "../Components/Doctor'sSummaryInformation";
 import Lich from "../Components/ScheduleCustomer";
 import GetAPIURL from '../Helper/Utilities'
+import { useNavigate } from 'react-router-dom';
 
 const STEPS = {
   SELECT_DOCTOR: 'selectDoctor',
@@ -18,29 +19,34 @@ const SERVICES = {
   price: 75.00,
 };
 
-function GetVetList( { setDoctors } ){
+function FetchVetList( { setDoctors } ){
     let url = GetAPIURL("/Employee/getbyrolename?info=Veterinarian");
-    let data;
     console.log("sending: " + url); 
-    useEffect(() => {
         console.log("sending: " + url); 
         fetch(url)
             .then( response => response.json() )
             .then( json => setDoctors( json ) )
             .catch( error => console.error( error ) );
-        }, [] );
 }
 
-function GetScheduleList( { setSchedules , date } ){
+function FetchScheduleList( { setSchedules , date } ){
     let url = GetAPIURL("/Schedule/get30daysschedule?date=" + date);
     console.log("sending: " + url); 
-    useEffect(() => {
         console.log("sending: " + url); 
         fetch(url)
             .then( response => response.json() )
             .then( json => setSchedules( json ) )
             .catch( error => console.error( error ) );
-        }, [] );
+}
+
+function FetchSlotTableList( { setSlotTable , date } ){
+    let url = GetAPIURL("/Schedule/getslotin30days?date=" + date);
+    console.log("sending: " + url); 
+        console.log("sending: " + url); 
+        fetch(url)
+            .then( response => response.json() )
+            .then( json => setSlotTable( json ) )
+            .catch( error => console.error( error ) );
 }
 
 //const DoctorSchedule = [
@@ -50,15 +56,16 @@ function GetScheduleList( { setSchedules , date } ){
 //  { ScheduleID: 'SCH4', EmployeeID: 'E3', Date: '2024-11-04', Status: 'Active' },
 //];
 
-const SlotSchedule = [
-  { SlotTableID: 'ST1', ScheduleID: 'SCH1', Slot: 1, SlotCapacity: 10, SlotOrdered: 5, SlotStatus: 1 },
-  { SlotTableID: 'ST2', ScheduleID: 'SCH1', Slot: 2, SlotCapacity: 10, SlotOrdered: 6, SlotStatus: 1 },
-  { SlotTableID: 'ST3', ScheduleID: 'SCH1', Slot: 3, SlotCapacity: 10, SlotOrdered: 7, SlotStatus: 1 },
-  { SlotTableID: 'ST4', ScheduleID: 'SCH1', Slot: 4, SlotCapacity: 10, SlotOrdered: 8, SlotStatus: 1 },
-];
+//const SlotSchedule = [
+//  { SlotTableID: 'ST1', ScheduleID: 'SCH1', Slot: 1, SlotCapacity: 10, SlotOrdered: 5, SlotStatus: 1 },
+//  { SlotTableID: 'ST2', ScheduleID: 'SCH1', Slot: 2, SlotCapacity: 10, SlotOrdered: 6, SlotStatus: 1 },
+//  { SlotTableID: 'ST3', ScheduleID: 'SCH1', Slot: 3, SlotCapacity: 10, SlotOrdered: 7, SlotStatus: 1 },
+//  { SlotTableID: 'ST4', ScheduleID: 'SCH1', Slot: 4, SlotCapacity: 10, SlotOrdered: 8, SlotStatus: 1 },
+//];
 
 const BookingPage = () => {
     const [DoctorSchedule, SetDoctorSchedule] = useState([]);
+    const [SlotSchedule, SetSlotSchedule] = useState([]);
   const [selectedService] = useState(SERVICES);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [currentStep, setCurrentStep] = useState(STEPS.SELECT_SCHEDULE);
@@ -67,7 +74,14 @@ const BookingPage = () => {
   const [isFull, setIsFull] = useState(true);
   const [filteredDoctorSchedule, setFilteredDoctorSchedule] = useState([]);
   const [filteredSlotSchedule, setFilteredSlotSchedule] = useState([]);
-    GetScheduleList( { setSchedules: SetDoctorSchedule, date: new Date().toISOString().split("T")[0] } )
+    let currentDate = new Date().toISOString().split("T")[0];
+    useEffect(() => {
+    FetchScheduleList( { setSchedules: SetDoctorSchedule, date: currentDate } );
+    FetchSlotTableList( { setSlotTable: SetSlotSchedule, date: currentDate } );
+    FetchVetList( { setDoctors } );
+    }, []);
+    console.log( SlotSchedule );
+    console.log( DoctorSchedule );
   useEffect(() => {
     if (selectedDoctor) {
       const doctorSchedules = DoctorSchedule.filter(
@@ -101,7 +115,6 @@ const BookingPage = () => {
     setCurrentStep(step);
   };
     
-    GetVetList( { setDoctors } );
     console.log( doctors );
         //[
 //    { name: "Nguyễn Văn A", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E1" },
