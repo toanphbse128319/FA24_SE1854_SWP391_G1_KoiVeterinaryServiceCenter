@@ -1,9 +1,8 @@
 
-import React, { useState, useMemo, useEffect } from 'react'; // Import các thư viện cần thiết
-import { BoldIcon, ChevronLeft, ChevronRight } from 'lucide-react'; // Import biểu tượng điều hướng
+import React, { useState, useMemo } from 'react'; // Import các thư viện cần thiết
+import { ChevronLeft, ChevronRight } from 'lucide-react'; // Import biểu tượng điều hướng
 import { useNavigate } from 'react-router-dom';
-import { borderRadius, color, fontSize, fontWeight, height, margin, maxWidth, padding, width } from '@mui/system';
-import zIndex from '@mui/material/styles/zIndex';
+
 
 
 // Hàm để lấy dữ liệu lịch từ API (hiện đang được comment)
@@ -33,37 +32,13 @@ useEffect(() => {
 }, []);
 */
 
-const ScheduleCalendar = ({doctor,role,isFull,service}) => {
+const ScheduleCalendar = ({ doctor, service,SlotSchedule ,DocterSchedule}) => {
   const navigate = useNavigate();
-  // console.log(doctor);
 
-  //  console.log(service);
-  // // console.log(role);
+  //khi truyền docter thì phải gọi toàn bộ  ScheduleID của doctor đó trong 30 ngày tiếp,
+  //và gửi lun các slot SlotTableID liên quan tới những ScheduleID
  
-  
 
-  const scheduleData = [
-    { ScheduleID: 'SCH09', date: '2024-11-14', slot: 1, SlotCapacity: 5, ordered: 5, SlotStatus: false },
-    { ScheduleID: 'SCH23', date: '2024-11-14', slot: 1, SlotCapacity: 5, ordered: 1, SlotStatus: true },
-    
-    { ScheduleID: 'SCH25', date: '2024-11-14', slot: 1, SlotCapacity: 5, ordered: 1, SlotStatus: true },
-    
-    { ScheduleID: 'SCH26', date: '2024-11-14', slot: 1, SlotCapacity: 5, ordered: 1, SlotStatus: true },
-
-    { ScheduleID: 'SCH10', date: '2024-11-18', slot: 1, SlotCapacity: 5, ordered: 1, SlotStatus: true },
-    { ScheduleID: 'SCH11', date: '2024-11-18', slot: 2, SlotCapacity: 5, ordered: 3, SlotStatus: true },
-    { ScheduleID: 'SCH12', date: '2024-11-18', slot: 3, SlotCapacity: 5, ordered: 5, SlotStatus: false },
-    { ScheduleID: 'SCH13', date: '2024-11-19', slot: 1, SlotCapacity: 5, ordered: 2, SlotStatus: true },
-    { ScheduleID: 'SCH14', date: '2024-11-19', slot: 2, SlotCapacity: 5, ordered: 4, SlotStatus: true },
-    { ScheduleID: 'SCH15', date: '2024-11-19', slot: 3, SlotCapacity: 5, ordered: 1, SlotStatus: true },
-    { ScheduleID: 'SCH16', date: '2024-11-01', slot: 1, SlotCapacity: 5, ordered: 0, SlotStatus: true },
-    { ScheduleID: 'SCH17', date: '2024-11-01', slot: 2, SlotCapacity: 5, ordered: 2, SlotStatus: true },
-    { ScheduleID: 'SCH18', date: '2024-11-02', slot: 1, SlotCapacity: 5, ordered: 1, SlotStatus: true },
-    { ScheduleID: 'SCH19', date: '2024-11-03', slot: 1, SlotCapacity: 5, ordered: 3, SlotStatus: true },
-    { ScheduleID: 'SCH20', date: '2024-11-03', slot: 2, SlotCapacity: 5, ordered: 2, SlotStatus: true },
-    { ScheduleID: 'SCH21', date: '2024-12-03', slot: 2, SlotCapacity: 5, ordered: 2, SlotStatus: true },
-    { ScheduleID: 'SCH22', date: '2025-1-03', slot: 2, SlotCapacity: 5, ordered: 2, SlotStatus: true },
-  ];
 
   // Khai báo các state
   const [fetchedScheduleData, setFetchedScheduleData] = useState([]);
@@ -73,65 +48,97 @@ const ScheduleCalendar = ({doctor,role,isFull,service}) => {
   const [selectedDay, setSelectedDay] = useState(null);
   const [fishCount, setFishCount] = useState('1');
   const [selectedSlot, setSelectedSlot] = useState(null);
-  // const [isFullSchedual,setIsFullScheduel] = useState(isFull);
 
-  // console.log(service);
-  // useEffect(() => {
-  //   if (isFullSchedual !== null) {
-  //     // Reset tất cả các state về giá trị ban đầu
-  //     setFetchedScheduleData([]);
-  //     setSelectedDate(null);
-  //     setCurrentDate(new Date('2024-10-01'));
-  //     setIsWeekView(false);
-  //     setSelectedDay(null);
-  //     setFishCount('1');
-  //     setSelectedSlot(null);
-  //   }
-  // }, [isFullSchedual]);
+  const transformScheduleData = (doctorSchedules, slotSchedules) => {
+    const transformedData = [];
 
+    doctorSchedules.forEach(schedule => {
+      // Find all slots for this schedule
+      const matchingSlots = slotSchedules.filter(slot =>
+        slot.ScheduleID === schedule.ScheduleID
+      );
 
-  // Tạo map lịch để truy cập dễ dàng
-  /* 
-  sử dụng ISO để có thể chuẩn hóa lại và có thể tương tác với nhau( so sánh)
-  todayKey để không hiện ngày các ngày trước ngày hôm nay
-  việc xài set là để không lặp nhiều ngày trùng nhau, vì 1 ngày có thể có nhiều slot và nhiều bác sĩ
-  */
-  const scheduleMap = useMemo(() => {
+      // Transform each slot into the old data format
+      matchingSlots.forEach(slot => {
+        transformedData.push({
+          ScheduleID: slot.SlotTableID,
+          date: schedule.Date,
+          slot: slot.Slot,
+          SlotCapacity: slot.SlotCapacity,
+          ordered: slot.SlotOrdered,
+          SlotStatus: slot.SlotStatus === 1
+        });
+      });
+    });
+
+    return transformedData;
+  };
+
+  // Modified schedule map creation to handle the new data structure
+  const createScheduleMap = (doctorSchedules, slotSchedules) => {
     const map = new Map();
-    const dataToUse = fetchedScheduleData.length > 0 ? fetchedScheduleData : scheduleData;
+    const transformedData = transformScheduleData(doctorSchedules, slotSchedules);
     const today = new Date();
     const todayKey = today.toISOString().split('T')[0];
-    
-    dataToUse.forEach(schedule => {
+
+    transformedData.forEach(schedule => {
       const dateKey = new Date(schedule.date).toISOString().split('T')[0];
       if (dateKey >= todayKey) {
         if (!map.has(dateKey)) {
-          map.set(dateKey, new Map()); // Tạo Map mới cho mỗi ngày
+          map.set(dateKey, new Map());
         }
-        
+
         const dayMap = map.get(dateKey);
         if (!dayMap.has(schedule.slot)) {
-          dayMap.set(schedule.slot, []); // Tạo mảng mới cho mỗi slot
+          dayMap.set(schedule.slot, []);
         }
-        
-        // Thêm lịch vào mảng của slot tương ứng
+
         dayMap.get(schedule.slot).push(schedule);
       }
     });
+
     return map;
-}, [fetchedScheduleData]);
+  };
 
-
-
-  // Lấy danh sách các tháng có sẵn từ dữ liệu lịch
-  const availableMonths = useMemo(() => {
+  const getAvailableMonths = (doctorSchedules) => {
     const months = new Set();
-    scheduleData.forEach(schedule => {
-      const date = new Date(schedule.date);
+    doctorSchedules.forEach(schedule => {
+      const date = new Date(schedule.Date);
       months.add(`${date.getFullYear()}-${date.getMonth() + 1}`);
     });
     return Array.from(months).map(month => new Date(month));
-  }, [scheduleData]);
+  };
+
+  // Modified slot availability check
+  const checkSlotAvailability = (date, slot, scheduleMap) => {
+    if (!date) return { available: false, scheduleId: null };
+
+    const dateString = date.toISOString().split('T')[0];
+    const daySchedules = scheduleMap.get(dateString);
+
+    if (!daySchedules) return { available: false, scheduleId: null };
+
+    const slotSchedules = daySchedules.get(slot) || [];
+
+    const availableSchedule = slotSchedules.find(schedule =>
+      schedule.SlotStatus && schedule.ordered < schedule.SlotCapacity
+    );
+
+    return {
+      available: !!availableSchedule,
+      scheduleId: availableSchedule ? availableSchedule.ScheduleID : null
+    };
+  };
+
+  const scheduleMap = useMemo(() =>
+    createScheduleMap(DocterSchedule, SlotSchedule),
+    [DocterSchedule, SlotSchedule]
+  );
+
+  const availableMonths = useMemo(() =>
+    getAvailableMonths(DocterSchedule),
+    [DocterSchedule]
+  );
 
   // Hàm để lấy tất cả các ngày trong tháng, bao gồm cả ngày đệm
   const getDaysInMonth = (date) => {
@@ -232,34 +239,16 @@ const ScheduleCalendar = ({doctor,role,isFull,service}) => {
       { id: 8, time: '16:00-17:00' },
     ],
   };
-  // Kiểm tra xem một khung giờ cụ thể có sẵn không
-  const isSlotAvailable = (date, slot) => {
-    if (!date) return { available: false, scheduleId: null };
-    
-    const dateString = date.toISOString().split('T')[0];
-    const daySchedules = scheduleMap.get(dateString);
-    
-    if (!daySchedules) return { available: false, scheduleId: null };
-    
-    const slotSchedules = daySchedules.get(slot) || [];
-    
-    // Tìm lịch có status hoạt động và còn slot trống
-    const availableSchedule = slotSchedules.find(schedule => 
-        schedule.SlotStatus && schedule.ordered < schedule.SlotCapacity
-    );
-    
-    return {
-        available: !!availableSchedule,
-        scheduleId: availableSchedule ? availableSchedule.ScheduleID : null
-    };
-};
 
-const handleSlotSelection = (slot, scheduleInfo) => {
-  setSelectedSlot({
+  const isSlotAvailable = (date, slot) =>
+    checkSlotAvailability(date, slot, scheduleMap);
+
+  const handleSlotSelection = (slot, scheduleInfo) => {
+    setSelectedSlot({
       ...slot,
       scheduleId: scheduleInfo.scheduleId
-  });
-};
+    });
+  };
 
   // Xử lý khi đóng chế độ xem tuần
   const handleCloseWeekView = () => {
@@ -273,20 +262,19 @@ const handleSlotSelection = (slot, scheduleInfo) => {
 
   const handleNavigate = () => {
     if (selectedSlot && selectedDate) {
-        const dateString = selectedDate.toISOString().split('T')[0];
-        const time = selectedSlot.time + ' ' + dateString;
-      
-        navigate('/Confirm', {
-            state: {
-                fishCount,
-                service,
-                doctor,
-                time,
-                scheduleId: selectedSlot.scheduleId
-            }
-        });
+      const dateString = selectedDate.toISOString().split('T')[0];
+      const time = selectedSlot.time + ' ' + dateString;
+      navigate('/Confirm', {
+        state: {
+          fishCount,
+          service,
+          doctor,
+          time,
+          scheduleId: selectedSlot.scheduleId
+        }
+      });
     }
-};
+  };
   // Hàm để lấy style cho mỗi ngày trong lịch
   const getDayStyles = (date, index) => {
     const isFirstColumn = index % 7 === 0;
@@ -316,7 +304,7 @@ const handleSlotSelection = (slot, scheduleInfo) => {
       ...styles.calendarContainer,
       height: isWeekView ? '70.5vh' : '70vh', // Đặt chiều cao cố định cho container
       minHeight: isWeekView ? '600px' : '500px',
-      
+
     }}>
       {/* Tiêu đề */}
       <div style={styles.header}>
@@ -360,7 +348,7 @@ const handleSlotSelection = (slot, scheduleInfo) => {
               key={index}
               style={{
                 ...getDayStyles(date, index),
-                height: isWeekView ? '10.5vh' : 'auto', // Điều chỉnh chiều cao dựa trên chế độ xem
+                height: isWeekView ? '10.5vh' : 'auto',
 
               }}
               onClick={() => handleDateClick(date)}
@@ -389,53 +377,53 @@ const handleSlotSelection = (slot, scheduleInfo) => {
               Đóng
             </button>
           </div>
-       {/* Khung giờ buổi sáng */}
-<div style={styles.timeSlotSection}>
-  <h3>Buổi sáng</h3>
-  <div style={styles.slotButtons}>
-    {timeSlots.morning.map(slot => {
-      const slotAvailability = isSlotAvailable(selectedDate, slot.id);
-      return (
-        <button
-          key={slot.id}
-          style={{
-            ...styles.slotButton,
-            ...(slotAvailability.available ? styles.availableSlot : styles.unavailableSlot),
-            ...(selectedSlot && selectedSlot.id === slot.id ? styles.selectedSlot : {}),
-          }}
-          disabled={!slotAvailability.available}
-          onClick={() => handleSlotSelection(slot, slotAvailability)}
-        >
-          {slot.time}
-        </button>
-      );
-    })}
-  </div>
-</div>
+          {/* Khung giờ buổi sáng */}
+          <div style={styles.timeSlotSection}>
+            <h3>Buổi sáng</h3>
+            <div style={styles.slotButtons}>
+              {timeSlots.morning.map(slot => {
+                const slotAvailability = isSlotAvailable(selectedDate, slot.id);
+                return (
+                  <button
+                    key={slot.id}
+                    style={{
+                      ...styles.slotButton,
+                      ...(slotAvailability.available ? styles.availableSlot : styles.unavailableSlot),
+                      ...(selectedSlot && selectedSlot.id === slot.id ? styles.selectedSlot : {}),
+                    }}
+                    disabled={!slotAvailability.available}
+                    onClick={() => handleSlotSelection(slot, slotAvailability)}
+                  >
+                    {slot.time}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
 
-{/* Khung giờ buổi chiều */}
-<div style={styles.timeSlotSection}>
-  <h3>Buổi chiều</h3>
-  <div style={styles.slotButtons}>
-    {timeSlots.afternoon.map(slot => {
-      const slotAvailability = isSlotAvailable(selectedDate, slot.id);
-      return (
-        <button
-          key={slot.id}
-          style={{
-            ...styles.slotButton,
-            ...(slotAvailability.available ? styles.availableSlot : styles.unavailableSlot),
-            ...(selectedSlot && selectedSlot.id === slot.id ? styles.selectedSlot : {}),
-          }}
-          disabled={!slotAvailability.available}
-          onClick={() => handleSlotSelection(slot, slotAvailability)}
-        >
-          {slot.time}
-        </button>
-      );
-    })}
-  </div>
-</div>
+          {/* Khung giờ buổi chiều */}
+          <div style={styles.timeSlotSection}>
+            <h3>Buổi chiều</h3>
+            <div style={styles.slotButtons}>
+              {timeSlots.afternoon.map(slot => {
+                const slotAvailability = isSlotAvailable(selectedDate, slot.id);
+                return (
+                  <button
+                    key={slot.id}
+                    style={{
+                      ...styles.slotButton,
+                      ...(slotAvailability.available ? styles.availableSlot : styles.unavailableSlot),
+                      ...(selectedSlot && selectedSlot.id === slot.id ? styles.selectedSlot : {}),
+                    }}
+                    disabled={!slotAvailability.available}
+                    onClick={() => handleSlotSelection(slot, slotAvailability)}
+                  >
+                    {slot.time}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
           <div style={styles.fishCountContainer}>
             <label htmlFor="fishCount" style={styles.fishCountLabel}>
               Hãy nhập số cá:
@@ -446,19 +434,19 @@ const handleSlotSelection = (slot, scheduleInfo) => {
               value={fishCount}
               onChange={handleFishCountChange}
               style={styles.fishCountInput}
-              
+
             />
           </div>
-         
-            <button
-              style={styles.navigationButton}
-              onClick={handleNavigate}
 
-            >
-             Đặt lịch
-            </button>
-          </div>
-        
+          <button
+            style={styles.navigationButton}
+            onClick={handleNavigate}
+
+          >
+            Đặt lịch
+          </button>
+        </div>
+
       )}
     </div>
   );
@@ -468,13 +456,13 @@ const handleSlotSelection = (slot, scheduleInfo) => {
 const styles = {
   navigationButton: {
     marginTop: '10px',
-    width:'100%',
+    width: '100%',
     justifyContent: 'center',
     padding: '10px ',
     background: 'linear-gradient(90deg, #64B0E0 25%, rgba(35, 200, 254, 0.75) 75%)',
     color: 'white',
-    fontWeight:'700',
-    fontSize:'20px',
+    fontWeight: '700',
+    fontSize: '20px',
     border: 'none',
     borderRadius: '5px',
     cursor: 'pointer',
@@ -547,8 +535,8 @@ const styles = {
     position: 'absolute',
     right: '0.1vw',
     top: '50%',
-    fontSize:'1.3vw',
-    fontWeight:'600',
+    fontSize: '1.3vw',
+    fontWeight: '600',
     transform: 'translateY(-50%)',
     padding: '8px 16px',
     cursor: 'pointer',
@@ -584,9 +572,6 @@ const styles = {
     gridTemplateColumns: 'repeat(7, 1fr)',
     flex: 1,
   },
-
-
-
 
   // Day button styles
   dayButton: {
@@ -650,7 +635,7 @@ const styles = {
   // State styles
   available: {
     color: 'black',
-    fontWeight:'625'
+    fontWeight: '625'
   },
   unavailable: {
     color: '#ccc',
@@ -667,7 +652,7 @@ const styles = {
   },
   timeSlotSection: {
     marginBottom: '16px',
-    fontWeight:'600',
+    fontWeight: '600',
   },
   slotButtons: {
     display: 'flex',
@@ -680,7 +665,7 @@ const styles = {
     borderRadius: '4px',
     cursor: 'pointer',
     width: '13vw',
-    maxWidth:'125px'
+    maxWidth: '125px'
   },
   availableSlot: {
     background: 'white',
@@ -691,7 +676,7 @@ const styles = {
     background: '#e0e0e0',
     color: '#666',
   },
-  selectedSlot:{
+  selectedSlot: {
     background: 'linear-gradient(90deg, #64B0E0 25%, rgba(35, 200, 254, 0.75) 75%)',
     color: 'white',
   },
@@ -705,9 +690,9 @@ const styles = {
     borderRadius: '4px',
     outline: 'none',
   },
-  fishCountLabel:{
+  fishCountLabel: {
 
-    fontWeight:'600',
+    fontWeight: '600',
   }
 
 }

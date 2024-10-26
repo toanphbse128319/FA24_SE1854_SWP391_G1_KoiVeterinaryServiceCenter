@@ -12,7 +12,6 @@ const ServiceSelection = ({ services = [], isOpen, onClose, deliveryMethod }) =>
   const [showCart, setShowCart] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [bookingData, setBookingData] = useState(null);
-  const [showPreview, setShowPreview] = useState(false);
   const [totalAmount, setTotalAmount] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -31,9 +30,8 @@ const ServiceSelection = ({ services = [], isOpen, onClose, deliveryMethod }) =>
     setTotalAmount(total);
   }, [cartItems]);
 
-
   const handleConfirmServices = () => {
-    setShowPreview(true);
+    setShowConfirmation(true);
   };
 
   useEffect(() => {
@@ -48,7 +46,6 @@ const ServiceSelection = ({ services = [], isOpen, onClose, deliveryMethod }) =>
   }, [searchTerm, services]);
 
   const handleServiceSelect = (service) => {
-    // Kiểm tra xem dịch vụ đã có trong giỏ hàng chưa
     const existingService = cartItems.find(item => item.ServiceID === service.ServiceID);
     if (existingService && !isEditing) {
       alert('Dịch vụ này đã có trong giỏ hàng!');
@@ -63,21 +60,18 @@ const ServiceSelection = ({ services = [], isOpen, onClose, deliveryMethod }) =>
 
   const handleSubmit = () => {
     if (isEditing) {
-      // Cập nhật item hiện có
       const updatedCartItems = cartItems.map(item =>
         item.serviceID === formData.serviceID ? { ...selectedService, ...formData } : item
       );
       setCartItems(updatedCartItems);
       setIsEditing(false);
     } else {
-      // Thêm item mới
       const newCartItem = {
         ...selectedService,
         ...formData
       };
       setCartItems([...cartItems, newCartItem]);
     }
-    // Reset form
     setSelectedService(null);
     setFormData({
       serviceID: '',
@@ -99,7 +93,6 @@ const ServiceSelection = ({ services = [], isOpen, onClose, deliveryMethod }) =>
 
   const handleRemoveFromCart = (serviceID) => {
     setCartItems(cartItems.filter(item => item.serviceID !== serviceID));
-    // Nếu đang chỉnh sửa item bị xóa, reset form
     if (formData.serviceID === serviceID) {
       setSelectedService(null);
       setFormData({
@@ -115,6 +108,7 @@ const ServiceSelection = ({ services = [], isOpen, onClose, deliveryMethod }) =>
       setIsEditing(false);
     }
   };
+
   const handleUpdateService = (item) => {
     setSelectedService({
       ...item,
@@ -125,127 +119,10 @@ const ServiceSelection = ({ services = [], isOpen, onClose, deliveryMethod }) =>
     setIsEditing(true);
   };
 
-
-  const handleSendToAPI = async () => {
-    try {
-      const response = await fetch('/api/submit-services', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          services: cartItems
-        }),
-      });
-
-      const data = await response.json();
-      setBookingData(data);
-      setShowPreview(false);
-      setShowConfirmation(true);
-    } catch (error) {
-      console.error('Error submitting services:', error);
-    }
-  };
-
-
-  const ServicePreviewDialog = () => (
-    <Dialog
-      open={showPreview}
-      onClose={() => setShowPreview(false)}
-      maxWidth="md"
-      fullWidth
-    >
-      <DialogTitle>
-        <div className="flex justify-between items-center">
-          <span>Xem lại danh sách dịch vụ đã chọn</span>
-          <IconButton onClick={() => setShowPreview(false)}>
-            <CloseIcon />
-          </IconButton>
-        </div>
-      </DialogTitle>
-      <DialogContent dividers>
-        {cartItems.map((item, index) => (
-          <Box
-            key={item.serviceID}
-            className="p-4 mb-3 bg-gray-50 rounded-lg"
-          >
-            <Typography variant="subtitle1" className="font-semibold">
-              {index + 1}. {item.Name}
-            </Typography>
-            <Typography variant="body1" className="text-blue-600 my-1">
-              {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.Price)}
-            </Typography>
-            <div className="mt-2 space-y-1 text-gray-700">
-              {item.NoteResult && (
-                <Typography variant="body2">Kết quả: {item.NoteResult}</Typography>
-              )}
-              {item.AnimalStatusDescription && (
-                <Typography variant="body2">Tình trạng động vật: {item.AnimalStatusDescription}</Typography>
-              )}
-              {item.ConsultDoctor && (
-                <Typography variant="body2">Bác sĩ: {item.ConsultDoctor}</Typography>
-              )}
-              {item.DrugList && (
-                <Typography variant="body2">Thuốc: {item.DrugList}</Typography>
-              )}
-              {item.PoolStatusDescription && (
-                <Typography variant="body2">Tình trạng hồ: {item.PoolStatusDescription}</Typography>
-              )}
-              {item.ConsultTechnician && (
-                <Typography variant="body2">Kỹ thuật viên: {item.ConsultTechnician}</Typography>
-              )}
-              {item.MaterialList && (
-                <Typography variant="body2">Vật tư: {item.MaterialList}</Typography>
-              )}
-            </div>
-          </Box>
-        ))}
-        <Box className="mt-4 p-4 bg-blue-50 rounded-lg">
-          <Typography variant="h6" className="text-blue-800">
-            Tổng tiền: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalAmount)}
-          </Typography>
-        </Box>
-      </DialogContent>
-      <DialogActions className="p-4">
-        <Button
-          onClick={() => setShowPreview(false)}
-          variant="outlined"
-          className="w-32"
-        >
-          Quay lại
-        </Button>
-        <Button
-          onClick={handleSendToAPI}
-          variant="contained"
-          className="bg-blue-600 hover:bg-blue-700 w-32"
-        >
-          Xác nhận
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
-
-  const handleFinalSubmit = async () => {
-    try {
-      // Mock API call - replace with your actual API endpoint
-      await fetch('/api/confirm-booking', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          bookingId: bookingData.bookingId,
-          services: cartItems
-        }),
-      });
-
-      setShowConfirmation(false);
-      onClose();
-      // Handle successful submission (e.g., show success message, redirect, etc.)
-    } catch (error) {
-      console.error('Error confirming booking:', error);
-      // Handle error appropriately
-    }
+  const handleFinalSubmit = () => {
+    console.log("Cart Items:", cartItems);
+    setShowConfirmation(false);
+    onClose();
   };
 
   if (!isOpen) return null;
@@ -255,18 +132,14 @@ const ServiceSelection = ({ services = [], isOpen, onClose, deliveryMethod }) =>
       className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
       onClick={handleOverlayClick}
     >
-      <ServicePreviewDialog />
       <div className="bg-white rounded-lg w-11/12 max-w-6xl h-5/6 overflow-hidden relative flex flex-col" onClick={e => e.stopPropagation()}>
-        {/* Header with close button */}
         <div className="absolute top-4 right-4 z-10">
           <IconButton onClick={onClose}>
             <CloseIcon />
           </IconButton>
         </div>
 
-        {/* Main content area */}
         <div className="flex flex-1 overflow-hidden">
-          {/* Left Panel */}
           <div className="w-1/2 p-6 overflow-y-auto">
             <div className="flex items-center mb-4">
               <TextField
@@ -305,14 +178,12 @@ const ServiceSelection = ({ services = [], isOpen, onClose, deliveryMethod }) =>
             </div>
           </div>
 
-          {/* Right Panel */}
           <div className="w-1/2 p-6 bg-gray-50 overflow-y-auto">
             {selectedService ? (
               <Card className="p-4">
                 <Typography variant="h6" className="mb-4 font-bold">
                   {isEditing ? 'Chỉnh sửa dịch vụ: ' : 'Chi tiết dịch vụ: '}{selectedService.Name}
                 </Typography>
-
 
                 <TextField
                   fullWidth
@@ -403,7 +274,6 @@ const ServiceSelection = ({ services = [], isOpen, onClose, deliveryMethod }) =>
           </div>
         </div>
 
-        {/* Footer with submit button */}
         <div className="p-4 bg-gray-100 border-t mt-auto">
           <Button
             variant="contained"
@@ -415,7 +285,7 @@ const ServiceSelection = ({ services = [], isOpen, onClose, deliveryMethod }) =>
             Xem lại dịch vụ đã chọn ({cartItems.length} dịch vụ)
           </Button>
         </div>
-        {/* Cart Dialog */}
+
         <Dialog
           open={showCart}
           onClose={() => setShowCart(false)}
@@ -468,7 +338,6 @@ const ServiceSelection = ({ services = [], isOpen, onClose, deliveryMethod }) =>
           </DialogContent>
         </Dialog>
 
-        {/* Confirmation Dialog */}
         <Dialog
           open={showConfirmation}
           onClose={() => setShowConfirmation(false)}
@@ -477,17 +346,13 @@ const ServiceSelection = ({ services = [], isOpen, onClose, deliveryMethod }) =>
         >
           <DialogTitle>
             <div className="flex justify-between items-center">
-              <span>Vui lòng kiểm tra lại thông tin</span>
+              <span>Xác nhận dịch vụ</span>
               <IconButton onClick={() => setShowConfirmation(false)}>
                 <CloseIcon />
               </IconButton>
             </div>
           </DialogTitle>
           <DialogContent dividers>
-            <Typography variant="h6" className="mb-4">
-              Mã đặt lịch: {bookingData?.bookingId}
-            </Typography>
-            <Typography variant="h6" className="mb-2">Danh sách dịch vụ:</Typography>
             {cartItems.map((item) => (
               <Box
                 key={item.serviceID}
@@ -519,11 +384,17 @@ const ServiceSelection = ({ services = [], isOpen, onClose, deliveryMethod }) =>
                     <Typography variant="body2">Kỹ thuật viên: {item.ConsultTechnician}</Typography>
                   )}
                   {item.MaterialList && (
-                    <Typography variant="body2">Vật tư: {item.MaterialList}</Typography>
+                    <Typography variant="body2">Vật tư:
+                    {item.MaterialList}</Typography>
                   )}
                 </div>
               </Box>
             ))}
+            <Box className="mt-4 p-4 bg-blue-50 rounded-lg">
+              <Typography variant="h6" className="text-blue-800">
+                Tổng tiền: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalAmount)}
+              </Typography>
+            </Box>
           </DialogContent>
           <DialogActions className="p-4">
             <Button
@@ -546,4 +417,5 @@ const ServiceSelection = ({ services = [], isOpen, onClose, deliveryMethod }) =>
     </div>
   );
 }
+
 export default ServiceSelection;
