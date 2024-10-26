@@ -53,6 +53,11 @@ public class ScheduleRepository : GenericRepository<Schedule>
                                                                         schedule.EmployeeID == EmpID);
     }
 
+    public async Task<List<Schedule>> Get30DaysSchedule( DateOnly date ){
+        return await _context.Schedules.Where( schedule => schedule.Date >= date &&
+                                                           schedule.Date <= date.AddDays(30) ).ToListAsync();
+    }
+
     public async Task<Schedule> UpdateVetScheduleAsync(DateOnly date, string oldEmpID, string newEmpID)
     {
         Schedule? sch = await _context.Schedules.FirstOrDefaultAsync(schedule => schedule.Date == date &&

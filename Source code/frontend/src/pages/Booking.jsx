@@ -31,12 +31,24 @@ function GetVetList( { setDoctors } ){
         }, [] );
 }
 
-const DocterSchedule = [
-  { ScheduleID: 'SCH1', EmployeeID: 'E3', Date: '2024-11-01', Status: 'Active' },
-  { ScheduleID: 'SCH2', EmployeeID: 'E3', Date: '2024-11-02', Status: 'Active' },
-  { ScheduleID: 'SCH3', EmployeeID: 'E3', Date: '2024-11-03', Status: 'Active' },
-  { ScheduleID: 'SCH4', EmployeeID: 'E3', Date: '2024-11-04', Status: 'Active' },
-];
+function GetScheduleList( { setSchedules , date } ){
+    let url = GetAPIURL("/Schedule/get30daysschedule?date=" + date);
+    console.log("sending: " + url); 
+    useEffect(() => {
+        console.log("sending: " + url); 
+        fetch(url)
+            .then( response => response.json() )
+            .then( json => setSchedules( json ) )
+            .catch( error => console.error( error ) );
+        }, [] );
+}
+
+//const DoctorSchedule = [
+//  { ScheduleID: 'SCH1', EmployeeID: 'E3', Date: '2024-11-01', Status: 'Active' },
+//  { ScheduleID: 'SCH2', EmployeeID: 'E3', Date: '2024-11-02', Status: 'Active' },
+//  { ScheduleID: 'SCH3', EmployeeID: 'E3', Date: '2024-11-03', Status: 'Active' },
+//  { ScheduleID: 'SCH4', EmployeeID: 'E3', Date: '2024-11-04', Status: 'Active' },
+//];
 
 const SlotSchedule = [
   { SlotTableID: 'ST1', ScheduleID: 'SCH1', Slot: 1, SlotCapacity: 10, SlotOrdered: 5, SlotStatus: 1 },
@@ -46,6 +58,7 @@ const SlotSchedule = [
 ];
 
 const BookingPage = () => {
+    const [DoctorSchedule, SetDoctorSchedule] = useState([]);
   const [selectedService] = useState(SERVICES);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [currentStep, setCurrentStep] = useState(STEPS.SELECT_SCHEDULE);
@@ -54,10 +67,10 @@ const BookingPage = () => {
   const [isFull, setIsFull] = useState(true);
   const [filteredDoctorSchedule, setFilteredDoctorSchedule] = useState([]);
   const [filteredSlotSchedule, setFilteredSlotSchedule] = useState([]);
-
+    GetScheduleList( { setSchedules: SetDoctorSchedule, date: new Date().toISOString().split("T")[0] } )
   useEffect(() => {
     if (selectedDoctor) {
-      const doctorSchedules = DocterSchedule.filter(
+      const doctorSchedules = DoctorSchedule.filter(
         schedule => schedule.EmployeeID === selectedDoctor.EmployeeID
       );
       setFilteredDoctorSchedule(doctorSchedules);
@@ -67,7 +80,7 @@ const BookingPage = () => {
       );
       setFilteredSlotSchedule(doctorSlots);
     } else {
-      setFilteredDoctorSchedule(DocterSchedule);
+      setFilteredDoctorSchedule(DoctorSchedule);
       setFilteredSlotSchedule(SlotSchedule);
     }
   }, [selectedDoctor]);
