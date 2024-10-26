@@ -97,7 +97,7 @@ const BookingPage = () => {
       setFilteredDoctorSchedule(DoctorSchedule);
       setFilteredSlotSchedule(SlotSchedule);
     }
-  }, [selectedDoctor]);
+  }, [selectedDoctor, doctors, SlotSchedule, DoctorSchedule]);
 
   const handleDoctorSelect = (doctor) => {
     setSelectedDoctor(doctor);
