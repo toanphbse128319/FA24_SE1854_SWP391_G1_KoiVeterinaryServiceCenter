@@ -265,7 +265,7 @@ VALUES
 ('S7', 'SDM4', 'Koi Disease Treatment', 150000, 'Treatment for common koi diseases', 1),
 ('S8', 'SDM4', 'blood test for fish', 150000, 'Treatment for common koi diseases', 1),
 ('S9', 'SDM2', 'Check ph level', 150000, 'Treatment for common koi diseases', 1),
-('S10', 'SDM2', 'Eliminate parasitic fungi in the tank', 100000, 'Basic health check for koi fish', 1),
+('S10', 'SDM2', 'Eliminate parasitic fungi in the tank', 100000, 'Basic health check for koi fish', 1);
 
 -- Insert sample data for Feedback
 INSERT INTO Feedback (FeedbackID, ServiceRating, VetRating, Description, Status) 
