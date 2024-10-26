@@ -17,6 +17,7 @@ import Confirm from "./pages/Confirm.jsx"
 import DoctorList from "./Components/Doctor'sSummaryInformation.jsx";
 import News from "./Components/News.jsx";
 import PaymentStatusPage from "./pages/PaymentConfirmation.jsx";
+import Test from "./Components/BookingList.jsx";
 import {
   BrowserRouter,
   createBrowserRouter,
@@ -29,7 +30,7 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<App />}>
+        <Route path="/" element={<Test />}>
           <Route index element={<App />} />
           <Route path="/Navbar" element={<Navbar />} />
           <Route path="/NhanHang" element={<NhanHang />} />
