@@ -29,7 +29,6 @@ namespace Repositories.Repository
 
         public async Task<List<Employee?>> SearchByRoleName( string rolename ){
             string role = (new RoleRepository( _context )).getRoleID( rolename );
-            Console.WriteLine( "Rolename : " + role );
             if( role == "" )
                 return new List<Employee?>();
             List<Employee?> list = (await _context.Employees.Where( employee => employee.RoleID == role ).ToListAsync())!;
