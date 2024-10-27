@@ -256,18 +256,17 @@ VALUES
 -- Insert sample data for Service
 INSERT INTO Service (ServiceID, ServiceDeliveryMethodID, Name, Price, Description, Status) 
 VALUES 
-('S1', 'SDM1', 'Koi Health Check', 100000, 'Basic health check for koi fish', 1),
-('S2', 'SDM2', 'Koi Health Check', 100000, 'Basic health check for koi fish', 1),
-('S3', 'SDM4', 'Koi Health Check', 100000, 'Basic health check for koi fish', 1),
-('S4', 'SDM2', 'Koi Consultation', 75000, 'Online consultation with koi specialist', 1),
-('S5', 'SDM1', 'Koi Disease Treatment', 150000, 'Treatment for common koi diseases', 1),
-('S6', 'SDM2', 'Koi Disease Treatment', 150000, 'Treatment for common koi diseases', 1),
-('S7', 'SDM4', 'Koi Disease Treatment', 150000, 'Treatment for common koi diseases', 1),
-('S8', 'SDM4', 'blood test for fish', 150000, 'Treatment for common koi diseases', 1),
-('S9', 'SDM2', 'Check ph level', 150000, 'Treatment for common koi diseases', 1),
-('S10', 'SDM2', 'Eliminate parasitic fungi in the tank', 100000, 'Basic health check for koi fish', 1);
-
+('S1', 'SDM1', N'Kiểm tra sức khỏe cá koi', 100000, N'Kiểm tra sức khỏe cơ bản cho cá koi', 1),
+('S2', 'SDM4', N'Kiểm tra sức khỏe cá koi', 100000, N'Kiểm tra sức khỏe cơ bản cho cá koi', 1),
+('S3', 'SDM3', N'Tư vấn cá koi', 75000, N'Tư vấn trực tuyến với chuyên gia cá koi', 1),
+('S4', 'SDM1', N'Điều trị bệnh cá koi', 150000, N'Điều trị cho các bệnh thường gặp ở cá koi', 1),
+('S5', 'SDM4', N'Điều trị bệnh cá koi', 150000, N'Điều trị cho các bệnh thường gặp ở cá koi', 1),
+('S6', 'SDM4', N'Xét nghiệm máu cho cá', 150000, N'Xét nghiệm máu cho cá', 1),
+('S7', 'SDM2', N'Kiểm tra mức pH', 150000, N'Kiểm tra mức pH trong nước', 1),
+('S8', 'SDM2', N'Loại bỏ nấm ký sinh trong bể', 100000, N'Loại bỏ nấm ký sinh trong bể', 1),
+('S9', 'SDM2', N'Kiểm tra hồ cá', 100000, N'Kiểm tra hồ cá, bể cá', 1);
 -- Insert sample data for Feedback
+
 INSERT INTO Feedback (FeedbackID, ServiceRating, VetRating, Description, Status) 
 VALUES 
 ('FB0', 0, 0, 'Null', 'Default'),
