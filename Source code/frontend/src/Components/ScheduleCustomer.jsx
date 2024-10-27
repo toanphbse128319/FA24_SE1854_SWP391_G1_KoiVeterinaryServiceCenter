@@ -32,7 +32,7 @@ useEffect(() => {
 }, []);
 */
 
-const ScheduleCalendar = ({ doctor, service,SlotSchedule ,DocterSchedule}) => {
+const ScheduleCalendar = ({ doctor, service, SlotSchedule , DocterSchedule, sdm }) => {
   const navigate = useNavigate();
 
   //khi truyền docter thì phải gọi toàn bộ  ScheduleID của doctor đó trong 30 ngày tiếp,
@@ -283,6 +283,7 @@ const ScheduleCalendar = ({ doctor, service,SlotSchedule ,DocterSchedule}) => {
           service,
           doctor,
           time,
+            sdm,
           scheduleId: selectedSlot.scheduleId
         }
       });

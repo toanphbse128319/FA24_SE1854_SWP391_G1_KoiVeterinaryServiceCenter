@@ -5,6 +5,7 @@ import Lich from "../Components/ScheduleCustomer";
 import GetAPIURL from '../Helper/Utilities'
 import { FetchAPI } from '../Helper/Utilities';
 import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 
 const STEPS = {
@@ -13,13 +14,13 @@ const STEPS = {
   SELECT_DOCTERSCHEDUEL: 'selectDocterScheduel',
 };
 
-const SERVICES = {
-  name: "Virtual Koi Consultation",
-  serviceDeliveryMethod: "truc tuyen",
-  serviceDeliveryMethodId: "2",
-  serviceID: "S002",
-  price: 75.00,
-};
+//const SERVICES = {
+//  name: "Virtual Koi Consultation",
+//  serviceDeliveryMethod: "truc tuyen",
+//  serviceDeliveryMethodId: "2",
+//  serviceID: "S002",
+//  price: 75.00,
+//};
 //
 //function FetchVetList( { setDoctors } ){
 //    let url = GetAPIURL("/Employee/getbyrolename?info=Veterinarian");
@@ -60,9 +61,16 @@ const SERVICES = {
 //];
 
 const BookingPage = () => {
+    const location = useLocation();
+
+    if( location.state == undefined )
+        return <div> Missing information </div>;
+    // If location.state is undefined, the || {} part ensures that you don't try to destructure undefined, thus preventing an error
+    const { service, sdm } = location.state || {};
     const [DoctorSchedule, SetDoctorSchedule] = useState([]);
     const [SlotSchedule, SetSlotSchedule] = useState([]);
-  const [selectedService] = useState(SERVICES);
+  const [selectedService] = useState(service);
+    const [selectedSDM] = useState(sdm);
   const [selectedDoctor, SetSelectedDoctor] = useState(null);
   const [currentStep, SetCurrentStep] = useState(STEPS.SELECT_SCHEDULE);
   const [doctors, SetDoctors] = useState([]);
@@ -70,6 +78,8 @@ const BookingPage = () => {
   const [isFull, SetIsFull] = useState(true);
   const [filteredDoctorSchedule, SetFilteredDoctorSchedule] = useState([]);
   const [filteredSlotSchedule, SetFilteredSlotSchedule] = useState([]);
+
+    //This state is use to ensure the webpage get all the information it need to work, removing this will makr other part throw error
     const [loading, SetLoading] = useState(true);
     
     useEffect(() => {
@@ -160,11 +170,20 @@ const BookingPage = () => {
   return (
     <div className="booking-page">
       <div className="tracking-detail">
+      {selectedDoctor && (
         <TrackingBookingDetail
-          service={selectedService.name}
-          employee={selectedDoctor?.name}
-          serviceDeliveryMethod={selectedService.serviceDeliveryMethod}
+          service={selectedService.Name}
+          employee={selectedDoctor.FirstName + " " + selectedDoctor.LastName }
+          serviceDeliveryMethod={selectedSDM.Name}
         />
+      )}
+      {selectedDoctor == null && (
+        <TrackingBookingDetail
+          service={selectedService.Name}
+          employee={null}
+          serviceDeliveryMethod={selectedSDM.Name}
+        />
+      ) }
       </div>
 
       <div className="main-content">
@@ -183,6 +202,7 @@ const BookingPage = () => {
           
           {(currentStep === STEPS.SELECT_SCHEDULE || currentStep === STEPS.SELECT_DOCTERSCHEDUEL) && (
             <Lich
+              sdm={selectedSDM}
               doctor={selectedDoctor}
               role={role}
               service={selectedService}

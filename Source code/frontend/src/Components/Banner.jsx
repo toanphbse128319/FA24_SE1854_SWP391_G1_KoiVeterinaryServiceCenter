@@ -9,19 +9,24 @@ import { useNavigate } from "react-router-dom";
 //  { id: "S4", name: "Đặt lịch tư vấn kiểm tra hồ cá", href: "#" },
 //];
 
-function filterServices( {allServices} ){
+function filterServices( {allServices, sdm} ){
     let services = [];
-    let sdm = [];
+    let atHome = sdm.filter(method => method.Name == "Tại nhà");
+    let atHomeID = null;
+    if( atHome != null && atHome.length > 0 )
+        atHomeID = atHome[0].ServiceDeliveryMethodID;
     allServices.forEach( temp => {
         // ... ở đây được coi là shallow copy, là kiểu chỉ đưa giá trị nhưng không tham chiếu
         let service = { ... temp };
         if( service.Name == "Điều trị cá koi" ){
-            if( service.ServiceDeliveryMethodID == sdm.filter(where => {where.name == "Tại nhà"}) )
+            if( atHomeID != null && service.ServiceDeliveryMethodID == atHomeID )
                 service.Name = service.Name + " tại nhà";
-            else service.Name = service.Name + " tại trung tâm";
+            else if( atHomeID != null ) service.Name = service.Name + " tại trung tâm";
+
             services.push( service );
         }
         else if( service.Name == "Tư vấn sức khỏe cá koi" ){
+            //service.Name = service.Name + " trực tuyến";
             services.push( service );
         }
         else if( service.Name == "Kiểm tra hồ cá" ){
@@ -32,14 +37,15 @@ function filterServices( {allServices} ){
     return services;
 }
 
-function Banner( { allServices }) {
+function Banner( { allServices, sdm }) {
   let navigate = useNavigate();
-    const services = filterServices( {allServices: allServices} );
+    if(allServices == undefined || sdm == undefined)
+        return <div> Loading </div>
+    const services = filterServices( {allServices: allServices, sdm: sdm} );
+
   
-  const handleGoBooking = (id, name) => {
-    console.log("Selected Service ID:", id);
-    console.log("Selected Service Name:", name);
-    navigate("/Booking", { state: { id, name } });
+  const handleGoBooking = ( service, sdm ) => {
+    navigate("/Booking", { state: { service, sdm } });
   };
 
   return (
@@ -61,7 +67,7 @@ function Banner( { allServices }) {
           {services.map((service, index) => (
             <button
               key={service.ServiceID}
-              onClick={() => handleGoBooking(service.ServiceID, service.Name)}
+              onClick={() => handleGoBooking( service, sdm.filter(method => method.ServiceDeliveryMethodID == service.ServiceDeliveryMethodID )[0] )}
               className="bg-white text-blue-900 w-36 h-36 p-4 rounded-2xl shadow-md hover:bg-blue-100 transition duration-300 flex flex-col items-center"
             >
               <img

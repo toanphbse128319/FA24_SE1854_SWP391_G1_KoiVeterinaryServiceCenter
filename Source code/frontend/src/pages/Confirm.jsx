@@ -3,9 +3,31 @@ import { useLocation } from 'react-router-dom';
 import OrderConfirmation from '../Components/BookingComfirm';
 import Customer from '../Components/CustomerSummary';
 import GetAPIURL from '../Helper/Utilities';
+import { useNavigate } from 'react-router-dom';
+import { GetGeoLocation, CalculateDistance } from '../Components/MapPicker';
+import { FetchAPI } from '../Helper/Utilities';
 
 const CLINIC_ADDRESS = "1491 Lê Văn Lương, Nhà Bè, TP HCM";
 const PRICE_PER_KM = 5000; // 5000 VND per km
+
+function IsAtHome( {sdm} ){
+    console.log(sdm);
+    if( sdm.Name == "Tại nhà" )
+        return true;
+    return false;
+}
+
+//This function will take an address and get distance from address to coordinate located in .env
+async function GetDistanceFromAddress( { address } ){
+    if( address == null ){
+        return 0;
+    } 
+    const coordinate = await GetGeoLocation( { address } );
+    console.log(coordinate);
+    if( coordinate == [0.0, 0.0] || coordinate[0] == 0 || coordinate[1] == 0 )
+        return 0;
+    return await CalculateDistance( {lng: coordinate[0], lat: coordinate[1] } )
+}
 
 function SetCustomer( { setCustomer } ){
     useEffect(() => {
@@ -16,20 +38,27 @@ function SetCustomer( { setCustomer } ){
         });
     }, [] );
 }
+
 const Confirm = () => {
+    const navigate = useNavigate();
   const location = useLocation();
-  const { service, doctor, time, scheduleId, fishCount } = location.state;
-   console.log(location.state);
+
+    if( window.sessionStorage.getItem("token") == null ){
+        navigate("/Login");
+    }
+
+
+  const { service, doctor, time, scheduleId, fishCount, sdm } = location.state;
   
-  const [customerInfo, setCustomerInfo] = useState({
+  const [customerInfo, SetCustomerInfo] = useState({
     name: "Nguyễn Thị A",
     phone: "0923213123",
     address: "100 Cô Giang, Quận 1, TP HCM"
   });
-    SetCustomer( { setCustomer: setCustomerInfo } );
+    SetCustomer( { setCustomer: SetCustomerInfo } );
   
-  const [movingCost, setMovingCost] = useState(0);
-  const [isRead, setIsRead] = useState(false); // State để theo dõi trạng thái đã đọc thông tin
+  const [movingCost, SetMovingCost] = useState(0);
+  const [isRead, SetIsRead] = useState(false); // State để theo dõi trạng thái đã đọc thông tin
 
   // const calculateDistance = async (origin, destination) => {
   //   try {
@@ -54,8 +83,11 @@ const Confirm = () => {
     const updateMovingCost = async () => {
       if (!service?.deliveryMethodId) {
         // const distance = await calculateDistance(CLINIC_ADDRESS, customerInfo.address);
-        const distance = 5;
-        setMovingCost(distance * PRICE_PER_KM);
+        if( IsAtHome( {sdm: sdm} ) ){
+            GetDistanceFromAddress({address: customerInfo.address }).then( distance => SetMovingCost(distance/1000 * PRICE_PER_KM));
+        } else {
+            SetMovingCost(0);
+        }
       }
     };
 
@@ -63,21 +95,21 @@ const Confirm = () => {
   }, [service?.deliveryMethodId, customerInfo.address]);
 
   const handleUpdateCustomerInfo = async (newInfo) => {
-    setCustomerInfo({
+    SetCustomerInfo({
       ...customerInfo,
       ...newInfo
     });
     
-    // Recalculate moving cost if delivery method is 2
-    if (service?.deliveryMethodId === 2) {
-      const distance = await calculateDistance(CLINIC_ADDRESS, newInfo.address);
-      setMovingCost(distance * PRICE_PER_KM);
-    }
+    //// Recalculate moving cost if delivery method is 2
+    //if (service?.deliveryMethodId === 2) {
+    //  const distance = await calculateDistance(CLINIC_ADDRESS, newInfo.address);
+    //  SetMovingCost(distance * PRICE_PER_KM);
+    //}
   };
 
   // Hàm để chuyển đổi trạng thái đã đọc
   const handleReadToggle = (event) => {
-    setIsRead(event.target.checked);
+    SetIsRead(event.target.checked);
   };
 
     function SaveBookingInfo(){
@@ -120,15 +152,14 @@ const Confirm = () => {
   const handlePayment = () => {
     // Chuyển đến trang thanh toán
     // navigate('/payment'); // Uncomment this line when using in a real app
-    useEffect(() => {
-        let url = GetAPIURL('/vnpay/all/')
-    }, []);
+      //FetchAPI( {endpoint: }  )
   };
 
   return (
     <div className="mt-8 mx-auto max-w-7xl px-4">
       <div className="space-y-8">
         <OrderConfirmation
+            sdm={sdm}
           service={service}
           doctor={doctor}
           time={time}
