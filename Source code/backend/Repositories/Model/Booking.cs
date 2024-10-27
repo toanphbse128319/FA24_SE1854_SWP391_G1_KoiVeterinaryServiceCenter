@@ -14,6 +14,8 @@ public class Booking
     public decimal Deposit { get; set; }
     public int NumberOfFish { get; set; }
     public int IncidentalFish { get; set; }
+    public int NumberOfPool { get; set; }
+    public int IncidentalPool { get; set; }
     public string ServiceDeliveryMethodID { get; set; }
     public double? Vat { get; set; }
     public string BookingAddress { get; set; }

@@ -99,6 +99,8 @@ public class BookingRepository : GenericRepository<Booking>
             newOrder.PaymentMethod = "Bank Transfer";
             newOrder.PaymentStatus = "Pending";
             newOrder.Vat = 0.1;
+            newOrder.NumberOfPool = info.NumberOfPool;
+            newOrder.IncidentalPool = 0;
             string temp = await SetScheduleAsync(info.BookingDate, info.EmployeeID);
             switch (temp){
                 case "Outside working hour":
