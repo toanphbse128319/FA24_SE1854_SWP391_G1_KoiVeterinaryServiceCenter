@@ -21,8 +21,6 @@ const SERVICES = {
 
 function FetchVetList( { setDoctors } ){
     let url = GetAPIURL("/Employee/getbyrolename?info=Veterinarian");
-    console.log("sending: " + url); 
-        console.log("sending: " + url); 
         fetch(url)
             .then( response => response.json() )
             .then( json => setDoctors( json ) )
@@ -31,8 +29,6 @@ function FetchVetList( { setDoctors } ){
 
 function FetchScheduleList( { setSchedules , date } ){
     let url = GetAPIURL("/Schedule/get30daysschedule?date=" + date);
-    console.log("sending: " + url); 
-        console.log("sending: " + url); 
         fetch(url)
             .then( response => response.json() )
             .then( json => setSchedules( json ) )
@@ -41,8 +37,6 @@ function FetchScheduleList( { setSchedules , date } ){
 
 function FetchSlotTableList( { setSlotTable , date } ){
     let url = GetAPIURL("/Schedule/getslotin30days?date=" + date);
-    console.log("sending: " + url); 
-        console.log("sending: " + url); 
         fetch(url)
             .then( response => response.json() )
             .then( json => setSlotTable( json ) )
@@ -80,8 +74,6 @@ const BookingPage = () => {
     FetchSlotTableList( { setSlotTable: SetSlotSchedule, date: currentDate } );
     FetchVetList( { setDoctors } );
     }, []);
-    console.log( SlotSchedule );
-    console.log( DoctorSchedule );
   useEffect(() => {
     if (selectedDoctor) {
       const doctorSchedules = DoctorSchedule.filter(
@@ -115,7 +107,6 @@ const BookingPage = () => {
     setCurrentStep(step);
   };
     
-    console.log( doctors );
         //[
 //    { name: "Nguyễn Văn A", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E1" },
 //    { name: "Nguyễn Văn B", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E2" },

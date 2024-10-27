@@ -19,7 +19,7 @@ import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import getAPIURL from "../Helper/Utilities";
 
 function GetService({ setServices }) {
-  let url = "http://localhost:5145";
+  let url = "/service";
   url = getAPIURL(url);
 
   useEffect(() => {

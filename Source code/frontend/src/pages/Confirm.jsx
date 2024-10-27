@@ -55,7 +55,6 @@ const Confirm = () => {
       if (!service?.deliveryMethodId) {
         // const distance = await calculateDistance(CLINIC_ADDRESS, customerInfo.address);
         const distance = 5;
-        console.log(1);
         setMovingCost(distance * PRICE_PER_KM);
       }
     };
