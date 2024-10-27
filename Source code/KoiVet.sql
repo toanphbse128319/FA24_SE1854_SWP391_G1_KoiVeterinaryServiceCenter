@@ -248,23 +248,22 @@ VALUES
 -- Insert sample data for ServiceDeliveryMethod
 INSERT INTO ServiceDeliveryMethod (ServiceDeliveryMethodID, Name, Status) 
 VALUES 
-('SDM1', 'Fish examination at home', 1),
-('SDM2', 'Pool examination at home', 1),
-('SDM3', 'Online Consultation', 1),
-('SDM4', 'Fish examination at center', 1);
+('SDM1', N'Tại nhà', 1),
+('SDM2', N'Tại cơ sở', 1),
+('SDM3', N'Trực tuyến', 1),
 
 -- Insert sample data for Service
 INSERT INTO Service (ServiceID, ServiceDeliveryMethodID, Name, Price, Description, Status) 
 VALUES 
 ('S1', 'SDM1', N'Kiểm tra sức khỏe cá koi', 100000, N'Kiểm tra sức khỏe cơ bản cho cá koi', 1),
-('S2', 'SDM4', N'Kiểm tra sức khỏe cá koi', 100000, N'Kiểm tra sức khỏe cơ bản cho cá koi', 1),
-('S3', 'SDM3', N'Tư vấn cá koi', 75000, N'Tư vấn trực tuyến với chuyên gia cá koi', 1),
-('S4', 'SDM1', N'Điều trị bệnh cá koi', 150000, N'Điều trị cho các bệnh thường gặp ở cá koi', 1),
-('S5', 'SDM4', N'Điều trị bệnh cá koi', 150000, N'Điều trị cho các bệnh thường gặp ở cá koi', 1),
-('S6', 'SDM4', N'Xét nghiệm máu cho cá', 150000, N'Xét nghiệm máu cho cá', 1),
-('S7', 'SDM2', N'Kiểm tra mức pH', 150000, N'Kiểm tra mức pH trong nước', 1),
-('S8', 'SDM2', N'Loại bỏ nấm ký sinh trong bể', 100000, N'Loại bỏ nấm ký sinh trong bể', 1),
-('S9', 'SDM2', N'Kiểm tra hồ cá', 100000, N'Kiểm tra hồ cá, bể cá', 1);
+('S2', 'SDM2', N'Kiểm tra sức khỏe cá koi', 100000, N'Kiểm tra sức khỏe cơ bản cho cá koi', 1),
+('S3', 'SDM3', N'Tư vấn sức khỏe cá koi', 75000, N'Tư vấn trực tuyến với chuyên gia cá koi', 1),
+('S4', 'SDM1', N'Điều trị cá koi', 150000, N'Điều trị cho các bệnh thường gặp ở cá koi', 1),
+('S5', 'SDM2', N'Điều trị cá koi', 150000, N'Điều trị cho các bệnh thường gặp ở cá koi', 1),
+('S6', 'SDM2', N'Xét nghiệm máu cho cá', 150000, N'Xét nghiệm máu cho cá', 1),
+('S7', 'SDM1', N'Kiểm tra mức pH', 150000, N'Kiểm tra mức pH trong nước', 1),
+('S8', 'SDM1', N'Loại bỏ nấm ký sinh trong bể', 100000, N'Loại bỏ nấm ký sinh trong bể', 1),
+('S9', 'SDM1', N'Kiểm tra hồ cá', 100000, N'Kiểm tra hồ cá, bể cá', 1);
 -- Insert sample data for Feedback
 
 INSERT INTO Feedback (FeedbackID, ServiceRating, VetRating, Description, Status) 
