@@ -21,7 +21,7 @@ const App = () => {
                 // Set loading to true before fetching
                 SetLoading(true);
                 FetchAPI({ endpoint: '/service' }).then( response => response.json().then( json => SetServices( json ) ) );
-                FetchAPI({ endpoint: '/servicedeliverymethod' }).then( response => response.json().then( json => SetServices( json ) ) );
+                FetchAPI({ endpoint: '/servicedeliverymethod' }).then( response => response.json().then( json => SetSDM( json ) ) );
             } catch (error) {
                 console.error("Error fetching data:", error);
             } finally {
@@ -40,7 +40,7 @@ const App = () => {
   return (
     <div className="overflow-x-hidden">
       <Navbar services={services} SetServices={SetServices} sdm={sdm} SetSDM={SetSDM}/>
-      <Banner allServices={services} sdm={sdm}/>
+      <Banner allServices={services} sdm={sdm} />
       <NhanHang />
       <AboutUsFake />
       <Doctor/>

@@ -1,15 +1,40 @@
-import React from "react"; 
+import React, { useEffect } from "react"; 
 import { useNavigate } from "react-router-dom";
 
-const services = [
-  { id: "S1", name: "Đặt lịch tư vấn với bác sĩ", href: "#" },
-  { id: "S2", name: "Đặt lịch khám tại cơ sở", href: "#" },
-  { id: "S3", name: "Đặt lịch khám tại nhà", href: "#" },
-  { id: "S4", name: "Đặt lịch tư vấn kiểm tra hồ cá", href: "#" },
-];
 
-function Banner() {
+//const services = [
+//  { id: "S1", name: "Đặt lịch tư vấn với bác sĩ", href: "#" },
+//  { id: "S2", name: "Đặt lịch khám tại cơ sở", href: "#" },
+//  { id: "S3", name: "Đặt lịch khám tại nhà", href: "#" },
+//  { id: "S4", name: "Đặt lịch tư vấn kiểm tra hồ cá", href: "#" },
+//];
+
+function filterServices( {allServices} ){
+    let services = [];
+    let sdm = [];
+    allServices.forEach( temp => {
+        // ... ở đây được coi là shallow copy, là kiểu chỉ đưa giá trị nhưng không tham chiếu
+        let service = { ... temp };
+        if( service.Name == "Điều trị cá koi" ){
+            if( service.ServiceDeliveryMethodID == sdm.filter(where => {where.name == "Tại nhà"}) )
+                service.Name = service.Name + " tại nhà";
+            else service.Name = service.Name + " tại trung tâm";
+            services.push( service );
+        }
+        else if( service.Name == "Tư vấn sức khỏe cá koi" ){
+            services.push( service );
+        }
+        else if( service.Name == "Kiểm tra hồ cá" ){
+            service.Name = service.Name + " tại nhà"
+            services.push( service );
+        }
+    })
+    return services;
+}
+
+function Banner( { allServices }) {
   let navigate = useNavigate();
+    const services = filterServices( {allServices: allServices} );
   
   const handleGoBooking = (id, name) => {
     console.log("Selected Service ID:", id);
@@ -35,17 +60,17 @@ function Banner() {
         <div className="flex gap-16">
           {services.map((service, index) => (
             <button
-              key={service.id}
-              onClick={() => handleGoBooking(service.id, service.name)}
+              key={service.ServiceID}
+              onClick={() => handleGoBooking(service.ServiceID, service.Name)}
               className="bg-white text-blue-900 w-36 h-36 p-4 rounded-2xl shadow-md hover:bg-blue-100 transition duration-300 flex flex-col items-center"
             >
               <img
                 src={`img/LogoService${index + 1}.png`}
-                alt={`${service.name} Icon`}
+                alt={`${service.Name} Icon`}
                 className="w-12 h-12 mb-2"
               />
               <span className="text-center text-base font-semibold">
-                {service.name}
+                {service.Name}
               </span>
             </button>
           ))}
