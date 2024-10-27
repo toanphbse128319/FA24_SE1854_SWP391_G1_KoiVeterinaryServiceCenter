@@ -1,91 +1,51 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import News from "./News";
 import { Link } from "react-scroll";
-import axios from "axios";
 import {
   Dialog,
   DialogPanel,
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
   Popover,
   PopoverButton,
   PopoverGroup,
   PopoverPanel,
 } from "@headlessui/react";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import {
+  Bars3Icon,
+  XMarkIcon,
+  ChevronDownIcon,
+} from "@heroicons/react/20/solid";
 
-import getAPIURL from "../Helper/Utilities";
-
-function GetService({ setServices }) {
-  let url = "/service";
-  url = getAPIURL(url);
-
-  useEffect(() => {
-    console.log("sending: " + url);
-    fetch(url)
-      .then((response) => response.json())
-      .then((json) => setServices(json))
-      .catch((error) => console.error(error));
-  }, []);
-}
-
-function ServiceDropdown({ handleGoAboutUs }) {
-  const [services, setServices] = useState([]);
-  GetService({ setServices: setServices });
-  console.log(services);
-
-  return (
-    <>
-      <PopoverGroup className="hidden lg:flex lg:gap-x-12">
-      <Popover className="relative">
-        <PopoverButton className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900">
-          Service
-          <ChevronDownIcon aria-hidden="true" className="h-5 w-5 flex-none text-gray-400" />
-        </PopoverButton>
-
-      </Popover>
-
-      <a href="#" className="text-sm font-semibold leading-6 text-gray-900">Pet Care</a>
-      <Link
-        to="news"
-        smooth={true}
-        duration={500}
-        className="text-sm font-semibold leading-6 text-gray-900 cursor-pointer"
-      >
-        News
-      </Link>
-      <a href="#" className="text-sm font-semibold leading-6 text-gray-900">Contact</a>
-      <button onClick={handleGoAboutUs} className="text-sm font-semibold leading-6 text-gray-900">
-        About Us
-      </button>
-    </PopoverGroup>
-    </>
-  );
-}
+const services = [
+  { id: "S1", name: "Đặt lịch tư vấn với bác sĩ", href: "#" },
+  { id: "S2", name: "Đặt lịch khám tại cơ sở", href: "#" },
+  { id: "S3", name: "Đặt lịch khám tại nhà", href: "#" },
+  { id: "S4", name: "Đặt lịch tư vấn kiểm tra hồ cá", href: "#" },
+];
 
 export default function Example() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   let navigate = useNavigate();
-
   const handleGoLogin = () => {
     navigate("/Login");
   };
-
   const handleGoAboutUs = () => {
     navigate("/AboutUs");
   };
- 
 
   return (
-    <header className="bg-white bg-gradient-to-b from-inherit to-teal-100 fixed top-0 left-0 w-full z-50 ">
+    <header className="bg-white fixed top-0 w-full z-50 ">
       <nav
         aria-label="Global"
-        className=" mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
+        className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
       >
         <div className="flex lg:flex-1">
-          <a href="/" className="-m-1.5 p-1.5">
+        <a href="/" className="-m-1.5 p-1.5">
             <span className="sr-only">Your Company</span>
             <img alt="" src="img/logo-c-s-2.png" className="h-14 w-auto" />
           </a>
@@ -100,15 +60,51 @@ export default function Example() {
             <Bars3Icon aria-hidden="true" className="h-6 w-6" />
           </button>
         </div>
+        <PopoverGroup className="hidden lg:flex lg:gap-20">
+          <Popover className="relative">
+            <PopoverButton className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900">
+              Services
+              <ChevronDownIcon
+                aria-hidden="true"
+                className="h-5 w-5 flex-none text-gray-400"
+              />
+            </PopoverButton>
+            <PopoverPanel className="absolute left-0 z-10 mt-3 w-48 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+              <div className="py-1">
+                {services.map((service) => (
+                  <a
+                    key={service.name}
+                    href={service.href}
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    {service.name}
+                  </a>
+                ))}
+              </div>
+            </PopoverPanel>
+          </Popover>
 
-        
-        <ServiceDropdown handleGoAboutUs={handleGoAboutUs} />
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+          <Link
+            to="news"
+            smooth={true}
+            duration={500}
+            className="text-sm font-semibold leading-6 text-gray-900 cursor-pointer"
+          >
+            News
+          </Link>
+          <a href="/" className="text-sm font-semibold leading-6 text-gray-900">
+            Contact
+          </a>
           <button
-            onClick={handleGoLogin}
+            onClick={handleGoAboutUs}
             className="text-sm font-semibold leading-6 text-gray-900"
           >
-            Login <span aria-hidden="true">&rarr;</span>
+            About Us
+          </button>
+        </PopoverGroup>
+        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+          <button onClick={handleGoLogin} className="text-sm font-semibold leading-6 text-gray-900">
+            Log in <span aria-hidden="true">&rarr;</span>
           </button>
         </div>
       </nav>
@@ -140,32 +136,28 @@ export default function Example() {
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-gray-500/10">
               <div className="space-y-2 py-6">
-                <a
-                  href="#"
-                  className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                >
-                  Features
-                </a>
-                <a
-                  href="#"
-                  className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                >
-                  Marketplace
-                </a>
-                <a
-                  href="#"
-                  className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                >
-                  Company
-                </a>
-              </div>
-              <div className="py-6">
-                <button
-                  onClick={handleGoLogin}
-                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                >
-                  Log in
-                </button>
+                <Disclosure as="div" className="-mx-3">
+                  <DisclosureButton className="group flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+                    Services
+                    <ChevronDownIcon
+                      aria-hidden="true"
+                      className="h-5 w-5 flex-none group-data-[open]:rotate-180"
+                    />
+                  </DisclosureButton>
+                  <DisclosurePanel className="mt-2 space-y-2">
+                    {services.map((service) => (
+                      <DisclosureButton
+                        key={service.name}
+                        as="a"
+                        href={service.href}
+                        className="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                      >
+                        {service.name}
+                      </DisclosureButton>
+                    ))}
+                  </DisclosurePanel>
+                </Disclosure>
+                
               </div>
             </div>
           </div>
