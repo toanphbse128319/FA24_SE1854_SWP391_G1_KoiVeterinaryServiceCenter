@@ -3,7 +3,9 @@ import TrackingBookingDetail from '../Components/TrackingBookingDetail';
 import DoctorList from "../Components/Doctor'sSummaryInformation";
 import Lich from "../Components/ScheduleCustomer";
 import GetAPIURL from '../Helper/Utilities'
+import { FetchAPI } from '../Helper/Utilities';
 import { useNavigate } from 'react-router-dom';
+
 
 const STEPS = {
   SELECT_DOCTOR: 'selectDoctor',
@@ -18,31 +20,31 @@ const SERVICES = {
   serviceID: "S002",
   price: 75.00,
 };
-
-function FetchVetList( { setDoctors } ){
-    let url = GetAPIURL("/Employee/getbyrolename?info=Veterinarian");
-        fetch(url)
-            .then( response => response.json() )
-            .then( json => setDoctors( json ) )
-            .catch( error => console.error( error ) );
-}
-
-function FetchScheduleList( { setSchedules , date } ){
-    let url = GetAPIURL("/Schedule/get30daysschedule?date=" + date);
-        fetch(url)
-            .then( response => response.json() )
-            .then( json => setSchedules( json ) )
-            .catch( error => console.error( error ) );
-}
-
-function FetchSlotTableList( { setSlotTable , date } ){
-    let url = GetAPIURL("/Schedule/getslotin30days?date=" + date);
-        fetch(url)
-            .then( response => response.json() )
-            .then( json => setSlotTable( json ) )
-            .catch( error => console.error( error ) );
-}
-
+//
+//function FetchVetList( { setDoctors } ){
+//    let url = GetAPIURL("/Employee/getbyrolename?info=Veterinarian");
+//        fetch(url)
+//            .then( response => response.json() )
+//            .then( json => setDoctors( json ) )
+//            .catch( error => console.error( error ) );
+//}
+//
+//function FetchScheduleList( { setSchedules , date } ){
+//    let url = GetAPIURL("/Schedule/get30daysschedule?date=" + date);
+//        fetch(url)
+//            .then( response => response.json() )
+//            .then( json => setSchedules( json ) )
+//            .catch( error => console.error( error ) );
+//}
+//
+//function FetchSlotTableList( { setSlotTable , date } ){
+//    let url = GetAPIURL("/Schedule/getslotin30days?date=" + date);
+//        fetch(url)
+//            .then( response => response.json() )
+//            .then( json => setSlotTable( json ) )
+//            .catch( error => console.error( error ) );
+//}
+//
 //const DoctorSchedule = [
 //  { ScheduleID: 'SCH1', EmployeeID: 'E3', Date: '2024-11-01', Status: 'Active' },
 //  { ScheduleID: 'SCH2', EmployeeID: 'E3', Date: '2024-11-02', Status: 'Active' },
@@ -61,50 +63,72 @@ const BookingPage = () => {
     const [DoctorSchedule, SetDoctorSchedule] = useState([]);
     const [SlotSchedule, SetSlotSchedule] = useState([]);
   const [selectedService] = useState(SERVICES);
-  const [selectedDoctor, setSelectedDoctor] = useState(null);
-  const [currentStep, setCurrentStep] = useState(STEPS.SELECT_SCHEDULE);
-  const [doctors, setDoctors] = useState([]);
+  const [selectedDoctor, SetSelectedDoctor] = useState(null);
+  const [currentStep, SetCurrentStep] = useState(STEPS.SELECT_SCHEDULE);
+  const [doctors, SetDoctors] = useState([]);
   const [role] = useState('R1');
-  const [isFull, setIsFull] = useState(true);
-  const [filteredDoctorSchedule, setFilteredDoctorSchedule] = useState([]);
-  const [filteredSlotSchedule, setFilteredSlotSchedule] = useState([]);
-    let currentDate = new Date().toISOString().split("T")[0];
+  const [isFull, SetIsFull] = useState(true);
+  const [filteredDoctorSchedule, SetFilteredDoctorSchedule] = useState([]);
+  const [filteredSlotSchedule, SetFilteredSlotSchedule] = useState([]);
+    const [loading, SetLoading] = useState(true);
+    
     useEffect(() => {
-    FetchScheduleList( { setSchedules: SetDoctorSchedule, date: currentDate } );
-    FetchSlotTableList( { setSlotTable: SetSlotSchedule, date: currentDate } );
-    FetchVetList( { setDoctors } );
+        async function GetData(){
+            try {
+                // Set loading to true before fetching
+                let currentDate = new Date().toISOString().split("T")[0];
+                SetLoading(true);
+                FetchAPI({ endpoint: '/Employee/getbyrolename?info=Veterinarian' }).then( response => response.json().then( json => SetDoctors( json ) ) );
+                FetchAPI({ endpoint: '/Schedule/get30daysschedule?date=' + currentDate }).then( response => response.json().then( json => SetDoctorSchedule( json ) ) );
+                FetchAPI({ endpoint: '/Schedule/getslotin30days?date=' + currentDate }).then( response => response.json().then( json => SetSlotSchedule( json ) ) );
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            } finally {
+                // Set loading to false after fetching
+                SetLoading(false);
+            }
+        }
+        GetData();
     }, []);
+
   useEffect(() => {
     if (selectedDoctor) {
       const doctorSchedules = DoctorSchedule.filter(
         schedule => schedule.EmployeeID === selectedDoctor.EmployeeID
       );
-      setFilteredDoctorSchedule(doctorSchedules);
+      SetFilteredDoctorSchedule(doctorSchedules);
 
       const doctorSlots = SlotSchedule.filter(slot =>
         doctorSchedules.some(schedule => schedule.ScheduleID === slot.ScheduleID)
       );
-      setFilteredSlotSchedule(doctorSlots);
+      SetFilteredSlotSchedule(doctorSlots);
     } else {
-      setFilteredDoctorSchedule(DoctorSchedule);
-      setFilteredSlotSchedule(SlotSchedule);
+      SetFilteredDoctorSchedule(DoctorSchedule);
+      SetFilteredSlotSchedule(SlotSchedule);
     }
-  }, [selectedDoctor, doctors, SlotSchedule, DoctorSchedule]);
+  }, [selectedDoctor, doctors, DoctorSchedule, SlotSchedule]);
 
+
+    if(loading){
+        return (
+            <div>Loading...</div>
+        );
+    }
+    
   const handleDoctorSelect = (doctor) => {
-    setSelectedDoctor(doctor);
-    setCurrentStep(STEPS.SELECT_DOCTERSCHEDUEL);
-    setIsFull(false);
+    SetSelectedDoctor(doctor);
+    SetCurrentStep(STEPS.SELECT_DOCTERSCHEDUEL);
+    SetIsFull(false);
   };
 
   const handleStepChange = (step) => {
     if (step === STEPS.SELECT_SCHEDULE) {
-      setSelectedDoctor(null);
-      setIsFull(true);
+      SetSelectedDoctor(null);
+      SetIsFull(true);
     } else if (step === STEPS.SELECT_DOCTOR) {
-      setIsFull(false);
+      SetIsFull(false);
     }
-    setCurrentStep(step);
+    SetCurrentStep(step);
   };
     
         //[
@@ -170,7 +194,7 @@ const BookingPage = () => {
         </div>
       </div>
 
-      <style jsx>{`
+      <style >{`
         .booking-page {
           display: flex;
           margin-top: 96px;
