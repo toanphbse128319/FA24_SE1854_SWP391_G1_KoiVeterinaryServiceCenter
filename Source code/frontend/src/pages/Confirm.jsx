@@ -152,7 +152,14 @@ const Confirm = () => {
   const handlePayment = () => {
     // Chuyển đến trang thanh toán
     // navigate('/payment'); // Uncomment this line when using in a real app
-      //FetchAPI( {endpoint: }  )
+      let customerID = null;
+      FetchAPI( { endpoint: `/customer/getbyinfo?info=${window.sessionStorage.getItem("phonenumber")}` } )
+        .then( response => response.json()
+            .then( json => {customerID = json.CustomerID;})
+        )
+      //FetchAPI( {endpoint: "/booking/add", method: 'Post', body:{
+      //  customerID: 
+      //} }  ) 
   };
 
   return (
