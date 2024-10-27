@@ -54,6 +54,22 @@ public class AccountRepository : GenericRepository<Account>
         lastname = Employee.LastName;
     }
 
+    public string? GetID( string accountID )
+    {
+        CustomerRepository CustomerRepository = new CustomerRepository(_context);
+        Customer? customer = CustomerRepository.SearchByAccountID(accountID);
+        if( customer != null ){
+            return customer.CustomerID;
+        }
+        EmployeeRepository EmployeeRepository = new EmployeeRepository(_context);
+        Employee? Employee = EmployeeRepository.SearchByAccountID(accountID);
+        if (Employee == null)
+        {
+            return null;
+        }
+        return Employee.EmployeeID;
+    }
+
     public async Task<string> LoginAsync(LoginInformation info)
     {
         if (info.IsEmpty())
@@ -74,21 +90,24 @@ public class AccountRepository : GenericRepository<Account>
             return "Account has been disabled";
         string? lastname = null;
         string? firstname = null;
+        string? id = null;
         GetName(ref lastname, ref firstname, found.AccountID);
-        if (lastname == null || firstname == null)
+        id = GetID( found.AccountID );
+        if (lastname == null || firstname == null || id == null)
         {
             return "Cannot find profile associate with this account";
         }
         Token token = new Token();
         RoleRepository RoleRepository = new RoleRepository(_context);
         var claims = new List<Claim>{
-            new Claim("Id", Guid.NewGuid().ToString()),
+            new Claim("Unique", Guid.NewGuid().ToString()),
+            new Claim("ID", id),
             new Claim(JwtRegisteredClaimNames.Email, found.Email),
             new Claim(ClaimTypes.Role, RoleRepository.getRoleName(found.RoleID)),
             new Claim("FirstName", firstname),
             new Claim("LastName", lastname),
             new Claim("PhoneNumber", found.PhoneNumber),
-            new Claim("Address", (new CustomerRepository(_context)).SearchByAccountIDAsync(found.AccountID).Result!.Address)
+            new Claim("Address", (new CustomerRepository(_context)).SearchByAccountIDAsync(found.AccountID).Result!.Address),
         };
         token.Claims = claims;
         return token.GenerateToken(4);
