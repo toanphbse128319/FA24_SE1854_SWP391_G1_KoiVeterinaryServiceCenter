@@ -8,7 +8,7 @@ import Doctor  from "./Components/DoctorLanding";
 import { Outlet } from "react-router-dom";
 import News from "./Components/News";
 import { useState, useEffect } from 'react';
-import { FetchJSON } from "./Helper/Utilities";
+import { FetchAPI } from "./Helper/Utilities";
 
 
 const App = () => {
@@ -20,8 +20,8 @@ const App = () => {
             try {
                 // Set loading to true before fetching
                 SetLoading(true);
-                await FetchJSON({ endpoint: '/service', Setter: SetServices });
-                await FetchJSON({ endpoint: '/servicedeliverymethod', Setter: SetSDM });
+                FetchAPI({ endpoint: '/service' }).then( response => response.json().then( json => SetServices( json ) ) );
+                FetchAPI({ endpoint: '/servicedeliverymethod' }).then( response => response.json().then( json => SetServices( json ) ) );
             } catch (error) {
                 console.error("Error fetching data:", error);
             } finally {

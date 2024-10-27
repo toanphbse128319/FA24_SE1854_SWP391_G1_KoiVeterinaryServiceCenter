@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import getAPIURL from "../Helper/Utilities"
 import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom'
 import { 
@@ -13,23 +12,15 @@ import {
   CircularProgress
 } from '@mui/material';
 import { Navigate } from 'react-router-dom';
+import { FetchAPI } from '../Helper/Utilities';
 
 async function CheckLogin({ info, password ,setErrors }) {
     try {
-        let url = getAPIURL("/login");
-        const response = await fetch( url , {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-
-            body: JSON.stringify({
+        let data; 
+        FetchAPI( {endpoint: '/login', method: 'Post', body: {
                 info: info, 
                 password: password 
-            })
-        });
-        const data = await response.text();
-        console.log(data); // Hiển thị dữ liệu trong console để kiểm tra
+            }}  ).then( text => data = text );
 
         if (!response.ok) {
             // Handle different types of errors
