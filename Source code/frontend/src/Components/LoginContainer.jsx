@@ -16,11 +16,10 @@ import { FetchAPI } from '../Helper/Utilities';
 
 async function CheckLogin({ info, password ,setErrors }) {
     try {
-        let data; 
-        FetchAPI( {endpoint: '/login', method: 'Post', body: {
+        const response = await FetchAPI( {endpoint: '/login', method: 'Post', body: {
                 info: info, 
                 password: password 
-            }}  ).then( text => data = text );
+            }}  );
 
         if (!response.ok) {
             // Handle different types of errors
@@ -39,6 +38,7 @@ async function CheckLogin({ info, password ,setErrors }) {
             }
             return;
         }
+        const data = await response.text();
         const decoded = jwtDecode(data);
         console.log(decoded); // In thông tin giải mã
         window.sessionStorage.setItem('token', data); // Store token in session storage
@@ -109,6 +109,8 @@ function Login() {
       CheckLogin( { info: info, password: password, setErrors: setErrors } ).then( result => {
         if( result == "success" )
             navigate("/");
+          else if( result == "pending" )
+              setIsLoading( true );
         else 
           setIsLoading(false);
       }
