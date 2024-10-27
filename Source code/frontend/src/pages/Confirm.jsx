@@ -19,7 +19,7 @@ function SetCustomer( { setCustomer } ){
 const Confirm = () => {
   const location = useLocation();
   const { service, doctor, time, scheduleId, fishCount } = location.state;
-  // console.log(location.state);
+   console.log(location.state);
   
   const [customerInfo, setCustomerInfo] = useState({
     name: "Nguyễn Thị A",
