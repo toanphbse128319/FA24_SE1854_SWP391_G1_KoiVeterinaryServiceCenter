@@ -29,7 +29,7 @@ const MyProfile = () => {
        
       <div className="bg-white rounded-lg shadow-md p-6 w-full max-w-md">
       <div className="mr-[25rem]">
-      <Button variant="outlined "
+      <Button variant="text"
       onClick={handleGoHomePage}>Back</Button>
       </div>
         <div className="flex flex-col items-center">
