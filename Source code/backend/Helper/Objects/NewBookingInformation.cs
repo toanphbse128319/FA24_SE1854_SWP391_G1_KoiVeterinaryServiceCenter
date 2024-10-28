@@ -7,6 +7,7 @@ public class NewBookingInformation(){
     public string ServiceID{ get; set; }
     public DateTime BookingDate{ get; set; }
     public int NumberOfFish{ get; set; }
+    public int NumberOfPool{ get; set; }
     public string SDM{ get; set; }
     public string BookingAddress{ get; set; }
 
@@ -38,8 +39,12 @@ public class NewBookingInformation(){
             return "SDM id cannot be empty";
         if( BookingAddress.Count() == 0 )
             return "Booking address cannot be empty";
-        if( NumberOfFish == 0 )
-            return "Number of fish cannot be lower than 1";
+        if( NumberOfPool <= 0 && NumberOfFish <= 0 )
+            return "Both number of fish and pool cannot be lower than 0";
+        if( NumberOfFish < 0 )
+            return "Number of fishs cannot be lower than 0";
+        if( NumberOfPool < 0 )
+            return "Number of pools cannot be lower than 0";
         return "Ok";
         
     }

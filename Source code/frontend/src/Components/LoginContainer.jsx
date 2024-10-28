@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import getAPIURL from "../Helper/Utilities"
 import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom'
 import { 
@@ -13,23 +12,14 @@ import {
   CircularProgress
 } from '@mui/material';
 import { Navigate } from 'react-router-dom';
+import { FetchAPI } from '../Helper/Utilities';
 
 async function CheckLogin({ info, password ,setErrors }) {
     try {
-        let url = getAPIURL("/login");
-        const response = await fetch( url , {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-
-            body: JSON.stringify({
+        const response = await FetchAPI( {endpoint: '/login', method: 'Post', body: {
                 info: info, 
                 password: password 
-            })
-        });
-        const data = await response.text();
-        console.log(data); // Hiển thị dữ liệu trong console để kiểm tra
+            }}  );
 
         if (!response.ok) {
             // Handle different types of errors
@@ -48,6 +38,7 @@ async function CheckLogin({ info, password ,setErrors }) {
             }
             return;
         }
+        const data = await response.text();
         const decoded = jwtDecode(data);
         console.log(decoded); // In thông tin giải mã
         window.sessionStorage.setItem('token', data); // Store token in session storage
@@ -118,6 +109,8 @@ function Login() {
       CheckLogin( { info: info, password: password, setErrors: setErrors } ).then( result => {
         if( result == "success" )
             navigate("/");
+          else if( result == "pending" )
+              setIsLoading( true );
         else 
           setIsLoading(false);
       }

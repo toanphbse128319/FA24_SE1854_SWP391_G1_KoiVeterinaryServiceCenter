@@ -75,8 +75,6 @@ public class BookingDetailController : ControllerBase {
                 bd.Incidental = info.Incidental;
             if (info.NoteResult != "" && bd.NoteResult != info.NoteResult)
                 bd.NoteResult = info.NoteResult;
-            if (info.NoteExamination != "" && bd.NoteExamination != info.NoteExamination)
-                bd.NoteExamination = info.NoteExamination;
             if (await _unitOfWork.BookingDetailRepository.UpdateAsync(bd) == 0)
                 return BadRequest("BookingDetail has not been updated!");
             else

@@ -2,9 +2,8 @@ import React from 'react';
 import { Card, CardHeader, CardContent, Typography } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 
-const OrderConfirmation = ({ service, doctor, time, scheduleId, fishCount, movingCost }) => {
+const OrderConfirmation = ({ service, doctor, time, scheduleId, fishCount, movingCost, sdm }) => {
   // Kiểm tra service trước khi sử dụng
-  console.log(service);
   if (!service) {
     return (
       <Card className="max-w-4xl mt-4">
@@ -27,7 +26,7 @@ const OrderConfirmation = ({ service, doctor, time, scheduleId, fishCount, movin
   };
 
   const calculateTotal = () => {
-    const servicePrice = service?.price || 0;
+    const servicePrice = (service?.Price * fishCount) || 0;
     const moving = movingCost || 0;
     return servicePrice + moving;
   };
@@ -38,12 +37,12 @@ const OrderConfirmation = ({ service, doctor, time, scheduleId, fishCount, movin
       { 
         key: 'format', 
         label: 'Hình thức', 
-        value: service?.serviceDeliveryMethod || 'Chưa xác định'
+        value: sdm?.Name || 'Chưa xác định'
       },
       { 
         key: 'service', 
         label: 'Dịch vụ', 
-        value: service?.name || 'Chưa xác định'
+        value: service?.Name || 'Chưa xác định'
       },
       { 
         key: 'fishCount', 
@@ -53,10 +52,11 @@ const OrderConfirmation = ({ service, doctor, time, scheduleId, fishCount, movin
     ];
 
     if (doctor) {
+        console.log( doctor );
       columns.push({ 
         key: 'doctor', 
         label: 'Bác sĩ', 
-        value: doctor.name 
+        value: doctor.FirstName + " " + doctor.LastName 
       });
     }
 
@@ -82,7 +82,7 @@ const OrderConfirmation = ({ service, doctor, time, scheduleId, fishCount, movin
       { 
         key: 'service-fee', 
         label: 'Phí dịch vụ', 
-        value: service?.price || 0
+        value: service?.Price || 0
       },
       { 
         key: 'total', 

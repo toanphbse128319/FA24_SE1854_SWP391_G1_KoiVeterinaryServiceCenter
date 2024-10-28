@@ -58,11 +58,23 @@ export default function Map( {setDistance}){
     );
 }
 
-async function CalculateDistance( {lng, lat} ){
+export async function GetGeoLocation( {address} ){
+    if( address == null ){
+        return [0.0, 0.0];
+    }
+    const APIKey = import.meta.env.VITE_GEOAPIFY_APIKEY;
+    let url = `https://api.geoapify.com/v1/geocode/search?text=${address}&filter=countrycode:vn&limit=1&apiKey=${APIKey}`    
+    const response = await fetch(url).catch( error => console.error(error) );
+    const json = await response.json();
+    return [json?.features[0]?.properties.lon || 0, json?.features[0]?.properties.lat || 0 ];
+}
+
+export async function CalculateDistance( {lng, lat} ){
     const APIKey = import.meta.env.VITE_GEOAPIFY_APIKEY;
     const currentLng = import.meta.env.VITE_HEADQUARTER_LNG;
     const currentLat = import.meta.env.VITE_HEADQUARTER_LAT;
     let url = `https://api.geoapify.com/v1/routing?waypoints=${currentLat},${currentLng}|${lat},${lng}&mode=medium_truck&apiKey=${APIKey}`    
+    console.log('sending' + url);
     const response = await fetch(url).catch( error => console.error(error) );
     const json = await response.json();
     return json.features[0].properties.distance ;

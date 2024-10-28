@@ -10,7 +10,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddControllers();
+
+//This to force c# to return json with the key as same as property name instead of camel case
+//because the default naming policy is using camel case when jsonify
+builder.Services.AddControllers().AddJsonOptions( options => {
+    options.JsonSerializerOptions.PropertyNamingPolicy = null;
+
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<UnitOfWork>();
 builder.Services.AddSwaggerGen(option =>

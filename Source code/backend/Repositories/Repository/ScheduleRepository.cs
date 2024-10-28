@@ -53,6 +53,11 @@ public class ScheduleRepository : GenericRepository<Schedule>
                                                                         schedule.EmployeeID == EmpID);
     }
 
+    public async Task<List<Schedule>> Get30DaysScheduleAsync( DateOnly date ){
+        return await _context.Schedules.Where( schedule => schedule.Date >= date &&
+                                                           schedule.Date <= date.AddDays(30) ).ToListAsync();
+    }
+
     public async Task<Schedule> UpdateVetScheduleAsync(DateOnly date, string oldEmpID, string newEmpID)
     {
         Schedule? sch = await _context.Schedules.FirstOrDefaultAsync(schedule => schedule.Date == date &&
@@ -78,5 +83,14 @@ public class ScheduleRepository : GenericRepository<Schedule>
         return schedule;
     }
 
+    public async Task<List<SlotTable>> GetSlotIn30Days( DateOnly date ){
+        List<Schedule> schedules = await Get30DaysScheduleAsync( date );
+        List<SlotTable> slots = new List<SlotTable>();
+        SlotTableRepository slotManager = new SlotTableRepository( _context );
+        foreach( Schedule schedule in schedules ){
+            slots.AddRange( await slotManager.SearchByScheduleIDAsync( schedule.ScheduleID ) );
+        }
+        return slots;
+    }
 }
 

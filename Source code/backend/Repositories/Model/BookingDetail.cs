@@ -1,5 +1,4 @@
 ﻿#nullable disable
-using Microsoft.Identity.Client;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Repositories.Model;
@@ -13,7 +12,6 @@ public class BookingDetail
     public decimal UnitPrice { get; set; }
     public bool Incidental {  get; set; }
     public string NoteResult { get; set; }
-    public string NoteExamination { get; set; }
     public string AnimalStatusDescription { get; set; }
     public string ConsultDoctor { get; set; } 
     public string DrugList { get; set; } 

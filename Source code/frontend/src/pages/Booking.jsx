@@ -3,6 +3,10 @@ import TrackingBookingDetail from '../Components/TrackingBookingDetail';
 import DoctorList from "../Components/Doctor'sSummaryInformation";
 import Lich from "../Components/ScheduleCustomer";
 import GetAPIURL from '../Helper/Utilities'
+import { FetchAPI } from '../Helper/Utilities';
+import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+
 
 const STEPS = {
   SELECT_DOCTOR: 'selectDoctor',
@@ -10,86 +14,133 @@ const STEPS = {
   SELECT_DOCTERSCHEDUEL: 'selectDocterScheduel',
 };
 
-const SERVICES = {
-  name: "Virtual Koi Consultation",
-  serviceDeliveryMethod: "truc tuyen",
-  serviceDeliveryMethodId: "2",
-  serviceID: "S002",
-  price: 75.00,
-};
+//const SERVICES = {
+//  name: "Virtual Koi Consultation",
+//  serviceDeliveryMethod: "truc tuyen",
+//  serviceDeliveryMethodId: "2",
+//  serviceID: "S002",
+//  price: 75.00,
+//};
+//
+//function FetchVetList( { setDoctors } ){
+//    let url = GetAPIURL("/Employee/getbyrolename?info=Veterinarian");
+//        fetch(url)
+//            .then( response => response.json() )
+//            .then( json => setDoctors( json ) )
+//            .catch( error => console.error( error ) );
+//}
+//
+//function FetchScheduleList( { setSchedules , date } ){
+//    let url = GetAPIURL("/Schedule/get30daysschedule?date=" + date);
+//        fetch(url)
+//            .then( response => response.json() )
+//            .then( json => setSchedules( json ) )
+//            .catch( error => console.error( error ) );
+//}
+//
+//function FetchSlotTableList( { setSlotTable , date } ){
+//    let url = GetAPIURL("/Schedule/getslotin30days?date=" + date);
+//        fetch(url)
+//            .then( response => response.json() )
+//            .then( json => setSlotTable( json ) )
+//            .catch( error => console.error( error ) );
+//}
+//
+//const DoctorSchedule = [
+//  { ScheduleID: 'SCH1', EmployeeID: 'E3', Date: '2024-11-01', Status: 'Active' },
+//  { ScheduleID: 'SCH2', EmployeeID: 'E3', Date: '2024-11-02', Status: 'Active' },
+//  { ScheduleID: 'SCH3', EmployeeID: 'E3', Date: '2024-11-03', Status: 'Active' },
+//  { ScheduleID: 'SCH4', EmployeeID: 'E3', Date: '2024-11-04', Status: 'Active' },
+//];
 
-function GetVetList( { setDoctors } ){
-    let url = GetAPIURL("/Employee/getbyrolename?info=Veterinarian");
-    let data;
-    console.log("sending: " + url); 
-    useEffect(() => {
-        console.log("sending: " + url); 
-        fetch(url)
-            .then( response => response.json() )
-            .then( json => setDoctors( json ) )
-            .catch( error => console.error( error ) );
-        }, [] );
-}
-
-const DocterSchedule = [
-  { ScheduleID: 'SCH1', EmployeeID: 'E3', Date: '2024-11-01', Status: 'Active' },
-  { ScheduleID: 'SCH2', EmployeeID: 'E3', Date: '2024-11-02', Status: 'Active' },
-  { ScheduleID: 'SCH3', EmployeeID: 'E3', Date: '2024-11-03', Status: 'Active' },
-  { ScheduleID: 'SCH4', EmployeeID: 'E3', Date: '2024-11-04', Status: 'Active' },
-];
-
-const SlotSchedule = [
-  { SlotTableID: 'ST1', ScheduleID: 'SCH1', Slot: 1, SlotCapacity: 10, SlotOrdered: 5, SlotStatus: 1 },
-  { SlotTableID: 'ST2', ScheduleID: 'SCH1', Slot: 2, SlotCapacity: 10, SlotOrdered: 6, SlotStatus: 1 },
-  { SlotTableID: 'ST3', ScheduleID: 'SCH1', Slot: 3, SlotCapacity: 10, SlotOrdered: 7, SlotStatus: 1 },
-  { SlotTableID: 'ST4', ScheduleID: 'SCH1', Slot: 4, SlotCapacity: 10, SlotOrdered: 8, SlotStatus: 1 },
-];
+//const SlotSchedule = [
+//  { SlotTableID: 'ST1', ScheduleID: 'SCH1', Slot: 1, SlotCapacity: 10, SlotOrdered: 5, SlotStatus: 1 },
+//  { SlotTableID: 'ST2', ScheduleID: 'SCH1', Slot: 2, SlotCapacity: 10, SlotOrdered: 6, SlotStatus: 1 },
+//  { SlotTableID: 'ST3', ScheduleID: 'SCH1', Slot: 3, SlotCapacity: 10, SlotOrdered: 7, SlotStatus: 1 },
+//  { SlotTableID: 'ST4', ScheduleID: 'SCH1', Slot: 4, SlotCapacity: 10, SlotOrdered: 8, SlotStatus: 1 },
+//];
 
 const BookingPage = () => {
-  const [selectedService] = useState(SERVICES);
-  const [selectedDoctor, setSelectedDoctor] = useState(null);
-  const [currentStep, setCurrentStep] = useState(STEPS.SELECT_SCHEDULE);
-  const [doctors, setDoctors] = useState([]);
+    const location = useLocation();
+
+    if( location.state == undefined )
+        return <div> Missing information </div>;
+    // If location.state is undefined, the || {} part ensures that you don't try to destructure undefined, thus preventing an error
+    const { service, sdm } = location.state || {};
+    const [DoctorSchedule, SetDoctorSchedule] = useState([]);
+    const [SlotSchedule, SetSlotSchedule] = useState([]);
+  const [selectedService] = useState(service);
+    const [selectedSDM] = useState(sdm);
+  const [selectedDoctor, SetSelectedDoctor] = useState(null);
+  const [currentStep, SetCurrentStep] = useState(STEPS.SELECT_SCHEDULE);
+  const [doctors, SetDoctors] = useState([]);
   const [role] = useState('R1');
-  const [isFull, setIsFull] = useState(true);
-  const [filteredDoctorSchedule, setFilteredDoctorSchedule] = useState([]);
-  const [filteredSlotSchedule, setFilteredSlotSchedule] = useState([]);
+  const [isFull, SetIsFull] = useState(true);
+  const [filteredDoctorSchedule, SetFilteredDoctorSchedule] = useState([]);
+  const [filteredSlotSchedule, SetFilteredSlotSchedule] = useState([]);
+
+    //This state is use to ensure the webpage get all the information it need to work, removing this will makr other part throw error
+    const [loading, SetLoading] = useState(true);
+    
+    useEffect(() => {
+        async function GetData(){
+            try {
+                // Set loading to true before fetching
+                let currentDate = new Date().toISOString().split("T")[0];
+                SetLoading(true);
+                FetchAPI({ endpoint: '/Employee/getbyrolename?info=Veterinarian' }).then( response => response.json().then( json => SetDoctors( json ) ) );
+                FetchAPI({ endpoint: '/Schedule/get30daysschedule?date=' + currentDate }).then( response => response.json().then( json => SetDoctorSchedule( json ) ) );
+                FetchAPI({ endpoint: '/Schedule/getslotin30days?date=' + currentDate }).then( response => response.json().then( json => SetSlotSchedule( json ) ) );
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            } finally {
+                // Set loading to false after fetching
+                SetLoading(false);
+            }
+        }
+        GetData();
+    }, []);
 
   useEffect(() => {
     if (selectedDoctor) {
-      const doctorSchedules = DocterSchedule.filter(
+      const doctorSchedules = DoctorSchedule.filter(
         schedule => schedule.EmployeeID === selectedDoctor.EmployeeID
       );
-      setFilteredDoctorSchedule(doctorSchedules);
+      SetFilteredDoctorSchedule(doctorSchedules);
 
       const doctorSlots = SlotSchedule.filter(slot =>
         doctorSchedules.some(schedule => schedule.ScheduleID === slot.ScheduleID)
       );
-      setFilteredSlotSchedule(doctorSlots);
+      SetFilteredSlotSchedule(doctorSlots);
     } else {
-      setFilteredDoctorSchedule(DocterSchedule);
-      setFilteredSlotSchedule(SlotSchedule);
+      SetFilteredDoctorSchedule(DoctorSchedule);
+      SetFilteredSlotSchedule(SlotSchedule);
     }
-  }, [selectedDoctor]);
+  }, [selectedDoctor, doctors, DoctorSchedule, SlotSchedule]);
 
+
+    if(loading){
+        return (
+            <div>Loading...</div>
+        );
+    }
+    
   const handleDoctorSelect = (doctor) => {
-    setSelectedDoctor(doctor);
-    setCurrentStep(STEPS.SELECT_DOCTERSCHEDUEL);
-    setIsFull(false);
+    SetSelectedDoctor(doctor);
+    SetCurrentStep(STEPS.SELECT_DOCTERSCHEDUEL);
+    SetIsFull(false);
   };
 
   const handleStepChange = (step) => {
     if (step === STEPS.SELECT_SCHEDULE) {
-      setSelectedDoctor(null);
-      setIsFull(true);
+      SetSelectedDoctor(null);
+      SetIsFull(true);
     } else if (step === STEPS.SELECT_DOCTOR) {
-      setIsFull(false);
+      SetIsFull(false);
     }
-    setCurrentStep(step);
+    SetCurrentStep(step);
   };
     
-    GetVetList( { setDoctors } );
-    console.log( doctors );
         //[
 //    { name: "Nguyễn Văn A", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E1" },
 //    { name: "Nguyễn Văn B", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E2" },
@@ -119,11 +170,20 @@ const BookingPage = () => {
   return (
     <div className="booking-page">
       <div className="tracking-detail">
+      {selectedDoctor && (
         <TrackingBookingDetail
-          service={selectedService.name}
-          employee={selectedDoctor?.name}
-          serviceDeliveryMethod={selectedService.serviceDeliveryMethod}
+          service={selectedService.Name}
+          employee={selectedDoctor.FirstName + " " + selectedDoctor.LastName }
+          serviceDeliveryMethod={selectedSDM.Name}
         />
+      )}
+      {selectedDoctor == null && (
+        <TrackingBookingDetail
+          service={selectedService.Name}
+          employee={null}
+          serviceDeliveryMethod={selectedSDM.Name}
+        />
+      ) }
       </div>
 
       <div className="main-content">
@@ -142,6 +202,7 @@ const BookingPage = () => {
           
           {(currentStep === STEPS.SELECT_SCHEDULE || currentStep === STEPS.SELECT_DOCTERSCHEDUEL) && (
             <Lich
+              sdm={selectedSDM}
               doctor={selectedDoctor}
               role={role}
               service={selectedService}
@@ -153,7 +214,7 @@ const BookingPage = () => {
         </div>
       </div>
 
-      <style jsx>{`
+      <style >{`
         .booking-page {
           display: flex;
           margin-top: 96px;

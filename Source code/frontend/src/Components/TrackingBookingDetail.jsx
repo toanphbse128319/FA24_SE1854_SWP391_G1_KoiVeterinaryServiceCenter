@@ -8,6 +8,7 @@ const InfoCard = ({ serviceDeliveryMethod, service, employee }) => {
     const hasData = serviceDeliveryMethod || service || employee;
 
     if (!hasData) return null;
+    console.log(employee);
 
     return (
 
@@ -58,18 +59,12 @@ const InfoCard = ({ serviceDeliveryMethod, service, employee }) => {
 
 
 const TrackingBookingDetail = ({ service, employee, serviceDeliveryMethod }) => {
-    
-
     return (
-
-
         <InfoCard
             serviceDeliveryMethod={serviceDeliveryMethod}
             service={service}
             employee={employee}
         />
-
-
     );
 };
 

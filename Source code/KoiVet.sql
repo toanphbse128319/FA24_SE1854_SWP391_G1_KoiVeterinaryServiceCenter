@@ -248,26 +248,24 @@ VALUES
 -- Insert sample data for ServiceDeliveryMethod
 INSERT INTO ServiceDeliveryMethod (ServiceDeliveryMethodID, Name, Status) 
 VALUES 
-('SDM1', 'Fish examination at home', 1),
-('SDM2', 'Pool examination at home', 1),
-('SDM3', 'Online Consultation', 1),
-('SDM4', 'Fish examination at center', 1);
+('SDM1', N'Tại nhà', 1),
+('SDM2', N'Tại cơ sở', 1),
+('SDM3', N'Trực tuyến', 1)
 
 -- Insert sample data for Service
 INSERT INTO Service (ServiceID, ServiceDeliveryMethodID, Name, Price, Description, Status) 
 VALUES 
-('S1', 'SDM1', 'Koi Health Check', 100000, 'Basic health check for koi fish', 1),
-('S2', 'SDM2', 'Koi Health Check', 100000, 'Basic health check for koi fish', 1),
-('S3', 'SDM4', 'Koi Health Check', 100000, 'Basic health check for koi fish', 1),
-('S4', 'SDM2', 'Koi Consultation', 75000, 'Online consultation with koi specialist', 1),
-('S5', 'SDM1', 'Koi Disease Treatment', 150000, 'Treatment for common koi diseases', 1),
-('S6', 'SDM2', 'Koi Disease Treatment', 150000, 'Treatment for common koi diseases', 1),
-('S7', 'SDM4', 'Koi Disease Treatment', 150000, 'Treatment for common koi diseases', 1),
-('S8', 'SDM4', 'blood test for fish', 150000, 'Treatment for common koi diseases', 1),
-('S9', 'SDM2', 'Check ph level', 150000, 'Treatment for common koi diseases', 1),
-('S10', 'SDM2', 'Eliminate parasitic fungi in the tank', 100000, 'Basic health check for koi fish', 1);
-
+('S1', 'SDM1', N'Kiểm tra sức khỏe cá koi', 100000, N'Kiểm tra sức khỏe cơ bản cho cá koi', 1),
+('S2', 'SDM2', N'Kiểm tra sức khỏe cá koi', 100000, N'Kiểm tra sức khỏe cơ bản cho cá koi', 1),
+('S3', 'SDM3', N'Tư vấn sức khỏe cá koi', 75000, N'Tư vấn trực tuyến với chuyên gia cá koi', 1),
+('S4', 'SDM1', N'Điều trị cá koi', 150000, N'Điều trị cho các bệnh thường gặp ở cá koi', 1),
+('S5', 'SDM2', N'Điều trị cá koi', 150000, N'Điều trị cho các bệnh thường gặp ở cá koi', 1),
+('S6', 'SDM2', N'Xét nghiệm máu cho cá', 150000, N'Xét nghiệm máu cho cá', 1),
+('S7', 'SDM1', N'Kiểm tra mức pH', 150000, N'Kiểm tra mức pH trong nước', 1),
+('S8', 'SDM1', N'Loại bỏ nấm ký sinh trong bể', 100000, N'Loại bỏ nấm ký sinh trong bể', 1),
+('S9', 'SDM1', N'Kiểm tra hồ cá', 100000, N'Kiểm tra hồ cá, bể cá', 1);
 -- Insert sample data for Feedback
+
 INSERT INTO Feedback (FeedbackID, ServiceRating, VetRating, Description, Status) 
 VALUES 
 ('FB0', 0, 0, 'Null', 'Default'),
@@ -408,7 +406,7 @@ VALUES
 ('B1', 'C1', 'E1', '2024-09-01 09:00:00', '2024-09-01 10:00:00', 50.00, 1, 0, 0, 0, 'SDM1', 10.00, '250 Vo Van Hat', 5.5, 11.00, 661000, 'Confirmed', 'FB1', 'SCH1', 'Home visit for koi health check', 'Credit Card', 'Pending'),
 ('B2', 'C2', 'E2', '2024-09-02 14:00:00', '2024-09-02 15:00:00', 37.50, 1, 0, 0, 0, 'SDM2', 7.50, '456 Maple Ave', 0, 0.00, 397500, 'Pending', 'FB2', 'SCH2', 'Online consultation for koi', 'PayPal', 'Pending'),
 ('B3', 'C3', 'E3', '2024-09-03 18:00:00', '2024-09-03 19:00:00', 75.00, 1, 0, 0, 0, 'SDM3', 15.00, '789 Oak St', 3.2, 6.40, 996000, 'Cancelled', 'FB3', 'SCH3', 'Clinic visit for koi disease treatment', 'Cash', 'Pending'),
-('B4', 'C4', 'E4', '2024-09-04 22:00:00', '2024-09-05 01:00:00', 150.00, 1, 0, 0, 0, 'SDM4', 30.00, '321 Birch Ave', 8.7, 17.40, 2000000, 'In Progress', 'FB4', 'SCH4', 'Emergency koi surgery', 'Credit Card', 'Pending')
+('B4', 'C4', 'E4', '2024-09-04 22:00:00', '2024-09-05 01:00:00', 150.00, 1, 0, 0, 0, 'SDM1', 30.00, '321 Birch Ave', 8.7, 17.40, 2000000, 'In Progress', 'FB4', 'SCH4', 'Emergency koi surgery', 'Credit Card', 'Pending')
 
 -- Insert sample data for AnimalType
 INSERT INTO AnimalType (TypeID, Name) 
