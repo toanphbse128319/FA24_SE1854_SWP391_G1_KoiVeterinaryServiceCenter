@@ -6,12 +6,14 @@ import GetAPIURL from '../Helper/Utilities';
 import { useNavigate } from 'react-router-dom';
 import { GetGeoLocation, CalculateDistance } from '../Components/MapPicker';
 import { FetchAPI } from '../Helper/Utilities';
+import { jwtDecode } from 'jwt-decode';
 
 const CLINIC_ADDRESS = "1491 Lê Văn Lương, Nhà Bè, TP HCM";
 const PRICE_PER_KM = 5000; // 5000 VND per km
 
 function IsAtHome( {sdm} ){
-    console.log(sdm);
+    if( sdm == null )
+        return null;
     if( sdm.Name == "Tại nhà" )
         return true;
     return false;
@@ -23,7 +25,6 @@ async function GetDistanceFromAddress( { address } ){
         return 0;
     } 
     const coordinate = await GetGeoLocation( { address } );
-    console.log(coordinate);
     if( coordinate == [0.0, 0.0] || coordinate[0] == 0 || coordinate[1] == 0 )
         return 0;
     return await CalculateDistance( {lng: coordinate[0], lat: coordinate[1] } )
@@ -42,18 +43,22 @@ function SetCustomer( { setCustomer } ){
 const Confirm = () => {
     const navigate = useNavigate();
   const location = useLocation();
-
     if( window.sessionStorage.getItem("token") == null ){
         navigate("/Login");
     }
+    useEffect(() => {
+        // Check if location.state is null or undefined
+        if (!location.state) {
+            navigate("/"); // Navigate only when the component mounts
+        }
+    }, [location.state, navigate]); // Dependencies
 
-
-  const { service, doctor, time, scheduleId, fishCount, sdm } = location.state;
+  const { service, doctor, time, scheduleId, fishCount, sdm } = location.state || {};
   
   const [customerInfo, SetCustomerInfo] = useState({
-    name: "Nguyễn Thị A",
-    phone: "0923213123",
-    address: "100 Cô Giang, Quận 1, TP HCM"
+    name: null,
+    phone: null,
+    address: null
   });
     SetCustomer( { setCustomer: SetCustomerInfo } );
   
@@ -79,13 +84,18 @@ const Confirm = () => {
   //   }
   // };
 
+    let currentDistance = 0;
   useEffect(() => {
     const updateMovingCost = async () => {
       if (!service?.deliveryMethodId) {
         // const distance = await calculateDistance(CLINIC_ADDRESS, customerInfo.address);
         if( IsAtHome( {sdm: sdm} ) ){
-            GetDistanceFromAddress({address: customerInfo.address }).then( distance => SetMovingCost(distance/1000 * PRICE_PER_KM));
+            GetDistanceFromAddress({address: customerInfo.address }).then( distance => {
+                currentDistance = distance;
+                SetMovingCost(distance/1000 * PRICE_PER_KM)
+            });
         } else {
+            currentDistance = 0;
             SetMovingCost(0);
         }
       }
@@ -146,20 +156,48 @@ const Confirm = () => {
             return time;
         }
 
-        
+
     }
-  // Hàm điều hướng đến trang thanh toán
-  const handlePayment = () => {
-    // Chuyển đến trang thanh toán
-    // navigate('/payment'); // Uncomment this line when using in a real app
-      let customerID = null;
-      FetchAPI( { endpoint: `/customer/getbyinfo?info=${window.sessionStorage.getItem("phonenumber")}` } )
-        .then( response => response.json()
-            .then( json => {customerID = json.CustomerID;})
-        )
-      //FetchAPI( {endpoint: "/booking/add", method: 'Post', body:{
-      //  customerID: 
-      //} }  ) 
+    // Hàm điều hướng đến trang thanh toán
+    const handlePayment = () => {
+        const calculateTotal = () => {
+            const servicePrice = (service?.Price * fishCount) || 0;
+            const moving = movingCost || 0;
+            return servicePrice + moving;
+        };
+        // Chuyển đến trang thanh toán
+        // navigate('/payment'); // Uncomment this line when using in a real app
+        let token = window.sessionStorage.getItem("token");
+        if( token == null )
+            navigate("/Login");
+        let json = jwtDecode(token);
+        let customerID = json.ID;
+        if( customerID == null )
+            navigate("/Login");
+
+        let bookingDateTime = time.split(" ")[1] + "T";
+        let slotTime = time.split(" ")[0].split("-")[0]+":00";
+        if( slotTime.length == 7 )
+            slotTime = "0" + slotTime;
+        bookingDateTime = bookingDateTime + slotTime;
+        console.log( `cid: ${customerID}, eid: ${doctor?.EmployeeID}, 
+            sid: ${service.ServiceID}, bkaddr: ${window.sessionStorage.getItem("address")}, 
+            date: ${ bookingDateTime }, numberOfFish: ${fishCount}, distance: ${currentDistance},
+            distanceCost: ${movingCost}, totalServiceCost: ${calculateTotal()}`)
+        FetchAPI( { endpoint: "/booking/add", method: "Post", body: {
+            customerID: customerID,
+            employeeID: doctor?.EmployeeID,
+            serviceID: service.ServiceID,
+            BookingDate: bookingDateTime,
+            numberOfFish: fishCount,
+            distance: currentDistance,
+            distanceCost: movingCost,
+            totalServiceCost: calculateTotal(),
+            bookingAddress: window.sessionStorage.getItem("address")
+
+        } } ).then( bookingID => bookingID.text().then( result => {
+            FetchAPI( {endpoint: "/VnPay/all/" + result } ).then( response => response.text().then( result => console.log(result) ) );
+        } ) );
   };
 
   return (

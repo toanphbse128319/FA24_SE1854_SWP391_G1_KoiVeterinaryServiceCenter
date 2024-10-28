@@ -92,6 +92,7 @@ const ScheduleCalendar = ({ doctor, service, SlotSchedule , DocterSchedule, sdm 
     const map = new Map();
     const transformedData = transformScheduleData(doctorSchedules, slotSchedules);
     const today = new Date();
+      today.setDate( today.getDate() + 2 );
     const todayKey = today.toISOString().split('T')[0];
 
     transformedData.forEach(schedule => {
