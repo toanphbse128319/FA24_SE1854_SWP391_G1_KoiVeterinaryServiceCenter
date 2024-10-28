@@ -1,13 +1,18 @@
-import React, { useState } from 'react'; // Đừng quên import useState
+import React, { useState } from 'react'; 
 import LoginContainer from "../Components/LoginContainer";
 import BackButton from "../buttonComponents/BackButton";
 import SignUp from "../Components/SignUpContainer";
 
-function Login() {
-  const [isLogin, setIsLogin] = useState(true); // Quản lý trạng thái hiển thị
+function Login({ setToken }) {
+  const [isLogin, setIsLogin] = useState(true); 
 
   const handleSwitchPage = () => {
-    setIsLogin(prevState => !prevState); // Chuyển đổi giữa đăng nhập và đăng ký
+    setIsLogin(prevState => !prevState); 
+  };
+
+  const handleLoginSuccess = () => {
+    setToken(true); 
+    console.log('LoginSuccess');
   };
 
   return (
@@ -39,8 +44,8 @@ function Login() {
         <img
           src='\img\sloganLogin.png'
           alt="Slogan"
-          style={{ cursor: 'pointer' }} // Để con trỏ chuột thay đổi khi hover
-          onClick={handleSwitchPage} // Chuyển đổi khi nhấn vào hình ảnh
+          style={{ cursor: 'pointer' }}
+          onClick={handleSwitchPage}
         />
       </div>
       
@@ -53,16 +58,16 @@ function Login() {
       }}>
         {isLogin ? (
           <>
-            <LoginContainer />
+            <LoginContainer onLoginSuccess={handleLoginSuccess} />
             <div onClick={handleSwitchPage} style={{ cursor: 'pointer', marginTop: '20px' }}>
-            Chưa có tài khoản? <strong>Đăng ký ngay</strong>
+              Chưa có tài khoản? <strong>Đăng ký ngay</strong>
             </div>
           </>
         ) : (
           <>
             <SignUp />
             <div onClick={handleSwitchPage} style={{ cursor: 'pointer', marginTop: '20px' }}>
-            Đã có tài khoản? <strong>Đăng nhập ngay</strong>
+              Đã có tài khoản? <strong>Đăng nhập ngay</strong>
             </div>
           </>
         )}
