@@ -16,7 +16,18 @@ import { Card, CardContent, Avatar,Button } from '@mui/material';
  
 
 
-const DoctorList = ({ onSelectDoctor  , doctors}) => {
+
+const DoctorList = ({ onSelectDoctor  , doctors =[
+  { name: "Nguyễn Văn A", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E1" },
+    { name: "Nguyễn Văn B", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E2" },
+    { name: "Nguyễn Văn C", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E3" },
+    { name: "Nguyễn Văn D", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E4" },
+    { name: "Nguyễn Văn E", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E5" },
+    { name: "Nguyễn Văn F", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E6" },
+    { name: "Nguyễn Văn G", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E7" },
+    { name: "Nguyễn Văn H", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E8" },
+    { name: "Nguyễn Văn I", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E9" }
+] }) => {
 
   return (
     <div style={{ width: '55vw', maxHeight: '400px', overflowY: 'auto',boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', borderRadius: 10 }}>
