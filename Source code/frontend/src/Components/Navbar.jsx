@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import News from "./News";
 import { Link } from "react-scroll";
@@ -21,9 +21,15 @@ import {
   ChevronDownIcon,
 } from "@heroicons/react/20/solid";
 
-export default function Example( {services} ) {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+const services = [
+  { id: "S1", name: "Đặt lịch tư vấn với bác sĩ", href: "#" },
+  { id: "S2", name: "Đặt lịch khám tại cơ sở", href: "#" },
+  { id: "S3", name: "Đặt lịch khám tại nhà", href: "#" },
+  { id: "S4", name: "Đặt lịch tư vấn kiểm tra hồ cá", href: "#" },
+];
 
+export default function Example() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   let navigate = useNavigate();
   const handleGoLogin = () => {
     navigate("/Login");
@@ -32,6 +38,8 @@ export default function Example( {services} ) {
     navigate("/AboutUs");
   };
 
+  const [showMenu, setShowMenu] = useState(false);
+  const [token, setToken] = useState(true);
 
   const [showMenu, setShowMenu] = useState(false);
   const [token, setToken] = useState(true);
@@ -72,11 +80,11 @@ export default function Example( {services} ) {
               <div className="py-1">
                 {services.map((service) => (
                   <a
-                    key={service.Name}
-                    href={service.Href}
+                    key={service.name}
+                    href={service.href}
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
-                    {service.Name}
+                    {service.name}
                   </a>
                 ))}
               </div>
@@ -164,12 +172,12 @@ export default function Example( {services} ) {
                   <DisclosurePanel className="mt-2 space-y-2">
                     {services.map((service) => (
                       <DisclosureButton
-                        key={service.Name}
+                        key={service.name}
                         as="a"
                         href={service.href}
                         className="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                       >
-                        {service.Name}
+                        {service.name}
                       </DisclosureButton>
                     ))}
                   </DisclosurePanel>

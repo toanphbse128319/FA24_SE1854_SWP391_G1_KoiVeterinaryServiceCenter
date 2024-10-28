@@ -16,7 +16,7 @@ import { FetchAPI } from '../Helper/Utilities';
 
 async function CheckLogin({ info, password ,setErrors }) {
     try {
-        const response = await FetchAPI( {endpoint: '/login', method: 'Post', body: {
+        const response = await FetchAPI( {endpoint: '/api/Login', method: 'Post', body: {
                 info: info, 
                 password: password 
             }}  );
