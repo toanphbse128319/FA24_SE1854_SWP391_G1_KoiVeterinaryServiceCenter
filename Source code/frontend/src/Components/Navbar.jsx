@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import News from "./News";
 import { Link } from "react-scroll";
@@ -21,9 +21,15 @@ import {
   ChevronDownIcon,
 } from "@heroicons/react/20/solid";
 
-export default function Example( {services} ) {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+const services = [
+  { id: "S1", name: "Đặt lịch tư vấn với bác sĩ", href: "#" },
+  { id: "S2", name: "Đặt lịch khám tại cơ sở", href: "#" },
+  { id: "S3", name: "Đặt lịch khám tại nhà", href: "#" },
+  { id: "S4", name: "Đặt lịch tư vấn kiểm tra hồ cá", href: "#" },
+];
 
+export default function Example() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   let navigate = useNavigate();
   const handleGoLogin = () => {
     navigate("/Login");
@@ -32,6 +38,8 @@ export default function Example( {services} ) {
     navigate("/AboutUs");
   };
 
+  const [showMenu, setShowMenu] = useState(false);
+  const [token, setToken] = useState(true);
 
   return (
     <header className="bg-white fixed top-0 w-full z-50 ">
@@ -40,7 +48,7 @@ export default function Example( {services} ) {
         className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
       >
         <div className="flex lg:flex-1">
-        <a href="/" className="-m-1.5 p-1.5">
+          <a href="/" className="-m-1.5 p-1.5">
             <span className="sr-only">Your Company</span>
             <img alt="" src="img/logo-c-s-2.png" className="h-14 w-auto" />
           </a>
@@ -68,11 +76,11 @@ export default function Example( {services} ) {
               <div className="py-1">
                 {services.map((service) => (
                   <a
-                    key={service.Name}
-                    href={service.Href}
+                    key={service.name}
+                    href={service.href}
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
-                    {service.Name}
+                    {service.name}
                   </a>
                 ))}
               </div>
@@ -98,9 +106,27 @@ export default function Example( {services} ) {
           </button>
         </PopoverGroup>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <button onClick={handleGoLogin} className="text-sm font-semibold leading-6 text-gray-900">
-            Log in <span aria-hidden="true">&rarr;</span>
-          </button>
+          {token ? (
+            <div className='flex items-center gap-2 cursor-pointer group relative'>
+              <img className='w-8 rounded-full' src="img/profile_pic.png" alt="" />
+              <img className='w-2.5' src="img/dropdown_icon.svg" alt="" />
+              <div className='absolute top-0 right-0 pt-14 text-base font-medium text-gray-600 z-20 hidden group-hover:block'>
+                <div className='min-w-48 bg-stone-100 round flex flex-col gap-4 p-4'>
+                  <p onClick={()=>navigate('/MyProfile')} className='hover:text-black '>My Profile</p>
+                  <p onClick={()=>navigate('/Booking')} className='hover:text-black '>My Appointment</p>
+                  <p onClick={()=>setToken(false)} className='hover:text-black '>Logout</p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={handleGoLogin}
+              className="bg-blue-300 text-gray-800 px-8 py-3 rounded-full font-semibold hidden md:block"
+              
+            >
+              Log in <span aria-hidden="true">&rarr;</span>
+            </button>
+          )}
         </div>
       </nav>
       <Dialog
@@ -142,17 +168,16 @@ export default function Example( {services} ) {
                   <DisclosurePanel className="mt-2 space-y-2">
                     {services.map((service) => (
                       <DisclosureButton
-                        key={service.Name}
+                        key={service.name}
                         as="a"
                         href={service.href}
                         className="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                       >
-                        {service.Name}
+                        {service.name}
                       </DisclosureButton>
                     ))}
                   </DisclosurePanel>
                 </Disclosure>
-                
               </div>
             </div>
           </div>
