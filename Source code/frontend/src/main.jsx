@@ -18,6 +18,7 @@ import DoctorList from "./Components/Doctor'sSummaryInformation.jsx";
 import News from "./Components/News.jsx";
 import PaymentStatusPage from "./pages/PaymentConfirmation.jsx";
 import Test from "./Components/BookingList.jsx";
+import MyProfile from "./pages/MyProfile.jsx"
 import {
   BrowserRouter,
   createBrowserRouter,
@@ -25,6 +26,7 @@ import {
   RouterProvider,
   Routes,
 } from "react-router-dom";
+import PageTransition from "./Components/PageTransition.tsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -47,6 +49,13 @@ createRoot(document.getElementById("root")).render(
         <Route path="/Login" element={<Login />} />
         <Route path="/Booking" element={<Booking />} />
         <Route path="/Confirm" element={<Confirm />} />
+        <Route path="/MyProfile" element={
+    <PageTransition>
+          
+            <MyProfile />
+        
+      </PageTransition>
+          } />
       </Routes>
     </BrowserRouter>
   </StrictMode>

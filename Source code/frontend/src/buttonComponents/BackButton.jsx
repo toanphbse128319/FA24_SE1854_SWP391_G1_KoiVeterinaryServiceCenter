@@ -10,6 +10,7 @@ const BackButton = () => {
   };
 
   return (
+    <>
     <button
       onClick={handleBack}
       style={{
@@ -24,6 +25,7 @@ const BackButton = () => {
     >
       <img src='\img\backButton.png' alt="Back" />
     </button>
+    </>
   );
 };
 
