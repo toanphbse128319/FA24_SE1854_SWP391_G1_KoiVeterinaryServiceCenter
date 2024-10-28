@@ -26,6 +26,7 @@ import {
   RouterProvider,
   Routes,
 } from "react-router-dom";
+import PageTransition from "./Components/PageTransition.tsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -48,7 +49,13 @@ createRoot(document.getElementById("root")).render(
         <Route path="/Login" element={<Login />} />
         <Route path="/Booking" element={<Booking />} />
         <Route path="/Confirm" element={<Confirm />} />
-        <Route path="/MyProfile" element={<MyProfile />} />
+        <Route path="/MyProfile" element={
+    <PageTransition>
+          
+            <MyProfile />
+        
+      </PageTransition>
+          } />
       </Routes>
     </BrowserRouter>
   </StrictMode>
