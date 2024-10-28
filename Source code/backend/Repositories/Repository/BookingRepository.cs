@@ -47,26 +47,33 @@ public class BookingRepository : GenericRepository<Booking>
                 Note = "",
                 Status = "Active"
             };
-            schedule.ScheduleID = (await schrepo.AddNewSchedule(schedule)).ScheduleID;
+            schedule.ScheduleID = (await schrepo.AddNewScheduleAsync(schedule)).ScheduleID;
         }
         SlotTableRepository slotManager = new SlotTableRepository(_context);
         SlotTable? slot = new SlotTable();
         int slotNo = slotManager.SlotByTime(bookingDate.Hour);
         if( slotNo == 0 )
             return "Outside working hour";
+        Console.WriteLine(schedule.ScheduleID + ", " + slotNo);
         slot = await slotManager.SearchSpecificSlotAsync(schedule.ScheduleID, slotNo);
         if( slot == null )
             return "Cannot get the schedule";
         if( slot.SlotStatus == false )
             return "Cannot place order on this slot";
-        slot = await slotManager.OrderSlot(slotNo, schedule.ScheduleID);
+        slot = await slotManager.OrderSlotAsync(slotNo, schedule.ScheduleID);
         if( slot == null )
             return "Cannot update slot status";
         return schedule.ScheduleID;
     }
 
+    public bool checkValidPrice( Service service, Decimal total, int number ){
+        Console.WriteLine(service.Price * number + ", total: " + total);
+        if( service.Price * number > total )
+            return false;
+        return true;
+    }
     public async Task<string> AddNewBooking(NewBookingInformation info ){
-        var transaction = _context.Database.BeginTransactionAsync();
+        var transaction = _context.Database.BeginTransaction();
         string result = "";
         Booking newOrder = new Booking();
         try{
@@ -81,24 +88,40 @@ public class BookingRepository : GenericRepository<Booking>
                 return result = "Employee does not exist";
             Service? service = await (new ServiceRepository(_context)).GetByIdAsync(info.ServiceID);
             if(service == null)
-                return result = "Cannot detemined the delivery method of the service";
+                return result = "Cannot determine the service";
             if( info.BookingDate < DateTime.Now.AddDays(2) || info.BookingDate >= DateTime.Now.AddDays(21) )
                 return "Cannot place an booking order with that date";
+
+            ServiceDeliveryMethod? sdm = await (new ServiceDeliveryMethodRepository(_context)).GetByIdAsync(service.ServiceDeliveryMethodID);
+            if( sdm == null )
+                return "Cannot determine the delivery method";
+
+            int number = 0;
+                if( info.NumberOfFish > 0 )
+                    number = info.NumberOfFish;
+                else number = info.NumberOfPool;
+            if( checkValidPrice(service, info.TotalServiceCost, number ) == false ){
+                return "Pricing is invalid, must be higher than " + service.Price * number ;
+            }
+                
+            string? vat = Configuration.GetConfiguration()["Other:VAT"];
+            if( vat == null )
+                throw new Exception("Missing configuration in appsetting.json");
+
             newOrder.CustomerID = info.CustomerID;
             newOrder.EmployeeID = info.EmployeeID;
             newOrder.BookingDate = info.BookingDate;
             newOrder.ExpiredDate = info.BookingDate.AddHours(2);
             newOrder.NumberOfFish = info.NumberOfFish;
             newOrder.IncidentalFish = 0;
-            newOrder.ServiceDeliveryMethodID = info.SDM;
             newOrder.BookingAddress = info.BookingAddress;
-            newOrder.Distance = 0;
-            newOrder.DistanceCost = 0;
-            newOrder.TotalServiceCost = 0;
+            newOrder.Distance = info.Distance;
+            newOrder.DistanceCost = info.DistanceCost;
+            newOrder.TotalServiceCost = info.TotalServiceCost;
             newOrder.Status = Constants.Customer.WaitingForPayment;
             newOrder.PaymentMethod = "Bank Transfer";
             newOrder.PaymentStatus = "Pending";
-            newOrder.Vat = 0.1;
+            newOrder.Vat = float.Parse( vat );
             newOrder.NumberOfPool = info.NumberOfPool;
             newOrder.IncidentalPool = 0;
             string temp = await SetScheduleAsync(info.BookingDate, info.EmployeeID);
@@ -118,43 +141,43 @@ public class BookingRepository : GenericRepository<Booking>
                 return result = "Unable to create new booking order";
             BookingDetail detail = new BookingDetail(){BookingDetailID = "", BookingID = newOrder.BookingID, ServiceID = info.ServiceID };
             await (new BookingDetailRepository(_context)).AddBookingDetailAsync(detail); 
-            await transaction.Result.CommitAsync();
+            transaction.Commit();
             return result = newOrder.BookingID;
         } finally {
             if( result != newOrder.BookingID )
-                await transaction.Result.RollbackAsync();
+                await transaction.RollbackAsync();
         }
     }
 
-    public async Task<Decimal> GetTotalPrice(string bookingID){
-        BookingDetailRepository bdRepo = new BookingDetailRepository(_context);
-        List<BookingDetail?> details = await bdRepo.GetByBookingID(bookingID);
-        if( details == null || details.Count == 0 )
-            return 0;
-        Booking info = await GetByIdAsync(bookingID);
-        if( info == null )
-            return 0;
-        if( info.Vat == null )
-            return 0;
-        int total = 0;
-        foreach(BookingDetail? detail in details){
-            if( detail == null )
-                break;
-            total += (int)(detail.UnitPrice * info.NumberOfFish);
-        }
-        total += (int)(info.Vat * total);
-        return total;
-    }
+//    public async Task<Decimal> GetTotalPrice(string bookingID){
+//        BookingDetailRepository bdRepo = new BookingDetailRepository(_context);
+//        List<BookingDetail?> details = await bdRepo.GetByBookingID(bookingID);
+//        if( details == null || details.Count == 0 )
+//            return 0;
+//        Booking info = await GetByIdAsync(bookingID);
+//        if( info == null )
+//            return 0;
+//        if( info.Vat == null )
+//            return 0;
+//        int total = 0;
+//        foreach(BookingDetail? detail in details){
+//            if( detail == null )
+//                break;
+//            total += (int)(detail.UnitPrice * info.NumberOfFish);
+//        }
+//        total += (int)(info.Vat * total);
+//        return total;
+//    }
 
-    public async Task<Decimal> GetDepositPrice(string bookingID){
-        Booking info = await GetByIdAsync(bookingID);
-        if( info == null )
-            return 0;
-        info.Deposit = (int) GetTotalPrice(bookingID).Result * 30 / 100;
-        info.Status = Constants.Customer.WaitingForPayment + ": Deposit";
-        await UpdateAsync(info);
-        return info.Deposit;
-    }
+//    public async Task<Decimal> GetDepositPrice(string bookingID){
+//        Booking info = await GetByIdAsync(bookingID);
+//        if( info == null )
+//            return 0;
+//        info.Deposit = (int) GetTotalPrice(bookingID).Result * 30 / 100;
+//        info.Status = Constants.Customer.WaitingForPayment + ": Deposit";
+//        await UpdateAsync(info);
+//        return info.Deposit;
+//    }
     
     public async Task<string> CheckExpiration(string bookingID){
         Booking info = await GetByIdAsync(bookingID);

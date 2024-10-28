@@ -36,7 +36,7 @@ public class ScheduleController : ControllerBase
                 EmployeeID = info.EmployeeID,
                 Note = info.Note
             };
-            await _unitOfWork.ScheduleRepository.AddNewSchedule(schedule);
+            await _unitOfWork.ScheduleRepository.AddNewScheduleAsync(schedule);
             return Ok("Added successfully!");
         }
         catch (Exception ex)
@@ -57,7 +57,7 @@ public class ScheduleController : ControllerBase
             Schedule schedule = await _unitOfWork.ScheduleRepository.SearchVetAndDateAsync(date, EmpID);
             if (schedule == null)
                 return BadRequest("The Employee is not exists");
-            await _unitOfWork.SlotTableRepository.OrderSlot(slot, schedule.ScheduleID);
+            await _unitOfWork.SlotTableRepository.OrderSlotAsync(slot, schedule.ScheduleID);
             return Ok("Assigned successfully!");
 
         }

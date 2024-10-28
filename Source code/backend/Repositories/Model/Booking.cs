@@ -5,7 +5,6 @@ namespace Repositories.Model;
 [Table("Booking")]
 public class Booking
 {
-
     public string BookingID { get; set; }
     public string CustomerID { get; set; }
     public string EmployeeID { get; set; }
@@ -16,7 +15,6 @@ public class Booking
     public int IncidentalFish { get; set; }
     public int NumberOfPool { get; set; }
     public int IncidentalPool { get; set; }
-    public string ServiceDeliveryMethodID { get; set; }
     public double? Vat { get; set; }
     public string BookingAddress { get; set; }
     public double Distance { get; set; }

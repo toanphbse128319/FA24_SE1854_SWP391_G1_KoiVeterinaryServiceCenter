@@ -48,7 +48,7 @@ public class SlotTableRepository : GenericRepository<SlotTable>
         return slot;
     }
 
-    public async Task<SlotTable> OrderSlot(int num, string scheduleID)
+    public async Task<SlotTable> OrderSlotAsync(int num, string scheduleID)
     {
         SlotTable? slot = await SearchSpecificSlotAsync(scheduleID, num);
         if (slot == null)

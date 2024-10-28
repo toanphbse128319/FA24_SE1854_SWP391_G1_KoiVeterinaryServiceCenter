@@ -38,5 +38,31 @@ public class CustomerController : ControllerBase {
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
+
+    [HttpGet("account")]
+    public async Task<ActionResult<Customer>> GetByAccountID(string accountID) {
+        try {
+            Customer customer =  await _unitOfWork.CustomerRepository.SearchByAccountIDAsync( accountID );
+            if( customer == null )
+                return StatusCode( StatusCodes.Status404NotFound, "Unable to find the customer profile" );
+            return Ok( customer );
+        } catch (Exception ex) {
+            Console.WriteLine(ex);
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Customer>> GetByID(string id) {
+        try {
+            Customer customer =  await _unitOfWork.CustomerRepository.GetByIdAsync( id );
+            if( customer == null )
+                return StatusCode( StatusCodes.Status404NotFound, "Unable to find the customer profile" );
+            return Ok( customer );
+        } catch (Exception ex) {
+            Console.WriteLine(ex);
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
 }
 

@@ -29,7 +29,7 @@ public class VnPayController : ControllerBase {
                 return Ok("The order has been paid");
             else if( info.PaymentStatus == "Refunded" )
                 return Ok("The order has been refunded");
-            Decimal price = await _unitOfWork.BookingRepository.GetTotalPrice(id);
+            Decimal price = info.TotalServiceCost;
             if( price == 0 )
                 return StatusCode( StatusCodes.Status422UnprocessableEntity, "Unable to get pricing");
             return StatusCode(StatusCodes.Status200OK, service.PayUrl(price, info.BookingID, Request.Host.ToString() , "vn", $"Thanh toán chi phí cho hóa đơn {info.BookingID} với giá {info.TotalServiceCost}"));
@@ -58,7 +58,7 @@ public class VnPayController : ControllerBase {
                 return StatusCode(StatusCodes.Status409Conflict, result);
             else if ( result == "Payment expired" )
                 return StatusCode(StatusCodes.Status406NotAcceptable, result);
-            Decimal price = await _unitOfWork.BookingRepository.GetDepositPrice(id);
+            Decimal price = info.TotalServiceCost * 30 / 100;
             if( price == 0 )
                 return StatusCode( StatusCodes.Status422UnprocessableEntity, "Unable to get pricing");
             return StatusCode(StatusCodes.Status200OK, service.PayUrl(price, info.BookingID, Request.Host.ToString() , "vn", $"Thanh toán chi phí cho hóa đơn {info.BookingID} với giá {info.TotalServiceCost}"));
