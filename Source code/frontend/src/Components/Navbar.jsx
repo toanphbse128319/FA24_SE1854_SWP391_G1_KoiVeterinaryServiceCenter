@@ -39,7 +39,7 @@ export default function Example() {
   };
 
   const [showMenu, setShowMenu] = useState(false);
-  const [token, setToken] = useState(true);
+  const [token, setToken] = useState(false);
 
   return (
     <header className="bg-white fixed top-0 w-full z-50 ">

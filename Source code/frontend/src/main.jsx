@@ -27,9 +27,11 @@ import {
   Routes,
 } from "react-router-dom";
 
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
+   
       <Routes>
         <Route path="/" element={<App />}>
           <Route index element={<App />} />
@@ -50,6 +52,7 @@ createRoot(document.getElementById("root")).render(
         <Route path="/Confirm" element={<Confirm />} />
         <Route path="/MyProfile" element={<MyProfile />} />
       </Routes>
+      
     </BrowserRouter>
   </StrictMode>
 );

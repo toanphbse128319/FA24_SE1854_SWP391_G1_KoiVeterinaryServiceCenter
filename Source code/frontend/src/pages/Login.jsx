@@ -3,11 +3,15 @@ import LoginContainer from "../Components/LoginContainer";
 import BackButton from "../buttonComponents/BackButton";
 import SignUp from "../Components/SignUpContainer";
 
-function Login() {
+function Login(setToken) {
   const [isLogin, setIsLogin] = useState(true); // Quản lý trạng thái hiển thị
 
   const handleSwitchPage = () => {
     setIsLogin(prevState => !prevState); // Chuyển đổi giữa đăng nhập và đăng ký
+  };
+
+  const handleLoginSuccess = () => {
+    setToken(true); // Set token to true upon successful login
   };
 
   return (
@@ -53,7 +57,7 @@ function Login() {
       }}>
         {isLogin ? (
           <>
-            <LoginContainer />
+            <LoginContainer onLoginSuccess={handleLoginSuccess} />
             <div onClick={handleSwitchPage} style={{ cursor: 'pointer', marginTop: '20px' }}>
             Chưa có tài khoản? <strong>Đăng ký ngay</strong>
             </div>
