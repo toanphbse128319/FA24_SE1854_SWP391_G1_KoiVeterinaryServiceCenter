@@ -41,10 +41,6 @@ export default function Example() {
   const [showMenu, setShowMenu] = useState(false);
   const [token, setToken] = useState(true);
 
-  const [showMenu, setShowMenu] = useState(false);
-  const [token, setToken] = useState(true);
-
-
   return (
     <header className="bg-white fixed top-0 w-full z-50 ">
       <nav
