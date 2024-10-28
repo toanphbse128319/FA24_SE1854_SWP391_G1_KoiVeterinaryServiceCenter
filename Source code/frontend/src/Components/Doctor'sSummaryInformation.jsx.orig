@@ -16,12 +16,6 @@ import { Card, CardContent, Avatar,Button } from '@mui/material';
  
 
 
-<<<<<<< HEAD
-const DoctorList = ({ onSelectDoctor  , doctors}) => {
-
-||||||| a8d9f90
-const DoctorList = ({ onSelectDoctor  , doctors}) => {
-=======
 const DoctorList = ({ onSelectDoctor  , doctors =[
   { name: "Nguyễn Văn A", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E1" },
     { name: "Nguyễn Văn B", degree: "Thạc sĩ", schedule: "Thứ 2, 5", EmployeeID: "E2" },
@@ -35,7 +29,6 @@ const DoctorList = ({ onSelectDoctor  , doctors =[
 ] }) => {
    
   
->>>>>>> frontend
   return (
     <div style={{ width: '55vw', maxHeight: '400px', overflowY: 'auto',boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', borderRadius: 10 }}>
       {doctors.map((doctor, index) => (
