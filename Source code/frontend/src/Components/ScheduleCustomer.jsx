@@ -56,12 +56,12 @@ const ScheduleCalendar = ({ doctor, service, SlotSchedule , DocterSchedule, sdm 
   // Khai báo các state
   const [fetchedScheduleData, setFetchedScheduleData] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
-  const [currentDate, setCurrentDate] = useState(new Date('2024-10-01'));
+  const [currentDate, setCurrentDate] = useState(new Date( (new Date()).toISOString().split('T')[0] ) );
   const [isWeekView, setIsWeekView] = useState(false);
   const [selectedDay, setSelectedDay] = useState(null);
   const [fishCount, setFishCount] = useState('1');
   const [selectedSlot, setSelectedSlot] = useState(null);
-
+    console.log(DocterSchedule);
   const transformScheduleData = (doctorSchedules, slotSchedules) => {
     const transformedData = [];
 
@@ -304,8 +304,8 @@ const ScheduleCalendar = ({ doctor, service, SlotSchedule , DocterSchedule, sdm 
 
     return {
       ...styles.dayButton,
-      ...(isDateAvailable(date) ? styles.available : styles.unavailable),
-      ...(selectedDate && date && selectedDate.toDateString() === date.toDateString() ? styles.selected : {}),
+      ...(isDateAvailable(date) && currentDate.getMonth() == date.getMonth() ? styles.available : styles.unavailable),
+      ...(selectedDate && date && currentDate.getMonth() == date.getMonth() && selectedDate.toDateString() === date.toDateString() ? styles.selected : {}),
       ...(isFirstColumn ? styles.firstColumnDay : {}),
       ...(isLastColumn ? styles.lastColumnDay : {}),
       ...lastRowStyles,
@@ -366,7 +366,7 @@ const ScheduleCalendar = ({ doctor, service, SlotSchedule , DocterSchedule, sdm 
 
               }}
               onClick={() => handleDateClick(date)}
-              disabled={!isDateAvailable(date)}
+              disabled={!isDateAvailable(date) || currentDate.getMonth() != date.getMonth()}
             >
               <div style={styles.dayContent}>
                 <span style={date && selectedDay === date.getDate() ? styles.selectedDayText : {}}>
