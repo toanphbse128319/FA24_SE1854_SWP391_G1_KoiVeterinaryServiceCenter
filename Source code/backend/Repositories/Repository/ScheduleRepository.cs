@@ -70,7 +70,7 @@ public class ScheduleRepository : GenericRepository<Schedule>
         return sch;
     }
 
-    public async Task<Schedule> AddNewSchedule(Schedule info)
+    public async Task<Schedule> AddNewScheduleAsync(Schedule info)
     {
         Schedule schedule = new Schedule();
         schedule.ScheduleID = GetNextID("SCH");

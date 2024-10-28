@@ -69,11 +69,13 @@ public class BookingController : ControllerBase {
                 return StatusCode(StatusCodes.Status400BadRequest, result);
             switch (result){
                 case "Cannot place an booking order with that date":
-                case "Cannot detemined the delivery method of the service":
+                case "Cannot determine the service":
+                case "Cannot determine the delivery method":
                 case "Outside working hour":
                 case "Cannot get the schedule":           
                 case "Cannot place order on this slot":
                 case "Cannot update slot status":
+                case "Pricing is invalid":
                     return StatusCode(StatusCodes.Status406NotAcceptable, result);
                 case "Customer does not exist":
                 case "Employee does not exist":

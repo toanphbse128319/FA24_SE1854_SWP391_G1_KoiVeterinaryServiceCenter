@@ -74,7 +74,6 @@ export async function CalculateDistance( {lng, lat} ){
     const currentLng = import.meta.env.VITE_HEADQUARTER_LNG;
     const currentLat = import.meta.env.VITE_HEADQUARTER_LAT;
     let url = `https://api.geoapify.com/v1/routing?waypoints=${currentLat},${currentLng}|${lat},${lng}&mode=medium_truck&apiKey=${APIKey}`    
-    console.log('sending' + url);
     const response = await fetch(url).catch( error => console.error(error) );
     const json = await response.json();
     return json.features[0].properties.distance ;
