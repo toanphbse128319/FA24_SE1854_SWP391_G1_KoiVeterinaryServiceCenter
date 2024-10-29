@@ -27,6 +27,7 @@ async function GetDistanceFromAddress( { address } ){
     const coordinate = await GetGeoLocation( { address } );
     if( coordinate == [0.0, 0.0] || coordinate[0] == 0 || coordinate[1] == 0 )
         return 0;
+    console.log( coordinate );
     return await CalculateDistance( {lng: coordinate[0], lat: coordinate[1] } )
 }
 
@@ -155,8 +156,6 @@ const Confirm = () => {
             }
             return time;
         }
-
-
     }
     // Hàm điều hướng đến trang thanh toán
     const handlePayment = () => {
@@ -166,7 +165,6 @@ const Confirm = () => {
             return servicePrice + moving;
         };
         // Chuyển đến trang thanh toán
-        navigate('/payment'); // Uncomment this line when using in a real app
         let token = window.sessionStorage.getItem("token");
         if( token == null )
             navigate("/Login");
@@ -180,25 +178,33 @@ const Confirm = () => {
         if( slotTime.length == 7 )
             slotTime = "0" + slotTime;
         bookingDateTime = bookingDateTime + slotTime;
+        async function GetPaymentURL(){
+            let response = await FetchAPI( { endpoint: "/booking/add", method: "Post", body: {
+                customerID: customerID,
+                employeeID: doctor?.EmployeeID,
+                serviceID: service.ServiceID,
+                BookingDate: bookingDateTime,
+                numberOfFish: fishCount,
+                distance: currentDistance,
+                distanceCost: movingCost,
+                totalServiceCost: calculateTotal(),
+                bookingAddress: window.sessionStorage.getItem("address")
+            } } );
+            let text = await response.text();
+            if( !response.ok ){
+                return text;
+            }
+            response = await FetchAPI( {endpoint: "/VnPay/all/" + text } );
+            text = await response.text();
+            if( !response.ok )
+                return await text;
+            window.location.replace( text ); 
+        }
         console.log( `cid: ${customerID}, eid: ${doctor?.EmployeeID}, 
             sid: ${service.ServiceID}, bkaddr: ${window.sessionStorage.getItem("address")}, 
             date: ${ bookingDateTime }, numberOfFish: ${fishCount}, distance: ${currentDistance},
             distanceCost: ${movingCost}, totalServiceCost: ${calculateTotal()}`)
-        FetchAPI( { endpoint: "/booking/add", method: "Post", body: {
-            customerID: customerID,
-            employeeID: doctor?.EmployeeID,
-            serviceID: service.ServiceID,
-            BookingDate: bookingDateTime,
-            numberOfFish: fishCount,
-            distance: currentDistance,
-            distanceCost: movingCost,
-            totalServiceCost: calculateTotal(),
-            bookingAddress: window.sessionStorage.getItem("address")
-        } } ).then( bookingID => bookingID.text().then( result => {
-            FetchAPI( {endpoint: "/VnPay/all/" + result } ).then( response => {
-                response.text().then( result => window.location.replace( result ) );
-            } )
-        } ) );
+        GetPaymentURL().then( result => console.log(result) );
   };
 
   return (

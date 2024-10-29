@@ -4,6 +4,7 @@ import { FetchAPI } from "../Helper/Utilities";
 
 async function GetPaymentResult(){
     let param = window.location.href.split("?")[1];
+    console.log(param);
     let response = await FetchAPI( { endpoint: "/vnpay/result?" + param } );
     let result = await response.text();
     if( result == "Giao dịch được thực hiện thành công. Cảm ơn quý khách đã sử dụng dịch vụ")

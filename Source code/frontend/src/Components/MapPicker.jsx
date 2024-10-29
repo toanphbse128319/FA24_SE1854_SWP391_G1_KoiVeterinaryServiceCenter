@@ -65,16 +65,22 @@ export async function GetGeoLocation( {address} ){
     const APIKey = import.meta.env.VITE_GEOAPIFY_APIKEY;
     let url = `https://api.geoapify.com/v1/geocode/search?text=${address}&filter=countrycode:vn&limit=1&apiKey=${APIKey}`    
     const response = await fetch(url).catch( error => console.error(error) );
+    if( !response.ok )
+        return [0.0, 0.0];
     const json = await response.json();
     return [json?.features[0]?.properties.lon || 0, json?.features[0]?.properties.lat || 0 ];
 }
 
 export async function CalculateDistance( {lng, lat} ){
+    if( lng == 0.0 || lat == 0.0 )
+        return 0;
     const APIKey = import.meta.env.VITE_GEOAPIFY_APIKEY;
     const currentLng = import.meta.env.VITE_HEADQUARTER_LNG;
     const currentLat = import.meta.env.VITE_HEADQUARTER_LAT;
     let url = `https://api.geoapify.com/v1/routing?waypoints=${currentLat},${currentLng}|${lat},${lng}&mode=medium_truck&apiKey=${APIKey}`    
     const response = await fetch(url).catch( error => console.error(error) );
+    if( !response.ok )
+        return 0;
     const json = await response.json();
     return json.features[0].properties.distance ;
 }
