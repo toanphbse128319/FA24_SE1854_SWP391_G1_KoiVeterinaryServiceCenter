@@ -166,7 +166,7 @@ const Confirm = () => {
             return servicePrice + moving;
         };
         // Chuyển đến trang thanh toán
-        // navigate('/payment'); // Uncomment this line when using in a real app
+        navigate('/payment'); // Uncomment this line when using in a real app
         let token = window.sessionStorage.getItem("token");
         if( token == null )
             navigate("/Login");

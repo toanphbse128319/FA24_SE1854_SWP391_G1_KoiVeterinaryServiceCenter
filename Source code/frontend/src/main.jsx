@@ -12,13 +12,13 @@ import Footer from "./Components/Footer.jsx";
 import NotFound from "./Components/NotFound.jsx";
 import AboutUs from "./pages/AboutUsPage.jsx";
 import Login from "./pages/Login.jsx";
-import Booking from "./pages/Booking.jsx"
-import Confirm from "./pages/Confirm.jsx"
+import Booking from "./pages/Booking.jsx";
+import Confirm from "./pages/Confirm.jsx";
 import DoctorList from "./Components/Doctor'sSummaryInformation.jsx";
 import News from "./Components/News.jsx";
 import PaymentStatusPage from "./pages/PaymentConfirmation.jsx";
 import Test from "./Components/BookingList.jsx";
-import MyProfile from "./pages/MyProfile.jsx"
+import MyProfile from "./pages/MyProfile.jsx";
 import {
   BrowserRouter,
   createBrowserRouter,
@@ -27,6 +27,7 @@ import {
   Routes,
 } from "react-router-dom";
 import PageTransition from "./Components/PageTransition.tsx";
+import PaymentNotice from "./Components/PaymentNotice.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -45,17 +46,19 @@ createRoot(document.getElementById("root")).render(
         </Route>
         <Route path="/Doctor'sSummaryInformation" element={<DoctorList />} />
         <Route path="/AboutUs" element={<AboutUs />} />
-        <Route path="/paymentstatus" element={ <PaymentStatusPage /> } />
+        <Route path="/paymentstatus" element={<PaymentStatusPage />} />
         <Route path="/Login" element={<Login />} />
         <Route path="/Booking" element={<Booking />} />
         <Route path="/Confirm" element={<Confirm />} />
-        <Route path="/MyProfile" element={
-    <PageTransition>
-          
-            <MyProfile />
-        
-      </PageTransition>
-          } />
+        <Route
+          path="/MyProfile"
+          element={
+            <PageTransition>
+              <MyProfile />
+            </PageTransition>
+          }   
+        />
+        <Route path="/PaymentNotice" element={<PaymentNotice />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>
