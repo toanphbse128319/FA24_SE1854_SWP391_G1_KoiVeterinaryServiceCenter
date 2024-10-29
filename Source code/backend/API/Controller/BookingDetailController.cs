@@ -102,5 +102,21 @@ public class BookingDetailController : ControllerBase {
             return StatusCode( StatusCodes.Status500InternalServerError, ex.Message );
         }
     }
+    [HttpPost("addList")]
+    public async Task<ActionResult<BookingDetail>> AddBookingDetails(IEnumerable<BookingDetail> bds)
+    {
+        try
+        {
+            int rs = (await _unitOfWork.BookingDetailRepository.AddBookingDetailsAsync(bds));
+            if (rs == bds.Count())
+                return Ok($"Added " + rs);
+            else return BadRequest("Add failed");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
 }
 

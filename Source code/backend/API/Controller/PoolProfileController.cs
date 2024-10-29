@@ -56,4 +56,21 @@ public class PoolProfileController : ControllerBase {
             return BadRequest("Unknown Error: " + ex.Message);
         }
     }
+
+    [HttpPost("addList")]
+    public async Task<ActionResult<PoolProfile>> AddPoolProfiles(IEnumerable<PoolProfile> pps)
+    {
+        try
+        {
+            int rs = (await _unitOfWork.PoolProfileRepository.AddPoolProfilesAsync(pps));
+            if (rs == pps.Count())
+                return Ok($"Added " + rs);
+            else return BadRequest("Add failed");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
 }
