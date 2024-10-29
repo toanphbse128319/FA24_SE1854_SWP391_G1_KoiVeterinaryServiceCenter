@@ -107,7 +107,7 @@ public class AccountRepository : GenericRepository<Account>
         string? lastname = null;
         string? firstname = null;
         string? id = null;
-        GetName(ref lastname, ref firstname, found.AccountID);
+        GetName(ref firstname, ref lastname, found.AccountID);
         id = GetID( found.AccountID );
         if (lastname == null || firstname == null || id == null)
         {
