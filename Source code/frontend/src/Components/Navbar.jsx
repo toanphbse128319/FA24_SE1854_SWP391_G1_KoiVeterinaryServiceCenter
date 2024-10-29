@@ -106,7 +106,14 @@ export default function Example( {services} ) {
               <div className='absolute top-0 right-0 pt-14 text-base font-medium text-gray-600 z-20 hidden group-hover:block'>
                 <div className='min-w-48 bg-stone-100 round flex flex-col gap-4 p-4'>
                   <p onClick={()=>navigate('/MyProfile')} className='hover:text-black '>My Profile</p>
+              { window.sessionStorage.getItem("role") == "Veterinarian"||
+                  window.sessionStorage.getItem("role") == "Staff" ||
+                  window.sessionStorage.getItem("role") == "Manager" ? (
+                  <p onClick={()=>navigate('/bookinglist')} className='hover:text-black '>My Appointment</p>
+              ) : (
                   <p onClick={()=>navigate('/Booking')} className='hover:text-black '>My Appointment</p>
+              )}
+
                   <p onClick={()=> { window.sessionStorage.clear(); setToken( null ); console.log("clicked") }} className='hover:text-black '>Logout</p>
                 </div>
               </div>

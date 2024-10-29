@@ -64,6 +64,7 @@ createRoot(document.getElementById("root")).render(
         />
         <Route path="/PaymentNotice" element={<PaymentNotice />} />
         <Route path="/temp" element={<BookingList />} />
+        <Route path="/bookinglist" element={<BookingList />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>
