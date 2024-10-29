@@ -1,7 +1,6 @@
-function getAPIURL(endpoint) {
-    // Make sure to include the protocol and hostname
-    const baseURL = "http://localhost:5145"; // Adjust if needed for production
-    return `${baseURL}${endpoint}`;
+function getAPIURL( endpoint ){
+    let url = import.meta.env.VITE_BACKEND_URL + endpoint; 
+    return url;
 }
 
 export async function FetchAPI({ endpoint, method = 'GET', body = '' }) {

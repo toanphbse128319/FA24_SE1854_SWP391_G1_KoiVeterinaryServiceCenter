@@ -21,14 +21,7 @@ import {
   ChevronDownIcon,
 } from "@heroicons/react/20/solid";
 
-const services = [
-  { id: "S1", name: "Đặt lịch tư vấn với bác sĩ", href: "#" },
-  { id: "S2", name: "Đặt lịch khám tại cơ sở", href: "#" },
-  { id: "S3", name: "Đặt lịch khám tại nhà", href: "#" },
-  { id: "S4", name: "Đặt lịch tư vấn kiểm tra hồ cá", href: "#" },
-];
-
-export default function Example() {
+export default function Example( {services} ) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   let navigate = useNavigate();
   const handleGoLogin = () => {
@@ -75,11 +68,11 @@ export default function Example() {
               <div className="py-1">
                 {services.map((service) => (
                   <a
-                    key={service.name}
-                    href={service.href}
+                    key={service.Name}
+                    href={service.ServiceID}
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
-                    {service.name}
+                    {service.Name}
                   </a>
                 ))}
               </div>
@@ -167,9 +160,9 @@ export default function Example() {
                   <DisclosurePanel className="mt-2 space-y-2">
                     {services.map((service) => (
                       <DisclosureButton
-                        key={service.name}
+                        key={service.Name}
                         as="a"
-                        href={service.href}
+                        href={service.ServiceID}
                         className="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                       >
                         {service.name}
