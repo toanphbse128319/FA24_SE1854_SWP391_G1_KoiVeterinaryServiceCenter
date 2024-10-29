@@ -41,7 +41,7 @@ public class BookingRepository : GenericRepository<Booking>
      * this will generate Schedule if there's no schedule at the time of booking
      * or will update the slot status to false if the slot is available
      */
-    public async Task<string> SetScheduleAsync(DateTime bookingDate, string employeeID){
+    public async Task<string> SetScheduleAsync(DateTime bookingDate, string employeeID, string note){
         ScheduleRepository schrepo = new ScheduleRepository(_context);
         DateOnly date = DateOnly.Parse(bookingDate.ToString("yyyy-MM-dd"));
         Schedule? schedule = await schrepo.CheckValidDateAsync(date, employeeID);
@@ -58,7 +58,7 @@ public class BookingRepository : GenericRepository<Booking>
             return "Cannot get the schedule";
         if( slot.SlotStatus == false )
             return "Cannot place order on this slot";
-        slot = await slotManager.OrderSlotAsync(slotNo, schedule.ScheduleID);
+        slot = await slotManager.OrderSlotAsync(slotNo, schedule.ScheduleID, note);
         if( slot == null )
             return "Cannot update slot status";
         return schedule.ScheduleID;
@@ -87,7 +87,7 @@ public class BookingRepository : GenericRepository<Booking>
             Service? service = await (new ServiceRepository(_context)).GetByIdAsync(info.ServiceID);
             if(service == null)
                 return result = "Cannot determine the service";
-            if( info.BookingDate < DateTime.Now.AddDays(2) || info.BookingDate >= DateTime.Now.AddDays(21) )
+            if( info.BookingDate < DateTime.Now.AddDays(1) || info.BookingDate >= DateTime.Now.AddDays(30) )
                 return "Cannot place an booking order with that date";
 
             ServiceDeliveryMethod? sdm = await (new ServiceDeliveryMethodRepository(_context)).GetByIdAsync(service.ServiceDeliveryMethodID);
@@ -116,13 +116,13 @@ public class BookingRepository : GenericRepository<Booking>
             newOrder.Distance = info.Distance;
             newOrder.DistanceCost = info.DistanceCost;
             newOrder.TotalServiceCost = info.TotalServiceCost;
-            newOrder.Status = Constants.Customer.WaitingForPayment;
+            newOrder.Status = "Pending";
             newOrder.PaymentMethod = "Bank Transfer";
             newOrder.PaymentStatus = "Pending";
             newOrder.Vat = float.Parse( vat );
             newOrder.NumberOfPool = info.NumberOfPool;
             newOrder.IncidentalPool = 0;
-            string temp = await SetScheduleAsync(info.BookingDate, info.EmployeeID);
+            string temp = await SetScheduleAsync(info.BookingDate, info.EmployeeID, sdm.Name);
             switch (temp){
                 case "Outside working hour":
                 case "Cannot get the schedule":           

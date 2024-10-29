@@ -17,11 +17,14 @@ public class SlotTableRepository : GenericRepository<SlotTable>
                                                                      slot.Slot == slotInfo);
     }
 
-    public int SlotByTime(int hour){
-        if( hour <= 6 || hour >= 18 ){
+    public int SlotByTime(int hour)
+    {
+        if (hour <= 6 || hour >= 18)
+        {
             return 0;
         }
-        switch( hour ){
+        switch (hour)
+        {
             case 7: return 1;
             case 8: return 2;
             case 9: return 3;
@@ -34,24 +37,29 @@ public class SlotTableRepository : GenericRepository<SlotTable>
         }
     }
 
-    public async Task<SlotTable?> UpdateSlotInformationAsync(SlotTable info)    
+    public async Task<SlotTable?> UpdateSlotInformationAsync(SlotTable info)
     {
         SlotTable? slot = await SearchSpecificSlotAsync(info.ScheduleID, info.Slot);
         if (slot == null)
             return slot;
-        if( info.Note != null )
+        if (info.Note != null)
             slot.Note = info.Note;
-        if( info.SlotCapacity != 0 )
+        if (slot.SlotOrdered > info.SlotCapacity)
+            return null;
+            slot.SlotOrdered = info.SlotOrdered;
+        if (info.SlotCapacity != 0)
             slot.SlotCapacity = info.SlotCapacity;
         slot.SlotCapacity = info.SlotCapacity;
         await UpdateAsync(slot);
         return slot;
     }
 
-    public async Task<SlotTable> OrderSlotAsync(int num, string scheduleID)
+    public async Task<SlotTable> OrderSlotAsync(int num, string scheduleID, string note)
     {
         SlotTable? slot = await SearchSpecificSlotAsync(scheduleID, num);
         if (slot == null)
+            return null!;
+        if (slot.Note != note)
             return null!;
         if (slot.SlotStatus == true)
         {
@@ -66,7 +74,7 @@ public class SlotTableRepository : GenericRepository<SlotTable>
         return slot;
     }
 
-    public async Task<int?> GenerateVetScheduleAsync(string scheduleID)
+    public async Task<int?> GenerateVetScheduleAsync(string scheduleID, string note)
     {
         for (int i = 0; i < 8; i++)
         {
@@ -75,7 +83,8 @@ public class SlotTableRepository : GenericRepository<SlotTable>
                 SlotTableID = GetNextID("ST"),
                 ScheduleID = scheduleID,
                 Slot = (i + 1),
-                SlotStatus = true
+                SlotStatus = true,
+                Note = note
             };
             await base.CreateAsync(slot);
         }

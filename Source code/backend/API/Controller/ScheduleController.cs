@@ -28,15 +28,19 @@ public class ScheduleController : ControllerBase
                 return BadRequest("Parameter(s) cannot be empty!");
             if (await _unitOfWork.ScheduleRepository.CheckValidDateAsync(info.Date, info.EmployeeID) != null)
                 return BadRequest("Working day for that vet is already existed!");
-            Schedule schedule = new Schedule()
+            for (int i=0; i < 4; i++)
             {
-                ScheduleID = info.ScheduleID,
-                Status = info.Status,
-                Date = info.Date,
-                EmployeeID = info.EmployeeID,
-                Note = info.Note
-            };
-            await _unitOfWork.ScheduleRepository.AddNewScheduleAsync(schedule);
+                Schedule schedule = new Schedule()
+                {
+                    ScheduleID = info.ScheduleID,
+                    Status = info.Status,
+                    Date = info.Date.AddDays(info.Date.Day + i * 7),
+                    EmployeeID = info.EmployeeID,
+                    Note = info.Note
+                };
+                await _unitOfWork.ScheduleRepository.AddNewScheduleAsync(schedule);
+            }
+            
             return Ok("Added successfully!");
         }
         catch (Exception ex)
@@ -48,7 +52,7 @@ public class ScheduleController : ControllerBase
 
     [Route("AssignSchedule")]
     [HttpPut]
-    public async Task<ActionResult<SlotTable>> AssignVet(string EmpID, DateOnly date, int slot)
+    public async Task<ActionResult<SlotTable>> AssignVet(string EmpID, DateOnly date, int slot, string smd)
     {
         try
         {
@@ -57,7 +61,7 @@ public class ScheduleController : ControllerBase
             Schedule schedule = await _unitOfWork.ScheduleRepository.SearchVetAndDateAsync(date, EmpID);
             if (schedule == null)
                 return BadRequest("The Employee is not exists");
-            await _unitOfWork.SlotTableRepository.OrderSlotAsync(slot, schedule.ScheduleID);
+            await _unitOfWork.SlotTableRepository.OrderSlotAsync(slot, schedule.ScheduleID, smd);
             return Ok("Assigned successfully!");
 
         }
@@ -163,10 +167,11 @@ public class ScheduleController : ControllerBase
 
     [Route("get30daysschedule")]
     [HttpGet]
-    public async Task<ActionResult<List<Schedule>>> Get30DaysSchedule( DateOnly date ){
+    public async Task<ActionResult<List<Schedule>>> Get30DaysSchedule(DateOnly date)
+    {
         try
         {
-            List<Schedule> list = await _unitOfWork.ScheduleRepository.Get30DaysScheduleAsync( date );
+            List<Schedule> list = await _unitOfWork.ScheduleRepository.Get30DaysScheduleAsync(date);
             if (list.Count == 0)
                 return NotFound("There's no schedule at that date");
             return list;
@@ -180,10 +185,11 @@ public class ScheduleController : ControllerBase
 
     [Route("getslotin30days")]
     [HttpGet]
-    public async Task<ActionResult<List<SlotTable>>> GetSlotIn30Days( DateOnly date ){
+    public async Task<ActionResult<List<SlotTable>>> GetSlotIn30Days(DateOnly date)
+    {
         try
         {
-            List<SlotTable> list = await _unitOfWork.ScheduleRepository.GetSlotIn30Days( date );
+            List<SlotTable> list = await _unitOfWork.ScheduleRepository.GetSlotIn30Days(date);
             if (list.Count == 0)
                 return NotFound("There's no schedule at that date");
             return list;
@@ -193,7 +199,7 @@ public class ScheduleController : ControllerBase
             Console.WriteLine(ex);
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
-       
+
     }
 
     //[HttpGet]

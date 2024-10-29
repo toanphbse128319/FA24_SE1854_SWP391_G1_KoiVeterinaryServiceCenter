@@ -79,7 +79,7 @@ public class ScheduleRepository : GenericRepository<Schedule>
         schedule.Note = info.Note;
         schedule.Status = info.Status;
         await base.CreateAsync(schedule);
-        await (new SlotTableRepository(_context).GenerateVetScheduleAsync(schedule.ScheduleID));
+        await (new SlotTableRepository(_context).GenerateVetScheduleAsync(schedule.ScheduleID, info.Note));
         return schedule;
     }
 
