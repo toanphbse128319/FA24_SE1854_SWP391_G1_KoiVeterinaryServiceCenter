@@ -56,5 +56,18 @@ public class AnimalProfileController : ControllerBase {
             return StatusCode( StatusCodes.Status500InternalServerError, ex.Message );
         }
     }
+    
+    [HttpPost("addList")]
+    public async Task<ActionResult<AnimalProfile>> AddAnimalProfiles(IEnumerable<AnimalProfile> animalprofiles) {
+        try{
+            int rs = (await _unitOfWork.AnimalProfileRepository.AddAnimalProfilesAsync(animalprofiles));
+            if (rs == animalprofiles.Count())
+                return Ok($"Added " + rs);
+            else return BadRequest("Add failed");
+        } catch ( Exception ex ){
+            Console.WriteLine( ex );
+            return StatusCode( StatusCodes.Status500InternalServerError, ex.Message );
+        }
+    }
 
 }
