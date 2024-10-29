@@ -35,5 +35,34 @@ namespace Repositories.Repository
             bd.UnitPrice = service.Price;
             return await base.CreateAsync(bd);
         }
+
+        public async Task<int> AddBookingDetailsAsync(IEnumerable<BookingDetail> bds)
+        {
+            if (bds == null || !bds.Any())
+                return 0;
+
+            int successfulSaves = 0;
+
+            foreach (var bd in bds)
+            {
+                if (string.IsNullOrEmpty(bd.BookingDetailID))
+                {
+                    bd.BookingDetailID = GetNextID("BD");
+                }
+
+                try
+                {
+                    await base.CreateAsync(bd);
+                    successfulSaves++;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                    Console.WriteLine($"Error saving AnimalProfile: {ex.Message}");
+                }
+            }
+
+            return successfulSaves;
+        }
     }
 }
