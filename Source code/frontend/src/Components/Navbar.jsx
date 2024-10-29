@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import News from "./News";
 import { Link } from "react-scroll";
@@ -23,7 +23,6 @@ import {
 
 export default function Example( {services} ) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
   let navigate = useNavigate();
   const handleGoLogin = () => {
     navigate("/Login");
@@ -70,7 +69,7 @@ export default function Example( {services} ) {
                 {services.map((service) => (
                   <a
                     key={service.Name}
-                    href={service.Href}
+                    href={service.ServiceID}
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
                     {service.Name}
@@ -163,10 +162,10 @@ export default function Example( {services} ) {
                       <DisclosureButton
                         key={service.Name}
                         as="a"
-                        href={service.href}
+                        href={service.ServiceID}
                         className="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                       >
-                        {service.Name}
+                        {service.name}
                       </DisclosureButton>
                     ))}
                   </DisclosurePanel>

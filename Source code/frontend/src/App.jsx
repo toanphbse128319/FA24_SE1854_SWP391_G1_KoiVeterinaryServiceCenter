@@ -11,12 +11,13 @@ import { useState, useEffect } from 'react';
 import { FetchAPI } from "./Helper/Utilities";
 import PaymentStatusPage from "./pages/PaymentConfirmation";
 
+import PaymentStatusPage from "./pages/PaymentConfirmation";
 
 const App = () => {
     const [services, SetServices] = useState([]);
     const [sdm, SetSDM] = useState([]);
     const [loading, SetLoading] = useState(true);
-    
+
     useEffect(() => {
         async function GetData(){
             try {

@@ -1,13 +1,5 @@
-import React, { useEffect } from "react"; 
+import React from "react"; 
 import { useNavigate } from "react-router-dom";
-
-
-//const services = [
-//  { id: "S1", name: "Đặt lịch tư vấn với bác sĩ", href: "#" },
-//  { id: "S2", name: "Đặt lịch khám tại cơ sở", href: "#" },
-//  { id: "S3", name: "Đặt lịch khám tại nhà", href: "#" },
-//  { id: "S4", name: "Đặt lịch tư vấn kiểm tra hồ cá", href: "#" },
-//];
 
 function filterServices( {allServices, sdm} ){
     let services = [];
@@ -22,7 +14,6 @@ function filterServices( {allServices, sdm} ){
             if( atHomeID != null && service.ServiceDeliveryMethodID == atHomeID )
                 service.Name = service.Name + " tại nhà";
             else if( atHomeID != null ) service.Name = service.Name + " tại trung tâm";
-
             services.push( service );
         }
         else if( service.Name == "Tư vấn sức khỏe cá koi" ){
@@ -39,14 +30,15 @@ function filterServices( {allServices, sdm} ){
 
 function Banner( { allServices, sdm }) {
   let navigate = useNavigate();
-    if(allServices == undefined || sdm == undefined)
-        return <div> Loading </div>
-    const services = filterServices( {allServices: allServices, sdm: sdm} );
-
   
-  const handleGoBooking = ( service, sdm ) => {
-    navigate("/Booking", { state: { service, sdm } });
-  };
+    if(allServices == undefined || sdm == undefined)
+        return <div> Loading </div>;
+
+            const services = filterServices( {allServices: allServices, sdm: sdm} );
+
+    const handleGoBooking = ( service, sdm ) => {
+        navigate("/Booking", { state: { service, sdm } });
+    }
 
   return (
     <div

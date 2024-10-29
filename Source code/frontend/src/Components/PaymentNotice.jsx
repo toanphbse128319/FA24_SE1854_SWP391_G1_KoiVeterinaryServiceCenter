@@ -1,31 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FetchAPI } from "../Helper/Utilities";
-
 const PaymentNotice = () => {
   const [booking, SetBooking] = useState(null);
   const [statusPayment, SetStatus] = useState(null);
   const navigate = useNavigate();
-
   useEffect(() => {
     // Tạo booking và lấy ID của booking
     const createBooking = async () => {
       const response = await FetchAPI({ endpoint: '/Booking/add' });
       const bookingData = await response.json();
       SetBooking(bookingData.id);  // Giả sử ID booking được trả về dưới dạng bookingData.id
-
       // Sau khi có ID booking, lấy trạng thái thanh toán
       const paymentResponse = await FetchAPI({ endpoint: `/booking/${bookingData.id}` });
       const paymentData = await paymentResponse.json();
       SetStatus(paymentData.paymentStatus);  // Giả sử trạng thái thanh toán trả về là paymentData.paymentStatus
     };
-
     createBooking();
   }, []);
-
   // Kiểm tra trạng thái thanh toán
   const payStt = statusPayment || "pending";  // Mặc định là pending nếu chưa có trạng thái
-
   return (
     <div className="bg-blue-200 h-screen flex items-center justify-center">
       <div className="bg-white p-6 md:mx-auto rounded-lg shadow-lg">
@@ -48,7 +42,6 @@ const PaymentNotice = () => {
           }`}>
             {payStt === "success" ? "Payment Done!" : "Payment Failed!"}
           </h3>
-
           {/* Điều chỉnh nội dung dựa trên trạng thái thanh toán */}
           <p className="text-gray-600 my-2">
             {payStt === "success" 
@@ -59,7 +52,6 @@ const PaymentNotice = () => {
           {payStt !== "success" && (
             <p className="text-gray-600 my-2">Please try again later or contact support.</p>
           )}
-
           {/* Nút quay lại */}
           <div className="py-10 text-center">
             <button
@@ -74,5 +66,4 @@ const PaymentNotice = () => {
     </div>
   );
 };
-
 export default PaymentNotice;
