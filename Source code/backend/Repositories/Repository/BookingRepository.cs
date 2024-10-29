@@ -45,16 +45,8 @@ public class BookingRepository : GenericRepository<Booking>
         ScheduleRepository schrepo = new ScheduleRepository(_context);
         DateOnly date = DateOnly.Parse(bookingDate.ToString("yyyy-MM-dd"));
         Schedule? schedule = await schrepo.CheckValidDateAsync(date, employeeID);
-        if( schedule == null ){
-            schedule = new Schedule(){
-                ScheduleID = "",
-                Date = date,
-                EmployeeID = employeeID,
-                Note = "",
-                Status = "Active"
-            };
-            schedule.ScheduleID = (await schrepo.AddNewScheduleAsync(schedule)).ScheduleID;
-        }
+        if( schedule == null )
+            return "Cannot get the schedule";
         SlotTableRepository slotManager = new SlotTableRepository(_context);
         SlotTable? slot = new SlotTable();
         int slotNo = slotManager.SlotByTime(bookingDate.Hour);
