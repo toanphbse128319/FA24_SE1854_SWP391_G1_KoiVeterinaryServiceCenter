@@ -194,9 +194,10 @@ const Confirm = () => {
             distanceCost: movingCost,
             totalServiceCost: calculateTotal(),
             bookingAddress: window.sessionStorage.getItem("address")
-
         } } ).then( bookingID => bookingID.text().then( result => {
-            FetchAPI( {endpoint: "/VnPay/all/" + result } ).then( response => response.text().then( result => console.log(result) ) );
+            FetchAPI( {endpoint: "/VnPay/all/" + result } ).then( response => {
+                response.text().then( result => window.location.replace( result ) );
+            } )
         } ) );
   };
 
