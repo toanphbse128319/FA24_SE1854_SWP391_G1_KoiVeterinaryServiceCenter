@@ -45,8 +45,21 @@ public class BookingController : ControllerBase {
         }
     }
 
+    [HttpGet("byprofile")]
+    public async Task<ActionResult<List<Booking>>> GetByProfile(string id) {
+        try{
+            List<Booking> list = await _unitOfWork.BookingRepository.GetByProfileID(id);
+            if (list.Count == 0)
+                return NotFound("Cannot find Order associate with that profile");
+            return list;
+        } catch ( Exception ex ){
+            Console.WriteLine( ex );
+            return StatusCode( StatusCodes.Status500InternalServerError, ex.Message );
+        }
+    }
+
     [HttpGet]
-    public async Task<ActionResult<I﻿Enumerable<Booking>>> GetVetBookings(string id) {
+    public async Task<ActionResult<List<Booking>>> GetVetBookings(string id) {
         try{
             if (await _unitOfWork.EmployeeRepository.GetByIdAsync(id) == null)
                 return BadRequest("EmployeeID is not existed!");

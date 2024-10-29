@@ -12,6 +12,12 @@ public class BookingRepository : GenericRepository<Booking>
         _context = context;
     }
 
+    public async Task<List<Booking>> GetByProfileID( string id ){
+        if( id.Contains( 'C' ) || id.Contains('c') )
+            return await _context.Bookings.Where( order => order.CustomerID == id ).ToListAsync();
+        return await _context.Bookings.Where( order => order.EmployeeID == id ).ToListAsync();
+    }
+
     public Task<List<Booking>> GetVetBookingsAsync(string id)
     {
         return _context.Bookings.Where(booking => booking.EmployeeID.ToLower() == id.ToLower() && booking.BookingDate.Date >= DateTime.Today.Date).ToListAsync();
