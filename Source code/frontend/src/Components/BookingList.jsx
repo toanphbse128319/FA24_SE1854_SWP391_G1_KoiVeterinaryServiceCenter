@@ -12,6 +12,8 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import ServiceSelection from './BookingDetail.jsx';
+import BookingActions from './ServiceSelected.jsx';
+
 
 const DELIVERY_METHODS = {
   'SDM1': 'Home Visit',
@@ -55,7 +57,7 @@ const SAMPLE_BOOKINGS = [
     deposit: 37.50,
     numberOfFish: 1,
     incidentalFish: 0,
-    serviceDeliveryMethodID: 'SDM2',
+    serviceDeliveryMethodID: 'SDM1',
     vat: 7.50,
     address: '456 Maple Ave',
     distance: 0,
@@ -121,7 +123,7 @@ const SAMPLE_BOOKINGS = [
     deposit: 25.00,
     numberOfFish: 1,
     incidentalFish: 1,
-    serviceDeliveryMethodID: 'SDM5',
+    serviceDeliveryMethodID: 'SDM4',
     vat: 5.00,
     address: '654 Pine St',
     distance: 2.1,
@@ -133,75 +135,115 @@ const SAMPLE_BOOKINGS = [
     paymentMethod: 'Debit Card',
     paymentStatus: 'Pending'
   }
+
 ];
 
 // Move these inside the component since we're not using props
 export const SERVICES_DATA = [
   {
-    ServiceID: 'S001',
-    ServiceDeliveryMethodID: 'SDM001',
+    ServiceID: 'S1',
+    ServiceDeliveryMethodID: 'SDM1',
     Name: 'Khám sức khỏe Koi cơ bản',
     Price: 100.00,
     Description: 'Kiểm tra sức khỏe cơ bản cho cá Koi, bao gồm kiểm tra các dấu hiệu bệnh lý và tình trạng dinh dưỡng',
     Status: 1
   },
   {
-    ServiceID: 'S002',
-    ServiceDeliveryMethodID: 'SDM002',
+    ServiceID: 'S10',
+    ServiceDeliveryMethodID: 'SDM4',
+    Name: 'Khám sức khỏe Koi cơ bản',
+    Price: 100.00,
+    Description: 'Kiểm tra sức khỏe cơ bản cho cá Koi, bao gồm kiểm tra các dấu hiệu bệnh lý và tình trạng dinh dưỡng',
+    Status: 1
+  },
+  {
+    ServiceID: 'S2',
+    ServiceDeliveryMethodID: 'SDM3',
     Name: 'Tư vấn Koi trực tuyến',
     Price: 75.00,
     Description: 'Tư vấn trực tuyến với chuyên gia về cá Koi để giải đáp các thắc mắc về chăm sóc và nuôi dưỡng',
     Status: 1
   },
   {
-    ServiceID: 'S003',
-    ServiceDeliveryMethodID: 'SDM001',
+    ServiceID: 'S3',
+    ServiceDeliveryMethodID: 'SDM1',
     Name: 'Điều trị bệnh Koi',
     Price: 150.00,
     Description: 'Điều trị các bệnh phổ biến ở cá Koi như bệnh nấm, ký sinh trùng, vi khuẩn',
     Status: 1
   },
   {
-    ServiceID: 'S004',
-    ServiceDeliveryMethodID: 'SDM003',
+    ServiceID: 'S4',
+    ServiceDeliveryMethodID: 'SDM2',
     Name: 'Bảo trì hồ Koi',
     Price: 200.00,
     Description: 'Dịch vụ bảo trì định kỳ hồ cá Koi, bao gồm kiểm tra và điều chỉnh các thông số nước',
     Status: 1
   },
   {
-    ServiceID: 'S005',
-    ServiceDeliveryMethodID: 'SDM003',
+    ServiceID: 'S5',
+    ServiceDeliveryMethodID: 'SDM3',
     Name: 'Lắp đặt hệ thống lọc',
     Price: 500.00,
     Description: 'Tư vấn và lắp đặt hệ thống lọc phù hợp cho hồ cá Koi',
     Status: 1
   },
   {
-    ServiceID: 'S006',
-    ServiceDeliveryMethodID: 'SDM001',
+    ServiceID: 'S6',
+    ServiceDeliveryMethodID: 'SDM1',
     Name: 'Tiêm vaccine Koi',
     Price: 120.00,
     Description: 'Tiêm phòng các bệnh phổ biến cho cá Koi',
     Status: 1
   },
   {
-    ServiceID: 'S007',
-    ServiceDeliveryMethodID: 'SDM002',
+    ServiceID: 'S7',
+    ServiceDeliveryMethodID: 'SDM2',
     Name: 'Đánh giá chất lượng Koi',
     Price: 80.00,
     Description: 'Đánh giá chất lượng và giá trị của cá Koi dựa trên các tiêu chuẩn chuyên môn',
     Status: 1
   },
   {
-    ServiceID: 'S008',
-    ServiceDeliveryMethodID: 'SDM003',
+    ServiceID: 'S8',
+    ServiceDeliveryMethodID: 'SDM3',
     Name: 'Thiết kế hồ Koi',
     Price: 300.00,
     Description: 'Tư vấn và thiết kế hồ cá Koi theo yêu cầu của khách hàng',
     Status: 1
   }
 ];
+const bookingDetail = [
+  {
+    BookingDetailID: 'BD1',
+    BookingID: 'B1',
+    ServiceID: 'S1',
+    UnitPrice: 100.00,
+    Incidental: 0,
+    NoteResult: 'Koi appears healthy overall',
+    AnimalStatusDescription: 'Nishiki shows good coloration and active behavior',
+    ConsultDoctor: 'Dr. Amelia Fish',
+    DrugList: 'Probiotic supplement',
+    PoolStatusDescription: 'Zen Garden Koi Pond maintains good water quality',
+    ConsultTechnician: 'Tech John Doe',
+    MaterialList: 'Water testing kit, net'
+  },
+  {
+    BookingDetailID: 'BD2',
+    BookingID: 'B2',
+    ServiceID: 'S1',
+    UnitPrice: 75.00,
+    Incidental: 0,
+    NoteResult: 'Goldfish exhibiting signs of stress',
+    AnimalStatusDescription: 'Bubbles has clamped fins and reduced activity',
+    ConsultDoctor: 'Dr. Michael Scales',
+    DrugList: 'Antibiotics, stress coat additive',
+    PoolStatusDescription: 'Indoor Goldfish Tank requires improved filtration',
+    ConsultTechnician: 'Tech Jane Smith',
+    MaterialList: 'New filter system, air pump'
+  }
+];
+
 const ROLE_STATUS_CONFIG = {
   customer: [
     { label: 'chờ xác nhận', value: 'Pending', isActive: false },
@@ -331,20 +373,26 @@ const BookingList = ({
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [selectedBookingId, setSelectedBookingId] = useState(null);
   const [showServiceSelection, setShowServiceSelection] = useState(false);
-  const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState(null);
+  const [selectedDeliveryMethodId, setSelectedDeliveryMethodId] = useState(null);
   const [cartItems, setCartItems] = useState([]); // Persist cart items
+  const [showBookingActions, setShowBookingActions] = useState(false);
+  const [isIncidental, setIsIncidental] = useState(false);
+
+  const handleCloseBookingActions = () => {
+    setShowBookingActions(false);
+  };
 
   // Handlers
-  const handleStartExamination = (bookingId, deliveryMethod) => {
+  const handleStartExamination = (bookingId, deliveryMethodId) => {
     setSelectedBookingId(bookingId);
-    setSelectedDeliveryMethod(deliveryMethod);
-    setShowServiceSelection(true);
+    setSelectedDeliveryMethodId(deliveryMethodId);
+        setShowServiceSelection(true);
   };
 
   const handleCloseServiceSelection = () => {
     setShowServiceSelection(false);
     setSelectedBookingId(null);
-    setSelectedDeliveryMethod(null);
+    setSelectedDeliveryMethodId(null);
   };
 
   const handleCartUpdate = (updatedCart) => {
@@ -478,19 +526,50 @@ const BookingList = ({
                     </>
                   )}
 
-{userRole === 'veterinarian' && booking.status === 'Confirmed' && (
-  <button
-    style={{ ...styles.actionButton, ...styles.primaryActionButton }}
-    onClick={() => handleStartExamination(booking.id, booking.serviceDeliveryMethodID)}
-  >
-    Bắt đầu khám
-  </button>
-)}
+                  {userRole === 'veterinarian' && booking.status === 'Confirmed' &&  isIncidental == false &&(
+
+
+                    <>
+                      <button onClick={() => {
+                        setShowBookingActions(true)
+                      }}
+                        style={{ ...styles.actionButton, ...styles.primaryActionButton }}>
+                        Khám
+                      </button>
+
+                      <BookingActions
+                        bookingId={booking.id}
+                        isOpen={showBookingActions}
+                        onClose={handleCloseBookingActions}
+                        onSubmitSuccess={() => setIsIncidental(true)} 
+                        selectedService={SERVICES_DATA.find(service =>
+                          service.ServiceID === bookingDetail.find(detail =>
+                            detail.BookingID === booking.id
+                          ).ServiceID
+                        )}
+                      />
+                    </>
+
+                  )}
+                  {userRole === 'veterinarian' && booking.status === 'Confirmed'  &&  isIncidental != false && (
+
+                    <button
+                      style={{ ...styles.actionButton, ...styles.primaryActionButton }}
+                      onClick={() => handleStartExamination(booking.id, booking.serviceDeliveryMethodID)}
+                    >
+                      Bắt đầu khám
+                    </button>
+
+                  )}
+
                 </div>
               </CardContent>
             </Card>
           ))}
         </div>
+
+
+
 
         {/* Service Selection Dialog */}
         {showServiceSelection && (
@@ -499,7 +578,8 @@ const BookingList = ({
             services={SERVICES_DATA}
             isOpen={showServiceSelection}
             onClose={handleCloseServiceSelection}
-            deliveryMethod={selectedDeliveryMethod}
+            
+            deliveryMethod={selectedDeliveryMethodId}
           />
         )}
 

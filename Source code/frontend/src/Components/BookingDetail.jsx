@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { 
+import Confirm from './ConfirmToSubmit';
+import {
   Alert,
   Badge,
   Box,
@@ -14,15 +15,15 @@ import {
   Tabs,
   TextField,
   Tooltip,
-  Typography 
+  Typography
 } from '@mui/material';
 
-import { 
+import {
   Search as SearchIcon,
   Info as InfoIcon,
   Close as CloseIcon,
   ReceiptLong as ReceiptLongIcon,
-  ShoppingCart as ShoppingCartIcon 
+  ShoppingCart as ShoppingCartIcon
 } from '@mui/icons-material';
 
 // Sub-components
@@ -60,19 +61,21 @@ const INITIAL_POOL_PROFILE = {
   Description: ''
 };
 
-const FishPoolServiceSelection = ({ 
-  bookingId, 
-  services = [], 
-  isOpen, 
-  onClose, 
+const FishPoolServiceSelection = ({
+  bookingId,
+  services = [],
+  isOpen,
+  onClose,
   deliveryMethod,
   initialFishCount = 1,
-  initialPoolCount = 1
+  initialPoolCount = 0,
 }) => {
+
+
   // Tab and Step Management
   const [activeTab, setActiveTab] = useState(0);
   const [currentStep, setCurrentStep] = useState('CheckInFish');
-  
+
   // Search and Edit State
   const [searchTerm, setSearchTerm] = useState('');
   const [isEditing, setIsEditing] = useState(false);
@@ -85,6 +88,8 @@ const FishPoolServiceSelection = ({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentFishProfile, setCurrentFishProfile] = useState(INITIAL_FISH_PROFILE);
   const [currentPoolProfile, setCurrentPoolProfile] = useState(INITIAL_POOL_PROFILE);
+  const [incidental, setIncidental] = useState(true);
+
 
   // Service and Cart Management
   const [filteredServices, setFilteredServices] = useState(services);
@@ -111,15 +116,35 @@ const FishPoolServiceSelection = ({
     setTotalAmount(total);
   }, [cartItems]);
 
-  useEffect(() => {
-    const filtered = services.filter(service =>
-      service.Name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredServices(filtered);
-  }, [searchTerm, services]);
 
+ 
+  useEffect(() => {
+    const filtered = services.filter(service => {
+      const matchesSearch = service.Name.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      // nếu đơn hiện tại đang là tại nhà, thì chỉ đc chọn dịch vụ cá tại nhà hoặc hồ tại nhà 
+      // nếu đang là khám tại cơ sở thì chỉ đc chọn những dịch vụ khám tại cơ sở
+      //onl ko đc chọn
+      // nếu không có
+      if (deliveryMethod === 'SDM1' || deliveryMethod === 'SDM2') {
+        return (service.ServiceDeliveryMethodID === 'SDM1' || service.ServiceDeliveryMethodID === 'SDM2') && matchesSearch;
+      } else if (deliveryMethod === 'SDM4') {
+        return service.ServiceDeliveryMethodID === 'SDM4' && matchesSearch;
+      } else {
+        // nếu không có hồ hoặc cá (thì chứng tỏ ng dùn không muốn làm những cái liên quan tới dịch vụ đó) thì danh sách dịch vụ sẽ không hiện những cái dịch vụ
+        if (totalPoolCount === 0) {
+          return service.ServiceDeliveryMethodID !== 'SDM2' && matchesSearch;
+        }
+        if (totalFishCount === 0) {
+          return service.ServiceDeliveryMethodID !== 'SDM1' && matchesSearch;
+        }
+        return matchesSearch;
+      }
+    });
+    setFilteredServices(filtered);
+  }, [searchTerm, services, totalPoolCount, deliveryMethod]);
   // Tab Management
-  const handleTabChange = (event, newValue) => {
+  const handleTabChange = (newValue) => {
     if (newValue === 1 && !isProfilesComplete()) {
       return;
     }
@@ -136,13 +161,15 @@ const FishPoolServiceSelection = ({
   };
 
   const handleProfileSubmit = (skip = false) => {
+    setIncidental(false);
+    console.log(fishProfiles);
     if (isProfileLimitReached()) {
       alert('Đã đạt đến giới hạn số lượng đánh giá!');
       return;
     }
 
     const isPoolProfile = currentIndex >= totalFishCount;
-    
+
     if (skip) {
       if (isPoolProfile) {
         setPoolProfiles([...poolProfiles, { ...INITIAL_POOL_PROFILE }]);
@@ -225,8 +252,13 @@ const FishPoolServiceSelection = ({
     });
     setShowConfirmation(false);
     onClose();
+    setShowConfirmation(true);
   };
 
+
+  const handleConfirm = () => {
+    setShowConfirmation(true);
+  };
   // Utility Functions
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('vi-VN', {
@@ -262,52 +294,90 @@ const FishPoolServiceSelection = ({
     <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg w-11/12 max-w-6xl h-5/6 overflow-hidden relative flex flex-col">
         {/* Header with Tabs */}
-        <div className="p-4 border-b">
-          <Tabs value={activeTab} onChange={handleTabChange}>
-            <Tab 
-              icon={<InfoIcon />} 
-              label="Thông tin cá và hồ" 
-            />
-            <Tab
-              icon={<ReceiptLongIcon />}
-              label="Thông tin dịch vụ"
-              disabled={!isProfilesComplete()}
-            />
-          </Tabs>
+        <div className="p-4 border-b"
+          style={{
+            background: 'linear-gradient(90deg, #64B0E0 25%, rgba(35, 200, 254, 0.75) 75%)',
+          }}>
+         <Tabs
+  value={activeTab}
+  onChange={(event, newValue) => handleTabChange(newValue)}
+  sx={{
+    '& .MuiTab-root': {
+      color: 'rgba(255, 255, 255, 0.5)',  // màu mờ cho các tab không được chọn
+      opacity: 0.7,  // độ mờ cho tab không được chọn
+      '&.Mui-selected': {
+        color: 'white',  // màu trắng cho tab được chọn
+        opacity: 1  // độ đậm cho tab được chọn
+      },
+    },
+    '& .MuiTabs-indicator': {
+      backgroundColor: 'white'  // thanh màu trắng ở dưới tab được chọn
+    }
+  }}
+>
+  <Tab
+    icon={<InfoIcon />}
+    label="Thông tin cá và hồ"
+  />
+  <Tab
+    icon={<ReceiptLongIcon />}
+    label="Thông tin dịch vụ"
+    disabled={!isProfilesComplete()}  // Thêm disabled condition
+  />
+</Tabs>
         </div>
-  
+
         {/* Action Buttons */}
-        <div className="absolute top-4 right-4 z-10 flex items-center">
+        <div className="absolute top-8 right-8 z-10 flex items-center">
+        <Badge
+      
+      badgeContent={fishProfiles.length + poolProfiles.length}
+            color="primary"
+            sx={{
+              "& .MuiBadge-badge": {
+                color: "white",
+              }
+            }}
+          >
           <ProfileListModal
             fishProfiles={fishProfiles}
             poolProfiles={poolProfiles}
             onUpdateFishProfile={handleUpdateFishProfile}
             onUpdatePoolProfile={handleUpdatePoolProfile}
           />
-          <Badge badgeContent={cartItems.length} color="primary">
+          </Badge>
+          <Badge
+            badgeContent={cartItems.length}
+            color="primary"
+            sx={{
+              "& .MuiBadge-badge": {
+                color: "white",
+              }
+            }}
+          >
             <IconButton onClick={() => setShowCart(true)}>
-              <ShoppingCartIcon className="text-blue-400" />
+              <ShoppingCartIcon sx={{ color: "white" }} />
             </IconButton>
           </Badge>
           <IconButton onClick={onClose}>
-            <CloseIcon className="text-blue-400" />
+            <CloseIcon sx={{ color: "white" }} />
           </IconButton>
         </div>
-  
-        {/* Profile Information Tab */}
+        {/* nếu hiện tại đang là bước nhập thông tin cá*/}
         {currentStep === 'CheckInFish' && (
           <div className="p-6 overflow-y-auto">
             <div className="space-y-6">
+              {/* hiện thông báo */}
               {isProfileLimitReached() && (
                 <Alert severity="warning">
                   Đã đạt đến giới hạn số lượng đánh giá!
                 </Alert>
               )}
-  
+
               {/* hiện số cá và số hồ ban đầu*/}
               <div className="grid grid-cols-2 gap-6">
                 {(initialFishCount > 0 || initialPoolCount > 0) && (
-                  <Card className="p-5">
+                  <Card className="p-5 ">
                     <Typography variant="h6">Số lượng ban đầu</Typography>
                     {initialFishCount > 0 && (
                       <Typography>Số cá: {initialFishCount}</Typography>
@@ -317,8 +387,8 @@ const FishPoolServiceSelection = ({
                     )}
                   </Card>
                 )}
-  
-                <Card className="p-5">
+
+                <Card className="p-6">
                   <Typography variant="h6">Số lượng phát sinh</Typography>
                   <TextField
                     label="Số cá phát sinh"
@@ -327,7 +397,7 @@ const FishPoolServiceSelection = ({
                     onChange={(e) => setAdditionalFishCount(Math.max(0, parseInt(e.target.value) || 0))}
                     className="mb-4"
                     fullWidth
-                    disabled={isProfileLimitReached()}
+                    disabled={!incidental}
                   />
                   <TextField
                     label="Số hồ phát sinh"
@@ -335,19 +405,19 @@ const FishPoolServiceSelection = ({
                     value={additionalPoolCount}
                     onChange={(e) => setAdditionalPoolCount(Math.max(0, parseInt(e.target.value) || 0))}
                     fullWidth
-                    disabled={isProfileLimitReached()}
+                    disabled={!incidental}
                   />
                 </Card>
               </div>
-  
-              {/* Profile Form */}
-              {(totalFishCount > 0 || totalPoolCount > 0) && !isProfileLimitReached() && (
+
+              {/* bảng nhập thông tin cá */}
+              {!isProfileLimitReached() && (
                 <Card className="p-4">
                   <Typography variant="h6">
                     {currentIndex < totalFishCount ? 'Thông tin cá' : 'Thông tin hồ'}
                     ({currentIndex + 1}/{totalFishCount + totalPoolCount})
                   </Typography>
-  
+
                   {currentIndex < totalFishCount ? (
                     <div className="grid grid-cols-2 gap-4 mt-4">
                       <TextField
@@ -410,17 +480,20 @@ const FishPoolServiceSelection = ({
                       />
                     </div>
                   )}
-  
+
                   <div className="flex justify-end gap-4 mt-4">
-                    <Button 
-                      variant="outlined" 
+                    <Button
+                      variant="outlined"
                       onClick={() => handleProfileSubmit(true)}
                     >
                       Bỏ qua
                     </Button>
-                    <Button 
-                      variant="contained" 
+                    <Button
+                      variant="contained"
                       onClick={() => handleProfileSubmit(false)}
+                      style={{
+                        background: 'linear-gradient(90deg, #64B0E0 25%, rgba(25, 200, 254, 0.75) 75%)',
+                      }}
                     >
                       Tiếp theo
                     </Button>
@@ -430,7 +503,7 @@ const FishPoolServiceSelection = ({
             </div>
           </div>
         )}
-  
+
         {/* Service Selection Tab */}
         {currentStep === 'SelectServices' && (
           <div className="flex flex-1 overflow-hidden">
@@ -448,7 +521,7 @@ const FishPoolServiceSelection = ({
                   }}
                 />
               </div>
-  
+
               <div className="space-y-4">
                 {filteredServices.map((service) => (
                   <Card
@@ -471,7 +544,7 @@ const FishPoolServiceSelection = ({
                 ))}
               </div>
             </div>
-  
+
             {/* Service Details */}
             <div className="w-1/2 p-6 bg-gray-50 overflow-y-auto">
               {selectedService ? (
@@ -480,7 +553,7 @@ const FishPoolServiceSelection = ({
                     {isEditing ? 'Chỉnh sửa dịch vụ: ' : 'Chi tiết dịch vụ: '}
                     {selectedService.Name}
                   </Typography>
-  
+
                   <TextField
                     fullWidth
                     label="Kết quả khám"
@@ -491,8 +564,8 @@ const FishPoolServiceSelection = ({
                     multiline
                     rows={4}
                   />
-  
-                  {selectedService.ServiceDeliveryMethodID === 'SDM001' && (
+
+                  {selectedService.ServiceDeliveryMethodID === 'SDM1' || selectedService.ServiceDeliveryMethodID === 'SDM4'  && (
                     <div className="space-y-4">
                       <TextField
                         fullWidth
@@ -521,8 +594,8 @@ const FishPoolServiceSelection = ({
                       />
                     </div>
                   )}
-  
-                  {selectedService.ServiceDeliveryMethodID === 'SDM003' && (
+
+                  {selectedService.ServiceDeliveryMethodID === 'SDM2' && (
                     <div className="space-y-4">
                       <TextField
                         fullWidth
@@ -551,7 +624,7 @@ const FishPoolServiceSelection = ({
                       />
                     </div>
                   )}
-  
+
                   <Button
                     variant="contained"
                     className="mt-4 w-full"
@@ -574,7 +647,7 @@ const FishPoolServiceSelection = ({
             </div>
           </div>
         )}
-  
+
         {/* Cart Dialog */}
         <Dialog
           open={showCart}
@@ -609,8 +682,8 @@ const FishPoolServiceSelection = ({
                     </div>
                   }
                 >
-                  <div 
-                    className="cursor-pointer" 
+                  <div
+                    className="cursor-pointer"
                     onClick={() => handleUpdateService(item)}
                   >
                     <Typography variant="subtitle1">{item.Name}</Typography>
@@ -630,7 +703,7 @@ const FishPoolServiceSelection = ({
             ))}
           </DialogContent>
         </Dialog>
-  
+
         {/* Submit Button */}
         <div className="p-4 bg-gray-100 border-t">
           <Button
@@ -642,14 +715,20 @@ const FishPoolServiceSelection = ({
               fontWeight: '550',
               background: 'linear-gradient(90deg, #64B0E0 25%, rgba(25, 200, 254, 0.75) 75%)'
             }}
-            onClick={handleFinalSubmit}
-            disabled={cartItems.length === 0}
+            onClick={handleConfirm}
+            
           >
-            Gửi ({cartItems.length} dịch vụ)
+            Gửi 
           </Button>
         </div>
       </div>
+      <Confirm
+  open={showConfirmation}
+  onClose={() => setShowConfirmation(false)}
+  onConfirm={handleFinalSubmit}
+/>
     </div>
-  );};
+  );
+};
 
 export default FishPoolServiceSelection;
