@@ -1,23 +1,35 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FetchAPI } from "../Helper/Utilities";
+
+async function GetPaymentResult(){
+    let param = window.location.href.split("?")[1];
+    let response = await FetchAPI( { endpoint: "/vnpay/result?" + param } );
+    let result = await response.text();
+    if( result == "Giao dịch được thực hiện thành công. Cảm ơn quý khách đã sử dụng dịch vụ")
+        return "success";
+    return result;
+}
+
 const PaymentNotice = () => {
   const [booking, SetBooking] = useState(null);
-  const [statusPayment, SetStatus] = useState(null);
+  const [statusPayment, SetStatus] = useState("");
   const navigate = useNavigate();
-  useEffect(() => {
-    // Tạo booking và lấy ID của booking
-    const createBooking = async () => {
-      const response = await FetchAPI({ endpoint: '/Booking/add' });
-      const bookingData = await response.json();
-      SetBooking(bookingData.id);  // Giả sử ID booking được trả về dưới dạng bookingData.id
-      // Sau khi có ID booking, lấy trạng thái thanh toán
-      const paymentResponse = await FetchAPI({ endpoint: `/booking/${bookingData.id}` });
-      const paymentData = await paymentResponse.json();
-      SetStatus(paymentData.paymentStatus);  // Giả sử trạng thái thanh toán trả về là paymentData.paymentStatus
-    };
-    createBooking();
-  }, []);
+    console.log(window.location.href);
+   GetPaymentResult().then( result => SetStatus(result) );
+//  useEffect(() => {
+//    // Tạo booking và lấy ID của booking
+//    const createBooking = async () => {
+//      const response = await FetchAPI({ endpoint: '/Booking/add' });
+//      const bookingData = await response.json();
+//      SetBooking(bookingData.id);  // Giả sử ID booking được trả về dưới dạng bookingData.id
+//      // Sau khi có ID booking, lấy trạng thái thanh toán
+//      const paymentResponse = await FetchAPI({ endpoint: `/booking/${bookingData.id}` });
+//      const paymentData = await paymentResponse.json();
+//      SetStatus(paymentData.paymentStatus);  // Giả sử trạng thái thanh toán trả về là paymentData.paymentStatus
+//    };
+//    createBooking();
+//  }, []);
   // Kiểm tra trạng thái thanh toán
   const payStt = statusPayment || "pending";  // Mặc định là pending nếu chưa có trạng thái
   return (
