@@ -4,20 +4,24 @@ import { FetchAPI } from "../Helper/Utilities";
 
 async function GetPaymentResult(){
     let param = window.location.href.split("?")[1];
-    console.log(param);
     let response = await FetchAPI( { endpoint: "/vnpay/result?" + param } );
     let result = await response.text();
-    if( result == "Giao dịch được thực hiện thành công. Cảm ơn quý khách đã sử dụng dịch vụ")
+    if( result.includes("Giao dịch được thực hiện thành công. Cảm ơn quý khách đã sử dụng dịch vụ"))
         return "success";
     return result;
 }
 
 const PaymentNotice = () => {
-  const [booking, SetBooking] = useState(null);
   const [statusPayment, SetStatus] = useState("");
+    const [loading, setLoading] = useState( true );
   const navigate = useNavigate();
-    console.log(window.location.href);
-   GetPaymentResult().then( result => SetStatus(result) );
+    useEffect( () => {
+        GetPaymentResult().then( result => { SetStatus(result); setLoading( false ); } );
+    }, []);
+
+    if( loading )
+        return <div> Loading </div>;
+
 //  useEffect(() => {
 //    // Tạo booking và lấy ID của booking
 //    const createBooking = async () => {
