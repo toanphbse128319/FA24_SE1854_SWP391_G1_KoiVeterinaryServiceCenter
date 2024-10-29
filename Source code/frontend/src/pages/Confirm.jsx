@@ -178,6 +178,7 @@ const Confirm = () => {
         if( slotTime.length == 7 )
             slotTime = "0" + slotTime;
         bookingDateTime = bookingDateTime + slotTime;
+        console.log(bookingDateTime);
         async function GetPaymentURL(){
             let response = await FetchAPI( { endpoint: "/booking/add", method: "Post", body: {
                 customerID: customerID,

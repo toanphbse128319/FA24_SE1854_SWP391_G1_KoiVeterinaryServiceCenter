@@ -22,13 +22,27 @@ public class ScheduleRepository : GenericRepository<Schedule>
             return null!;
         return await SearchByEmpIDAsync(emp.EmployeeID);
     }
+    //public async Task<Schedule?> SearchByDateAndNoteAsync(DateOnly date, string note)
+    //{
+    //    if (await _context.Schedules.FirstOrDefaultAsync(schedule => schedule.Date == date &&
+    //                                                                 schedule.Note == note) == null)
+    //        return null!;
+    //    return await _context.Schedules.FirstOrDefaultAsync(schedule => schedule.Date == date &&
+    //                                                                    schedule.Note == note);
+    //}
 
-    public async Task<Schedule?> CheckValidDateAsync(DateOnly date, string empID)
+    public async Task<Schedule?> CheckValidDateAsync(DateOnly date, string empID, string note)
     {
+        if (note == "")
+            return await _context.Schedules.FirstOrDefaultAsync(schedule => schedule.Date == date &&
+                                                                            schedule.EmployeeID == empID);
+        if (empID == "E0")
+            return await _context.Schedules.FirstOrDefaultAsync(schedule => schedule.Date == date &&
+                                                                            schedule.Note == note);
         return await _context.Schedules.FirstOrDefaultAsync(schedule => schedule.Date == date &&
-                                                                        schedule.EmployeeID == empID);
+                                                                        schedule.EmployeeID == empID &&
+                                                                        schedule.Note == note);
     }
-
     public async Task<Schedule?> CheckValidScheduleAsync(DateOnly date)
     {
         return await _context.Schedules.FirstOrDefaultAsync(schedule => schedule.Date == date);

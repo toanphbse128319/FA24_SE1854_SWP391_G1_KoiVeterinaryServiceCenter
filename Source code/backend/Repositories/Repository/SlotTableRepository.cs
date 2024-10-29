@@ -84,7 +84,8 @@ public class SlotTableRepository : GenericRepository<SlotTable>
                 ScheduleID = scheduleID,
                 Slot = (i + 1),
                 SlotStatus = true,
-                Note = note
+                Note = note,
+                SlotCapacity = 5
             };
             await base.CreateAsync(slot);
         }
