@@ -21,18 +21,22 @@ const App = () => {
             try {
                 // Set loading to true before fetching
                 SetLoading(true);
-                FetchAPI({ endpoint: '/service' }).then( response => response.json().then( json => SetServices( json ) ) );
-                FetchAPI({ endpoint: '/servicedeliverymethod' }).then( response => response.json().then( json => SetSDM( json ) ) );
-                
-                
+                let response = await FetchAPI({ endpoint: '/service' });
+                if( !response.ok )
+                    return false;
+                let json = await response.json();
+                SetServices( json );
+                response = await FetchAPI({ endpoint: '/servicedeliverymethod' });
+                if( !response.ok )
+                    return false;
+                json = await response.json();
+                SetSDM( json );
+                return true; 
             } catch (error) {
                 console.error("Error fetching data:", error);
-            } finally {
-                // Set loading to false after fetching
-                SetLoading(false);
-            }
+            } 
         }
-        GetData();
+        GetData().then( result => SetLoading( !result ));
     }, []);
     if(loading){
         return (

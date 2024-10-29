@@ -5,8 +5,8 @@ function getAPIURL( endpoint ){
 
 export async function FetchAPI({ endpoint, method = 'GET', body = '' }) {
     let url = getAPIURL(endpoint);
-    
     // Use the fetch API to make the request
+    console.log(url);
     if (method === 'GET') {
         return await fetch(url, {
             method: method,
