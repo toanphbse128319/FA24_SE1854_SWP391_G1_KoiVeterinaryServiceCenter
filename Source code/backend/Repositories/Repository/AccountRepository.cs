@@ -54,6 +54,22 @@ public class AccountRepository : GenericRepository<Account>
         lastname = Employee.LastName;
     }
 
+    public string? GetAddress( string accountID )
+    {
+        CustomerRepository CustomerRepository = new CustomerRepository(_context);
+        Customer? customer = CustomerRepository.SearchByAccountID(accountID);
+        if( customer != null ){
+            return customer.Address;
+        }
+        EmployeeRepository EmployeeRepository = new EmployeeRepository(_context);
+        Employee? Employee = EmployeeRepository.SearchByAccountID(accountID);
+        if (Employee == null)
+        {
+            return null;
+        }
+        return Employee.Address;
+    }
+
     public string? GetID( string accountID )
     {
         CustomerRepository CustomerRepository = new CustomerRepository(_context);
@@ -99,6 +115,9 @@ public class AccountRepository : GenericRepository<Account>
         }
         Token token = new Token();
         RoleRepository RoleRepository = new RoleRepository(_context);
+        string? address = GetAddress( found.AccountID );
+        if( address == null )
+            return "Cannot find profile associate with this account";
         var claims = new List<Claim>{
             new Claim("Unique", Guid.NewGuid().ToString()),
             new Claim("ID", id),
@@ -107,7 +126,7 @@ public class AccountRepository : GenericRepository<Account>
             new Claim("FirstName", firstname),
             new Claim("LastName", lastname),
             new Claim("PhoneNumber", found.PhoneNumber),
-            new Claim("Address", (new CustomerRepository(_context)).SearchByAccountIDAsync(found.AccountID).Result!.Address),
+            new Claim("Address", address),
         };
         token.Claims = claims;
         return token.GenerateToken(4);

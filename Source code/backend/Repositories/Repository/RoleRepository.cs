@@ -15,7 +15,7 @@ public class RoleRepository : GenericRepository<Role>
         Role role =  _context.Roles.FirstOrDefault(role => role.RoleId == id);
         if( role == null )
             return "";
-        return role.RoleId;
+        return role.RoleName;
     }
 
     public string getRoleID( string rolename ){
