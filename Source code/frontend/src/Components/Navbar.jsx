@@ -20,6 +20,7 @@ import {
   XMarkIcon,
   ChevronDownIcon,
 } from "@heroicons/react/20/solid";
+import LogOut from "../Helper/Utilities";
 
 export default function Example( {services} ) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -32,7 +33,7 @@ export default function Example( {services} ) {
   };
 
   const [showMenu, setShowMenu] = useState(false);
-  const token =  window.sessionStorage.getItem("token") || null;
+  const [token, setToken] =  useState(window.sessionStorage.getItem("token") || null);
   return (
     <header className="bg-white fixed top-0 w-full z-50 ">
       <nav
@@ -106,7 +107,7 @@ export default function Example( {services} ) {
                 <div className='min-w-48 bg-stone-100 round flex flex-col gap-4 p-4'>
                   <p onClick={()=>navigate('/MyProfile')} className='hover:text-black '>My Profile</p>
                   <p onClick={()=>navigate('/Booking')} className='hover:text-black '>My Appointment</p>
-                  <p onClick={()=>setToken(false)} className='hover:text-black '>Logout</p>
+                  <p onClick={()=> { window.sessionStorage.clear(); setToken( null ); console.log("clicked") }} className='hover:text-black '>Logout</p>
                 </div>
               </div>
             </div>

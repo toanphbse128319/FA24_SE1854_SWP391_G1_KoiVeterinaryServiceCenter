@@ -29,6 +29,11 @@ import {
 import PageTransition from "./Components/PageTransition.tsx";
 import PaymentNotice from "./Components/PaymentNotice.jsx";
 
+//add to booking detail
+import FishPoolServiceSelection from "./Components/BookingDetail.jsx";
+//
+import BookingList from "./Components/BookingList.jsx";
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
@@ -58,6 +63,7 @@ createRoot(document.getElementById("root")).render(
           }   
         />
         <Route path="/PaymentNotice" element={<PaymentNotice />} />
+        <Route path="/temp" element={<BookingList />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>

@@ -28,6 +28,7 @@ export async function FetchAPI({ endpoint, method = 'GET', body = '' }) {
 }
 
 export function LogOut() {
+    console.log("Logged out");
     window.sessionStorage.clear();
 }
 
