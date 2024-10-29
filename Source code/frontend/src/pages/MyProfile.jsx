@@ -1,23 +1,45 @@
-import React, { useState } from "react";
-import BackButton from "../buttonComponents/BackButton";
+import React, { useState, useEffect } from "react";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+
 const MyProfile = () => {
   const [userData, setUserData] = useState({
-    name: "NguyenKyVy",
-    image: "/img/profile_pic.png",
-    email: "kyn6036@gmail.com",
-    phone: "+979083300",
+    name: "",
+    email: "",
+    phone: "",
     address: {
-      line1: "250c Vo Van Hat",
-      line2: "Thu Duc, TPHCM",
+      line1: "",
+      line2: "",
     },
-    gender: "Male",
-    dob: "2004-11-20",
+    gender: "",
+    dob: "",
   });
 
   const [isEdit, setIsEdit] = useState(true);
   const navigate = useNavigate();
+
+  // Lấy dữ liệu từ sessionStorage khi component được render
+  useEffect(() => {
+    const firstName = sessionStorage.getItem("firstname");
+    const lastName = sessionStorage.getItem("lastname");
+    const email = sessionStorage.getItem("email");
+    const phone = sessionStorage.getItem("phonenumber");
+    const address = sessionStorage.getItem("address");
+    const gender = sessionStorage.getItem("gender");
+    const dob = sessionStorage.getItem("dob");
+
+    setUserData({
+      name: `${firstName} ${lastName}`,
+      email: email || "",
+      phone: phone || "",
+      address: {
+        line1: address || "",
+        line2: "",
+      },
+      gender: gender || "Male",
+      dob: dob || "",
+    });
+  }, []);
 
   const handleGoHomePage = () => {
     navigate("/App");
@@ -25,16 +47,15 @@ const MyProfile = () => {
 
   return (
     <div className="bg-blue-200 bg-gradient-to-b from-blue-400 to-blue-200 min-h-screen flex justify-center items-center p-6">
-      
-       
       <div className="bg-white rounded-lg shadow-md p-6 w-full max-w-md">
-      <div className="mr-[25rem]">
-      <Button variant="text"
-      onClick={handleGoHomePage}>Back</Button>
-      </div>
+        <div className="mr-[25rem]">
+          <Button variant="text" onClick={handleGoHomePage}>
+            Back
+          </Button>
+        </div>
         <div className="flex flex-col items-center">
           <img
-            src={userData.image}
+            src="/img/profile_pic.png" // Bạn có thể thêm ảnh mặc định của người dùng
             alt="Profile"
             className="w-24 h-24 rounded-full mb-4"
           />
@@ -55,9 +76,7 @@ const MyProfile = () => {
         <hr className="my-4" />
 
         <div>
-          <h2 className="text-gray-600 font-semibold mb-2">
-            Contact Information
-          </h2>
+          <h2 className="text-gray-600 font-semibold mb-2">Contact Information</h2>
           <div className="mb-4">
             <p>Email:</p>
             <p className="text-gray-700 mb-2">{userData.email}</p>
@@ -90,30 +109,17 @@ const MyProfile = () => {
                   type="text"
                   className="p-2 border rounded w-full mb-2"
                 />
-                <input
-                  onChange={(e) =>
-                    setUserData((prev) => ({
-                      ...prev,
-                      address: { ...prev.address, line2: e.target.value },
-                    }))
-                  }
-                  value={userData.address.line2}
-                  type="text"
-                  className="p-2 border rounded w-full"
-                />
               </>
             ) : (
               <p className="text-gray-700">
-                {userData.address.line1} <br /> {userData.address.line2}
+                {userData.address.line1}
               </p>
             )}
           </div>
         </div>
 
         <div>
-          <h2 className="text-gray-600 font-semibold mb-2">
-            Basic Information
-          </h2>
+          <h2 className="text-gray-600 font-semibold mb-2">Basic Information</h2>
           <div className="mb-4">
             <p>Gender:</p>
             {isEdit ? (

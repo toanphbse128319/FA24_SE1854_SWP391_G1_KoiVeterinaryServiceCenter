@@ -31,7 +31,7 @@ const App = () => {
                     return false;
                 json = await response.json();
                 SetSDM( json );
-                return true; 
+                return true;
             } catch (error) {
                 console.error("Error fetching data:", error);
             } 
