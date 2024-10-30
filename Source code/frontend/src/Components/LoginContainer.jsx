@@ -48,7 +48,7 @@ async function CheckLogin({ info, password ,setErrors }) {
         window.sessionStorage.setItem('phonenumber', (decoded.PhoneNumber));
         window.sessionStorage.setItem('role', (decoded.role));
         window.sessionStorage.setItem('email', (decoded.email));
-        
+        window.sessionStorage.setItem('id', (decoded.ID));
         return 'success';
     } catch( error ) {
         console.error( error );
