@@ -368,7 +368,7 @@ const BookingList = ({
   onEditBooking = () => { },
   onStartExamination = () => { }
 }) => {
-  const [activeStatus, setActiveStatus] = useState(null);
+  const [activeStatus, setActiveStatus] = useState('Confirmed');
   const [bookings, setBookings] = useState(SAMPLE_BOOKINGS);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [selectedBookingId, setSelectedBookingId] = useState(null);
@@ -381,6 +381,31 @@ const BookingList = ({
   const handleCloseBookingActions = () => {
     setShowBookingActions(false);
   };
+  const handleChangeStatus = async (bookingId) => {
+    try {
+        const response = await fetch('http://localhost:5145/api/Booking/updatestatus', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 
+              Id: bookingId,
+            Message: 'Completed'
+          })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to change booking status');
+        }
+
+        const data = await response.json();
+        console.log('Status changed successfully:', data);
+        
+    } catch (error) {
+        console.error('Error changing status:', error);
+    }
+};
+  
 
   // Handlers
   const handleStartExamination = (bookingId, deliveryMethodId) => {
@@ -526,7 +551,7 @@ const BookingList = ({
                     </>
                   )}
 
-                  {userRole === 'veterinarian' && booking.status === 'Confirmed' &&  isIncidental == false &&(
+                  {userRole === 'veterinarian' && booking.status === 'Confirmed' && isIncidental == false && (
 
 
                     <>
@@ -541,24 +566,37 @@ const BookingList = ({
                         bookingId={booking.id}
                         isOpen={showBookingActions}
                         onClose={handleCloseBookingActions}
-                        onSubmitSuccess={() => setIsIncidental(true)} 
+                        onSubmitSuccess={() => setIsIncidental(true)}
                         selectedService={SERVICES_DATA.find(service =>
                           service.ServiceID === bookingDetail.find(detail =>
                             detail.BookingID === booking.id
                           ).ServiceID
                         )}
+                        bookingDetail= {bookingDetail.find(detail => detail.BookingID === booking.id)}
                       />
                     </>
 
                   )}
-                  {userRole === 'veterinarian' && booking.status === 'Confirmed'  &&  isIncidental != false && (
+                  {userRole === 'veterinarian' && booking.status === 'Confirmed' && isIncidental != false && (
+                    <div>
+                      <button
+                        style={{ ...styles.actionButton, ...styles.primaryActionButton }}
+                        onClick={() => handleStartExamination(booking.id, booking.serviceDeliveryMethodID)}
+                      >
+                        Dịch vụ phát sinh
+                      </button>
+                      <button
+                        style={{ ...styles.actionButton, ...styles.primaryActionButton }}
+                        onClick={() => handleChangeStatus(booking.id)}
+                      >
+                       Xác nhận đã khám xong
+                      </button>
 
-                    <button
-                      style={{ ...styles.actionButton, ...styles.primaryActionButton }}
-                      onClick={() => handleStartExamination(booking.id, booking.serviceDeliveryMethodID)}
-                    >
-                      Bắt đầu khám
-                    </button>
+
+
+                    </div>
+
+
 
                   )}
 
@@ -596,3 +634,4 @@ const BookingList = ({
 };
 
 export default BookingList;
+

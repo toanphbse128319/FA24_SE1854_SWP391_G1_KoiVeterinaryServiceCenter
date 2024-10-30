@@ -60,6 +60,7 @@ const BookingActions = ({
   initialFishCount = 1,
   initialPoolCount = 0,
   selectedService,
+  bookingDetail,
 }) => {
     
   const [activeTab, setActiveTab] = useState(0);
@@ -155,21 +156,53 @@ const BookingActions = ({
     setShowConfirmation(true);
   };
 
-  const handleFinalSubmit = () => {
-    console.log('Submitting:', {
-      fishProfiles,
-      poolProfiles,
-      selectedService,
-      bookingId,
-      formData,
-    });
-    setShowConfirmation(false);
-    setIsIncidental(true);
-    onClose();
-    if (onSubmitSuccess) {
-        onSubmitSuccess(); // Gọi callback để cập nhật state ở component cha
+
+  const handleFinalSubmit = async () => {
+    try {
+      console.log(bookingDetail.BookingDetailID);
+      const response = await fetch('http://localhost:5145/api/Booking/updatestatus', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          
+          BookingDetailID: BookingDetailID,
+          BookingID: bookingId,
+          ServiceID: selectedService.ServiceID,
+          UnitPrice: selectedService.Price,
+          Incidental: true,
+          NoteResult: formData.NoteResult,
+          AnimalStatusDescription: formData.AnimalStatusDescription,
+          ConsultDoctor: formData.ConsultDoctor,
+          DrugList: formData.DrugList,
+          PoolStatusDescription: formData.PoolStatusDescription,
+          ConsultTechnician: formData.ConsultTechnician,
+          MaterialList: formData.MaterialList,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to change booking status');
       }
+
+      const data = await response.json();
+      console.log('Status changed successfully:', data);
+
+      // Xử lý sau khi gọi API thành công
+      setShowConfirmation(false);
+      setIsIncidental(true);
+      onClose();
+      if (onSubmitSuccess) {
+        onSubmitSuccess();
+      }
+
+    } catch (error) {
+      console.error('Error changing status:', error);
+    }
   };
+
+
 
   const handleFormChange = (field) => (event) => {
     setFormData({

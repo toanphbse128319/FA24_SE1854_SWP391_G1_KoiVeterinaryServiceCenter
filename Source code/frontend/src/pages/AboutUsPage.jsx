@@ -40,7 +40,7 @@ const AboutUs = () => {
                       Hơn 10 Năm
                     </h4>
                     <p class="text-gray-500 text-base font-normal leading-relaxed">
-                      Với hơn 10 năm hoạt động trong ngành, chúng tôi tự tin về sức khỏe cho cặc của bạn
+                      Với hơn 10 năm hoạt động trong ngành, chúng tôi tự tin về sức khỏe cho cá của bạn
                     </p>
                   </div>
                   <div class="w-full h-full p-3.5 rounded-xl border border-gray-200 hover:border-gray-400 transition-all duration-700 ease-in-out flex-col justify-start items-start gap-2.5 inline-flex">
