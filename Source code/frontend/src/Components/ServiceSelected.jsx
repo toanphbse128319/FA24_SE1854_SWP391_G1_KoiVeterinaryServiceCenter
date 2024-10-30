@@ -161,7 +161,7 @@ const BookingActions = ({
     try {
      
       const response = await fetch('http://localhost:5145/api/BookingDetail/update', {
-        method: 'POST',
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
         },
