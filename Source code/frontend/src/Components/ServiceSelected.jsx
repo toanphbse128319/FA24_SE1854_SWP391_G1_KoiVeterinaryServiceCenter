@@ -159,7 +159,7 @@ const BookingActions = ({
 
   const handleFinalSubmit = async () => {
     try {
-      console.log(bookingDetail.BookingDetailID);
+     
       const response = await fetch('http://localhost:5145/api/BookingDetail/update', {
         method: 'POST',
         headers: {
@@ -167,7 +167,7 @@ const BookingActions = ({
         },
         body: JSON.stringify({
           
-          BookingDetailID: BookingDetailID,
+          BookingDetailID: bookingDetail.BookingDetailID,
           BookingID: bookingId,
           ServiceID: selectedService.ServiceID,
           UnitPrice: selectedService.Price,
