@@ -39,7 +39,7 @@ namespace Repositories.Repository
 
         public async Task<int> AddExaminationResultAsync(ExaminationResult exam)
         {
-            var transaction = _context.Database.BeginTransaction();
+            var transaction = await _context.Database.BeginTransactionAsync();
             bool rs = true;
             try
             {
@@ -65,6 +65,7 @@ namespace Repositories.Repository
                         rs = false;
                 }
 
+                await transaction.CommitAsync();
                 return rs ? 1 : 0;
             }
             finally

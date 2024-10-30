@@ -71,7 +71,7 @@ public class BookingRepository : GenericRepository<Booking>
         return true;
     }
     public async Task<string> AddNewBooking(NewBookingInformation info ){
-        var transaction = _context.Database.BeginTransaction();
+        var transaction = await _context.Database.BeginTransactionAsync();
         string result = "";
         Booking newOrder = new Booking();
         try{
@@ -139,7 +139,7 @@ public class BookingRepository : GenericRepository<Booking>
                 return result = "Unable to create new booking order";
             BookingDetail detail = new BookingDetail(){BookingDetailID = "", BookingID = newOrder.BookingID, ServiceID = info.ServiceID };
             await (new BookingDetailRepository(_context)).AddBookingDetailAsync(detail); 
-            transaction.Commit();
+            await transaction.CommitAsync();
             return result = newOrder.BookingID;
         } finally {
             if( result != newOrder.BookingID )
