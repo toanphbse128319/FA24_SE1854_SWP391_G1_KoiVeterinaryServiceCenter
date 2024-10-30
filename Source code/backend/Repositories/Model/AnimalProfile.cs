@@ -9,7 +9,6 @@ public class AnimalProfile
     public string AnimalProfileID { get; set; }
     public string Name { get; set; }
     public string TypeID { get; set; }
-    public string BookingDetailID { get; set; }
     public double Size { get; set; }
     public int Age { get; set; }
     public string Color { get; set; }

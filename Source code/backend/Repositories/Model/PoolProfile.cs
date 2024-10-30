@@ -9,8 +9,6 @@ public class PoolProfile
 
     public string Name { get; set; }
 
-    public string BookingDetailID { get; set; }
-
     public string Note { get; set; }
 
     public double Width { get; set; }
