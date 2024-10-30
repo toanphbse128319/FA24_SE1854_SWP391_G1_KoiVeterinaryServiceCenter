@@ -9,7 +9,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Repositories.Model
 {
     [Table("FAQ")]
-    class ServiceUse
+    public class ServiceUse
     {
         public string AnimalProfileID { get; set; }
         public string PoolProfileID { get; set; }
