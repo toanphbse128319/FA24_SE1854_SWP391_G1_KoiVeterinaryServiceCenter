@@ -161,6 +161,7 @@ const BookingActions = ({
       poolProfiles,
       selectedService,
       bookingId,
+      formData,
     });
     setShowConfirmation(false);
     setIsIncidental(true);
