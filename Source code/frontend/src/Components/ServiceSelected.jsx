@@ -160,7 +160,7 @@ const BookingActions = ({
   const handleFinalSubmit = async () => {
     try {
       console.log(bookingDetail.BookingDetailID);
-      const response = await fetch('http://localhost:5145/api/Booking/updatestatus', {
+      const response = await fetch('http://localhost:5145/api/BookingDetail/update', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
