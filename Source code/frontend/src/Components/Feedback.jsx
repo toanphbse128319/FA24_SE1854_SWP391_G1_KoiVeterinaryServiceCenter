@@ -196,11 +196,7 @@ const FeedbackModal = ({ bookingId, onClose }) => {
     const [showToast, setShowToast] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
     const status = 'active';
-    console.log(bookingId);
-    console.log(serviceRating);
-    console.log(vetRating);
-    console.log(description);
-    console.log(status);
+  
 
     useEffect(() => {
       const handleEscape = (e) => {
@@ -247,6 +243,7 @@ const FeedbackModal = ({ bookingId, onClose }) => {
           throw new Error('Failed to change booking status');
         }
         const data = await response.text();  
+        
         setToastMessage('Đánh giá đã được gửi thành công!');
         setShowToast(true);
         
