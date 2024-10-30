@@ -195,7 +195,13 @@ const FeedbackModal = ({ bookingId, onClose }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [showToast, setShowToast] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
+    const status = 'active';
     console.log(bookingId);
+    console.log(serviceRating);
+    console.log(vetRating);
+    console.log(description);
+    console.log(status);
+
     useEffect(() => {
       const handleEscape = (e) => {
         if (e.key === 'Escape') {
@@ -225,14 +231,22 @@ const FeedbackModal = ({ bookingId, onClose }) => {
         setIsLoading(true);
         setError('');
   
-        const feedbackData = {
-          ServiceRating: serviceRating,
-          VetRating: vetRating,
-          Description: description,
-          Status: 'Active'
-        };
-  
-        // await feedbackService.createFeedback(bookingId, feedbackData);
+        const response = await fetch('http://localhost:5145/api/Feedback', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },body: JSON.stringify({
+            ServiceRating: serviceRating,
+            VetRating: vetRating,
+            Description: description,
+            Status: 'Active'
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to change booking status');
+        }
+        const data = await response.text();  
         setToastMessage('Đánh giá đã được gửi thành công!');
         setShowToast(true);
         
@@ -241,12 +255,60 @@ const FeedbackModal = ({ bookingId, onClose }) => {
           onClose();
         }, 2000);
       } catch (error) {
-        console.log(error);
-        setError('Có lỗi xảy ra khi gửi đánh giá. Vui lòng thử lại sau.');
+        console.error('Error changing status:'+ error);
       } finally {
         setIsLoading(false);
       }
     };
+
+
+    const handleFinalSubmit = async () => {
+      try {
+       
+        const response = await fetch('http://localhost:5145/api/BookingDetail/update', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            
+            BookingDetailID: bookingDetail.BookingDetailID,
+            BookingID: bookingId,
+            ServiceID: selectedService.ServiceID,
+            UnitPrice: selectedService.Price,
+            Incidental: true,
+            NoteResult: formData.NoteResult,
+            AnimalStatusDescription: formData.AnimalStatusDescription,
+            ConsultDoctor: formData.ConsultDoctor,
+            DrugList: formData.DrugList,
+            PoolStatusDescription: formData.PoolStatusDescription,
+            ConsultTechnician: formData.ConsultTechnician,
+            MaterialList: formData.MaterialList,
+          }),
+        });
+  
+        if (!response.ok) {
+          throw new Error('Failed to change booking status');
+        }
+  
+        const data = await response.text();
+        console.log('Status changed successfully:'+ data);
+  
+        // Xử lý sau khi gọi API thành công
+        setShowConfirmation(false);
+        setIsIncidental(true);
+        onClose();
+        if (onSubmitSuccess) {
+          onSubmitSuccess();
+        }
+  
+      } catch (error) {
+        console.error('Error changing status:'+ error);
+      }
+    };
+
+
+
   
     const renderStars = (rating, setRating) => {
       return Array(5).fill(0).map((_, index) => (

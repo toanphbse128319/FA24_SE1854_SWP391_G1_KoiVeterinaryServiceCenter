@@ -362,8 +362,8 @@ const InfoRow = ({ label, value }) => (
 );
 
 const BookingList = ({
-  //userRole = 'customer',
-  userRole = 'veterinarian',
+  userRole = 'customer',
+  //userRole = 'veterinarian',
   onFeedback = () => { },
   onEditBooking = () => { },
   onStartExamination = () => { }
