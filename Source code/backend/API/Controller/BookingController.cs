@@ -29,6 +29,24 @@ public class BookingController : ControllerBase {
         }
     }
 
+    [Route("getbookingbydate")]
+    [HttpGet]
+    public async Task<ActionResult<List<Booking>>> GetBookingByDate(DateTime date)
+    {
+        try
+        {
+            List<Booking> booking = await _unitOfWork.BookingRepository.GetVetBookingsByDateAsync(date);
+            if (booking == null)
+                return StatusCode(StatusCodes.Status404NotFound, "Unable to find the booking order");
+            return Ok(booking);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+
     [HttpPut("updatestatus")]
     public async Task<ActionResult<Booking>> UpdateStatusAsync(UpdateStatusInformation info) {
         try{
