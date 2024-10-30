@@ -33,12 +33,13 @@ import PaymentNotice from "./Components/PaymentNotice.jsx";
 import FishPoolServiceSelection from "./Components/BookingDetail.jsx";
 //
 import BookingList from "./Components/BookingList.jsx";
+import StaffPage from "./pages/StaffPage.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<App />}>
+        <Route path="/" element={<StaffPage />}>
           <Route index element={<App />} />
           <Route path="/Navbar" element={<Navbar />} />
           <Route path="/NhanHang" element={<NhanHang />} />

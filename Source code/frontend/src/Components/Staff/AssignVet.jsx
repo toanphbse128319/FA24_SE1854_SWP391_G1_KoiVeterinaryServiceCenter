@@ -1,13 +1,38 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { FetchAPI } from "../../Helper/Utilities";
 
-const AssignVet = ({ SlotSchedule = [], DocterSchedule = [] }) => {
+const AssignVet = () => {
   const navigate = useNavigate();
 
   const [selectedDate, setSelectedDate] = useState(null);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedSlots, setSelectedSlots] = useState([]);
+  const [DoctorSchedule, SetDoctorSchedule] = useState([]);
+  const [SlotSchedule, SetSlotSchedule] = useState([]);
+  const [BookingDetails, SetBookingDetails] = useState([]);
+  const [loading, SetLoading] = useState(true);
+
+  useEffect(() => {
+    async function GetData() {
+      try {
+        let currentDate = new Date().toISOString().split("T")[0];
+        SetLoading(true);
+        const doctorScheduleResponse = await FetchAPI({ endpoint: '/Schedule/get30daysschedule?date=' + currentDate });
+        const slotScheduleResponse = await FetchAPI({ endpoint: '/Schedule/getslotin30days?date=' + currentDate });
+        const doctorScheduleData = await doctorScheduleResponse.json();
+        const slotScheduleData = await slotScheduleResponse.json();
+        SetDoctorSchedule(doctorScheduleData);
+        SetSlotSchedule(slotScheduleData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        SetLoading(false);
+      }
+    }
+    GetData();
+  }, []);
 
   const transformScheduleData = (doctorSchedules = [], slotSchedules = []) => {
     const transformedData = [];
@@ -48,8 +73,8 @@ const AssignVet = ({ SlotSchedule = [], DocterSchedule = [] }) => {
   };
 
   const scheduleMap = useMemo(() =>
-    createScheduleMap(DocterSchedule, SlotSchedule),
-    [DocterSchedule, SlotSchedule]
+    createScheduleMap(DoctorSchedule, SlotSchedule),
+    [DoctorSchedule, SlotSchedule]
   );
 
   const getDaysInMonth = (date) => {
@@ -79,11 +104,19 @@ const AssignVet = ({ SlotSchedule = [], DocterSchedule = [] }) => {
 
   const daysToShow = getDaysInMonth(currentDate);
 
-  const handleDateClick = (date) => {
+  const handleDateClick = async (date) => {
     if (!date) return;
     const dateString = date.toISOString().split('T')[0];
     setSelectedDate(date);
     setSelectedSlots(scheduleMap.get(dateString) || []);
+
+    try {
+      const bookingResponse = await FetchAPI({ endpoint: `Booking/getbookingbydate?date=${dateString}` });
+      const bookingData = await bookingResponse.json();
+      SetBookingDetails(bookingData);
+    } catch (error) {
+      console.error("Error fetching booking data:", error);
+    }
   };
 
   const handlePrevMonth = () => {
@@ -91,6 +124,7 @@ const AssignVet = ({ SlotSchedule = [], DocterSchedule = [] }) => {
     setCurrentDate(prevMonth);
     setSelectedDate(null);
     setSelectedSlots([]);
+    SetBookingDetails([]);
   };
 
   const handleNextMonth = () => {
@@ -98,6 +132,7 @@ const AssignVet = ({ SlotSchedule = [], DocterSchedule = [] }) => {
     setCurrentDate(nextMonth);
     setSelectedDate(null);
     setSelectedSlots([]);
+    SetBookingDetails([]);
   };
 
   const isDateAvailable = (date) => {
@@ -127,6 +162,10 @@ const AssignVet = ({ SlotSchedule = [], DocterSchedule = [] }) => {
       ...lastRowStyles,
     };
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div style={styles.calendarContainer}>
@@ -187,6 +226,22 @@ const AssignVet = ({ SlotSchedule = [], DocterSchedule = [] }) => {
             {selectedSlots.map(slot => (
               <div key={slot.ScheduleID} style={styles.slotButton}>
                 Slot {slot.slot}: {slot.ordered}/{slot.SlotCapacity} booked
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {selectedDate && BookingDetails.length > 0 && (
+        <div style={styles.bookingDetails}>
+          <h3>Booking Details for {selectedDate.toDateString()}</h3>
+          <div style={styles.bookingList}>
+            {BookingDetails.map((booking, index) => (
+              <div key={index} style={styles.bookingItem}>
+                <p><strong>Customer Name:</strong> {booking.customerName}</p>
+                <p><strong>Slot No:</strong> {booking.slotNo}</p>
+                <p><strong>Service Delivery Method:</strong> {booking.serviceDeliveryMethod}</p>
+                <p><strong>Doctor Name:</strong> {booking.doctorName || 'N/A'}</p>
               </div>
             ))}
           </div>
@@ -358,6 +413,20 @@ const styles = {
     cursor: 'pointer',
     width: '13vw',
     maxWidth: '125px'
+  },
+  bookingDetails: {
+    padding: '16px'
+  },
+  bookingList: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '8px'
+  },
+  bookingItem: {
+    padding: '8px',
+    border: '1px solid #ddd',
+    borderRadius: '4px',
+    background: '#f9f9f9'
   }
 };
 
