@@ -384,7 +384,7 @@ const BookingList = ({
   const handleChangeStatus = async (bookingId) => {
     try {
         const response = await fetch('http://localhost:5145/api/Booking/updatestatus', {
-            method: 'POST',
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -398,7 +398,7 @@ const BookingList = ({
             throw new Error('Failed to change booking status');
         }
 
-        const data = await response.json();
+        const data = await response.text();
         console.log('Status changed successfully:', data);
         
     } catch (error) {

@@ -186,8 +186,8 @@ const BookingActions = ({
         throw new Error('Failed to change booking status');
       }
 
-      const data = await response.json();
-      console.log('Status changed successfully:', data);
+      const data = await response.text();
+      console.log('Status changed successfully:'+ data);
 
       // Xử lý sau khi gọi API thành công
       setShowConfirmation(false);
@@ -198,7 +198,7 @@ const BookingActions = ({
       }
 
     } catch (error) {
-      console.error('Error changing status:', error);
+      console.error('Error changing status:'+ error);
     }
   };
 
