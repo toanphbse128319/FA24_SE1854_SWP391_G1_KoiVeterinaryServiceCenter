@@ -368,7 +368,7 @@ const BookingList = ({
   onEditBooking = () => { },
   onStartExamination = () => { }
 }) => {
-  const [activeStatus, setActiveStatus] = useState(null);
+  const [activeStatus, setActiveStatus] = useState('Confirmed');
   const [bookings, setBookings] = useState(SAMPLE_BOOKINGS);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [selectedBookingId, setSelectedBookingId] = useState(null);

@@ -63,7 +63,7 @@ const INITIAL_POOL_PROFILE = {
 
 const FishPoolServiceSelection = ({
   bookingId,
-  services = [],
+  services ,
   isOpen,
   onClose,
   deliveryMethod,
