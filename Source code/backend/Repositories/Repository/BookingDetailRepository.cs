@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Repositories.Model;
+using Repositories.Objects;
 
 namespace Repositories.Repository
 {
@@ -36,33 +37,41 @@ namespace Repositories.Repository
             return await base.CreateAsync(bd);
         }
 
-        public async Task<int> AddBookingDetailsAsync(IEnumerable<BookingDetail> bds)
+        public async Task<int> AddExaminationResultAsync(ExaminationResult exam)
         {
-            if (bds == null || !bds.Any())
-                return 0;
-
-            int successfulSaves = 0;
-
-            foreach (var bd in bds)
+            var transaction = _context.Database.BeginTransaction();
+            bool rs = true;
+            try
             {
-                if (string.IsNullOrEmpty(bd.BookingDetailID))
+                
+                foreach (var item in exam.BookingDetail)
                 {
-                    bd.BookingDetailID = GetNextID("BD");
+                    item.BookingDetailID = GetNextID("BD");
+                    if (await base.CreateAsync(item) == 0)
+                        rs = false;
+                }
+                foreach (var item in exam.AnimalProfile)
+                {
+                    AnimalProfileRepository ap = new AnimalProfileRepository(_context);
+                    item.AnimalProfileID = GetNextID("AP");
+                    if (await ap.CreateAsync(item) == 0)
+                        rs = false;
+                }
+                foreach (var item in exam.PoolProfile)
+                {
+                    PoolProfileRepository pp = new PoolProfileRepository(_context);
+                    item.PoolProfileID = GetNextID("PP");
+                    if (await pp.CreateAsync(item) == 0)
+                        rs = false;
                 }
 
-                try
-                {
-                    await base.CreateAsync(bd);
-                    successfulSaves++;
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex);
-                    Console.WriteLine($"Error saving AnimalProfile: {ex.Message}");
-                }
+                return rs ? 1 : 0;
             }
-
-            return successfulSaves;
+            finally
+            {
+                if(rs == false)
+                await transaction.RollbackAsync();
+            }
         }
     }
 }

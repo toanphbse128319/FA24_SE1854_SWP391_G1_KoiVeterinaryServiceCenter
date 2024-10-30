@@ -107,12 +107,14 @@ public class BookingDetailController : ControllerBase {
         }
     }
 
-    [HttpPost("addList")]
-    public async Task<ActionResult<BookingDetail>> AddBookingDetails( ExaminationResult result )
+    [HttpPost("addExaminationResult")]
+    public async Task<ActionResult<ExaminationResult>> AddExaminationResult( ExaminationResult exam )
     {
         try
         {
-            return Ok();
+            if (await _unitOfWork.BookingDetailRepository.AddExaminationResultAsync(exam) == 1)
+                return Ok("Added successfully!");
+            else return BadRequest("Added failed!");
         }
         catch (Exception ex)
         {
