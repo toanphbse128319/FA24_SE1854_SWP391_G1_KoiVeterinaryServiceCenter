@@ -151,7 +151,6 @@ CREATE TABLE AnimalProfile(
     AnimalProfileID nvarchar(20) PRIMARY KEY ,
     Name nvarchar(50) NOT NULL,
     TypeID nvarchar(20) FOREIGN KEY REFERENCES AnimalType(TypeID) NOT NULL,
-    BookingDetailID nvarchar(20) FOREIGN KEY REFERENCES BookingDetail(BookingDetailID) NOT NULL,
     Size float NOT NULL,
     Age int NOT NULL,
     Color nvarchar(20) NOT NULL,
@@ -164,7 +163,6 @@ GO
 CREATE TABLE PoolProfile(
     PoolProfileID nvarchar(20) PRIMARY KEY,
     Name nvarchar(200) NOT NULL,
-    BookingDetailID nvarchar(20) FOREIGN KEY REFERENCES BookingDetail(BookingDetailID) NOT NULL,
     Note nvarchar(MAX),
     Width float NOT NULL,
     Description nvarchar(MAX),
@@ -195,6 +193,13 @@ CREATE TABLE Post(
     Context nvarchar(MAX) NOT NULL,
 )
 GO 
+
+CREATE TABLE ServiceUse(
+    AnimalProfileID nvarchar(20) FOREIGN KEY REFERENCES AnimalProfile(AnimalProfileID),
+	PoolProfileID nvarchar(20)FOREIGN KEY REFERENCES PoolProfile(PoolProfileID),
+	BookingDetailID nvarchar(20) FOREIGN KEY REFERENCES BookingDetail(BookingDetailID),
+)
+GO
 
 USE [FA24_SE1854_SWP391_G1_KoiVeterinaryServiceCenter]
 
