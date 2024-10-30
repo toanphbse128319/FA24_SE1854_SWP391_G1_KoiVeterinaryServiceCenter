@@ -46,7 +46,7 @@ const App = () => {
 
   return (
     <div className="overflow-x-hidden">
-      <Navbar services={services} SetServices={SetServices} sdm={sdm} SetSDM={SetSDM}/>
+      <Navbar allServices={services} SetServices={SetServices} sdm={sdm} SetSDM={SetSDM}/>
       <Banner allServices={services} sdm={sdm} />
       <NhanHang />
       <AboutUsFake />
