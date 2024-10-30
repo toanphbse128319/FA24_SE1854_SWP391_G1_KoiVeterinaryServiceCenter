@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Repositories.Objects;
+using Microsoft.AspNetCore.Mvc;
 using Repositories.Model;
 using Repositories;
 
@@ -85,6 +86,9 @@ public class BookingDetailController : ControllerBase {
         }
     }
 
+    [HttpGet("byprofile")]
+    
+
     [HttpPost("add")]
     public async Task<ActionResult<BookingDetail?>> AddBookingDetail(BookingDetail info) {
         try{
@@ -102,15 +106,13 @@ public class BookingDetailController : ControllerBase {
             return StatusCode( StatusCodes.Status500InternalServerError, ex.Message );
         }
     }
+
     [HttpPost("addList")]
-    public async Task<ActionResult<BookingDetail>> AddBookingDetails(IEnumerable<BookingDetail> bds)
+    public async Task<ActionResult<BookingDetail>> AddBookingDetails( ExaminationResult result )
     {
         try
         {
-            int rs = (await _unitOfWork.BookingDetailRepository.AddBookingDetailsAsync(bds));
-            if (rs == bds.Count())
-                return Ok($"Added " + rs);
-            else return BadRequest("Add failed");
+            return Ok();
         }
         catch (Exception ex)
         {
@@ -118,5 +120,6 @@ public class BookingDetailController : ControllerBase {
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
+
 }
 
