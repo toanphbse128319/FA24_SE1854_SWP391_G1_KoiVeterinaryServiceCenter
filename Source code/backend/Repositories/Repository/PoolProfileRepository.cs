@@ -10,11 +10,6 @@ namespace Repositories.Repository
             _context = context;
         }
 
-        public Task<List<PoolProfile?>> GetByBookingDetailID(string id)
-        {
-            return _context.PoolProfiles.Where(poolprofile => poolprofile.BookingDetailID.ToLower() == id.ToLower()).ToListAsync()!;
-        }
-
         public async Task<int> AddPoolProfileAsync(PoolProfile poolprofile)
         {
             if (poolprofile == null)

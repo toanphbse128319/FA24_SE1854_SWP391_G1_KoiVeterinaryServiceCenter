@@ -24,18 +24,6 @@ public class AnimalProfileController : ControllerBase {
         }
     }
 
-    [HttpGet("bybookingdetailid")]
-    public async Task<ActionResult<IEnumerable<AnimalProfile>>> GetByBookingDetailID(string id) {
-        try{
-            List<AnimalProfile> list = await _unitOfWork.AnimalProfileRepository.GetByBookingDetailID(id);
-            if (list.Count == 0)
-                return NotFound("Animal profile not found!");
-            else return Ok(list);
-        } catch ( Exception ex ){
-            Console.WriteLine( ex );
-            return StatusCode( StatusCodes.Status500InternalServerError, ex.Message );
-        }
-    }
 
     [HttpPost("add")]
     public async Task<ActionResult<AnimalProfile>> AddAnimalProfile(AnimalProfile animalprofile) {
@@ -45,8 +33,6 @@ public class AnimalProfileController : ControllerBase {
             AnimalType animalType = await _unitOfWork.AnimalTypeRepository.GetByIdAsync(animalprofile.TypeID);
             if (animalType == null)
                 return BadRequest("Animal type does not exist!");
-            if (await _unitOfWork.BookingDetailRepository.GetByIdAsync(animalprofile.BookingDetailID) == null)
-                return BadRequest("Booking detail ID does not exist!");
             if (await _unitOfWork.AnimalProfileRepository.AddAnimalProfileAsync(animalprofile) != 0)
                 return Ok($"Added {animalprofile.Name} successfully!");
             else
