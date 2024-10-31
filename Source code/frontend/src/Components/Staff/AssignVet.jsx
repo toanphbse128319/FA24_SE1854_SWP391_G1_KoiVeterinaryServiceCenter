@@ -363,8 +363,13 @@ const AssignVet = () => {
             <div style={styles.doctorList}>
               {doctors.map((doctor, index) => (
                 <div key={index} style={styles.doctorItem}>
-                  <p>{doctor.DoctorName}</p>
-                  <button style={styles.assign} onClick={() => handleAssignDoctor(selectedBooking, doctor.DoctorName)}>Assign</button>
+                  <p>{doctor.FirstName + " " + doctor.LastName}</p>
+                  <button style={styles.assign} onClick={() =>{ 
+                    handleAssignDoctor(selectedBooking, doctor.FirstName + " " + doctor.LastName);
+                    let temp = selectedBooking;
+                    temp.EmployeeID = doctor.EmployeeID;
+                    setSelectedBooking( temp );
+                    }}>Assign</button>
                 </div>
               ))}
             </div>
