@@ -369,6 +369,7 @@ const AssignVet = () => {
                     let temp = selectedBooking;
                     temp.EmployeeID = doctor.EmployeeID;
                     setSelectedBooking( temp );
+                    FetchAPI({ endpoint: `Booking/updateempid?id=${selectedBooking.BookingID}&empID=${temp.EmployeeID}`, method: 'PUT', body: {} });
                     }}>Assign</button>
                 </div>
               ))}

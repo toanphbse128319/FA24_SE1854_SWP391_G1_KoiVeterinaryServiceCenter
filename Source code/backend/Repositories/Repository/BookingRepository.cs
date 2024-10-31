@@ -12,7 +12,7 @@ public class BookingRepository : GenericRepository<Booking>
         _context = context;
     }
 
-    public async Task<List<Booking?>> GetByProfileIDAsync( string id ){
+    public async Task<List<Booking>> GetByProfileIDAsync( string id ){
         if( id.Contains( 'C' ) || id.Contains('c') )
             return await _context.Bookings.Where( order => order.CustomerID == id ).ToListAsync();
         return await _context.Bookings.Where( order => order.EmployeeID == id ).ToListAsync();
@@ -26,7 +26,15 @@ public class BookingRepository : GenericRepository<Booking>
     public Task<List<Booking>> GetBookingFromto(DateTime from, DateTime to) {
                 return _context.Bookings.Where(booking => booking.BookingDate.Date >= from.Date && booking.BookingDate.Date <= to.Date).ToListAsync();
     }
-
+    public async Task<Booking?> UpdateEmployeeIDAsync(string bookingID, string employeeID)
+    {
+        Booking booking = await base.GetByIdAsync(bookingID);
+        if (booking == null)
+            return null!;
+        booking.EmployeeID = employeeID;
+        _context.SaveChanges();
+        return booking;
+    }
     public async Task<int> UpdateStatusAsync(string id, string msg)
     {
         Booking booking = await base.GetByIdAsync(id);
