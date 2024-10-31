@@ -112,6 +112,32 @@ public class BookingDetailController : ControllerBase {
     {
         try
         {
+            foreach (var item in exam.BookingDetail)
+            {
+                if (await _unitOfWork.BookingDetailRepository.GetByIdAsync(item.BookingDetailID) != null)
+                    return BadRequest("Booking Detail is already existed!");
+                if (await _unitOfWork.BookingRepository.GetByIdAsync(item.BookingID) == null)
+                    return BadRequest("Booking not found!");
+                Service s;
+                if ((s = await _unitOfWork.ServiceRepository.GetByIdAsync(item.ServiceID)) == null)
+                    return BadRequest("Service not found!");
+                item.UnitPrice = s.Price;
+            }
+
+            foreach (var item in exam.AnimalProfile)
+            {
+                if (await _unitOfWork.BookingDetailRepository.GetByIdAsync(item.AnimalProfileID) != null)
+                    return BadRequest("Animal profile is already existed!");
+                if (await _unitOfWork.AnimalTypeRepository.GetByIdAsync(item.TypeID) == null)
+                    return BadRequest("Animal type not found!");
+            }
+            
+            foreach (var item in exam.PoolProfile)
+            {
+                if (await _unitOfWork.BookingDetailRepository.GetByIdAsync(item.PoolProfileID) != null)
+                    return BadRequest("Pool profile is already existed!");
+            }
+
             if (await _unitOfWork.BookingDetailRepository.AddExaminationResultAsync(exam) == 1)
                 return Ok("Added successfully!");
             else return BadRequest("Added failed!");

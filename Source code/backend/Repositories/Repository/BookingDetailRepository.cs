@@ -40,31 +40,33 @@ namespace Repositories.Repository
         public async Task<int> AddExaminationResultAsync(ExaminationResult exam)
         {
             var transaction = await _context.Database.BeginTransactionAsync();
-            bool rs = true;
+            bool rs = false;
+            int count = 0;
             try
             {
                 
                 foreach (var item in exam.BookingDetail)
                 {
                     item.BookingDetailID = GetNextID("BD");
-                    if (await base.CreateAsync(item) == 0)
-                        rs = false;
+                    if (await base.CreateAsync(item) != 0)
+                        count++;
                 }
                 foreach (var item in exam.AnimalProfile)
                 {
                     AnimalProfileRepository ap = new AnimalProfileRepository(_context);
                     item.AnimalProfileID = GetNextID("AP");
-                    if (await ap.CreateAsync(item) == 0)
-                        rs = false;
+                    if (await ap.CreateAsync(item) != 0)
+                        count++;
                 }
                 foreach (var item in exam.PoolProfile)
                 {
                     PoolProfileRepository pp = new PoolProfileRepository(_context);
                     item.PoolProfileID = GetNextID("PP");
-                    if (await pp.CreateAsync(item) == 0)
-                        rs = false;
+                    if (await pp.CreateAsync(item) != 0)
+                        count++;
                 }
-
+                if(count == (exam.AnimalProfile.Count + exam.BookingDetail.Count + exam.PoolProfile.Count))
+                    rs = true;
                 await transaction.CommitAsync();
                 return rs ? 1 : 0;
             }
