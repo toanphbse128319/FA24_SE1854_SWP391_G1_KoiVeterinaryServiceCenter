@@ -46,6 +46,13 @@ public class AnimalProfileController : ControllerBase {
     [HttpPost("addList")]
     public async Task<ActionResult<AnimalProfile>> AddAnimalProfiles(IEnumerable<AnimalProfile> animalprofiles) {
         try{
+            foreach (var ap in animalprofiles)
+            {
+                if (await _unitOfWork.AnimalProfileRepository.GetByIdAsync(ap.AnimalProfileID) != null)
+                    return BadRequest("Animal profile is already existed!");
+                if (await _unitOfWork.AnimalTypeRepository.GetByIdAsync(ap.TypeID) == null)
+                    return BadRequest("Animal type not found!");
+            }
             int rs = (await _unitOfWork.AnimalProfileRepository.AddAnimalProfilesAsync(animalprofiles));
             if (rs == animalprofiles.Count())
                 return Ok($"Added " + rs);

@@ -46,6 +46,11 @@ public class PoolProfileController : ControllerBase {
     {
         try
         {
+            foreach (var pp in pps)
+            {
+                if (await _unitOfWork.PoolProfileRepository.GetByIdAsync(pp.PoolProfileID) != null)
+                    return BadRequest("Pool profile is already existed!");
+            }
             int rs = (await _unitOfWork.PoolProfileRepository.AddPoolProfilesAsync(pps));
             if (rs == pps.Count())
                 return Ok($"Added " + rs);
