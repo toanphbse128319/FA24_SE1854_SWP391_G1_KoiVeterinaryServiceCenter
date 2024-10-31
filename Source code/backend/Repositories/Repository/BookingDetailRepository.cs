@@ -64,19 +64,46 @@ namespace Repositories.Repository
                 foreach (var item in exam.AnimalProfile)
                 {
                     AnimalProfileRepository ap = new AnimalProfileRepository(_context);
-                    item.AnimalProfileID = GetNextID("AP");
+                    item.AnimalProfileID = ap.GetNextID("AP");
                     if (await ap.CreateAsync(item) != 0)
                         count++;
                 }
                 foreach (var item in exam.PoolProfile)
                 {
                     PoolProfileRepository pp = new PoolProfileRepository(_context);
-                    item.PoolProfileID = GetNextID("PP");
+                    item.PoolProfileID = pp.GetNextID("PP");
                     if (await pp.CreateAsync(item) != 0)
                         count++;
                 }
                 if(count == (exam.AnimalProfile.Count + exam.BookingDetail.Count + exam.PoolProfile.Count))
                     rs = true;
+
+                //List<BookingDetail?> oldbds = await GetByBookingID(exam.BookingDetail[0].BookingID);
+                //foreach (var bd in oldbds)
+                //{
+                //    ServiceUseRepository surepo = new ServiceUseRepository(_context);
+                //    List<ServiceUse> su = await surepo.FindSUByListBookingDetailIDAsync(bd.BookingDetailID);
+                //    foreach (var ap in su)
+                //    {
+                //        foreach (var item in exam.BookingDetail)
+                //        {
+                //            ServiceUse ser = new ServiceUse() { AnimalProfileID = ap.AnimalProfileID, BookingDetailID = item.BookingDetailID };
+                //            await surepo.CreateAsync(ser);
+                //        }
+                //    }
+                //}
+
+
+
+                //ServiceUseRepository surepo = new ServiceUseRepository(_context);
+                //foreach (var bd in exam.BookingDetail)
+                //{
+                //    foreach (var ap in exam.AnimalProfile)
+                //    {
+                //        ServiceUse su = new ServiceUse() { ServiceUseID = surepo.GetNextID("SU"), AnimalProfileID = ap.AnimalProfileID, BookingDetailID = bd.BookingDetailID };
+                //        await surepo.CreateAsync(su);
+                //    }
+                //}
                 await transaction.CommitAsync();
                 return rs ? 1 : 0;
             }
