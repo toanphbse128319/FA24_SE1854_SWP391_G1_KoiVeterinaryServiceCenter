@@ -95,15 +95,16 @@ namespace Repositories.Repository
 
 
 
-                //ServiceUseRepository surepo = new ServiceUseRepository(_context);
-                //foreach (var bd in exam.BookingDetail)
-                //{
-                //    foreach (var ap in exam.AnimalProfile)
-                //    {
-                //        ServiceUse su = new ServiceUse() { ServiceUseID = surepo.GetNextID("SU"), AnimalProfileID = ap.AnimalProfileID, BookingDetailID = bd.BookingDetailID };
-                //        await surepo.CreateAsync(su);
-                //    }
-                //}
+                ServiceUseRepository surepo = new ServiceUseRepository(_context);
+                foreach (var bd in exam.BookingDetail)
+                {
+                    foreach (var ap in exam.AnimalProfile)
+                    {
+                        ServiceUse su = new ServiceUse() { ServiceUseID = surepo.GetNextID("SU"), AnimalProfileID = ap.AnimalProfileID, BookingDetailID = bd.BookingDetailID };
+                        await surepo.CreateAsync(su);
+                    }
+
+                }
                 await transaction.CommitAsync();
                 return rs ? 1 : 0;
             }
