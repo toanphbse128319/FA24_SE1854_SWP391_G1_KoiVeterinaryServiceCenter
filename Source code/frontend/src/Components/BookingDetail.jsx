@@ -85,7 +85,7 @@ const FishPoolServiceSelection = ({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentFishProfile, setCurrentFishProfile] = useState(INITIAL_FISH_PROFILE);
   const [currentPoolProfile, setCurrentPoolProfile] = useState(INITIAL_POOL_PROFILE);
-
+  const [isAdd, setIsAdd] = useState(true);
   // Service and Cart Management
   const [filteredServices, setFilteredServices] = useState(services);
   const [selectedService, setSelectedService] = useState(null);
@@ -93,13 +93,14 @@ const FishPoolServiceSelection = ({
   const [cartItems, setCartItems] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
 
+
   // Dialog State
   const [showCart, setShowCart] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
 
   // Computed Values
-  const totalFishCount = initialFishCount + Number(additionalFishCount);
-  const totalPoolCount = initialPoolCount + Number(additionalPoolCount);
+  const totalFishCount = additionalFishCount;
+  const totalPoolCount = additionalPoolCount;
 
   // Effects
   useEffect(() => {
@@ -118,31 +119,38 @@ const FishPoolServiceSelection = ({
     setFilteredServices(filtered);
   }, [searchTerm, services]);
 
-  // Tab Management
-  const handleTabChange = (event, newValue) => {
-    if (newValue === 1 && !isProfilesComplete()) {
-      return;
-    }
-    setActiveTab(newValue);
-  };
-
   // Profile Management Functions
   const isProfileLimitReached = () => {
-    return fishProfiles.length >= totalFishCount && poolProfiles.length >= totalPoolCount;
+   
+    if(additionalFishCount!=0 && additionalPoolCount ===0)
+    return fishProfiles.length+ 1 === additionalFishCount && poolProfiles.length  === additionalPoolCount;
+    if(additionalPoolCount!=0 && additionalFishCount ===0)
+      return fishProfiles.length === additionalFishCount && poolProfiles.length +1 === additionalPoolCount;
+    if(additionalFishCount!=0 && additionalPoolCount!=0){
+      console.log(fishProfiles.length +1 === additionalFishCount && poolProfiles.length +1 === additionalPoolCount)
+      return fishProfiles.length  === additionalFishCount && poolProfiles.length  === additionalPoolCount;
+    
+    }
+     
+  };
+  const isProfileLimit = () => {
+    return fishProfiles.length === additionalFishCount && poolProfiles.length === additionalPoolCount;
   };
 
-  const isProfilesComplete = () => {
-    return fishProfiles.length === totalFishCount && poolProfiles.length === totalPoolCount;
-  };
 
   const handleProfileSubmit = (skip = false) => {
-    if (isProfileLimitReached()) {
-      alert('Đã đạt đến giới hạn số lượng đánh giá!');
-      return;
-    }
-
     const isPoolProfile = currentIndex >= totalFishCount;
-    
+ 
+    if(isAdd===false){
+      console.log('4')
+      console.log('4')
+      if(isProfileLimitReached()){
+        console.log('455')
+
+        setActiveTab(1);
+      }
+
+    }
     if (skip) {
       if (isPoolProfile) {
         setPoolProfiles([...poolProfiles, { ...INITIAL_POOL_PROFILE }]);
@@ -227,6 +235,8 @@ const FishPoolServiceSelection = ({
     onClose();
   };
 
+
+  
   // Utility Functions
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('vi-VN', {
@@ -258,20 +268,34 @@ const FishPoolServiceSelection = ({
   };
 
 
+  const handleBanAdd = ( {additionalFishCount,additionalPoolCount } ) => {
+    
+    setIsAdd(false)
+    if(additionalFishCount=== 0 && additionalPoolCount===0){
+      
+      setActiveTab(1);
+    }
+  
+    setAdditionalFishCount(additionalFishCount);
+    setAdditionalPoolCount(additionalPoolCount);
+   
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg w-11/12 max-w-6xl h-5/6 overflow-hidden relative flex flex-col">
         {/* Header with Tabs */}
-        <div className="p-4 border-b">
-          <Tabs value={activeTab} onChange={handleTabChange}>
+        <div className="p-4 border-b bg-white ">
+          <Tabs value={activeTab}>
             <Tab 
               icon={<InfoIcon />} 
               label="Thông tin cá và hồ" 
+              disabled={activeTab===1}
             />
             <Tab
               icon={<ReceiptLongIcon />}
               label="Thông tin dịch vụ"
-              disabled={!isProfilesComplete()}
+              disabled={activeTab===0}
             />
           </Tabs>
         </div>
@@ -304,20 +328,8 @@ const FishPoolServiceSelection = ({
                 </Alert>
               )}
   
-              {/* hiện số cá và số hồ ban đầu*/}
-              <div className="grid grid-cols-2 gap-6">
-                {(initialFishCount > 0 || initialPoolCount > 0) && (
-                  <Card className="p-5">
-                    <Typography variant="h6">Số lượng ban đầu</Typography>
-                    {initialFishCount > 0 && (
-                      <Typography>Số cá: {initialFishCount}</Typography>
-                    )}
-                    {initialPoolCount > 0 && (
-                      <Typography>Số hồ: {initialPoolCount}</Typography>
-                    )}
-                  </Card>
-                )}
-  
+
+              <div className="grid grid-cols-1 gap-6">  
                 <Card className="p-5">
                   <Typography variant="h6">Số lượng phát sinh</Typography>
                   <TextField
@@ -327,7 +339,7 @@ const FishPoolServiceSelection = ({
                     onChange={(e) => setAdditionalFishCount(Math.max(0, parseInt(e.target.value) || 0))}
                     className="mb-4"
                     fullWidth
-                    disabled={isProfileLimitReached()}
+                    disabled={!isAdd}
                   />
                   <TextField
                     label="Số hồ phát sinh"
@@ -335,17 +347,26 @@ const FishPoolServiceSelection = ({
                     value={additionalPoolCount}
                     onChange={(e) => setAdditionalPoolCount(Math.max(0, parseInt(e.target.value) || 0))}
                     fullWidth
-                    disabled={isProfileLimitReached()}
+                    disabled={!isAdd}
                   />
+                   <Button 
+                   fullWidth
+                      variant="outlined" 
+                      onClick={() => handleBanAdd( { additionalFishCount: additionalFishCount, additionalPoolCount: additionalPoolCount })}
+                    >
+                      gửi
+                    </Button>
                 </Card>
               </div>
   
+
+  
               {/* Profile Form */}
-              {(totalFishCount > 0 || totalPoolCount > 0) && !isProfileLimitReached() && (
+              {   !isAdd && (
                 <Card className="p-4">
                   <Typography variant="h6">
-                    {currentIndex < totalFishCount ? 'Thông tin cá' : 'Thông tin hồ'}
-                    ({currentIndex + 1}/{totalFishCount + totalPoolCount})
+                    {currentIndex < additionalFishCount ? 'Thông tin cá' : 'Thông tin hồ'}
+                    ({currentIndex +1 }/{additionalFishCount + additionalPoolCount})
                   </Typography>
   
                   {currentIndex < totalFishCount ? (
