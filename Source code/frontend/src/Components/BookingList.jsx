@@ -249,17 +249,17 @@ import { FetchAPI } from "../Helper/Utilities.jsx";
 //
 
 const ROLE_STATUS_CONFIG = {
-  customer: [
+  Customer: [
     { label: 'chờ xác nhận', value: 'Pending', isActive: false },
     { label: 'sắp khám', value: 'Confirmed', isActive: false },
     { label: 'đã khám', value: 'Completed', isActive: false },
     { label: 'đã hủy', value: 'Cancelled', isActive: false }
   ],
-  veterinarian: [
+  Veterinarian: [
     { label: 'sắp khám', value: 'Confirmed', isActive: false },
     { label: 'đã khám', value: 'Completed', isActive: false }
   ],
-  staff: [
+  Staff: [
     { label: 'chờ xác nhận', value: 'Pending', isActive: false },
     { label: 'sắp khám', value: 'Confirmed', isActive: false },
     { label: 'đã khám', value: 'Completed', isActive: false },

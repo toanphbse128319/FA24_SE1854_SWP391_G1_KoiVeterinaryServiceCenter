@@ -24,25 +24,29 @@ import {
 } from '@mui/icons-material';
 
 const INITIAL_FISH_PROFILE = {
+  AnimalProfileID: '',
   Name: '',
   TypeID: 'AT1',
-  Size: '',
-  Age: '',
+  Size: 0,
+  Age: 0,
   Color: '',
   Description: '',
-  Sex: '',
+  Sex: true,
   Picture: ''
 };
 
 const INITIAL_POOL_PROFILE = {
+  PoolProfileID:'',
   Name: '',
+  Note:'',
   Width: '',
+  Description: '',
   Height: '',
   Depth: '',
-  Description: ''
+  Picture:'',
 };
 const INITIAL_FORM_STATE = {
-    serviceID: '',
+    ServiceID: '',
     NoteResult: '',
     AnimalStatusDescription: '',
     ConsultDoctor: '',
@@ -60,6 +64,7 @@ const BookingActions = ({
   initialFishCount = 1,
   initialPoolCount = 0,
   selectedService,
+  bookingDetail,
 }) => {
     
   const [activeTab, setActiveTab] = useState(0);
@@ -76,11 +81,53 @@ const BookingActions = ({
   const [formData, setFormData] = useState(INITIAL_FORM_STATE);
   const [isIncidental, setIsIncidental] = useState(false);
   const totalFishCount = initialFishCount + Number(additionalFishCount);
-  const totalPoolCount = initialPoolCount + Number(additionalPoolCount);
+  const totalPoolCount = initialPoolCount + Number(additionalPoolCount);   
+  const [error, setError] = useState('');
 
   useEffect(() => {
     setCurrentStep(activeTab === 0 ? 'CheckInFish' : 'SelectServices');
   }, [activeTab]);
+
+
+  const handleSubmitProfiles = async () => {
+    if (!isProfileLimitReached()) {
+      setError('Please complete all profiles before submitting');
+      return;
+    }
+
+   
+    setError(null);
+    console.log(fishProfiles)
+    try {
+      
+      const response = await fetch('http://localhost:5145/api/AnimalProfile/addProfiles', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          AnimalProfile: fishProfiles,
+          PoolProfile: poolProfiles
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+      }
+
+      const data = await response.text();
+      console.log('Profiles submitted successfully:', data);
+
+      // Handle successful submission
+      setShowConfirmation(false);
+      setIsIncidental(true);
+    
+
+    } catch (error) {
+      console.error('Error submitting profiles:', error);
+      setError(error.message);
+    } 
+  };
 
    if (!isOpen) return null;
   const isProfileLimitReached = () => {
@@ -151,8 +198,51 @@ const BookingActions = ({
     setActiveTab(newValue);
   };
 
-  const handleSubmit = () => {
-    setShowConfirmation(true);
+
+
+
+  const handleSubmit = async () => {
+    try {
+       
+          const response = await fetch('http://localhost:5145/api/BookingDetail/update', {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              BookingDetailID: bookingDetail.BookingDetailID,
+              BookingID: bookingId,
+              ServiceID: selectedService.ServiceID,
+              UnitPrice: selectedService.Price,
+              Incidental: true,
+              NoteResult: formData.NoteResult,
+              AnimalStatusDescription: formData.AnimalStatusDescription,
+              ConsultDoctor: formData.ConsultDoctor,
+              DrugList: formData.DrugList,
+              PoolStatusDescription: formData.PoolStatusDescription,
+              ConsultTechnician: formData.ConsultTechnician,
+              MaterialList: formData.MaterialList,
+            }),
+          });
+    
+          if (!response.ok) {
+            throw new Error('Failed to change booking status');
+          }
+    
+          const data = await response.text();
+          console.log('Status changed successfully:'+ data);
+    
+          // Xử lý sau khi gọi API thành công
+          setShowConfirmation(false);
+          setIsIncidental(true);
+          onClose();
+          if (onSubmitSuccess) {
+            onSubmitSuccess();
+          }
+    
+        } catch (error) {
+          console.error('Error changing status:'+ error);
+        }
   };
 
   const handleFinalSubmit = () => {
@@ -240,7 +330,17 @@ const BookingActions = ({
                 Đã đạt đến giới hạn số lượng đánh giá!
               </Alert>
             )}
-
+{isProfileLimitReached() && (
+  <Button
+    variant="contained"
+    onClick={handleSubmitProfiles}
+    style={{
+      background: 'linear-gradient(90deg, #64B0E0 25%, rgba(25, 200, 254, 0.75) 75%)'
+    }}
+  >
+    Tiếp tục
+  </Button>
+)}
             {(initialFishCount > 0 || initialPoolCount > 0) && (
               <Card className="p-5 mb-6">
                 <Typography variant="h6">Số lượng ban đầu</Typography>
