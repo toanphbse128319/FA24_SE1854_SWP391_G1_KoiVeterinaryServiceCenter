@@ -22,7 +22,6 @@ return (
           
         </div>
         
-        <AssignVet />
       <style >{`
           .Avatar {
           width: 100%; 
@@ -43,7 +42,11 @@ return (
           font-weight: 600;
           word-wrap: break-word;
         }
-
+        #root {
+          display: flex;
+          flex-direction: column;
+          width: 100vw;
+        }
 
         `}
       </style>

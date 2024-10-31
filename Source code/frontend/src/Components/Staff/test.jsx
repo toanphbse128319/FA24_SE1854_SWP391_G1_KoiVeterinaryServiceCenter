@@ -13,21 +13,12 @@ const AssignVet = () => {
   const [SlotSchedule, SetSlotSchedule] = useState([]);
   const [BookingDetails, SetBookingDetails] = useState([]);
   const [loading, SetLoading] = useState(true);
-  const [showModal, setShowModal] = useState(false);
-  const [selectedBooking, setSelectedBooking] = useState(null);
 
   const BookingDB = [
-    { BookingID: 'B1', CustomerName: 'Nguyen Van A', Date: '2024-11-14 08:00:00.000', SlotNo: 1, ServiceDeliveryMethod: 'Tại nhà', DoctorName: 'Dr. John Doe' },
-    { BookingID: 'B2', CustomerName: 'Tran Thi B', Date: '2024-11-14 09:00:00.000', SlotNo: 2, ServiceDeliveryMethod: 'Tại trung tâm', DoctorName: '' },
-    { BookingID: 'B3', CustomerName: 'Le Van C', Date: '2024-11-14 10:00:00.000', SlotNo: 3, ServiceDeliveryMethod: 'Tại trung tâm', DoctorName: 'Dr. Jane Smith' },
-    { BookingID: 'B4', CustomerName: 'Pham Thi D', Date: '2024-11-14 14:00:00.000', SlotNo: 4, ServiceDeliveryMethod: 'Trực tuyến', DoctorName: 'Dr. John Doe' },
-  ];
-
-  const DoctorDB = [
-    { DoctorID: 'D1', DoctorName: 'Dr. John Doe' },
-    { DoctorID: 'D2', DoctorName: 'Dr. Jane Smith' },
-    { DoctorID: 'D3', DoctorName: 'Dr. Emily Johnson' },
-    { DoctorID: 'D4', DoctorName: 'Dr. Michael Brown' },
+    { BookingID: 'B1', CustomerName: 'Nguyen Van A', Date: '2024-09-01 09:00:00.000', SlotNo: 1, ServiceDeliveryMethod: 'Home Visit', DoctorName: 'Dr. John Doe' },
+    { BookingID: 'B2', CustomerName: 'Tran Thi B', Date: '2024-09-02 14:00:00.000', SlotNo: 2, ServiceDeliveryMethod: 'Clinic Visit', DoctorName: '' },
+    { BookingID: 'B3', CustomerName: 'Le Van C', Date: '2024-09-03 18:00:00.000', SlotNo: 3, ServiceDeliveryMethod: 'Home Visit', DoctorName: 'Dr. Jane Smith' },
+    { BookingID: 'B4', CustomerName: 'Pham Thi D', Date: '2024-09-04 22:00:00.000', SlotNo: 4, ServiceDeliveryMethod: 'Clinic Visit', DoctorName: 'Dr. John Doe' },
   ];
 
   useEffect(() => {
@@ -126,8 +117,13 @@ const AssignVet = () => {
     setSelectedDate(date);
     setSelectedSlots(scheduleMap.get(dateString) || []);
 
-    const bookingDetailsForDate = BookingDB.filter(booking => booking.Date.startsWith(dateString));
-    SetBookingDetails(bookingDetailsForDate);
+    try {
+      const bookingResponse = await FetchAPI({ endpoint: `Booking/getbookingbydate?date=${dateString}` });
+      const bookingData = await bookingResponse.json();
+      SetBookingDetails(bookingData);
+    } catch (error) {
+      console.error("Error fetching booking data:", error);
+    }
   };
 
   const handlePrevMonth = () => {
@@ -172,14 +168,6 @@ const AssignVet = () => {
       ...(isLastColumn ? styles.lastColumnDay : {}),
       ...lastRowStyles,
     };
-  };
-
-  const handleAssignDoctor = (booking, doctorName) => {
-    const updatedBookings = BookingDetails.map(b => 
-      b.BookingID === booking.BookingID ? { ...b, DoctorName: doctorName } : b
-    );
-    SetBookingDetails(updatedBookings);
-    setShowModal(false);
   };
 
   if (loading) {
@@ -238,38 +226,31 @@ const AssignVet = () => {
         </div>
       </div>
 
-      {selectedDate && BookingDetails.length > 0 && (
-        <div style={styles.bookingDetails}>
-          <h3>Booking Details for {selectedDate.toDateString()}</h3>
-          <div style={styles.bookingList}>
-            {BookingDetails.map((booking, index) => (
-              <div key={index} style={styles.bookingItem}>
-                <p><strong>Customer Name:</strong> {booking.CustomerName}</p>
-                <p><strong>Slot No:</strong> {booking.SlotNo}</p>
-                <p><strong>Service Delivery Method:</strong> {booking.ServiceDeliveryMethod}</p>
-                <p>
-                  <strong>Doctor Name:</strong> {booking.DoctorName || 'N/A'}
-                  <button style={styles.assign} onClick={() => { setSelectedBooking(booking); setShowModal(true); }}>Assign</button>
-                </p>
+      {selectedDate && (
+        <div style={styles.timeSlots}>
+          <h3>Booked Slots for {selectedDate.toDateString()}</h3>
+          <div style={styles.slotButtons}>
+            {selectedSlots.map(slot => (
+              <div key={slot.ScheduleID} style={styles.slotButton}>
+                Slot {slot.slot}: {slot.ordered}/{slot.SlotCapacity} booked
               </div>
             ))}
           </div>
         </div>
       )}
 
-{showModal && selectedBooking && (
-        <div style={styles.modal}>
-          <div style={styles.modalContent}>
-            <h3>Assign Doctor for Booking {selectedBooking.BookingID}</h3>
-            <div style={styles.doctorList}>
-              {DoctorDB.map((doctor, index) => (
-                <div key={index} style={styles.doctorItem}>
-                  <p>{doctor.DoctorName}</p>
-                  <button style={styles.assign} onClick={() => handleAssignDoctor(selectedBooking, doctor.DoctorName)}>Assign</button>
-                </div>
-              ))}
-            </div>
-            <button style={styles.assign} onClick={() => setShowModal(false)}>Close</button>
+      {selectedDate && BookingDetails.length > 0 && (
+        <div style={styles.bookingDetails}>
+          <h3>Booking Details for {selectedDate.toDateString()}</h3>
+          <div style={styles.bookingList}>
+            {BookingDetails.map((booking, index) => (
+              <div key={index} style={styles.bookingItem}>
+                <p><strong>Customer Name:</strong> {booking.customerName}</p>
+                <p><strong>Slot No:</strong> {booking.slotNo}</p>
+                <p><strong>Service Delivery Method:</strong> {booking.serviceDeliveryMethod}</p>
+                <p><strong>Doctor Name:</strong> {booking.doctorName || 'N/A'}</p>
+              </div>
+            ))}
           </div>
         </div>
       )}
@@ -453,32 +434,7 @@ const styles = {
     border: '1px solid #ddd',
     borderRadius: '4px',
     background: '#f9f9f9'
-  },
-  assign: {
-    textAlign: 'center',
-    borderTop: '1px solid #e0e0e0',
-    borderBottom: '1px solid #e0e0e0',
-    borderRight: '1px solid #e0e0e0',
-    cursor: 'pointer',
-    transition: 'background-color 0.3s',
-    color: 'black',
-    backgroundColor: '${(props) => theme[props.theme].default}',
-    padding: '5px 15px',
-    borderRadius: '5px',
-    outline: '0',
-    border: '0',
-    textTransform: 'uppercase',
-    margin: '10px 0px',
-    cursor: 'pointer',
-    boxShadow: '0px 2px 2px lightgray',
-    transition: 'ease background-color 250ms',
-    // &:hover {
-    //   background-color: ${(props) => theme[props.theme].hover};
-    // }
-    // &:disabled {
-    //   cursor: default;
-    //   opacity: 0.7;
-    // }
   }
-}
+};
+
 export default AssignVet;
