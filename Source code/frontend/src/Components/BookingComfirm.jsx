@@ -52,7 +52,6 @@ const OrderConfirmation = ({ service, doctor, time, scheduleId, fishCount, movin
     ];
 
     if (doctor) {
-        console.log( doctor );
       columns.push({ 
         key: 'doctor', 
         label: 'Bác sĩ', 

@@ -305,8 +305,8 @@ async function FetchBookingDetail(){
 }
 
 const BookingList = ({
-  userRole = 'customer',
-  //userRole = 'veterinarian',
+  //userRole = 'customer',
+  userRole = 'Veterinarian',
   onFeedback = () => { },
   onEditBooking = () => { },
   onStartExamination = () => { }
@@ -387,15 +387,6 @@ const BookingList = ({
     setCartItems(updatedCart);
   };
 
-  const handleConfirmBooking = (bookingId) => {
-    setBookings(prevBookings =>
-      prevBookings.map(booking =>
-        booking.BookingID === bookingId
-          ? { ...booking, Status: 'Confirmed' }
-          : booking
-      )
-    );
-  };
 
   const handleFeedbackClick = (bookingId) => {
     setSelectedBookingId(bookingId);
@@ -516,7 +507,7 @@ const BookingList = ({
                     </>
                   )}
 
-                  {userRole === 'Veterinarian' && booking.status === 'Confirmed' && isIncidental == false && (
+                  {userRole === 'Veterinarian' && booking.Status === 'Confirmed' && isIncidental == false && (
 
 
                     <>

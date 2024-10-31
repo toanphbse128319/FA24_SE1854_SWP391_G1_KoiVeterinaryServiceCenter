@@ -162,7 +162,6 @@ const FishPoolServiceSelection = ({
 
   const handleProfileSubmit = (skip = false) => {
     setIncidental(false);
-    console.log(fishProfiles);
     if (isProfileLimitReached()) {
       alert('Đã đạt đến giới hạn số lượng đánh giá!');
       return;
@@ -245,11 +244,11 @@ const FishPoolServiceSelection = ({
   };
 
   const handleFinalSubmit = () => {
-    console.log('Submitting:', {
-      fishProfiles,
-      poolProfiles,
-      cartItems
-    });
+    // console.log('Submitting:', {
+    //   fishProfiles,
+    //   poolProfiles,
+    //   cartItems
+    // });
     setShowConfirmation(false);
     onClose();
     setShowConfirmation(true);
