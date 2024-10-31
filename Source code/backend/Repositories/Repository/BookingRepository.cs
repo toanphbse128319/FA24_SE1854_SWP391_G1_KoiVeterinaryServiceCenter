@@ -22,9 +22,9 @@ public class BookingRepository : GenericRepository<Booking>
     {
         return _context.Bookings.Where(booking => booking.EmployeeID.ToLower() == id.ToLower() && booking.BookingDate.Date >= DateTime.Today.Date).ToListAsync();
     }
-    public Task<List<Booking>> GetVetBookingsByDateAsync(DateTime date)
-    {
-        return _context.Bookings.Where(booking => booking.BookingDate.Date >= DateTime.Today.Date).ToListAsync();
+
+    public Task<List<Booking>> GetBookingFromto(DateTime from, DateTime to) {
+                return _context.Bookings.Where(booking => booking.BookingDate.Date >= from.Date && booking.BookingDate.Date <= to.Date).ToListAsync();
     }
 
     public async Task<int> UpdateStatusAsync(string id, string msg)
