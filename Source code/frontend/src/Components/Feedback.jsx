@@ -259,50 +259,49 @@ const FeedbackModal = ({ bookingId, onClose }) => {
     };
 
 
-    const handleFinalSubmit = async () => {
-      try {
+    // const handleFinalSubmit = async () => {
+    //   try {
        
-        const response = await fetch('http://localhost:5145/api/BookingDetail/update', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            
-            BookingDetailID: bookingDetail.BookingDetailID,
-            BookingID: bookingId,
-            ServiceID: selectedService.ServiceID,
-            UnitPrice: selectedService.Price,
-            Incidental: true,
-            NoteResult: formData.NoteResult,
-            AnimalStatusDescription: formData.AnimalStatusDescription,
-            ConsultDoctor: formData.ConsultDoctor,
-            DrugList: formData.DrugList,
-            PoolStatusDescription: formData.PoolStatusDescription,
-            ConsultTechnician: formData.ConsultTechnician,
-            MaterialList: formData.MaterialList,
-          }),
-        });
+    //     const response = await fetch('http://localhost:5145/api/BookingDetail/update', {
+    //       method: 'PUT',
+    //       headers: {
+    //         'Content-Type': 'application/json'
+    //       },
+    //       body: JSON.stringify({
+    //         BookingDetailID: bookingDetail.BookingDetailID,
+    //         BookingID: bookingId,
+    //         ServiceID: selectedService.ServiceID,
+    //         UnitPrice: selectedService.Price,
+    //         Incidental: true,
+    //         NoteResult: formData.NoteResult,
+    //         AnimalStatusDescription: formData.AnimalStatusDescription,
+    //         ConsultDoctor: formData.ConsultDoctor,
+    //         DrugList: formData.DrugList,
+    //         PoolStatusDescription: formData.PoolStatusDescription,
+    //         ConsultTechnician: formData.ConsultTechnician,
+    //         MaterialList: formData.MaterialList,
+    //       }),
+    //     });
   
-        if (!response.ok) {
-          throw new Error('Failed to change booking status');
-        }
+    //     if (!response.ok) {
+    //       throw new Error('Failed to change booking status');
+    //     }
   
-        const data = await response.text();
-        console.log('Status changed successfully:'+ data);
+    //     const data = await response.text();
+    //     console.log('Status changed successfully:'+ data);
   
-        // Xử lý sau khi gọi API thành công
-        setShowConfirmation(false);
-        setIsIncidental(true);
-        onClose();
-        if (onSubmitSuccess) {
-          onSubmitSuccess();
-        }
+    //     // Xử lý sau khi gọi API thành công
+    //     setShowConfirmation(false);
+    //     setIsIncidental(true);
+    //     onClose();
+    //     if (onSubmitSuccess) {
+    //       onSubmitSuccess();
+    //     }
   
-      } catch (error) {
-        console.error('Error changing status:'+ error);
-      }
-    };
+    //   } catch (error) {
+    //     console.error('Error changing status:'+ error);
+    //   }
+    // };
 
 
 
