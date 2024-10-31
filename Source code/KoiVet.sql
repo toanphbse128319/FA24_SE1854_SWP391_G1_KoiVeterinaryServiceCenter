@@ -228,7 +228,8 @@ VALUES
 ('A7', '0835377623', 'vet2@gmail.com', 'R3', 'avatar2.jpg', 'vettemp', 'Normal', 1),
 ('A8', '1122334455', 'Manager@gmail.com', 'R3', 'avatar3.jpg', 'vet', 'Normal', 1),
 ('A9', '1234554321', 'reception1@gmai.com', 'R1', 'avatar4.jpg', 'manager', 'Normal', 1),
-('A10', '1234567876', 'admin@gmail.com', 'R2', 'avatar5.jpg', 'test', 'Normal', 1);
+('A10', '1234567876', 'admin@gmail.com', 'R2', 'avatar5.jpg', 'test', 'Normal', 1),
+('A11', '9987654321', 'decsr@gmail.com', 'R3', 'avatar5.jpg', 'vet', 'Normal', 1);
 GO
 
 INSERT INTO Customer (CustomerID, Firstname, Lastname, Sex, Birthday, Address, AccountID, Status) 
@@ -248,7 +249,8 @@ VALUES
 ('E2', 'A7', 'R2', 'Lily', 'Anderson', 0, '1988-04-25', '111 Maple St', 1),
 ('E3', 'A8', 'R3', 'Tom', 'Clark', 1, '1991-02-19', '222 Oak Dr', 1),
 ('E4', 'A9', 'R2', 'Nancy', 'Lee', 0, '1985-12-12', '333 Pine Ln', 1),
-('E5', 'A10', 'R3', 'Michael', 'Scott', 1, '1975-09-08', '444 Birch Rd', 1);
+('E5', 'A10', 'R3', 'Michael', 'Scott', 1, '1975-09-08', '444 Birch Rd', 1),
+('E6', 'A11', 'R3', 'Hoang', 'Long', 1, '2000-02-02', 'Vin', 1);
 
 -- Insert sample data for ServiceDeliveryMethod
 INSERT INTO ServiceDeliveryMethod (ServiceDeliveryMethodID, Name, Status) 

@@ -111,10 +111,10 @@ const AssignVet = () => {
   const [loading, SetLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
-    const [bookings, setBookings] = useState([]);
-    const [doctors, setDoctors] = useState([]);
-    const [customers, setCustomer] = useState([]);
-    const [sdm, SetSDM] = useState([]);
+  const [bookings, setBookings] = useState([]);
+  const [doctors, setDoctors] = useState([]);
+  const [customers, setCustomer] = useState([]);
+  const [sdm, SetSDM] = useState([]);
 
 //  const bookings = [
 //    { BookingID: 'B1', CustomerName: 'Nguyen Van A', Date: '2024-10-31 08:00:00.000', SlotNo: 1, ServiceDeliveryMethod: 'Tại nhà', DoctorName: 'Dr. John Doe' },
@@ -356,7 +356,7 @@ const AssignVet = () => {
         </div>
       )}
 
-{showModal && selectedBooking && (
+      {showModal && selectedBooking && (
         <div style={styles.modal}>
           <div style={styles.modalContent}>
             <h3>Assign Doctor for Booking {selectedBooking.BookingID}</h3>
