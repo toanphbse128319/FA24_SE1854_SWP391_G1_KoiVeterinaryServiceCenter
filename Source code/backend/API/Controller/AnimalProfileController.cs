@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Model;
 using Repositories;
+using Repositories.Objects;
 
 namespace API.Controllers;
 
@@ -42,24 +43,34 @@ public class AnimalProfileController : ControllerBase {
             return StatusCode( StatusCodes.Status500InternalServerError, ex.Message );
         }
     }
-    
-    [HttpPost("addList")]
-    public async Task<ActionResult<AnimalProfile>> AddAnimalProfiles(IEnumerable<AnimalProfile> animalprofiles) {
-        try{
-            foreach (var ap in animalprofiles)
+
+    [HttpPost("addProfiles")]
+    public async Task<ActionResult<Profiles>> AddProfiles(Profiles profile)
+    {
+        try
+        {
+            foreach (var item in profile.AnimalProfile)
             {
-                if (await _unitOfWork.AnimalProfileRepository.GetByIdAsync(ap.AnimalProfileID) != null)
+                if (await _unitOfWork.BookingDetailRepository.GetByIdAsync(item.AnimalProfileID) != null)
                     return BadRequest("Animal profile is already existed!");
-                if (await _unitOfWork.AnimalTypeRepository.GetByIdAsync(ap.TypeID) == null)
+                if (await _unitOfWork.AnimalTypeRepository.GetByIdAsync(item.TypeID) == null)
                     return BadRequest("Animal type not found!");
             }
-            int rs = (await _unitOfWork.AnimalProfileRepository.AddAnimalProfilesAsync(animalprofiles));
-            if (rs == animalprofiles.Count())
-                return Ok($"Added " + rs);
-            else return BadRequest("Add failed");
-        } catch ( Exception ex ){
-            Console.WriteLine( ex );
-            return StatusCode( StatusCodes.Status500InternalServerError, ex.Message );
+
+            foreach (var item in profile.PoolProfile)
+            {
+                if (await _unitOfWork.BookingDetailRepository.GetByIdAsync(item.PoolProfileID) != null)
+                    return BadRequest("Pool profile is already existed!");
+            }
+
+            if (await _unitOfWork.AnimalProfileRepository.AddProfilesAsync(profile) == 1)
+                return Ok("Added successfully!");
+            else return BadRequest("Added failed!");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
 
