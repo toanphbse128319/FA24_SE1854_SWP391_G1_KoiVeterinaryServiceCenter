@@ -194,11 +194,12 @@ CREATE TABLE Post(
 )
 GO 
 
-CREATE TABLE ServiceUse(
-    AnimalProfileID nvarchar(20) FOREIGN KEY REFERENCES AnimalProfile(AnimalProfileID),
-	PoolProfileID nvarchar(20)FOREIGN KEY REFERENCES PoolProfile(PoolProfileID),
-	BookingDetailID nvarchar(20) FOREIGN KEY REFERENCES BookingDetail(BookingDetailID),
-)
+CREATE TABLE ServiceUse (
+	ServiceUseID nvarchar(20) PRIMARY KEY,
+    AnimalProfileID nvarchar(20) ,
+    PoolProfileID nvarchar(20) ,
+    BookingDetailID nvarchar(20)
+);
 GO
 
 USE [FA24_SE1854_SWP391_G1_KoiVeterinaryServiceCenter]
