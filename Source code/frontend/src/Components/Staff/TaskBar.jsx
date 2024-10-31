@@ -3,6 +3,53 @@ import AssignVet from './AssignVet';
 import ManageUser from './ManageUser';
 import AddSchedule from './AddSchedule';
 
+import { FetchAPI } from "../../Helper/Utilities";
+
+async function fetchBooking(){
+    let currentDate = new Date().toISOString().split("T")[0];
+    let target = (new Date());
+    target.setDate( target.getDate() + 30 );
+    let targetDate = target.toISOString().split("T")[0];
+    let response = await FetchAPI({ endpoint: `/Booking/getbookingfromto?from=${currentDate}&to=${targetDate}` })
+    if ( !response.ok )
+        return null;
+    return await response.json();
+}
+
+async function fetchVet({}){
+    let response = await FetchAPI({ endpoint: '/Employee/getbyrolename?info=Veterinarian' });
+    if ( !response.ok )
+        return null;
+    return await response.json();
+}
+
+async function fetchSchedule(){
+    let currentDate = new Date().toISOString().split("T")[0];
+    let response = await FetchAPI({ endpoint: '/Schedule/get30daysschedule?date=' + currentDate });
+    if ( !response.ok )
+        return null;
+    return await response.json();
+}
+
+async function fetchSlot(){
+    let currentDate = new Date().toISOString().split("T")[0];
+    let response = await FetchAPI({ endpoint: '/Schedule/getslotin30days?date=' + currentDate });
+    if ( !response.ok )
+        return null;
+    return await response.json();
+}
+
+async function fetchCustomer({bookings, setCustomer}){
+    let temp = [];
+    let count = bookings.length;
+    bookings.map( booking => {
+        FetchAPI({ endpoint: `/Customer/${booking.CustomerID}`}).then( response => response.json().then( json => {
+            setCustomer( json );
+        } ) );
+    });
+    return temp;
+}
+
 const TaskBar = () => {
   const STEPS = {
     ASSIGN_VET: 'assignVet',
