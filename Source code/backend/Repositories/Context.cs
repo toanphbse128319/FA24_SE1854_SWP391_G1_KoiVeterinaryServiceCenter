@@ -45,5 +45,6 @@ public class Context : DbContext
     public virtual DbSet<Schedule> Schedules { get; set; }
     public virtual DbSet<SlotTable> SlotTables { get; set; }
     public virtual DbSet<Feedback> Feedbacks { get; set; }
+    public virtual DbSet<ServiceUse> ServiceUses { get; set; }
 
 }
