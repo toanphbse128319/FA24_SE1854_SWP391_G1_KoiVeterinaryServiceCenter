@@ -12,7 +12,7 @@ public class BookingRepository : GenericRepository<Booking>
         _context = context;
     }
 
-    public async Task<List<Booking>> GetByProfileID( string id ){
+    public async Task<List<Booking?>> GetByProfileIDAsync( string id ){
         if( id.Contains( 'C' ) || id.Contains('c') )
             return await _context.Bookings.Where( order => order.CustomerID == id ).ToListAsync();
         return await _context.Bookings.Where( order => order.EmployeeID == id ).ToListAsync();

@@ -63,10 +63,10 @@ public class BookingController : ControllerBase {
         }
     }
 
-    [HttpGet("byprofile")]
+    [HttpGet("getbyprofile")]
     public async Task<ActionResult<List<Booking>>> GetByProfile(string id) {
         try{
-            List<Booking> list = await _unitOfWork.BookingRepository.GetByProfileID(id);
+            List<Booking> list = await _unitOfWork.BookingRepository.GetByProfileIDAsync(id);
             if (list.Count == 0)
                 return NotFound("Cannot find Order associate with that profile");
             return list;

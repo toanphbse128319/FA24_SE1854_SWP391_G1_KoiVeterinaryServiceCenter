@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+
 using Repositories.Model;
 using Repositories.Objects;
 
@@ -11,14 +12,23 @@ namespace Repositories.Repository
             _context = context;
         }
 
-        public Task<List<BookingDetail?>> GetByBookingID(string id)
+        public Task<List<BookingDetail>> GetByBookingID(string id)
         {
             return _context.BookingDetails.Where(bookingdetail => bookingdetail.BookingID.ToLower() == id.ToLower()).ToListAsync()!;
         }
 
-        public Task<List<BookingDetail?>> GetByServiceID(string id)
+        public Task<List<BookingDetail>> GetByServiceID(string id)
         {
             return _context.BookingDetails.Where(bookingdetail => bookingdetail.ServiceID.ToLower() == id.ToLower()).ToListAsync()!;
+        }
+
+        public async Task<List<BookingDetail>> GetByProfileIDAsync( string id ){
+            List<Booking> bookings = await (new BookingRepository(_context)).GetByProfileIDAsync(id);
+            List<BookingDetail> bookingDetails = new List<BookingDetail>();
+            foreach( Booking booking in bookings ){
+                bookingDetails.AddRange( await GetByBookingID( booking.BookingID ) );
+            }
+            return bookingDetails;
         }
 
         public async Task<int> AddBookingDetailAsync(BookingDetail bd)

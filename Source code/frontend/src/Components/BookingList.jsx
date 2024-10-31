@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import FeedbackModal from './Feedback.jsx';
 import {
   Box,
@@ -13,236 +13,240 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import ServiceSelection from './BookingDetail.jsx';
 import BookingActions from './ServiceSelected.jsx';
+import { FetchAPI } from "../Helper/Utilities.jsx";
 
 
-const DELIVERY_METHODS = {
-  'SDM1': 'Home Visit',
-  'SDM2': 'Online Consultation',
-  'SDM3': 'Clinic Appointment',
-  'SDM4': 'Emergency Visit',
-  'SDM5': 'Follow-up Consultation'
-};
+//const sdm = {
+//  'SDM1': 'Home Visit',
+//  'SDM2': 'Online Consultation',
+//  'SDM3': 'Clinic Appointment',
+//  'SDM4': 'Emergency Visit',
+//  'SDM5': 'Follow-up Consultation'
+//};
 
 
-const SAMPLE_BOOKINGS = [
-  {
-    id: 'B1',
-    status: 'Completed',
-    customerID: 'C1',
-    employeeID: 'E1',
-    bookingDate: '2024-09-01 09:00:00',
-    expiredDate: '2024-09-01 04:00:00',
-    deposit: 50.00,
-    numberOfFish: 1,
-    incidentalFish: 0,
-    serviceDeliveryMethodID: 'SDM1',
-    vat: 10.00,
-    address: '250 vo van hat',
-    distance: 5.5,
-    distanceCost: 11.00,
-    totalServiceCost: 661000,
-    feedbackID: 'FB0',
-    scheduleID: 'SCH1',
-    note: 'Home visit for koi health check',
-    paymentMethod: 'Credit Card',
-    paymentStatus: 'Pending'
-  },
-  {
-    id: 'B2',
-    status: 'Confirmed',
-    customerID: 'C2',
-    employeeID: 'E2',
-    bookingDate: '2024-09-02 14:00:00',
-    expiredDate: '2024-09-02 04:00:00',
-    deposit: 37.50,
-    numberOfFish: 1,
-    incidentalFish: 0,
-    serviceDeliveryMethodID: 'SDM1',
-    vat: 7.50,
-    address: '456 Maple Ave',
-    distance: 0,
-    distanceCost: 0.00,
-    totalServiceCost: 397500,
-    feedbackID: 'FB2',
-    scheduleID: 'SCH2',
-    note: 'Online consultation for koi',
-    paymentMethod: 'PayPal',
-    paymentStatus: 'Pending'
-  },
-  {
-    id: 'B3',
-    status: 'Cancelled',
-    customerID: 'C3',
-    employeeID: 'E3',
-    bookingDate: '2024-09-03 18:00:00',
-    expiredDate: '2024-09-03 04:00:00',
-    deposit: 75.00,
-    numberOfFish: 1,
-    incidentalFish: 0,
-    serviceDeliveryMethodID: 'SDM3',
-    vat: 15.00,
-    address: '789 Oak St',
-    distance: 3.2,
-    distanceCost: 6.40,
-    totalServiceCost: 996000,
-    feedbackID: 'FB3',
-    scheduleID: 'SCH3',
-    note: 'Clinic visit for koi disease treatment',
-    paymentMethod: 'Cash',
-    paymentStatus: 'Pending'
-  },
-  {
-    id: 'B4',
-    status: 'Pending',
-    customerID: 'C4',
-    employeeID: 'E4',
-    bookingDate: '2024-09-04 22:00:00',
-    expiredDate: '2024-09-05 04:00:00',
-    deposit: 150.00,
-    numberOfFish: 1,
-    incidentalFish: 0,
-    serviceDeliveryMethodID: 'SDM4',
-    vat: 30.00,
-    address: '321 Birch Ave',
-    distance: 8.7,
-    distanceCost: 17.40,
-    totalServiceCost: 2000000,
-    feedbackID: 'FB4',
-    scheduleID: 'SCH4',
-    note: 'Emergency koi surgery',
-    paymentMethod: 'Credit Card',
-    paymentStatus: 'Pending'
-  },
-  {
-    id: 'B5',
-    status: 'Completed',
-    customerID: 'C5',
-    employeeID: 'E5',
-    bookingDate: '2024-09-05 07:00:00',
-    expiredDate: '2024-09-05 04:00:00',
-    deposit: 25.00,
-    numberOfFish: 1,
-    incidentalFish: 1,
-    serviceDeliveryMethodID: 'SDM4',
-    vat: 5.00,
-    address: '654 Pine St',
-    distance: 2.1,
-    distanceCost: 4.20,
-    totalServiceCost: 867000,
-    feedbackID: 'FB5',
-    scheduleID: 'SCH5',
-    note: 'Follow-up checkup after treatment',
-    paymentMethod: 'Debit Card',
-    paymentStatus: 'Pending'
-  }
+//const SAMPLE_BOOKINGS = [
+//  {
+//    id: 'B1',
+//    status: 'Completed',
+//    customerID: 'C1',
+//    employeeID: 'E1',
+//    bookingDate: '2024-09-01 09:00:00',
+//    expiredDate: '2024-09-01 04:00:00',
+//    deposit: 50.00,
+//    numberOfFish: 1,
+//    incidentalFish: 0,
+//    serviceDeliveryMethodID: 'SDM1',
+//    vat: 10.00,
+//    address: '250 vo van hat',
+//    distance: 5.5,
+//    distanceCost: 11.00,
+//    totalServiceCost: 661000,
+//    feedbackID: 'FB0',
+//    scheduleID: 'SCH1',
+//    note: 'Home visit for koi health check',
+//    paymentMethod: 'Credit Card',
+//    paymentStatus: 'Pending'
+//  },
+//  {
+//    id: 'B2',
+//    status: 'Confirmed',
+//    customerID: 'C2',
+//    employeeID: 'E2',
+//    bookingDate: '2024-09-02 14:00:00',
+//    expiredDate: '2024-09-02 04:00:00',
+//    deposit: 37.50,
+//    numberOfFish: 1,
+//    incidentalFish: 0,
+//    serviceDeliveryMethodID: 'SDM1',
+//    vat: 7.50,
+//    address: '456 Maple Ave',
+//    distance: 0,
+//    distanceCost: 0.00,
+//    totalServiceCost: 397500,
+//    feedbackID: 'FB2',
+//    scheduleID: 'SCH2',
+//    note: 'Online consultation for koi',
+//    paymentMethod: 'PayPal',
+//    paymentStatus: 'Pending'
+//  },
+//  {
+//    id: 'B3',
+//    status: 'Cancelled',
+//    customerID: 'C3',
+//    employeeID: 'E3',
+//    bookingDate: '2024-09-03 18:00:00',
+//    expiredDate: '2024-09-03 04:00:00',
+//    deposit: 75.00,
+//    numberOfFish: 1,
+//    incidentalFish: 0,
+//    serviceDeliveryMethodID: 'SDM3',
+//    vat: 15.00,
+//    address: '789 Oak St',
+//    distance: 3.2,
+//    distanceCost: 6.40,
+//    totalServiceCost: 996000,
+//    feedbackID: 'FB3',
+//    scheduleID: 'SCH3',
+//    note: 'Clinic visit for koi disease treatment',
+//    paymentMethod: 'Cash',
+//    paymentStatus: 'Pending'
+//  },
+//  {
+//    id: 'B4',
+//    status: 'Pending',
+//    customerID: 'C4',
+//    employeeID: 'E4',
+//    bookingDate: '2024-09-04 22:00:00',
+//    expiredDate: '2024-09-05 04:00:00',
+//    deposit: 150.00,
+//    numberOfFish: 1,
+//    incidentalFish: 0,
+//    serviceDeliveryMethodID: 'SDM4',
+//    vat: 30.00,
+//    address: '321 Birch Ave',
+//    distance: 8.7,
+//    distanceCost: 17.40,
+//    totalServiceCost: 2000000,
+//    feedbackID: 'FB4',
+//    scheduleID: 'SCH4',
+//    note: 'Emergency koi surgery',
+//    paymentMethod: 'Credit Card',
+//    paymentStatus: 'Pending'
+//  },
+//  {
+//    id: 'B5',
+//    status: 'Completed',
+//    customerID: 'C5',
+//    employeeID: 'E5',
+//    bookingDate: '2024-09-05 07:00:00',
+//    expiredDate: '2024-09-05 04:00:00',
+//    deposit: 25.00,
+//    numberOfFish: 1,
+//    incidentalFish: 1,
+//    serviceDeliveryMethodID: 'SDM4',
+//    vat: 5.00,
+//    address: '654 Pine St',
+//    distance: 2.1,
+//    distanceCost: 4.20,
+//    totalServiceCost: 867000,
+//    feedbackID: 'FB5',
+//    scheduleID: 'SCH5',
+//    note: 'Follow-up checkup after treatment',
+//    paymentMethod: 'Debit Card',
+//    paymentStatus: 'Pending'
+//  }
+//
+//];
+//
+//// Move these inside the component since we're not using props
 
-];
+//export const services = [
+//  {
+//    ServiceID: 'S1',
+//    ServiceDeliveryMethodID: 'SDM1',
+//    Name: 'Khám sức khỏe Koi cơ bản',
+//    Price: 100.00,
+//    Description: 'Kiểm tra sức khỏe cơ bản cho cá Koi, bao gồm kiểm tra các dấu hiệu bệnh lý và tình trạng dinh dưỡng',
+//    Status: 1
+//  },
+//  {
+//    ServiceID: 'S10',
+//    ServiceDeliveryMethodID: 'SDM4',
+//    Name: 'Khám sức khỏe Koi cơ bản',
+//    Price: 100.00,
+//    Description: 'Kiểm tra sức khỏe cơ bản cho cá Koi, bao gồm kiểm tra các dấu hiệu bệnh lý và tình trạng dinh dưỡng',
+//    Status: 1
+//  },
+//  {
+//    ServiceID: 'S2',
+//    ServiceDeliveryMethodID: 'SDM3',
+//    Name: 'Tư vấn Koi trực tuyến',
+//    Price: 75.00,
+//    Description: 'Tư vấn trực tuyến với chuyên gia về cá Koi để giải đáp các thắc mắc về chăm sóc và nuôi dưỡng',
+//    Status: 1
+//  },
+//  {
+//    ServiceID: 'S3',
+//    ServiceDeliveryMethodID: 'SDM1',
+//    Name: 'Điều trị bệnh Koi',
+//    Price: 150.00,
+//    Description: 'Điều trị các bệnh phổ biến ở cá Koi như bệnh nấm, ký sinh trùng, vi khuẩn',
+//    Status: 1
+//  },
+//  {
+//    ServiceID: 'S4',
+//    ServiceDeliveryMethodID: 'SDM2',
+//    Name: 'Bảo trì hồ Koi',
+//    Price: 200.00,
+//    Description: 'Dịch vụ bảo trì định kỳ hồ cá Koi, bao gồm kiểm tra và điều chỉnh các thông số nước',
+//    Status: 1
+//  },
+//  {
+//    ServiceID: 'S5',
+//    ServiceDeliveryMethodID: 'SDM3',
+//    Name: 'Lắp đặt hệ thống lọc',
+//    Price: 500.00,
+//    Description: 'Tư vấn và lắp đặt hệ thống lọc phù hợp cho hồ cá Koi',
+//    Status: 1
+//  },
+//  {
+//    ServiceID: 'S6',
+//    ServiceDeliveryMethodID: 'SDM1',
+//    Name: 'Tiêm vaccine Koi',
+//    Price: 120.00,
+//    Description: 'Tiêm phòng các bệnh phổ biến cho cá Koi',
+//    Status: 1
+//  },
+//  {
+//    ServiceID: 'S7',
+//    ServiceDeliveryMethodID: 'SDM2',
+//    Name: 'Đánh giá chất lượng Koi',
+//    Price: 80.00,
+//    Description: 'Đánh giá chất lượng và giá trị của cá Koi dựa trên các tiêu chuẩn chuyên môn',
+//    Status: 1
+//  },
+//  {
+//    ServiceID: 'S8',
+//    ServiceDeliveryMethodID: 'SDM3',
+//    Name: 'Thiết kế hồ Koi',
+//    Price: 300.00,
+//    Description: 'Tư vấn và thiết kế hồ cá Koi theo yêu cầu của khách hàng',
+//    Status: 1
+//  }
+//];
 
-// Move these inside the component since we're not using props
-export const SERVICES_DATA = [
-  {
-    ServiceID: 'S1',
-    ServiceDeliveryMethodID: 'SDM1',
-    Name: 'Khám sức khỏe Koi cơ bản',
-    Price: 100.00,
-    Description: 'Kiểm tra sức khỏe cơ bản cho cá Koi, bao gồm kiểm tra các dấu hiệu bệnh lý và tình trạng dinh dưỡng',
-    Status: 1
-  },
-  {
-    ServiceID: 'S10',
-    ServiceDeliveryMethodID: 'SDM4',
-    Name: 'Khám sức khỏe Koi cơ bản',
-    Price: 100.00,
-    Description: 'Kiểm tra sức khỏe cơ bản cho cá Koi, bao gồm kiểm tra các dấu hiệu bệnh lý và tình trạng dinh dưỡng',
-    Status: 1
-  },
-  {
-    ServiceID: 'S2',
-    ServiceDeliveryMethodID: 'SDM3',
-    Name: 'Tư vấn Koi trực tuyến',
-    Price: 75.00,
-    Description: 'Tư vấn trực tuyến với chuyên gia về cá Koi để giải đáp các thắc mắc về chăm sóc và nuôi dưỡng',
-    Status: 1
-  },
-  {
-    ServiceID: 'S3',
-    ServiceDeliveryMethodID: 'SDM1',
-    Name: 'Điều trị bệnh Koi',
-    Price: 150.00,
-    Description: 'Điều trị các bệnh phổ biến ở cá Koi như bệnh nấm, ký sinh trùng, vi khuẩn',
-    Status: 1
-  },
-  {
-    ServiceID: 'S4',
-    ServiceDeliveryMethodID: 'SDM2',
-    Name: 'Bảo trì hồ Koi',
-    Price: 200.00,
-    Description: 'Dịch vụ bảo trì định kỳ hồ cá Koi, bao gồm kiểm tra và điều chỉnh các thông số nước',
-    Status: 1
-  },
-  {
-    ServiceID: 'S5',
-    ServiceDeliveryMethodID: 'SDM3',
-    Name: 'Lắp đặt hệ thống lọc',
-    Price: 500.00,
-    Description: 'Tư vấn và lắp đặt hệ thống lọc phù hợp cho hồ cá Koi',
-    Status: 1
-  },
-  {
-    ServiceID: 'S6',
-    ServiceDeliveryMethodID: 'SDM1',
-    Name: 'Tiêm vaccine Koi',
-    Price: 120.00,
-    Description: 'Tiêm phòng các bệnh phổ biến cho cá Koi',
-    Status: 1
-  },
-  {
-    ServiceID: 'S7',
-    ServiceDeliveryMethodID: 'SDM2',
-    Name: 'Đánh giá chất lượng Koi',
-    Price: 80.00,
-    Description: 'Đánh giá chất lượng và giá trị của cá Koi dựa trên các tiêu chuẩn chuyên môn',
-    Status: 1
-  },
-  {
-    ServiceID: 'S8',
-    ServiceDeliveryMethodID: 'SDM3',
-    Name: 'Thiết kế hồ Koi',
-    Price: 300.00,
-    Description: 'Tư vấn và thiết kế hồ cá Koi theo yêu cầu của khách hàng',
-    Status: 1
-  }
-];
-const bookingDetail = [
-  {
-    BookingDetailID: 'BD1',
-    BookingID: 'B1',
-    ServiceID: 'S1',
-    UnitPrice: 100.00,
-    Incidental: 0,
-    NoteResult: 'Koi appears healthy overall',
-    AnimalStatusDescription: 'Nishiki shows good coloration and active behavior',
-    ConsultDoctor: 'Dr. Amelia Fish',
-    DrugList: 'Probiotic supplement',
-    PoolStatusDescription: 'Zen Garden Koi Pond maintains good water quality',
-    ConsultTechnician: 'Tech John Doe',
-    MaterialList: 'Water testing kit, net'
-  },
-  {
-    BookingDetailID: 'BD2',
-    BookingID: 'B2',
-    ServiceID: 'S1',
-    UnitPrice: 75.00,
-    Incidental: 0,
-    NoteResult: 'Goldfish exhibiting signs of stress',
-    AnimalStatusDescription: 'Bubbles has clamped fins and reduced activity',
-    ConsultDoctor: 'Dr. Michael Scales',
-    DrugList: 'Antibiotics, stress coat additive',
-    PoolStatusDescription: 'Indoor Goldfish Tank requires improved filtration',
-    ConsultTechnician: 'Tech Jane Smith',
-    MaterialList: 'New filter system, air pump'
-  }
-];
+//const bookingDetail = [
+//  {
+//    BookingDetailID: 'BD1',
+//    BookingID: 'B1',
+//    ServiceID: 'S1',
+//    UnitPrice: 100.00,
+//    Incidental: 0,
+//    NoteResult: 'Koi appears healthy overall',
+//    AnimalStatusDescription: 'Nishiki shows good coloration and active behavior',
+//    ConsultDoctor: 'Dr. Amelia Fish',
+//    DrugList: 'Probiotic supplement',
+//    PoolStatusDescription: 'Zen Garden Koi Pond maintains good water quality',
+//    ConsultTechnician: 'Tech John Doe',
+//    MaterialList: 'Water testing kit, net'
+//  },
+//  {
+//    BookingDetailID: 'BD2',
+//    BookingID: 'B2',
+//    ServiceID: 'S1',
+//    UnitPrice: 75.00,
+//    Incidental: 0,
+//    NoteResult: 'Goldfish exhibiting signs of stress',
+//    AnimalStatusDescription: 'Bubbles has clamped fins and reduced activity',
+//    ConsultDoctor: 'Dr. Michael Scales',
+//    DrugList: 'Antibiotics, stress coat additive',
+//    PoolStatusDescription: 'Indoor Goldfish Tank requires improved filtration',
+//    ConsultTechnician: 'Tech Jane Smith',
+//    MaterialList: 'New filter system, air pump'
+//  }
+//];
+//
 
 const ROLE_STATUS_CONFIG = {
   customer: [
@@ -261,6 +265,326 @@ const ROLE_STATUS_CONFIG = {
     { label: 'đã khám', value: 'Completed', isActive: false },
     { label: 'đã hủy', value: 'Cancelled', isActive: false }
   ]
+};
+
+const InfoRow = ({ label, value }) => (
+  <div style={styles.infoRow}>
+    <Typography style={styles.infoLabel}>{label}</Typography>
+    <Typography style={styles.infoValue}>{value}</Typography>
+  </div>
+);
+
+async function FetchBookingList(){
+    let id = window.sessionStorage.getItem("id");
+    let response = await FetchAPI( { endpoint: "/booking/getbyprofile?id=" + id } );
+    if( !response.ok )
+        return null;
+    return await response.json();
+}
+
+async function FetchSDM(){
+    let response = await FetchAPI( { endpoint: "/servicedeliverymethod" } );
+    if( !response.ok )
+        return null;
+    return await response.json();
+}
+
+async function FetchServices(){
+    let response = await FetchAPI( { endpoint: "/service" } );
+    if( !response.ok )
+        return null;
+    return await response.json();
+}
+
+async function FetchBookingDetail(){
+    let id = window.sessionStorage.getItem("id");
+    let response = await FetchAPI( { endpoint: "/bookingdetail/getbyprofile?id=" + id } );
+    if( !response.ok )
+        return null;
+    return await response.json();
+}
+
+const BookingList = ({
+  userRole = 'customer',
+  //userRole = 'veterinarian',
+  onFeedback = () => { },
+  onEditBooking = () => { },
+  onStartExamination = () => { }
+}) => {
+  const [activeStatus, setActiveStatus] = useState('Confirmed');
+  const [bookings, setBookings] = useState([]);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [selectedBookingId, setSelectedBookingId] = useState(null);
+  const [showServiceSelection, setShowServiceSelection] = useState(false);
+  const [selectedDeliveryMethodId, setSelectedDeliveryMethodId] = useState(null);
+  const [cartItems, setCartItems] = useState([]); // Persist cart items
+  const [showBookingActions, setShowBookingActions] = useState(false);
+  const [isIncidental, setIsIncidental] = useState(false);
+    const [sdm, setSDM] = useState([]);
+    const [services, setServices] = useState([]);
+    const [loading, setLoading] = useState(0);
+    const [bookingDetail, setBookingDetail] = useState([]);
+
+    useEffect( () => {
+        if( window.sessionStorage.getItem("token") == null )
+            navigate("/Login");
+        FetchServices().then(results => { setServices( results ); setLoading( loading + 1 )} );
+        FetchSDM().then(results => { setSDM( results ); setLoading( loading + 1 ) } );
+        FetchBookingList().then(results => { 
+            setBookings( results ); setLoading( loading + 1 );
+        } );
+        FetchBookingDetail().then( results => {
+            setBookingDetail( results ); setLoading( loading + 1 ); console.log( results );
+        } );
+    }, [] );
+    if( loading == 0  ){
+        return <div> Loading </div>;
+    }
+
+  const handleCloseBookingActions = () => {
+    setShowBookingActions(false);
+  };
+  const handleChangeStatus = async (bookingId) => {
+    try {
+        const response = await fetch('http://localhost:5145/api/Booking/updatestatus', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 
+              Id: bookingId,
+            Message: 'Completed'
+          })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to change booking status');
+        }
+
+        const data = await response.text();
+        console.log('Status changed successfully:', data);
+        
+    } catch (error) {
+        console.error('Error changing status:', error);
+    }
+};
+  
+
+  // Handlers
+  const handleStartExamination = (bookingId, deliveryMethodId) => {
+    setSelectedBookingId(bookingId);
+    setSelectedDeliveryMethodId(deliveryMethodId);
+    setShowServiceSelection(true);
+  };
+
+  const handleCloseServiceSelection = () => {
+    setShowServiceSelection(false);
+    setSelectedBookingId(null);
+    setSelectedDeliveryMethodId(null);
+  };
+
+  const handleCartUpdate = (updatedCart) => {
+    setCartItems(updatedCart);
+  };
+
+  const handleConfirmBooking = (bookingId) => {
+    setBookings(prevBookings =>
+      prevBookings.map(booking =>
+        booking.BookingID === bookingId
+          ? { ...booking, Status: 'Confirmed' }
+          : booking
+      )
+    );
+  };
+
+  const handleFeedbackClick = (bookingId) => {
+    setSelectedBookingId(bookingId);
+    setShowFeedbackModal(true);
+  };
+
+  const handleCloseFeedback = () => {
+    setShowFeedbackModal(false);
+    setSelectedBookingId(null);
+  };
+  // Utility functions
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleString('vi-VN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND'
+    }).format(amount);
+  };
+
+  const renderBookingContent = (booking) => {
+    const isCustomerOrVet = userRole === 'Customer' || userRole === 'Veterinarian';
+
+    return (
+      <div>
+        <InfoRow label="Mã đơn" value={booking.BookingID} />
+
+        {isCustomerOrVet && (
+          <>
+            <InfoRow label="Ngày khám" value={formatDate(booking.BookingDate)} />
+            <InfoRow label="Bác sĩ" value="Nguyễn Văn A" />
+          </>
+        )}
+
+        <InfoRow
+          label="Hình thức"
+          value={ sdm.find( sdm => {
+            sdm == bookingDetail.find( detail => {
+                detail.BookingID == booking.BookingID
+            })
+          })  } />
+        <InfoRow label="Tổng tiền" value={formatCurrency(booking.TotalServiceCost)} />
+
+        {!isCustomerOrVet && (
+          <>
+            <InfoRow label="Địa chỉ" value={booking.BookingAddress} />
+            <InfoRow label="Ghi chú" value={booking.Note} />
+          </>
+        )}
+      </div>
+    );
+  };
+
+  const filteredBookings = activeStatus
+    ? bookings.filter(booking => booking.Status === activeStatus)
+    : bookings;
+
+  return (
+    <Box sx={{ position: 'relative' }}>
+      <div style={styles.container}>
+        <Typography variant="h4" style={styles.title}>
+          Danh sách đơn đặt
+        </Typography>
+
+        <div style={styles.statusButtonContainer}>
+          {ROLE_STATUS_CONFIG[userRole]?.map((status, index) => (
+            <button
+              key={index}
+              style={{
+                ...styles.statusButton,
+                ...(activeStatus === status.value ? styles.statusButtonActive : styles.statusButtonInactive)
+              }}
+              onClick={() => setActiveStatus(status.value)}
+            >
+              {status.label}
+            </button>
+          ))}
+        </div>
+
+        <div>
+          {filteredBookings.map(booking => (
+            <Card key={booking.BookingID} style={styles.bookingCard}>
+              <CardContent style={styles.cardContent}>
+                {renderBookingContent(booking)}
+
+                <div style={styles.actionButtonContainer}>
+                  {userRole === 'Customer' && booking.status === 'Completed' && booking.feedbackID === 'FB0' && (
+                    <button
+                      style={{ ...styles.actionButton, ...styles.primaryActionButton }}
+                      onClick={() => handleFeedbackClick(booking.BookingID)}
+                    >
+                      Đánh giá
+                    </button>
+                  )}
+
+                  {userRole === 'Staff' && booking.status === 'Pending' && (
+                    <>
+                      <button
+                        style={{ ...styles.actionButton, ...styles.primaryActionButton }}
+                        onClick={() => onEditBooking(booking.BookingID)}
+                      >
+                        Thay đổi thông tin
+                      </button>
+                      <button
+                        style={{ ...styles.actionButton, ...styles.secondaryActionButton }}
+                        onClick={() => handleConfirmBooking(booking.BookingID)}
+                      >
+                        Xác nhận đơn
+                      </button>
+                    </>
+                  )}
+
+                  {userRole === 'Veterinarian' && booking.status === 'Confirmed' && isIncidental == false && (
+
+
+                    <>
+                      <button onClick={() => {
+                        setShowBookingActions(true)
+                      }}
+                        style={{ ...styles.actionButton, ...styles.primaryActionButton }}>
+                        Khám
+                      </button>
+
+                      <BookingActions
+                        bookingId={booking.BookingID}
+                        isOpen={showBookingActions}
+                        onClose={handleCloseBookingActions}
+                        onSubmitSuccess={() => setIsIncidental(true)}
+                        selectedService={services.find(service =>
+                          service.ServiceID === bookingDetail.find(detail =>
+                            detail.BookingID === booking.BookingID
+                          ).ServiceID
+                        )}
+                        bookingDetail= {bookingDetail.find(detail => detail.BookingID === booking.BookingID)}
+                      />
+                    </>
+
+                  )}
+                  {userRole === 'Veterinarian' && booking.Status === 'Confirmed' && isIncidental != false && (
+                    <div>
+                      <button
+                        style={{ ...styles.actionButton, ...styles.primaryActionButton }}
+                        onClick={() => handleStartExamination(booking.BookingID, booking.ServiceDeliveryMethodID)}
+                      >
+                        Dịch vụ phát sinh
+                      </button>
+                      <button
+                        style={{ ...styles.actionButton, ...styles.primaryActionButton }}
+                        onClick={() => handleChangeStatus(booking.BookingID)}
+                      >
+                       Xác nhận đã khám xong
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Service Selection Dialog */}
+        {showServiceSelection && (
+          <ServiceSelection
+            bookingId={selectedBookingId}
+            services={services}
+            isOpen={showServiceSelection}
+            onClose={handleCloseServiceSelection}
+            deliveryMethodId={selectedDeliveryMethodId}
+          />
+        )}
+
+        {/* Feedback Modal */}
+        {showFeedbackModal && (
+          <FeedbackModal
+            bookingId={selectedBookingId}
+            onClose={handleCloseFeedback}
+          />
+        )}
+      </div>
+    </Box>
+  );
 };
 
 const styles = {
@@ -352,285 +676,6 @@ const styles = {
     width: '70%',
     fontWeight: 500,
   },
-};
-
-const InfoRow = ({ label, value }) => (
-  <div style={styles.infoRow}>
-    <Typography style={styles.infoLabel}>{label}</Typography>
-    <Typography style={styles.infoValue}>{value}</Typography>
-  </div>
-);
-
-const BookingList = ({
-  userRole = 'customer',
-  //userRole = 'veterinarian',
-  onFeedback = () => { },
-  onEditBooking = () => { },
-  onStartExamination = () => { }
-}) => {
-  const [activeStatus, setActiveStatus] = useState('Confirmed');
-  const [bookings, setBookings] = useState(SAMPLE_BOOKINGS);
-  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
-  const [selectedBookingId, setSelectedBookingId] = useState(null);
-  const [showServiceSelection, setShowServiceSelection] = useState(false);
-  const [selectedDeliveryMethodId, setSelectedDeliveryMethodId] = useState(null);
-  const [cartItems, setCartItems] = useState([]); // Persist cart items
-  const [showBookingActions, setShowBookingActions] = useState(false);
-  const [isIncidental, setIsIncidental] = useState(false);
-
-  const handleCloseBookingActions = () => {
-    setShowBookingActions(false);
-  };
-  const handleChangeStatus = async (bookingId) => {
-    try {
-        const response = await fetch('http://localhost:5145/api/Booking/updatestatus', {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ 
-              Id: bookingId,
-            Message: 'Completed'
-          })
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to change booking status');
-        }
-
-        const data = await response.text();
-        console.log('Status changed successfully:', data);
-        
-    } catch (error) {
-        console.error('Error changing status:', error);
-    }
-};
-  
-
-  // Handlers
-  const handleStartExamination = (bookingId, deliveryMethodId) => {
-    setSelectedBookingId(bookingId);
-    setSelectedDeliveryMethodId(deliveryMethodId);
-    setShowServiceSelection(true);
-  };
-
-  const handleCloseServiceSelection = () => {
-    setShowServiceSelection(false);
-    setSelectedBookingId(null);
-    setSelectedDeliveryMethodId(null);
-  };
-
-  const handleCartUpdate = (updatedCart) => {
-    setCartItems(updatedCart);
-  };
-
-  const handleConfirmBooking = (bookingId) => {
-    setBookings(prevBookings =>
-      prevBookings.map(booking =>
-        booking.id === bookingId
-          ? { ...booking, status: 'Confirmed' }
-          : booking
-      )
-    );
-  };
-
-  const handleFeedbackClick = (bookingId) => {
-    setSelectedBookingId(bookingId);
-    setShowFeedbackModal(true);
-  };
-
-  const handleCloseFeedback = () => {
-    setShowFeedbackModal(false);
-    setSelectedBookingId(null);
-  };
-
-  // Utility functions
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleString('vi-VN', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND'
-    }).format(amount);
-  };
-
-  const renderBookingContent = (booking) => {
-    const isCustomerOrVet = userRole === 'customer' || userRole === 'veterinarian';
-
-    return (
-      <div>
-        <InfoRow label="Mã đơn" value={booking.id} />
-
-        {isCustomerOrVet && (
-          <>
-            <InfoRow label="Ngày khám" value={formatDate(booking.bookingDate)} />
-            <InfoRow label="Bác sĩ" value="Nguyễn Văn A" />
-          </>
-        )}
-
-        <InfoRow
-          label="Hình thức"
-          value={DELIVERY_METHODS[booking.serviceDeliveryMethodId] || 'Home Visit'}
-        />
-        <InfoRow label="Tổng tiền" value={formatCurrency(booking.totalServiceCost)} />
-
-        {!isCustomerOrVet && (
-          <>
-            <InfoRow label="Địa chỉ" value={booking.address} />
-            <InfoRow label="Ghi chú" value={booking.note} />
-          </>
-        )}
-      </div>
-    );
-  };
-
-  const filteredBookings = activeStatus
-    ? bookings.filter(booking => booking.status === activeStatus)
-    : bookings;
-
-  return (
-    <Box sx={{ position: 'relative' }}>
-      <div style={styles.container}>
-        <Typography variant="h4" style={styles.title}>
-          Danh sách đơn đặt
-        </Typography>
-
-        <div style={styles.statusButtonContainer}>
-          {ROLE_STATUS_CONFIG[userRole]?.map((status, index) => (
-            <button
-              key={index}
-              style={{
-                ...styles.statusButton,
-                ...(activeStatus === status.value ? styles.statusButtonActive : styles.statusButtonInactive)
-              }}
-              onClick={() => setActiveStatus(status.value)}
-            >
-              {status.label}
-            </button>
-          ))}
-        </div>
-
-        <div>
-          {filteredBookings.map(booking => (
-            <Card key={booking.id} style={styles.bookingCard}>
-              <CardContent style={styles.cardContent}>
-                {renderBookingContent(booking)}
-
-                <div style={styles.actionButtonContainer}>
-                  {userRole === 'customer' && booking.status === 'Completed' && booking.feedbackID === 'FB0' && (
-                    <button
-                      style={{ ...styles.actionButton, ...styles.primaryActionButton }}
-                      onClick={() => handleFeedbackClick(booking.id)}
-                    >
-                      Đánh giá
-                    </button>
-                  )}
-
-                  {userRole === 'staff' && booking.status === 'Pending' && (
-                    <>
-                      <button
-                        style={{ ...styles.actionButton, ...styles.primaryActionButton }}
-                        onClick={() => onEditBooking(booking.id)}
-                      >
-                        Thay đổi thông tin
-                      </button>
-                      <button
-                        style={{ ...styles.actionButton, ...styles.secondaryActionButton }}
-                        onClick={() => handleConfirmBooking(booking.id)}
-                      >
-                        Xác nhận đơn
-                      </button>
-                    </>
-                  )}
-
-                  {userRole === 'veterinarian' && booking.status === 'Confirmed' && isIncidental == false && (
-
-
-                    <>
-                      <button onClick={() => {
-                        setShowBookingActions(true)
-                      }}
-                        style={{ ...styles.actionButton, ...styles.primaryActionButton }}>
-                        Khám
-                      </button>
-
-                      <BookingActions
-                        bookingId={booking.id}
-                        isOpen={showBookingActions}
-                        onClose={handleCloseBookingActions}
-                        onSubmitSuccess={() => setIsIncidental(true)}
-                        selectedService={SERVICES_DATA.find(service =>
-                          service.ServiceID === bookingDetail.find(detail =>
-                            detail.BookingID === booking.id
-                          ).ServiceID
-                        )}
-                        bookingDetail= {bookingDetail.find(detail => detail.BookingID === booking.id)}
-                      />
-                    </>
-
-                  )}
-                  {userRole === 'veterinarian' && booking.status === 'Confirmed' && isIncidental != false && (
-                    <div>
-                      <button
-                        style={{ ...styles.actionButton, ...styles.primaryActionButton }}
-                        onClick={() => handleStartExamination(booking.id, booking.serviceDeliveryMethodID)}
-                      >
-                        Dịch vụ phát sinh
-                      </button>
-                      <button
-                        style={{ ...styles.actionButton, ...styles.primaryActionButton }}
-                        onClick={() => handleChangeStatus(booking.id)}
-                      >
-                       Xác nhận đã khám xong
-                      </button>
-
-
-
-                    </div>
-
-
-
-                  )}
-
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-
-
-
-        {/* Service Selection Dialog */}
-        {showServiceSelection && (
-          <ServiceSelection
-            bookingId={selectedBookingId}
-            services={SERVICES_DATA}
-            isOpen={showServiceSelection}
-            onClose={handleCloseServiceSelection}
-            deliveryMethodId={selectedDeliveryMethodId}
-          />
-        )}
-
-
-        {/* Feedback Modal */}
-        {showFeedbackModal && (
-          <FeedbackModal
-            bookingId={selectedBookingId}
-            onClose={handleCloseFeedback}
-          />
-        )}
-      </div>
-    </Box>
-  );
 };
 
 export default BookingList;

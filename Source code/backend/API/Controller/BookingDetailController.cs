@@ -86,8 +86,18 @@ public class BookingDetailController : ControllerBase {
         }
     }
 
-    [HttpGet("byprofile")]
-    
+    [HttpGet("getbyprofile")]
+    public async Task<ActionResult<List<BookingDetail>>> GetByProfile(string id) {
+        try{
+            List<BookingDetail> list = await _unitOfWork.BookingDetailRepository.GetByProfileIDAsync(id);
+            if (list.Count == 0)
+                return NotFound("Cannot find booking detail associate with that profile");
+            return list;
+        } catch ( Exception ex ){
+            Console.WriteLine( ex );
+            return StatusCode( StatusCodes.Status500InternalServerError, ex.Message );
+        }
+    }
 
     [HttpPost("add")]
     public async Task<ActionResult<BookingDetail?>> AddBookingDetail(BookingDetail info) {
