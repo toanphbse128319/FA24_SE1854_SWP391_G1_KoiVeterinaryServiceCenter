@@ -35,11 +35,32 @@ function ManageLanding() {
     }
   };
 
-  const handleSave = () => {
-    // Save logic here (e.g., save to local storage or API)
-    console.log("Selected Services for Banner:", selectedServices);
-    alert("Services saved!");
+  const handleSave = async () => {
+    try {
+      const updatePromises = selectedServices.map((serviceID) => 
+        FetchAPI({
+          endpoint: `/service/${serviceID}/status`,
+          method: "PUT",
+          body: JSON.stringify("isSelected"),
+          headers: { "Content-Type": "application/json" },
+        })
+      );
+  
+      const results = await Promise.all(updatePromises);
+      const allSuccessful = results.every((res) => res.ok);
+  
+      if (allSuccessful) {
+        alert("All selected services updated successfully!");
+        console.log("Selected Services for Banner:", selectedServices);
+      } else {
+        alert("Some updates failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error updating service status:", error);
+      alert("An error occurred while saving. Please try again.");
+    }
   };
+  
 
   if (loading) {
     return <div>Loading...</div>;
