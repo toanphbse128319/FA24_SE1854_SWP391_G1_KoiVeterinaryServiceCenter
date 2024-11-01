@@ -19,6 +19,7 @@ import News from "./Components/News.jsx";
 import PaymentStatusPage from "./pages/PaymentConfirmation.jsx";
 import Test from "./Components/BookingList.jsx";
 import MyProfile from "./pages/MyProfile.jsx";
+import StaffManage from "./Components/Staff/StaffManage.jsx";
 import {
   BrowserRouter,
   createBrowserRouter,
@@ -69,6 +70,7 @@ createRoot(document.getElementById("root")).render(
         <Route path="/temp" element={<BookingList />} />
         <Route path="/bookinglist" element={<BookingList />} />
         <Route path="/ManageLanding" element={<ManageLanding />} />
+        <Route path="/StaffManage" element={<StaffManage />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>

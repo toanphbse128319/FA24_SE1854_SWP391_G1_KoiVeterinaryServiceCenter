@@ -129,7 +129,7 @@ function Login() {
           console.log(role);
           
           if (role === "Staff") {
-            navigate("/ManageLanding");
+            navigate("/StaffManage");
           } else {
             navigate("/");
           }
