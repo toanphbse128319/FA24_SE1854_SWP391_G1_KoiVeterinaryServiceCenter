@@ -28,6 +28,7 @@ const MyProfile = () => {
     const gender = sessionStorage.getItem("gender");
     const dob = sessionStorage.getItem("dob");
 
+      console.log(dob);
     setUserData({
       name: `${firstName} ${lastName}`,
       email: email || "",
