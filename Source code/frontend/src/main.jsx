@@ -34,6 +34,7 @@ import FishPoolServiceSelection from "./Components/BookingDetail.jsx";
 //
 import BookingList from "./Components/BookingList.jsx";
 import StaffPage from "./pages/StaffPage.jsx";
+import ManageLanding from "./Components/Staff/ManageLanding.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -66,6 +67,7 @@ createRoot(document.getElementById("root")).render(
         <Route path="/PaymentNotice" element={<PaymentNotice />} />
         <Route path="/temp" element={<BookingList />} />
         <Route path="/bookinglist" element={<BookingList />} />
+        <Route path="/ManageLanding" element={<ManageLanding />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>

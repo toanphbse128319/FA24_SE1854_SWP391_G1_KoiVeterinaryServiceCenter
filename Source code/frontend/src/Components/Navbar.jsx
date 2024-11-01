@@ -119,7 +119,7 @@ export default function Example( {allServices, sdm} ) {
             onClick={handleGoAboutUs}
             className="text-sm font-semibold leading-6 text-gray-900"
           >
-            Aboutu Us
+            About Us
           </button>
         </PopoverGroup>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
@@ -190,7 +190,7 @@ export default function Example( {allServices, sdm} ) {
                         href={service.ServiceID}
                         className="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                       >
-                        {service.name}
+                        {service.Name}
                       </DisclosureButton>
                     ))}
                   </DisclosurePanel>
