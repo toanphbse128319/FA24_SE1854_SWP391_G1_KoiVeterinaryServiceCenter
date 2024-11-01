@@ -70,6 +70,22 @@ public class AccountRepository : GenericRepository<Account>
         return Employee.Address;
     }
 
+    public DateOnly? GetBirthday( string accountID )
+    {
+        CustomerRepository CustomerRepository = new CustomerRepository(_context);
+        Customer? customer = CustomerRepository.SearchByAccountID(accountID);
+        if( customer != null ){
+            return customer.BirthDay;
+        }
+        EmployeeRepository EmployeeRepository = new EmployeeRepository(_context);
+        Employee? Employee = EmployeeRepository.SearchByAccountID(accountID);
+        if (Employee == null)
+        {
+            return null;
+        }
+        return Employee.BirthDay;
+    }
+
     public string? GetID( string accountID )
     {
         CustomerRepository CustomerRepository = new CustomerRepository(_context);
@@ -113,11 +129,14 @@ public class AccountRepository : GenericRepository<Account>
         {
             return "Cannot find profile associate with this account";
         }
-        Token token = new Token();
-        RoleRepository RoleRepository = new RoleRepository(_context);
         string? address = GetAddress( found.AccountID );
         if( address == null )
             return "Cannot find profile associate with this account";
+        DateOnly? dob = GetBirthday( found.AccountID );
+        if( dob == null )
+            return "Cannot find profile associate with this account";
+        Token token = new Token();
+        RoleRepository RoleRepository = new RoleRepository(_context);
         var claims = new List<Claim>{
             new Claim("Unique", Guid.NewGuid().ToString()),
             new Claim("ID", id),
@@ -127,6 +146,7 @@ public class AccountRepository : GenericRepository<Account>
             new Claim("LastName", lastname),
             new Claim("PhoneNumber", found.PhoneNumber),
             new Claim("Address", address),
+            new Claim("Birthday", dob.ToString()!)
         };
         token.Claims = claims;
         return token.GenerateToken(4);
