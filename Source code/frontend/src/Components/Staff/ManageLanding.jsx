@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { FetchAPI } from "../../Helper/Utilities"; // Giả sử bạn đã có hàm FetchAPI để gọi API
 
-function filterSelectedService({services}){
-    let prioritzizedFlag = import.meta.env.VITE_PRIORITIZED_FLAG;
-    return services.filter( service => service.Status.includes( " " + prioritzizedFlag ) );
+function filterSelectedService({ services }) {
+  let prioritzizedFlag = import.meta.env.VITE_PRIORITIZED_FLAG;
+  return services.filter((service) =>
+    service.Status.includes(" " + prioritzizedFlag)
+  );
 }
 
 function ManageLanding() {
@@ -20,7 +22,7 @@ function ManageLanding() {
 
         let json = await response.json();
         SetServices(json);
-        setSelectedServices( filterSelectedService({ services: json }) );
+        setSelectedServices(filterSelectedService({ services: json }));
         return true;
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -29,52 +31,54 @@ function ManageLanding() {
     GetData().then((result) => SetLoading(!result));
   }, []);
 
-  const toggleServiceSelection = (service) => {
-      let prioritzizedFlag = import.meta.env.VITE_PRIORITIZED_FLAG;
-      if( prioritzizedFlag == null ){
-        console.error("missing VITE_PRIORITIZED_FLAG from env");
-      }
-    if (selectedServices.includes(service)) {
-      setSelectedServices(selectedServices.filter((temp) => temp !== service));
-        service.Status = service.Status.replace(" " + prioritzizedFlag, "");
-        console.log( service );
+  // Thay đổi toggleServiceSelection không cần cập nhật Status trực tiếp
+const toggleServiceSelection = (service) => {
+  if (selectedServices.includes(service)) {
+    setSelectedServices(selectedServices.filter((temp) => temp !== service));
+  } else {
+    if (selectedServices.length < 4) {
+      setSelectedServices([...selectedServices, service]);
     } else {
-      if (selectedServices.length < 4) {
-        setSelectedServices([...selectedServices, service]);
-        service.Status += (" " + prioritzizedFlag);
-          console.log( service );
-      } else {
-        alert("You can only select 4 services.");
-      }
+      alert("You can only select 4 services.");
     }
-  };
+  }
+};
 
-  const handleSave = async () => {
-    try {
-      const updatePromises = selectedServices.map( service => 
-        FetchAPI({
-          endpoint: `/service`,
-          method: "PUT",
-          body: service,
-          headers: { "Content-Type": "application/json" },
-        })
+// Sửa đổi handleSave để cập nhật status cho tất cả dịch vụ
+const handleSave = async () => {
+  try {
+    const updatePromises = services.map((service) => {
+      // Cập nhật Status dựa trên dịch vụ có được chọn hay không
+      service.Status = selectedServices.includes(service) ? "isSelected" : "1";
+
+      return FetchAPI({
+        endpoint: `/service`,
+        method: "PUT",
+        body: service,
+        headers: { "Content-Type": "application/json" },
+      });
+    });
+
+    const results = await Promise.all(updatePromises);
+    const allSuccessful = results.every((res) => res.ok);
+
+    if (allSuccessful) {
+      localStorage.setItem(
+        "selectedServices",
+        JSON.stringify(selectedServices)
       );
-  
-      const results = await Promise.all(updatePromises);
-      const allSuccessful = results.every((res) => res.ok);
-  
-      if (allSuccessful) {
-        alert("All selected services updated successfully!");
-        console.log("Selected Services for Banner:", selectedServices);
-      } else {
-        alert("Some updates failed. Please try again.");
-      }
-    } catch (error) {
-      console.error("Error updating service status:", error);
-      alert("An error occurred while saving. Please try again.");
+
+      alert("All selected services updated successfully!");
+      console.log("Selected Services for Banner:", selectedServices);
+    } else {
+      alert("Some updates failed. Please try again.");
     }
-  };
-  
+  } catch (error) {
+    console.error("Error updating service status:", error);
+    alert("An error occurred while saving. Please try again.");
+  }
+};
+
 
   if (loading) {
     return <div>Loading...</div>;
@@ -118,7 +122,12 @@ function ManageLanding() {
 
         <button
           onClick={handleSave}
-          className="mt-4 bg-blue-500 text-white py-2 px-4 rounded"
+          disabled={selectedServices.length < 4}
+          className={`mt-4 py-2 px-4 rounded text-white ${
+            selectedServices.length < 4
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-500 hover:bg-blue-600"
+          }`}
         >
           Save Selection
         </button>
