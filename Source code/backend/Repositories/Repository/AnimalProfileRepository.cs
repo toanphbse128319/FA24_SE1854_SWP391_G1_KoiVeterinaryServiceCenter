@@ -44,7 +44,6 @@ namespace Repositories.Repository
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex);
-                    Console.WriteLine($"Error saving AnimalProfile: {ex.Message}");
                 }
             }
 

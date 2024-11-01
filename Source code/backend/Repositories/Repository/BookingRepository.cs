@@ -56,7 +56,6 @@ public class BookingRepository : GenericRepository<Booking>
         int slotNo = slotManager.SlotByTime(bookingDate.Hour);
         if( slotNo == 0 )
             return "Outside working hour";
-        Console.WriteLine(schedule.ScheduleID + ", " + slotNo);
         slot = await slotManager.SearchSpecificSlotAsync(schedule.ScheduleID, slotNo);
         if( slot == null )
             return "Cannot get the schedule";
@@ -69,7 +68,6 @@ public class BookingRepository : GenericRepository<Booking>
     }
 
     public bool checkValidPrice( Service service, Decimal total, int number ){
-        Console.WriteLine(service.Price * number + ", total: " + total);
         if( service.Price * number > total )
             return false;
         return true;
