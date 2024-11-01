@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { FetchAPI } from "../../Helper/Utilities"; // Giả sử bạn đã có hàm FetchAPI để gọi API
 
+function filterSelectedService({services}){
+    let prioritzizedFlag = import.meta.env.VITE_PRIORITIZED_FLAG;
+    return services.filter( service => service.Status.includes( " " + prioritzizedFlag ) );
+}
+
 function ManageLanding() {
   const [services, SetServices] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
@@ -15,6 +20,7 @@ function ManageLanding() {
 
         let json = await response.json();
         SetServices(json);
+        setSelectedServices( filterSelectedService({ services: json }) );
         return true;
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -23,12 +29,20 @@ function ManageLanding() {
     GetData().then((result) => SetLoading(!result));
   }, []);
 
-  const toggleServiceSelection = (serviceID) => {
-    if (selectedServices.includes(serviceID)) {
-      setSelectedServices(selectedServices.filter((id) => id !== serviceID));
+  const toggleServiceSelection = (service) => {
+      let prioritzizedFlag = import.meta.env.VITE_PRIORITIZED_FLAG;
+      if( prioritzizedFlag == null ){
+        console.error("missing VITE_PRIORITIZED_FLAG from env");
+      }
+    if (selectedServices.includes(service)) {
+      setSelectedServices(selectedServices.filter((temp) => temp !== service));
+        service.Status = service.Status.replace(" " + prioritzizedFlag, "");
+        console.log( service );
     } else {
       if (selectedServices.length < 4) {
-        setSelectedServices([...selectedServices, serviceID]);
+        setSelectedServices([...selectedServices, service]);
+        service.Status += (" " + prioritzizedFlag);
+          console.log( service );
       } else {
         alert("You can only select 4 services.");
       }
@@ -37,11 +51,11 @@ function ManageLanding() {
 
   const handleSave = async () => {
     try {
-      const updatePromises = selectedServices.map((serviceID) => 
+      const updatePromises = selectedServices.map( service => 
         FetchAPI({
-          endpoint: `/service/${serviceID}/status`,
+          endpoint: `/service`,
           method: "PUT",
-          body: JSON.stringify("isSelected"),
+          body: service,
           headers: { "Content-Type": "application/json" },
         })
       );
@@ -93,8 +107,8 @@ function ManageLanding() {
             >
               <input
                 type="checkbox"
-                checked={selectedServices.includes(service.ServiceID)}
-                onChange={() => toggleServiceSelection(service.ServiceID)}
+                checked={selectedServices.includes(service)}
+                onChange={() => toggleServiceSelection(service)}
                 className="mr-2"
               />
               <h2 className="text-xl font-bold">{service.Name}</h2>
