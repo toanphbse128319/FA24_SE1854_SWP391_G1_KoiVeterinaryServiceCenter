@@ -3,6 +3,8 @@ import { FetchAPI } from "../../Helper/Utilities"; // Giả sử bạn đã có 
 
 function filterSelectedService({services}){
     let prioritzizedFlag = import.meta.env.VITE_PRIORITIZED_FLAG;
+    if( prioritzizedFlag == null )
+        console.error("Missing VITE_PRIORITIZED_FLAG from .env");
     return services.filter( service => service.Status.includes( " " + prioritzizedFlag ) );
 }
 

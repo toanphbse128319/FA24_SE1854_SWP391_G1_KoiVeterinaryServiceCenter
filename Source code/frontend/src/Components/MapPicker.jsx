@@ -14,6 +14,8 @@ export default function Map( {setDistance}){
     let lat = useRef(10.846653659695292);
     const zoom = 18;
     const APIKey = import.meta.env.VITE_GEOAPIFY_APIKEY;
+    if( APIKey == null )
+        console.error("Missing VITE_GEOAPIFY_APIKEY from .env");
     const url = "https://maps.geoapify.com/v1/styles/osm-carto/style.json?";
     const style = "osm-bright";
 
@@ -63,6 +65,9 @@ export async function GetGeoLocation( {address} ){
         return [0.0, 0.0];
     }
     const APIKey = import.meta.env.VITE_GEOAPIFY_APIKEY;
+    if( APIKey == null )
+        console.error("Missing VITE_GEOAPIFY_APIKEY from .env");
+
     let url = `https://api.geoapify.com/v1/geocode/search?text=${address}&filter=countrycode:vn&limit=1&apiKey=${APIKey}`    
     const response = await fetch(url).catch( error => console.error(error) );
     if( !response.ok )
@@ -75,8 +80,15 @@ export async function CalculateDistance( {lng, lat} ){
     if( lng == 0.0 || lat == 0.0 )
         return 0;
     const APIKey = import.meta.env.VITE_GEOAPIFY_APIKEY;
+    if( APIKey == null )
+        console.error("Missing VITE_GEOAPIFY_APIKEY from .env");
     const currentLng = import.meta.env.VITE_HEADQUARTER_LNG;
+    if( currentLng == null )
+        console.error("Missing VITE_HEADQUARTER_LNG from .env");
     const currentLat = import.meta.env.VITE_HEADQUARTER_LAT;
+    if( currentLat == null )
+        console.error("Missing VITE_HEADQUARTER_LAT from .env");
+
     let url = `https://api.geoapify.com/v1/routing?waypoints=${currentLat},${currentLng}|${lat},${lng}&mode=medium_truck&apiKey=${APIKey}`    
     const response = await fetch(url).catch( error => console.error(error) );
     if( !response.ok )
