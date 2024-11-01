@@ -40,7 +40,6 @@ async function CheckLogin({ info, password ,setErrors }) {
         }
         const data = await response.text();
         const decoded = jwtDecode(data);
-        console.log(decoded); // In thông tin giải mã
         window.sessionStorage.setItem('token', data); // Store token in session storage
         window.sessionStorage.setItem('firstname', (decoded.FirstName)); // Store first name in session storage
         window.sessionStorage.setItem('lastname', (decoded.LastName)); // Store last name in session storage

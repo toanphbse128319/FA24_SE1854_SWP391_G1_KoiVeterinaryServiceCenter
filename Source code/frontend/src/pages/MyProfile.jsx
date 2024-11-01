@@ -15,7 +15,7 @@ const MyProfile = () => {
     dob: "",
   });
 
-  const [isEdit, setIsEdit] = useState(true);
+  const [isEdit, setIsEdit] = useState(false);
   const navigate = useNavigate();
 
   // Lấy dữ liệu từ sessionStorage khi component được render
@@ -26,9 +26,7 @@ const MyProfile = () => {
     const phone = sessionStorage.getItem("phonenumber");
     const address = sessionStorage.getItem("address");
     const gender = sessionStorage.getItem("gender");
-    
-
-      console.log(dob);
+    const dob = sessionStorage.getItem("dob");
     setUserData({
       name: `${firstName} ${lastName}`,
       email: email || "",
