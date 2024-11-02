@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
 
 using Repositories.Model;
 using Repositories.Objects;
@@ -54,7 +55,12 @@ namespace Repositories.Repository
             int count = 0;
             try
             {
-                
+                BookingRepository bookingrepo = new BookingRepository(_context);
+                Booking booking = await bookingrepo.GetByIdAsync(exam.BookingDetail[0].BookingID);
+                booking.IncidentalFish += exam.AnimalProfile.Count;
+                booking.IncidentalPool += exam.PoolProfile.Count;
+                if (await bookingrepo.UpdateAsync(booking) == 0)
+                    return 0;
                 foreach (var item in exam.BookingDetail)
                 {
                     item.BookingDetailID = GetNextID("BD");
