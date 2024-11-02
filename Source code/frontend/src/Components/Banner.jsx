@@ -1,32 +1,32 @@
 import React from "react"; 
 import { useNavigate } from "react-router-dom";
 
-function filterServices( {allServices, sdm} ){
-    let services = [];
-    let atHome = sdm.filter(method => method.Name == "Tại nhà");
-    let atHomeID = null;
-    if( atHome != null && atHome.length > 0 )
-        atHomeID = atHome[0].ServiceDeliveryMethodID;
-    allServices.forEach( temp => {
-        // ... ở đây được coi là shallow copy, là kiểu chỉ đưa giá trị nhưng không tham chiếu
-        let service = { ... temp };
-        if( service.Name == "Điều trị cá koi" ){
-            if( atHomeID != null && service.ServiceDeliveryMethodID == atHomeID )
-                service.Name = service.Name + " tại nhà";
-            else if( atHomeID != null ) service.Name = service.Name + " tại trung tâm";
-            services.push( service );
-        }
-        else if( service.Name == "Tư vấn sức khỏe cá koi" ){
-            //service.Name = service.Name + " trực tuyến";
-            services.push( service );
-        }
-        else if( service.Name == "Kiểm tra hồ cá" ){
-            service.Name = service.Name + " tại nhà"
-            services.push( service );
-        }
-    })
-    return services;
+// Sửa đổi filterServices để hiển thị tất cả dịch vụ có Status là "isSelected"
+function filterServices({ allServices, sdm }) {
+  let services = [];
+  let atHome = sdm.filter((method) => method.Name === "Tại nhà");
+  let atHomeID = null;
+  if (atHome != null && atHome.length > 0) atHomeID = atHome[0].ServiceDeliveryMethodID;
+
+  allServices.forEach((temp) => {
+      let service = { ...temp };
+      
+      // Kiểm tra nếu Status của dịch vụ là "isSelected"
+      if (service.Status === "isSelected") {
+          // Xử lý logic bổ sung nếu cần cho các tên đặc biệt
+          if (service.Name === "Điều trị cá koi") {
+              service.Name += atHomeID != null && service.ServiceDeliveryMethodID === atHomeID ? " tại nhà" : " tại trung tâm";
+          } else if (service.Name === "Kiểm tra hồ cá") {
+              service.Name += " tại nhà";
+          }
+          
+          services.push(service); // Thêm tất cả dịch vụ có Status là "isSelected"
+      }
+  });
+  
+  return services;
 }
+
 
 function Banner( { allServices, sdm }) {
   let navigate = useNavigate();

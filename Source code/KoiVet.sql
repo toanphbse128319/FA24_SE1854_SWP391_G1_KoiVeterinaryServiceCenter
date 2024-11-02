@@ -26,14 +26,14 @@ Create table Account(
     Avatar nvarchar(500),
     Password nvarchar(50) NOT NULL,
     Status nvarchar(50) NOT NULL,
-	isActive bit not null,
+	IsActive bit not null,
 )
 
 CREATE TABLE Customer(
     CustomerID nvarchar(20) PRIMARY KEY,
     AccountID nvarchar(30) FOREIGN KEY REFERENCES Account(AccountID),
-    Firstname nvarchar(20) NOT NULL,
-    Lastname nvarchar(20),
+    FirstName nvarchar(20) NOT NULL,
+    LastName nvarchar(20),
     Sex bit,
     Birthday date,
     Address nvarchar(100) NOT NULL,
@@ -45,8 +45,8 @@ CREATE TABLE Employee(
     EmployeeID nvarchar(20) PRIMARY KEY,
 	AccountID nvarchar(30) FOREIGN KEY REFERENCES Account(AccountID),
     RoleID nvarchar(20) FOREIGN KEY REFERENCES Role(RoleID) NOT NULL,
-	Firstname nvarchar(20) NOT NULL,
-    Lastname nvarchar(20) NOT NULL,
+	FirstName nvarchar(20) NOT NULL,
+    LastName nvarchar(20) NOT NULL,
     Sex bit,
     Birthday date,
     Address nvarchar(100) NOT NULL,
@@ -216,14 +216,14 @@ VALUES
 GO
 
 -- Insert sample data for Customer
-INSERT INTO Account (AccountID, PhoneNumber, Email, RoleID, Avatar, Password, Status, isActive )
+INSERT INTO Account (AccountID, PhoneNumber, Email, RoleID, Avatar, Password, Status, IsActive )
 VALUES
 ('A0', '0000000000', 'null', 'R0', 'null', '', 'Default', 0),
 ('A1', '0123456789', 'phbtoan9185@gmail.com', 'R2', 'avatar1.jpg', 'caniskip', 'Normal', 1),
 ('A2', '0987654321', 'admin2@gmail.com', 'R2', 'avatar2.jpg', 'admin', 'Normal', 1),
-('A3', '0111111111', 'arandomvet@gmail.com', 'R2', 'avatar3.jpg', 'vet', 'Normal', 1),
-('A4', '0121111111', 'manager2@gmail.com', 'R2', 'avatar4.jpg', 'manager', 'Normal', 1),
-('A5', '0123212313', 'Test@gmail.com', 'R2', 'avatar5.jpg', 'test', 'Normal', 1),
+('A3', '0111111111', 'arandomvet@gmail.com', 'R4', 'avatar3.jpg', 'vet', 'Normal', 1),
+('A4', '0121111111', 'manager2@gmail.com', 'R4', 'avatar4.jpg', 'manager', 'Normal', 1),
+('A5', '0123212313', 'Test@gmail.com', 'R4', 'avatar5.jpg', 'test12345', 'Normal', 1),
 ('A6', '8765785746', 'longtnhse173174@fpt.edu.vn', 'R1', 'avatar1.jpg', 'tangdeptrai', 'Normal', 1),
 ('A7', '0835377623', 'vet2@gmail.com', 'R3', 'avatar2.jpg', 'vettemp', 'Normal', 1),
 ('A8', '1122334455', 'Manager@gmail.com', 'R3', 'avatar3.jpg', 'vet', 'Normal', 1),
@@ -232,7 +232,7 @@ VALUES
 ('A11', '9987654321', 'decsr@gmail.com', 'R3', 'avatar5.jpg', 'vet', 'Normal', 1);
 GO
 
-INSERT INTO Customer (CustomerID, Firstname, Lastname, Sex, Birthday, Address, AccountID, Status) 
+INSERT INTO Customer (CustomerID, FirstName, LastName, Sex, Birthday, Address, AccountID, Status) 
 VALUES 
 ('C1', 'Vy', 'Nguyen', 1, '2004-11-20', '250 vo van hat', 'A1', 1),
 ('C2', 'Jane', 'Smith', 0, '1985-03-15', '456 Maple Ave', 'A2', 1),
@@ -242,7 +242,7 @@ VALUES
 GO
 
 -- Insert sample data for Employee
-INSERT INTO Employee (EmployeeID, AccountID, RoleID, Firstname, Lastname, Sex, Birthday, Address, Status) 
+INSERT INTO Employee (EmployeeID, AccountID, RoleID, FirstName, LastName, Sex, Birthday, Address, Status) 
 VALUES 
 ('E0', 'A0', 'R0', 'Null', 'Null', 1, '2003-01-02', 'Null', 1),
 ('E1', 'A6', 'R1', 'Duong', 'Tang', 1, '2003-01-02', 'VinHome Q9', 1),

@@ -16,7 +16,9 @@ public class Token
     {
         _issuer = Configuration.GetConfiguration()["Jwt:Issuer"];
         _audience = Configuration.GetConfiguration()["Jwt:Audience"];
-        _key = Encoding.ASCII.GetBytes(Configuration.GetConfiguration()["Jwt:Key"] ?? string.Empty);
+        _key = Encoding.ASCII.GetBytes(Configuration.GetConfiguration()["Jwt:Key"]);
+        if( _issuer == null || _audience == null || _key == null )
+            throw new Exception("Missing Configuration from appsettiong.json");
         _claims = new List<Claim>();
     }
 

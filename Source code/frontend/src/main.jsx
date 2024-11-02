@@ -19,6 +19,7 @@ import News from "./Components/News.jsx";
 import PaymentStatusPage from "./pages/PaymentConfirmation.jsx";
 import Test from "./Components/BookingList.jsx";
 import MyProfile from "./pages/MyProfile.jsx";
+import StaffManage from "./Components/Staff/StaffManage.jsx";
 import {
   BrowserRouter,
   createBrowserRouter,
@@ -34,6 +35,7 @@ import FishPoolServiceSelection from "./Components/BookingDetail.jsx";
 //
 import BookingList from "./Components/BookingList.jsx";
 import StaffPage from "./pages/StaffPage.jsx";
+import ManageLanding from "./Components/Staff/ManageLanding.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -67,6 +69,8 @@ createRoot(document.getElementById("root")).render(
         <Route path="/PaymentNotice" element={<PaymentNotice />} />
         <Route path="/temp" element={<BookingList />} />
         <Route path="/bookinglist" element={<BookingList />} />
+        <Route path="/ManageLanding" element={<ManageLanding />} />
+        <Route path="/StaffManage" element={<StaffManage />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>

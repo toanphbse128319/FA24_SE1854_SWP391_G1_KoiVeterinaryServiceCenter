@@ -8,5 +8,12 @@ public class ServiceDeliveryMethodRepository : GenericRepository<ServiceDelivery
     {
     }
 
+    public async Task<bool> ValidSDMAsync( string sdmID ){
+        ServiceDeliveryMethod temp = await base.GetByIdAsync( sdmID );
+        if( temp == null )
+            return false;
+        return true;
+
+    }
 }
 

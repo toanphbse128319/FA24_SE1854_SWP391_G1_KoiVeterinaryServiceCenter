@@ -18,11 +18,15 @@ public class VnPay
         _tmnCode = config["VnPay:vnp_TmnCode"];
         _hashSecret = config["VnPay:vnp_HashSecret"];
         _vnpVersion = config["VnPay:vnp_Version"];
+        _returnURL = config["VnPay:vnp_returnUrl"];
+        if( _vnpUrl == null || _tmnCode == null || 
+            _hashSecret == null || _vnpVersion == null ||
+            _returnURL == null )
+            throw new Exception("Missing configuration from appsetting.json");
         if (bankCode == null)
             _bankCode = "VNBANK";
         else
             _bankCode = bankCode;
-        _returnURL = config["VnPay:vnp_returnUrl"];
     }
 
     public string PayUrl(Decimal amount, string orderID, string customerAddress, string locale, string transferInfo)

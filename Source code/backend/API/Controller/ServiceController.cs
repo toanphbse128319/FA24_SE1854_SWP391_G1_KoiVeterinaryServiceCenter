@@ -42,4 +42,21 @@ public class ServiceController : ControllerBase
             return StatusCode( StatusCodes.Status500InternalServerError, ex.Message );
         }
     }
+
+    //This will automatically create or update new service depend on the data, if there's ServiceID available,
+    //Then this will update, and add if there's none.
+    [HttpPut]
+    public async Task<ActionResult<Service>> AddOrUpdateService(Service service){
+        try{
+            string result = await _unitOfWork.ServiceRepository.AddOrUpdateService( service );
+            if( result.ToLower().Contains("cannot") )
+                return StatusCode( StatusCodes.Status400BadRequest, result );
+            if( result.ToLower().Contains("failed") )
+                return StatusCode( StatusCodes.Status406NotAcceptable, result );
+            return Ok( result );
+        } catch ( Exception ex ){
+            Console.WriteLine( ex );
+            return StatusCode( StatusCodes.Status500InternalServerError, ex.Message );
+        }
+    }
 }

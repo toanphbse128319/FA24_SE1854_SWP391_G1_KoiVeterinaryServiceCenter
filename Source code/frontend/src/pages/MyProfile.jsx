@@ -15,7 +15,7 @@ const MyProfile = () => {
     dob: "",
   });
 
-  const [isEdit, setIsEdit] = useState(true);
+  const [isEdit, setIsEdit] = useState(false);
   const navigate = useNavigate();
 
   // Lấy dữ liệu từ sessionStorage khi component được render
@@ -27,7 +27,6 @@ const MyProfile = () => {
     const address = sessionStorage.getItem("address");
     const gender = sessionStorage.getItem("gender");
     const dob = sessionStorage.getItem("dob");
-
     setUserData({
       name: `${firstName} ${lastName}`,
       email: email || "",
@@ -37,7 +36,7 @@ const MyProfile = () => {
         line2: "",
       },
       gender: gender || "Male",
-      dob: dob || "",
+      
     });
   }, []);
 
@@ -137,19 +136,8 @@ const MyProfile = () => {
               <p className="text-gray-700">{userData.gender}</p>
             )}
 
-            <p>Birthday:</p>
-            {isEdit ? (
-              <input
-                type="date"
-                onChange={(e) =>
-                  setUserData((prev) => ({ ...prev, dob: e.target.value }))
-                }
-                value={userData.dob}
-                className="p-2 border rounded w-full"
-              />
-            ) : (
-              <p className="text-gray-700">{userData.dob}</p>
-            )}
+           
+            
           </div>
         </div>
         <div>
