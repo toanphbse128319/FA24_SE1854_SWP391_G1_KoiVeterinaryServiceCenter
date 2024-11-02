@@ -1,8 +1,8 @@
 // StaffManage.jsx
 import React, { useState } from "react";
 import ManageLanding from "./ManageLanding";
-import ManageUser from "./ManageUser";
-import AssignVet from "./AssignVet";
+import ManageAccount from "./ManageAccount";
+import AssignVet from "../Staff/AssignVet";
 import App from "../../App";
 import { Navigate, useNavigate } from "react-router-dom";
 import { LogOut } from "../../Helper/Utilities";
@@ -18,8 +18,8 @@ const StaffManage = () => {
     switch (activePage) {
       case "ManageLanding":
         return <ManageLanding />;
-      case "ManageUser":
-        return <ManageUser />;
+      case "ManageAccount":
+        return <ManageAccount />;
       case "AssignVet":
         return <AssignVet />;
       case "Logout":
@@ -47,13 +47,13 @@ const StaffManage = () => {
           </button>
           <button
             className={`w-full text-left p-3 rounded-lg transition-colors font-medium ${
-              activePage === "ManageUser"
+              activePage === "ManageAccount"
                 ? "bg-blue-600"
                 : "bg-gray-700 hover:bg-blue-500"
             }`}
-            onClick={() => setActivePage("ManageUser")}
+            onClick={() => setActivePage("ManageAccount")}
           >
-            Manage User
+            Manage Account
           </button>
           <button
             className={`w-full text-left p-3 rounded-lg transition-colors font-medium ${

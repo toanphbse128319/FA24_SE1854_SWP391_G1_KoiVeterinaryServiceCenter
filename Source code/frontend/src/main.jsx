@@ -19,7 +19,10 @@ import News from "./Components/News.jsx";
 import PaymentStatusPage from "./pages/PaymentConfirmation.jsx";
 import Test from "./Components/BookingList.jsx";
 import MyProfile from "./pages/MyProfile.jsx";
-import StaffManage from "./Components/Staff/StaffManage.jsx";
+import StaffManage from "./Components/Manager/StaffManage.jsx"
+import PageTransition from "./Components/PageTransition.tsx";
+import PaymentNotice from "./Components/PaymentNotice.jsx";
+import ManageAccount from "./Components/Manager/ManageAccount.jsx";
 import {
   BrowserRouter,
   createBrowserRouter,
@@ -27,15 +30,14 @@ import {
   RouterProvider,
   Routes,
 } from "react-router-dom";
-import PageTransition from "./Components/PageTransition.tsx";
-import PaymentNotice from "./Components/PaymentNotice.jsx";
+
 
 //add to booking detail
 import FishPoolServiceSelection from "./Components/BookingDetail.jsx";
 //
 import BookingList from "./Components/BookingList.jsx";
 import StaffPage from "./pages/StaffPage.jsx";
-import ManageLanding from "./Components/Staff/ManageLanding.jsx";
+import ManageLanding from "./Components/Manager/ManageLanding.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -71,6 +73,8 @@ createRoot(document.getElementById("root")).render(
         <Route path="/bookinglist" element={<BookingList />} />
         <Route path="/ManageLanding" element={<ManageLanding />} />
         <Route path="/StaffManage" element={<StaffManage />} />
+       
+
       </Routes>
     </BrowserRouter>
   </StrictMode>
