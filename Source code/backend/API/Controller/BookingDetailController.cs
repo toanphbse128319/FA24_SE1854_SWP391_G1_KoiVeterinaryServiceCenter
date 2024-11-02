@@ -122,6 +122,9 @@ public class BookingDetailController : ControllerBase {
     {
         try
         {
+            bool allSameBookingId = exam.BookingDetail.All(x => x.BookingID == exam.BookingDetail[0].BookingID);
+            if (allSameBookingId != true)
+                return BadRequest("Booking ID is inconsistent!!");
             foreach (var item in exam.BookingDetail)
             {
                 if (await _unitOfWork.BookingDetailRepository.GetByIdAsync(item.BookingDetailID) != null)
