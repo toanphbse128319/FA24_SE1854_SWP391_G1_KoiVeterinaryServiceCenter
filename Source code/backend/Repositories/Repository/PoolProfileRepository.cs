@@ -1,34 +1,54 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Repositories.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Repositories.Repository
 {
     public class PoolProfileRepository : GenericRepository<PoolProfile>
     {
-        public PoolProfileRepository(Context context) 
+        public PoolProfileRepository(Context context)
         {
             _context = context;
         }
 
-        public Task<PoolProfile?> FindPoolProfileByIdAsync(string id)
+        public async Task<int> AddPoolProfileAsync(PoolProfile poolprofile)
         {
-            return _context.PoolProfiles.FirstOrDefaultAsync(poolprofile => poolprofile.PoolProfileID == id)!;
-        }
-
-        public async Task<PoolProfile?> AddPoolProfileAsync(PoolProfile poolprofile)
-        {
+            if (poolprofile == null)
+                return 0;
             if (poolprofile.PoolProfileID == "")
             {
-                int index = base.GetAll().Count;
-                poolprofile.PoolProfileID = "PP" + index;
+                poolprofile.PoolProfileID = GetNextID("PP");
             }
-            await base.CreateAsync(poolprofile);
-            return poolprofile;
+
+            return await base.CreateAsync(poolprofile);;
+        }
+
+        public async Task<int> AddPoolProfilesAsync(IEnumerable<PoolProfile> pps)
+        {
+            if (pps == null || !pps.Any())
+                return 0;
+
+            int successfulSaves = 0;
+
+            foreach (var pp in pps)
+            {
+                if (string.IsNullOrEmpty(pp.PoolProfileID))
+                {
+                    pp.PoolProfileID = GetNextID("PP");
+                }
+
+                try
+                {
+                    await base.CreateAsync(pp);
+                    successfulSaves++;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+            }
+
+            return successfulSaves;
         }
     }
 }
+

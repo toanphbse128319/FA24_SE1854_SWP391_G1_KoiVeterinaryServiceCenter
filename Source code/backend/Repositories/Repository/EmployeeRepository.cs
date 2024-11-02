@@ -1,23 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Repositories.Model;
 
 namespace Repositories.Repository
 {
-    public class EmployeeRepository : GenericRepository<AnimalType>
+    public class EmployeeRepository : GenericRepository<Employee>
     {
+
         public EmployeeRepository(Context context)
         {
             _context = context;
         }
 
-        public Task<Employee?> FindEmpByIdAsync(string id)
+        public async Task<Employee?> SearchByAccountIDAsync(string id)
         {
-            return _context.Employees.FirstOrDefaultAsync(employee => employee.EmployeeID == id)!;
+            return await _context.Employees.FirstOrDefaultAsync(employee => employee.AccountID == id);
+        }
+
+        public Employee? SearchByAccountID(string id)
+        {
+            return _context.Employees.FirstOrDefault(employee => employee.AccountID == id);
+        }
+
+        public async Task<Employee?> SearchByFullNameAsync(string firstname, string lastname)
+        {
+            return await _context.Employees.FirstOrDefaultAsync(employee => employee.FirstName == firstname &&
+                                                                       employee.LastName == lastname);
+        }
+
+        public async Task<List<Employee?>> SearchByRoleName( string rolename ){
+            string role = (new RoleRepository( _context )).getRoleID( rolename );
+            if( role == "" )
+                return new List<Employee?>();
+            List<Employee?> list = (await _context.Employees.Where( employee => employee.RoleID == role ).ToListAsync())!;
+            if( list == null )
+                return new List<Employee?>();
+            return list;
         }
     }
 }

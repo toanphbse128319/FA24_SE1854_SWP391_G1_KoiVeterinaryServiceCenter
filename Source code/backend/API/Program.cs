@@ -10,7 +10,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddControllers();
+
+//This to force c# to return json with the key as same as property name instead of camel case
+//because the default naming policy is using camel case when jsonify
+builder.Services.AddControllers().AddJsonOptions( options => {
+    options.JsonSerializerOptions.PropertyNamingPolicy = null;
+
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<UnitOfWork>();
 builder.Services.AddSwaggerGen(option =>
@@ -41,15 +47,18 @@ builder.Services.AddSwaggerGen(option =>
     });
 });
 
-builder.Services.AddAuthentication(options => {
+builder.Services.AddAuthentication(options =>
+{
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer( token => {
-    token.TokenValidationParameters = new TokenValidationParameters{
+}).AddJwtBearer(token =>
+{
+    token.TokenValidationParameters = new TokenValidationParameters
+    {
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey( Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? string.Empty)),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? string.Empty)),
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,

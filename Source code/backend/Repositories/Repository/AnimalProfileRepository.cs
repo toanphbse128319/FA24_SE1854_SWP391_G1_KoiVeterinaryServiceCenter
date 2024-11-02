@@ -1,10 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Repositories.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Repositories.Objects;
 
 namespace Repositories.Repository
 {
@@ -15,20 +11,77 @@ namespace Repositories.Repository
             _context = context;
         }
 
-        public Task<AnimalProfile?> FindAnimalProfileByIdAsync(string id)
+        public async Task<int> AddAnimalProfileAsync(AnimalProfile animalprofile)
         {
-            return _context.AnimalProfiles.FirstOrDefaultAsync(animalprofile => animalprofile.AnimalProfileID == id)!;
-        }
-
-        public async Task<AnimalProfile?> AddAnimalProfileAsync(AnimalProfile animalprofile)
-        {
+            if (animalprofile == null)
+                return 0;
             if (animalprofile.AnimalProfileID == "")
             {
-                int index = base.GetAll().Count;
-                animalprofile.AnimalProfileID = "AP" + index;
+                animalprofile.AnimalProfileID = GetNextID("AP");
             }
-            await base.CreateAsync(animalprofile);
-            return animalprofile;
+            return await base.CreateAsync(animalprofile);;
+        }
+
+        public async Task<int> AddAnimalProfilesAsync(IEnumerable<AnimalProfile> animalProfiles)
+        {
+            if (animalProfiles == null || !animalProfiles.Any())
+                return 0;
+
+            int successfulSaves = 0;
+
+            foreach (var animalProfile in animalProfiles)
+            {
+                if (string.IsNullOrEmpty(animalProfile.AnimalProfileID))
+                {
+                    animalProfile.AnimalProfileID = GetNextID("AP");
+                }
+
+                try
+                {
+                    await base.CreateAsync(animalProfile);
+                    successfulSaves++;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+            }
+
+            return successfulSaves;
+        }
+
+        public async Task<int> AddProfilesAsync(Profiles exam)
+        {
+            var transaction = await _context.Database.BeginTransactionAsync();
+            bool rs = false;
+            int count = 0;
+            try
+            {
+
+                foreach (var item in exam.AnimalProfile)
+                {
+                    AnimalProfileRepository ap = new AnimalProfileRepository(_context);
+                    item.AnimalProfileID = ap.GetNextID("AP");
+                    if (await ap.CreateAsync(item) != 0)
+                        count++;
+                }
+                foreach (var item in exam.PoolProfile)
+                {
+                    PoolProfileRepository pp = new PoolProfileRepository(_context);
+                    item.PoolProfileID = pp.GetNextID("PP");
+                    if (await pp.CreateAsync(item) != 0)
+                        count++;
+                }
+                if (count == (exam.AnimalProfile.Count + exam.PoolProfile.Count))
+                    rs = true;
+                await transaction.CommitAsync();
+                return rs ? 1 : 0;
+            }
+            finally
+            {
+                if (rs == false)
+                    await transaction.RollbackAsync();
+            }
         }
     }
 }

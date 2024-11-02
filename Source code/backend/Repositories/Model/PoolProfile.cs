@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿#nullable disable
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Repositories.Model;
 [Table("PoolProfile")]
@@ -7,8 +8,6 @@ public class PoolProfile
     public string PoolProfileID { get; set; }
 
     public string Name { get; set; }
-
-    public string BookingDetailID { get; set; }
 
     public string Note { get; set; }
 

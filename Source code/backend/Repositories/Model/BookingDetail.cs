@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿#nullable disable
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Repositories.Model;
 [Table("BookingDetail")]
@@ -9,8 +10,8 @@ public class BookingDetail
     public string BookingID { get; set; }
     public string ServiceID { get; set; }
     public decimal UnitPrice { get; set; }
+    public bool Incidental {  get; set; }
     public string NoteResult { get; set; }
-    public string NoteExamination { get; set; }
     public string AnimalStatusDescription { get; set; }
     public string ConsultDoctor { get; set; } 
     public string DrugList { get; set; } 

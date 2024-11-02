@@ -1,57 +1,78 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react'; 
+import LoginContainer from "../Components/LoginContainer";
+import BackButton from "../buttonComponents/BackButton";
+import SignUp from "../Components/SignUpContainer";
 
-function Login() {
-  const navigate = useNavigate();
-  const handleBackClick = () => {
-    navigate('/');
+function Login({ setToken }) {
+  const [isLogin, setIsLogin] = useState(true); 
+
+  const handleSwitchPage = () => {
+    setIsLogin(prevState => !prevState); 
+  };
+
+  const handleLoginSuccess = () => {
+    setToken(true); 
+    console.log('LoginSuccess');
   };
 
   return (
-    <main style={{ padding: '20px', textAlign: 'center' }}>
-      <h2>Login Page</h2>
-      <form style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <input 
-          type="text" 
-          placeholder="Username" 
-          style={{ margin: '10px', padding: '5px', width: '200px' }}
+    <div style={{
+      width: '100%',
+      height: '100vh',
+      position: 'relative',
+      background: '#E8F2F7',
+      overflow: 'hidden',
+    }}>
+      <div style={{
+        width: '50vw',
+        height: '100vh',
+        right: 0,
+        position: 'absolute',
+        clipPath: 'polygon(12% 0%, 100% 0%, 100% 100%, 0% 100%)',
+        background: 'linear-gradient(227deg, rgba(100, 176, 224, 0.88) 0%, rgba(101.84, 176.75, 224.12, 0.44) 26%, rgba(105.44, 178.20, 224.36, 0.18) 78%, rgba(113.50, 180.62, 222.91, 0.88) 97%)'
+      }}></div>
+      
+      <div style={{
+        width: '30vw',
+        height: '50vh',
+        right: '10vw',
+        top: "20vh",
+        position: 'absolute',
+        zIndex: 1000,
+        display: 'flex',
+      }}>
+        <img
+          src='\img\sloganLogin.png'
+          alt="Slogan"
+          style={{ cursor: 'pointer' }}
+          onClick={handleSwitchPage}
         />
-        <input 
-          type="password" 
-          placeholder="Password" 
-          style={{ margin: '10px', padding: '5px', width: '200px' }}
-        />
-        <button 
-          type="submit"
-          style={{
-            padding: '10px 20px',
-            fontSize: '16px',
-            backgroundColor: '#4CAF50',
-            color: 'white',
-            border: 'none',
-            borderRadius: '5px',
-            cursor: 'pointer',
-            margin: '10px'
-          }}
-        >
-          Login
-        </button>
-      </form>
-      <button 
-        onClick={handleBackClick}
-        style={{
-          padding: '10px 20px',
-          fontSize: '16px',
-          backgroundColor: '#f44336',
-          color: 'white',
-          border: 'none',
-          borderRadius: '5px',
-          cursor: 'pointer'
-        }}
-      >
-        Back to Home
-      </button>
-    </main>
+      </div>
+      
+      <BackButton />
+      
+      <div style={{
+        left: '15vw',
+        top: isLogin ? '30vh' : '10vh', 
+        position: 'fixed'
+      }}>
+        {isLogin ? (
+          <>
+            <LoginContainer onLoginSuccess={handleLoginSuccess} />
+            <div onClick={handleSwitchPage} style={{ cursor: 'pointer', marginTop: '20px' }}>
+              Chưa có tài khoản? <strong>Đăng ký ngay</strong>
+            </div>
+          </>
+        ) : (
+          <>
+            <SignUp />
+            <div onClick={handleSwitchPage} style={{ cursor: 'pointer', marginTop: '20px' }}>
+              Đã có tài khoản? <strong>Đăng nhập ngay</strong>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
   );
 }
 

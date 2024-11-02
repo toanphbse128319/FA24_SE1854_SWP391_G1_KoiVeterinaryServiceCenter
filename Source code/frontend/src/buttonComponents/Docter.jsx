@@ -2,7 +2,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const Docter = () => {
+const Doctor = () => {
   const navigate = useNavigate();
 
   const handleBack = () => {
@@ -27,4 +27,4 @@ const Docter = () => {
   );
 };
 
-export default Docter;
+export default Doctor;

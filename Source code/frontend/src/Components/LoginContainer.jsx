@@ -1,28 +1,78 @@
-import React, { useState } from 'react';
-import { jwtDecode } from 'jwt-decode';
-import { 
-  Button, 
-  TextField, 
-  Card, 
-  CardContent, 
-  CardActions, 
+import React, { useState } from "react";
+import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
+import {
+  Button,
+  TextField,
+  Card,
+  CardContent,
+  CardActions,
   Typography,
   Alert,
-  CircularProgress
-} from '@mui/material';
+  CircularProgress,
+} from "@mui/material";
+import { Navigate } from "react-router-dom";
+import { FetchAPI } from "../Helper/Utilities";
+
+async function CheckLogin({ info, password, setErrors }) {
+  try {
+    const response = await FetchAPI({
+      endpoint: "/login",
+      method: "Post",
+      body: {
+        info: info,
+        password: password,
+      },
+    });
+
+    if (!response.ok) {
+      // Handle different types of errors
+      switch (response.status) {
+        case 401:
+          setErrors((prev) => ({
+            ...prev,
+            general: "Thông tin đăng nhập hoặc mật khẩu không chính xác",
+          }));
+          break;
+        default:
+          setErrors((prev) => ({
+            ...prev,
+            general: "Đã có lỗi xảy ra khi đăng nhập",
+          }));
+      }
+      return;
+    }
+    const data = await response.text();
+    const decoded = jwtDecode(data);
+    window.sessionStorage.setItem("token", data); // Store token in session storage
+    window.sessionStorage.setItem("firstname", decoded.FirstName); // Store first name in session storage
+    window.sessionStorage.setItem("lastname", decoded.LastName); // Store last name in session storage
+    window.sessionStorage.setItem("address", decoded.Address);
+    window.sessionStorage.setItem("phonenumber", decoded.PhoneNumber);
+    window.sessionStorage.setItem("role", decoded.role);
+    window.sessionStorage.setItem("email", decoded.email);
+    window.sessionStorage.setItem("id", decoded.ID);
+    window.sessionStorage.setItem("dob", decoded.Birthday);
+    return "success";
+  } catch (error) {
+    console.error(error);
+    return "failed";
+  }
+}
 
 function Login() {
+  let navigate = useNavigate();
   // Form states
-  const [email, setEmail] = useState('phbtoan9185@gmail.com');
-  const [password, setPassword] = useState('caniskip');
-  
+  const [info, setInfo] = useState("");
+  const [password, setPassword] = useState("");
+
   // Error states
   const [errors, setErrors] = useState({
-    email: '',
-    password: '',
-    general: ''
+    info: "",
+    password: "",
+    general: "",
   });
-  
+
   // Loading state
   const [isLoading, setIsLoading] = useState(false);
 
@@ -35,86 +85,68 @@ function Login() {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Reset errors
     setErrors({
-      email: '',
-      password: '',
-      general: ''
+      info: "",
+      password: "",
+      general: "",
     });
 
     let hasError = false;
-    if (!email) {
-      setErrors(prev => ({...prev, email: 'Email là bắt buộc'}));
+    if (!info) {
+      setErrors((prev) => ({
+        ...prev,
+        info: "Email/số điện thoại là bắt buộc",
+      }));
       hasError = true;
-    } else if (!validateEmail(email)) {
-      setErrors(prev => ({...prev, email: 'Email không hợp lệ'}));
+    } else if (!validateEmail(info)) {
+      setErrors((prev) => ({
+        ...prev,
+        info: "Email/só điện thoại không hợp lệ",
+      }));
       hasError = true;
     }
 
     if (!password) {
-      setErrors(prev => ({...prev, password: 'Mật khẩu là bắt buộc'}));
+      setErrors((prev) => ({ ...prev, password: "Mật khẩu là bắt buộc" }));
       hasError = true;
     } else if (password.length < 6) {
-      setErrors(prev => ({...prev, password: 'Mật khẩu phải có ít nhất 6 ký tự'}));
+      setErrors((prev) => ({
+        ...prev,
+        password: "Mật khẩu phải có ít nhất 6 ký tự",
+      }));
       hasError = true;
     }
 
     if (hasError) return;
 
     setIsLoading(true);
-  
-    try {
-     
-      const response = await fetch('http://localhost:5173/api/Login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        
-        body: JSON.stringify({
-          info: email, 
-          password: password 
-        })
-      });
-      const data = await response.text();
-      console.log(data); // Hiển thị dữ liệu trong console để kiểm tra
-     
-      if (!response.ok) {
-        // Handle different types of errors
-        switch (response.status) {
-          case 401:
-            setErrors(prev => ({
-              ...prev,
-              general: 'Email hoặc mật khẩu không chính xác'
-            }));
-            break;
-          default:
-            setErrors(prev => ({
-              ...prev,
-              general:'Đã có lỗi xảy ra khi đăng nhập'
-            }));
-        }
-        return;
+    CheckLogin({ info: info, password: password, setErrors: setErrors }).then(
+      (result) => {
+        if (result == "success") {
+          const role = window.sessionStorage.getItem("role");
+          console.log(role);
+          
+          if (role === "Staff") {
+            navigate("/StaffManage");
+          } else {
+            navigate("/");
+          }
+        } else if (result == "pending") setIsLoading(true);
+        else setIsLoading(false);
       }
-      const token = data;
-      const decoded = jwt_decode(token);
-
-console.log(decoded); // In thông tin giải mã
-      localStorage.setItem('token', data);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      
-    
-    } finally {
-      setIsLoading(false);
-    }
+    );
   };
 
   return (
-    <Card style={{ 
-      width: 350, 
-      background: 'linear-gradient(136deg, rgba(100.04, 176.47, 223.98, 0.50) 25%, rgba(25, 200, 254, 0.38) 75%)'
-    }}>
+    <Card
+      style={{
+        width: "25vw",
+        background:
+          "linear-gradient(136deg, rgba(100.04, 176.47, 223.98, 0.50) 25%, rgba(25, 200, 254, 0.38) 75%)",
+      }}
+    >
       <CardContent>
         <Typography variant="h5" component="h2" gutterBottom>
           Đăng nhập
@@ -127,37 +159,41 @@ console.log(decoded); // In thông tin giải mã
         )}
 
         <form onSubmit={handleSubmit}>
-          <div style={{
-            height: "55px", 
-            marginBottom: 16,
-            backgroundColor: "white",
-            borderRadius: "4px"
-          }}>
+          <div
+            style={{
+              height: "55px",
+              marginBottom: 16,
+              backgroundColor: "white",
+              borderRadius: "4px",
+            }}
+          >
             <TextField
               id="email"
-              label="Email"
+              label="Thông tin đăng nhập"
               type="email"
               placeholder="your@email.com"
-              value={email}
+              value={info}
               onChange={(e) => {
-                setEmail(e.target.value);
+                setInfo(e.target.value);
                 // Clear error when typing
-                if (errors.email) {
-                  setErrors(prev => ({...prev, email: ''}));
+                if (errors.info) {
+                  setErrors((prev) => ({ ...prev, info: "" }));
                 }
               }}
-              error={Boolean(errors.email)}
-              helperText={errors.email}
+              error={Boolean(errors.info)}
+              helperText={errors.info}
               fullWidth
               required
             />
           </div>
 
-          <div style={{ 
-            marginBottom: 16,
-            backgroundColor: "white",
-            borderRadius: "4px"
-          }}>
+          <div
+            style={{
+              marginBottom: 16,
+              backgroundColor: "white",
+              borderRadius: "4px",
+            }}
+          >
             <TextField
               id="password"
               label="Mật khẩu"
@@ -167,7 +203,7 @@ console.log(decoded); // In thông tin giải mã
                 setPassword(e.target.value);
                 // Clear error when typing
                 if (errors.password) {
-                  setErrors(prev => ({...prev, password: ''}));
+                  setErrors((prev) => ({ ...prev, password: "" }));
                 }
               }}
               error={Boolean(errors.password)}
@@ -178,28 +214,30 @@ console.log(decoded); // In thông tin giải mã
           </div>
 
           <CardActions>
-            <Button 
-              type="submit" 
-              variant="contained" 
+            <Button
+              type="submit"
+              variant="contained"
               fullWidth
               disabled={isLoading}
               style={{
-                position: 'relative'
+                position: "relative",
               }}
             >
               {isLoading ? (
                 <>
-                  <CircularProgress 
-                    size={24} 
+                  <CircularProgress
+                    size={24}
                     style={{
-                      position: 'absolute',
-                      left: '50%',
-                      marginLeft: -12
+                      position: "absolute",
+                      left: "50%",
+                      marginLeft: -12,
                     }}
                   />
                   Đang xử lý...
                 </>
-              ) : 'Đăng nhập'}
+              ) : (
+                "Đăng nhập"
+              )}
             </Button>
           </CardActions>
         </form>
