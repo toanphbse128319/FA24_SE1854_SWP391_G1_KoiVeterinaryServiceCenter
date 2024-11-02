@@ -65,7 +65,7 @@ public class BookingController : ControllerBase {
 
     [Route("updateempid")]
     [HttpPut]
-    public async Task<ActionResult<Booking>> UpdateEmpIDAsync(string id, string empID)
+    public async Task<ActionResult<Booking>> UpdateEmpIDAsync(string id, string? empID)
     {
         try
         {
