@@ -63,9 +63,28 @@ public class AnimalProfileController : ControllerBase {
                     return BadRequest("Pool profile is already existed!");
             }
 
-            if (await _unitOfWork.AnimalProfileRepository.AddProfilesAsync(profile) == 1)
-                return Ok("Added successfully!");
-            else return BadRequest("Added failed!");
+            BookingDetail bd = await _unitOfWork.BookingDetailRepository.GetByIdAsync(profile.BookingDetail.BookingDetailID);
+            if (bd == null)
+                return NotFound("BookingDetail does not existed!");
+            if (profile.BookingDetail.PoolStatusDescription != "" && bd.PoolStatusDescription != profile.BookingDetail.PoolStatusDescription)
+                bd.PoolStatusDescription = profile.BookingDetail.PoolStatusDescription;
+            if (profile.BookingDetail.AnimalStatusDescription != "" && bd.AnimalStatusDescription != profile.BookingDetail.AnimalStatusDescription)
+                bd.AnimalStatusDescription = profile.BookingDetail.AnimalStatusDescription;
+            if (profile.BookingDetail.ConsultDoctor != "" && bd.ConsultDoctor != profile.BookingDetail.ConsultDoctor)
+                bd.ConsultDoctor = profile.BookingDetail.ConsultDoctor;
+            if (profile.BookingDetail.DrugList != "" && bd.DrugList != profile.BookingDetail.DrugList)
+                bd.DrugList = profile.BookingDetail.DrugList;
+            if (profile.BookingDetail.MaterialList != "" && bd.MaterialList != profile.BookingDetail.MaterialList)
+                bd.MaterialList = profile.BookingDetail.MaterialList;
+            if (profile.BookingDetail.ConsultTechnician != "" && bd.ConsultTechnician != profile.BookingDetail.ConsultTechnician)
+                bd.ConsultTechnician = profile.BookingDetail.ConsultTechnician;
+            if (profile.BookingDetail.Incidental != profile.BookingDetail.Incidental)
+                bd.Incidental = profile.BookingDetail.Incidental;
+            if (profile.BookingDetail.NoteResult != "" && bd.NoteResult != profile.BookingDetail.NoteResult)
+                bd.NoteResult = profile.BookingDetail.NoteResult;
+            if (await _unitOfWork.AnimalProfileRepository.AddProfilesAsync(profile) == 1 && await _unitOfWork.BookingDetailRepository.UpdateAsync(bd) != 0)
+                return Ok("Added/updated successfully!");
+            else return BadRequest("Added/updated failed!");
         }
         catch (Exception ex)
         {
