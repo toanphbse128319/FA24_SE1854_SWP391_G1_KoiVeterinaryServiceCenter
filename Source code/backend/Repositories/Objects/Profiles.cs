@@ -8,4 +8,5 @@ public class Profiles
 
     public List<AnimalProfile> AnimalProfile { get; set; }
     public List<PoolProfile> PoolProfile { get; set; }
+    public BookingDetail BookingDetail { get; set; }
 }
