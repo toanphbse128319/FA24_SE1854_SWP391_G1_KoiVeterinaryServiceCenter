@@ -32,7 +32,7 @@ const StaffManage = () => {
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
-      <div className="w-1/6 bg-gray-800 text-white p-4">
+      <div className="h-full w-1/6 bg-gray-800 text-white p-4">
         <h2 className="text-lg font-bold mb-6 text-center">Staff Management</h2>
         <div className="space-y-3">
           <button
@@ -43,7 +43,7 @@ const StaffManage = () => {
             }`}
             onClick={() => setActivePage("ManageLanding")}
           >
-            Manage Landing
+            Manage Landing Service
           </button>
           <button
             className={`w-full text-left p-3 rounded-lg transition-colors font-medium ${

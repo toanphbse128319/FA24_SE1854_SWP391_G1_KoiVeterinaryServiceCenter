@@ -219,17 +219,17 @@ GO
 INSERT INTO Account (AccountID, PhoneNumber, Email, RoleID, Avatar, Password, Status, IsActive )
 VALUES
 ('A0', '0000000000', 'null', 'R0', 'null', '', 'Default', 0),
-('A1', '0123456789', 'phbtoan9185@gmail.com', 'R2', 'avatar1.jpg', 'caniskip', 'Normal', 1),
-('A2', '0987654321', 'admin2@gmail.com', 'R2', 'avatar2.jpg', 'admin', 'Normal', 1),
-('A3', '0111111111', 'arandomvet@gmail.com', 'R4', 'avatar3.jpg', 'vet', 'Normal', 1),
-('A4', '0121111111', 'manager2@gmail.com', 'R4', 'avatar4.jpg', 'manager', 'Normal', 1),
+('A1', '0123456789', 'phbtoan9185@gmail.com', 'R4', 'avatar1.jpg', 'caniskip', 'Normal', 1),
+('A2', '0987654321', 'admin2@gmail.com', 'R4', 'avatar2.jpg', 'admin123', 'Normal', 1),
+('A3', '0111111111', 'arandomvet@gmail.com', 'R4', 'avatar3.jpg', 'vet123', 'Normal', 1),
+('A4', '0121111111', 'manager2@gmail.com', 'R4', 'avatar4.jpg', 'manager123', 'Normal', 1),
 ('A5', '0123212313', 'Test@gmail.com', 'R4', 'avatar5.jpg', 'test12345', 'Normal', 1),
-('A6', '8765785746', 'longtnhse173174@fpt.edu.vn', 'R1', 'avatar1.jpg', 'tangdeptrai', 'Normal', 1),
-('A7', '0835377623', 'vet2@gmail.com', 'R3', 'avatar2.jpg', 'vettemp', 'Normal', 1),
-('A8', '1122334455', 'Manager@gmail.com', 'R3', 'avatar3.jpg', 'vet', 'Normal', 1),
-('A9', '1234554321', 'reception1@gmai.com', 'R1', 'avatar4.jpg', 'manager', 'Normal', 1),
-('A10', '1234567876', 'admin@gmail.com', 'R2', 'avatar5.jpg', 'test', 'Normal', 1),
-('A11', '9987654321', 'decsr@gmail.com', 'R3', 'avatar5.jpg', 'vet', 'Normal', 1);
+('A6', '8765785746', 'longtnhse173174@fpt.edu.vn', 'R4', 'avatar1.jpg', 'tangdeptrai', 'Normal', 1),
+('A7', '0835377623', 'vet2@gmail.com', 'R2', 'avatar2.jpg', 'vettemp', 'Normal', 1),
+('A8', '1122334455', 'Manager@gmail.com', 'R2', 'avatar3.jpg', 'vet12345', 'Normal', 1),
+('A9', '1234554321', 'reception1@gmai.com', 'R3', 'avatar4.jpg', 'manager123', 'Normal', 1),
+('A10', '1234567876', 'admin@gmail.com', 'R2', 'avatar5.jpg', 'test12345', 'Normal', 1),
+('A11', '9987654321', 'decsr@gmail.com', 'R3', 'avatar5.jpg', 'vet', 'Normal123', 1);
 GO
 
 INSERT INTO Customer (CustomerID, FirstName, LastName, Sex, Birthday, Address, AccountID, Status) 

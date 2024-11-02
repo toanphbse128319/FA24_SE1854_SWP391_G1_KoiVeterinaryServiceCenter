@@ -12,6 +12,7 @@ function ManageLanding() {
   const [services, SetServices] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
   const [loading, SetLoading] = useState(true);
+  
 
   useEffect(() => {
     async function GetData() {
@@ -82,7 +83,7 @@ function ManageLanding() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
-      <h1 className="text-3xl font-bold mb-6">Manage Services</h1>
+      <h1 className="text-3xl font-bold mb-6">Manage Services Show In Home Page</h1>
 
       {/* Hiển thị danh sách dịch vụ */}
       <div className="grid grid-cols-1 gap-4">
@@ -97,7 +98,7 @@ function ManageLanding() {
               onChange={() => toggleServiceSelection(service)}
               className="mr-2"
             />
-            <h2 className="text-xl font-bold">{service.Name}</h2>
+            <h2 className="text-xl font-bold">{service.Name} {service.Sdm}</h2>
           </div>
         ))}
       </div>
