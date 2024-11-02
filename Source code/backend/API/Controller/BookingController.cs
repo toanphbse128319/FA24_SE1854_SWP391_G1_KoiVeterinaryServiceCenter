@@ -63,6 +63,27 @@ public class BookingController : ControllerBase {
         }
     }
 
+    [Route("updateempid")]
+    [HttpPut]
+    public async Task<ActionResult<Booking>> UpdateEmpIDAsync(string id, string? empID)
+    {
+        try
+        {
+            if (await _unitOfWork.BookingRepository.GetByIdAsync(id) == null)
+                return NotFound("The Booking does not existed!");
+            Booking updated = await _unitOfWork.BookingRepository.UpdateEmployeeIDAsync(id, empID);
+            if (updated == null)
+                return BadRequest("Booking status update failed!");
+            else
+                return Ok($"The Booking EmployeeID has been updated to: {empID}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+
     [HttpGet("getbyprofile")]
     public async Task<ActionResult<List<Booking>>> GetByProfile(string id) {
         try{
