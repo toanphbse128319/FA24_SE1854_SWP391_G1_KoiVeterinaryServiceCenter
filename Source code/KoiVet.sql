@@ -135,7 +135,6 @@ CREATE TABLE BookingDetail(
     BookingDetailID nvarchar(20) PRIMARY KEY,
     BookingID nvarchar(20) FOREIGN KEY REFERENCES Booking(BookingID) NOT NULL,
     ServiceID nvarchar(20) FOREIGN KEY REFERENCES Service(ServiceID) NOT NULL,
-    UnitPrice money NOT NULL,
     Incidental bit NOT NULL,
     NoteResult nvarchar(MAX),
     AnimalStatusDescription nvarchar(MAX) ,
@@ -230,15 +229,19 @@ VALUES
 ('A9', '1234554321', 'reception1@gmai.com', 'R1', 'avatar4.jpg', 'manager', 'Normal', 1),
 ('A10', '1234567876', 'admin@gmail.com', 'R2', 'avatar5.jpg', 'test', 'Normal', 1),
 ('A11', '9987654321', 'decsr@gmail.com', 'R3', 'avatar5.jpg', 'vet', 'Normal', 1);
+('A12', '0934160668', 'customer@gmail.com', 'R4', 'avatar7.jpg', 'customer', 'Normal', 1);
 GO
 
-INSERT INTO Customer (CustomerID, FirstName, LastName, Sex, Birthday, Address, AccountID, Status) 
+
+INSERT INTO Customer (CustomerID, Firstname, Lastname, Sex, Birthday, Address, AccountID, Status) 
 VALUES 
-('C1', 'Vy', 'Nguyen', 1, '2004-11-20', '250 vo van hat', 'A1', 1),
-('C2', 'Jane', 'Smith', 0, '1985-03-15', '456 Maple Ave', 'A2', 1),
-('C3', 'Alice', 'Johnson', 0, '1995-07-22', '789 Oa St', 'A3', 1),
-('C4', 'Bob', 'Brown', 1, '1982-11-02', '321 Birch Ave', 'A4', 1),
-('C5', 'Carol', 'White', 0, '1979-08-14', '654 Pine St', 'A5', 1);
+('C1', N'Vy', N'Nguyen', 1, '2004-11-20', '250 vo van hat', 'A1', 1),
+('C2', N'Bình', N'Hoàng', 0, '1985-03-15', N'456 Điện Biên Phủ', 'A2', 1),
+('C3', N'Linh', N'Phạm Gia', 0, '1995-07-22', N'789 Nguyễn Văn Cừ', 'A3', 1), 
+('C4', N'Bình', N'Trần', 1, '1982-11-02', N'321 Lê Văn Việt', 'A4', 1),
+('C5', N'Kiệt', N'Nguyễn', 0, '1979-08-14', N'200 vo van ha', 'A12', 1);
+GO
+
 GO
 
 -- Insert sample data for Employee
@@ -255,23 +258,64 @@ VALUES
 -- Insert sample data for ServiceDeliveryMethod
 INSERT INTO ServiceDeliveryMethod (ServiceDeliveryMethodID, Name, Status) 
 VALUES 
-('SDM1', N'Tại nhà', 1),
-('SDM2', N'Tại cơ sở', 1),
-('SDM3', N'Trực tuyến', 1)
+('SDM1', N'Khám cá tại nhà', 1),
+('SDM2', N'Khám hồ tại nhà', 1),
+('SDM3', N'Trực tuyến', 1),
+('SDM4', N'Tại cơ sở', 1);
 
 -- Insert sample data for Service
 INSERT INTO Service (ServiceID, ServiceDeliveryMethodID, Name, Price, Description, Status) 
 VALUES 
-('S1', 'SDM1', N'Kiểm tra sức khỏe cá koi', 100000, N'Kiểm tra sức khỏe cơ bản cho cá koi', 1),
-('S2', 'SDM2', N'Kiểm tra sức khỏe cá koi', 100000, N'Kiểm tra sức khỏe cơ bản cho cá koi', 1),
-('S3', 'SDM3', N'Tư vấn sức khỏe cá koi', 75000, N'Tư vấn trực tuyến với chuyên gia cá koi', 1),
-('S4', 'SDM1', N'Điều trị cá koi', 150000, N'Điều trị cho các bệnh thường gặp ở cá koi', 1),
-('S5', 'SDM2', N'Điều trị cá koi', 150000, N'Điều trị cho các bệnh thường gặp ở cá koi', 1),
-('S6', 'SDM2', N'Xét nghiệm máu cho cá', 150000, N'Xét nghiệm máu cho cá', 1),
-('S7', 'SDM1', N'Kiểm tra mức pH', 150000, N'Kiểm tra mức pH trong nước', 1),
-('S8', 'SDM1', N'Loại bỏ nấm ký sinh trong bể', 100000, N'Loại bỏ nấm ký sinh trong bể', 1),
-('S9', 'SDM1', N'Kiểm tra hồ cá', 100000, N'Kiểm tra hồ cá, bể cá', 1);
--- Insert sample data for Feedback
+-- Dịch vụ khám cá tại nhà (SDM1)
+('S1', 'SDM1', N'Kiểm tra sức khỏe cá koi cơ bản', 100000, N'Kiểm tra các chỉ số sức khỏe cơ bản của cá koi', 1),
+('S2', 'SDM1', N'Điều trị bệnh cá koi', 150000, N'Điều trị các bệnh thông thường ở cá koi', 1),
+('S3', 'SDM1', N'Tiêm vaccine cho cá koi', 200000, N'Tiêm phòng các bệnh phổ biến cho cá koi', 1),
+('S4', 'SDM1', N'Kiểm tra và điều trị ký sinh trùng', 180000, N'Kiểm tra và điều trị ký sinh trùng trên cá', 1),
+('S5', 'SDM1', N'Chữa trị vết thương cho cá', 120000, N'Điều trị các vết thương ngoài da cho cá', 1),
+('S6', 'SDM1', N'Kiểm tra và điều trị bệnh nấm', 160000, N'Kiểm tra và điều trị các bệnh nấm trên cá', 1),
+('S7', 'SDM1', N'Điều trị bệnh đường ruột', 170000, N'Điều trị các vấn đề về đường tiêu hóa của cá', 1),
+('S8', 'SDM1', N'Siêu âm cho cá koi', 250000, N'Kiểm tra sức khỏe cá bằng siêu âm', 1),
+('S9', 'SDM1', N'Điều trị bệnh mang', 190000, N'Kiểm tra và điều trị các bệnh về mang cá', 1),
+('S10', 'SDM1', N'Cấp cứu cá tại nhà', 300000, N'Dịch vụ cấp cứu khẩn cấp cho cá', 1),
+
+-- Dịch vụ khám hồ tại nhà (SDM2)
+('S11', 'SDM2', N'Kiểm tra chất lượng nước cơ bản', 150000, N'Kiểm tra các chỉ số cơ bản của nước', 1),
+('S12', 'SDM2', N'Xử lý nước hồ cá', 200000, N'Xử lý và cân bằng các chỉ số nước hồ', 1),
+('S13', 'SDM2', N'Vệ sinh hồ cá', 250000, N'Vệ sinh và làm sạch hồ cá', 1),
+('S14', 'SDM2', N'Kiểm tra và sửa chữa hệ thống lọc', 180000, N'Kiểm tra và bảo dưỡng hệ thống lọc', 1),
+('S15', 'SDM2', N'Xử lý tảo và rong rêu', 170000, N'Xử lý tình trạng tảo và rong rêu trong hồ', 1),
+('S16', 'SDM2', N'Kiểm tra và cân bằng pH', 160000, N'Kiểm tra và điều chỉnh độ pH của nước', 1),
+('S17', 'SDM2', N'Lắp đặt hệ thống sục khí', 300000, N'Lắp đặt và tối ưu hệ thống sục khí', 1),
+('S18', 'SDM2', N'Tư vấn cải tạo hồ', 200000, N'Tư vấn thiết kế và cải tạo hồ cá', 1),
+('S19', 'SDM2', N'Xử lý đáy hồ', 220000, N'Xử lý cặn và chất thải đáy hồ', 1),
+('S20', 'SDM2', N'Kiểm tra và xử lý dịch bệnh trong hồ', 250000, N'Kiểm tra và xử lý các bệnh dịch trong môi trường hồ', 1),
+
+-- Dịch vụ trực tuyến (SDM3)
+('S21', 'SDM3', N'Tư vấn chăm sóc cá koi cơ bản', 75000, N'Tư vấn online về cách chăm sóc cá koi', 1),
+('S22', 'SDM3', N'Tư vấn dinh dưỡng cho cá', 80000, N'Tư vấn chế độ dinh dưỡng phù hợp', 1),
+('S23', 'SDM3', N'Tư vấn xử lý bệnh khẩn cấp', 100000, N'Tư vấn xử lý các tình huống khẩn cấp', 1),
+('S24', 'SDM3', N'Đánh giá chất lượng nước qua ảnh', 90000, N'Đánh giá tình trạng nước qua hình ảnh', 1),
+('S25', 'SDM3', N'Tư vấn thiết kế hồ', 120000, N'Tư vấn cách thiết kế và setup hồ cá', 1),
+('S26', 'SDM3', N'Tư vấn chọn giống cá', 85000, N'Tư vấn chọn giống cá phù hợp', 1),
+('S27', 'SDM3', N'Tư vấn hệ thống lọc', 95000, N'Tư vấn lựa chọn và setup hệ thống lọc', 1),
+('S28', 'SDM3', N'Đào tạo chăm sóc cá online', 150000, N'Khóa học online về chăm sóc cá', 1),
+('S29', 'SDM3', N'Tư vấn thuốc và hóa chất', 85000, N'Tư vấn sử dụng thuốc và hóa chất an toàn', 1),
+('S30', 'SDM3', N'Theo dõi sức khỏe cá định kỳ online', 200000, N'Dịch vụ theo dõi và tư vấn định kỳ', 1),
+
+-- Dịch vụ tại cơ sở (SDM4)
+('S31', 'SDM4', N'Khám tổng quát cho cá', 150000, N'Khám tổng quát và đánh giá sức khỏe cá', 1),
+('S32', 'SDM4', N'Phẫu thuật cho cá', 500000, N'Dịch vụ phẫu thuật chuyên sâu', 1),
+('S33', 'SDM4', N'Xét nghiệm máu', 200000, N'Xét nghiệm các chỉ số máu của cá', 1),
+('S34', 'SDM4', N'Chụp X-quang cho cá', 300000, N'Chụp X-quang chẩn đoán bệnh', 1),
+('S35', 'SDM4', N'Điều trị bệnh chuyên sâu', 400000, N'Điều trị các bệnh phức tạp', 1),
+('S36', 'SDM4', N'Lưu trú và chăm sóc đặc biệt', 250000, N'Dịch vụ lưu trú và chăm sóc tại chỗ', 1),
+('S37', 'SDM4', N'Vật lý trị liệu cho cá', 180000, N'Điều trị phục hồi chức năng cho cá', 1),
+('S38', 'SDM4', N'Điều trị bằng laser', 350000, N'Điều trị các bệnh bằng công nghệ laser', 1),
+('S39', 'SDM4', N'Châm cứu cho cá', 200000, N'Điều trị bằng phương pháp châm cứu', 1),
+('S40', 'SDM4', N'Kiểm tra sinh sản', 250000, N'Kiểm tra và tư vấn về sinh sản', 1);
+
+
+
 
 INSERT INTO Feedback (FeedbackID, ServiceRating, VetRating, Description, Status) 
 VALUES 
@@ -282,138 +326,18 @@ VALUES
 ('FB4', 4, 5, 'Prompt and professional.', 'Active'),
 ('FB5', 5, 5, 'Koi surgery saved my fish!', 'Active');
 
--- Insert data into Schedule table
-INSERT INTO Schedule (ScheduleID, EmployeeID, Date, Note, Status) VALUES
-('SCH1', 'E3', '2024-10-25', N'Trực tuyến', 'Active'),
-('SCH2', 'E4', '2024-10-25', N'Trực tuyến', 'Active'),
-('SCH3', 'E3', '2024-10-26', N'Trực tuyến', 'Active'),
-('SCH4', 'E4', '2024-10-26', N'Trực tuyến', 'Active'),
-('SCH5', 'E3', '2024-10-27', N'Trực tuyến', 'Active'),
-('SCH6', 'E4', '2024-10-27', N'Trực tuyến', 'Active'),
-('SCH7', 'E3', '2024-10-28', N'Trực tuyến', 'Active'),
-('SCH8', 'E4', '2024-10-28', N'Trực tuyến', 'Active'),
-('SCH9', 'E3', '2024-11-05', N'Trực tuyến', 'Active'),
-('SCH10', 'E4', '2024-11-05', N'Tại trung tâm', 'Active'),
-('SCH11', 'E3', '2024-11-06', N'Tại trung tâm', 'Active'),
-('SCH12', 'E4', '2024-11-06', N'Tại trung tâm', 'Active'),
-('SCH13', 'E3', '2024-11-07', N'Tại trung tâm', 'Active'),
-('SCH14', 'E4', '2024-11-07', N'Tại nhà', 'Active'),
-('SCH15', 'E3', '2024-11-08', N'Tại nhà', 'Active'),
-('SCH16', 'E4', '2024-11-08', N'Tại trung tâm', 'Active'),
-('SCH17', 'E3', '2024-11-02', N'Tại nhà', 'Active'),
-('SCH18', 'E4', '2024-11-02', N'Tại nhà', 'Active'),
-('SCH19', 'E3', '2024-11-03', N'Tại nhà', 'Active'),
-('SCH20', 'E4', '2024-11-03', N'Tại nhà', 'Active'),
-('SCH21', 'E3', '2024-11-04', N'Tại nhà', 'Active'),
-('SCH22', 'E4', '2024-11-04', N'Tại nhà', 'Active'),
-('SCH23', 'E3', '2024-11-05', N'Tại nhà', 'Active'),
-('SCH24', 'E4', '2024-11-05', N'Tại nhà', 'Active'),
-('SCH25', 'E3', '2024-11-06', N'Tại trung tâm', 'Active'),
-('SCH26', 'E4', '2024-11-06', N'Tại nhà', 'Active'),
-('SCH27', 'E3', '2024-11-07', N'Tại trung tâm', 'Active'),
-('SCH28', 'E4', '2024-11-07', N'Tại nhà', 'Active'),
-('SCH29', 'E3', '2024-11-08', N'Tại trung tâm', 'Active'),
-('SCH30', 'E4', '2024-11-08', N'Tại nhà', 'Active'),
-('SCH31', 'E3', '2024-11-09', N'Tại trung tâm', 'Active'),
-('SCH32', 'E4', '2024-11-09', N'Tại nhà', 'Active'),
-('SCH33', 'E3', '2024-11-10', N'Tại trung tâm', 'Active'),
-('SCH34', 'E4', '2024-11-10', N'Tại nhà', 'Active'),
-('SCH35', 'E3', '2024-11-11', N'Tại trung tâm', 'Active'),
-('SCH36', 'E4', '2024-11-11', N'Trực tuyến', 'Active'),
-('SCH37', 'E3', '2024-11-12', N'Tại trung tâm', 'Active'),
-('SCH38', 'E4', '2024-11-12', N'Trực tuyến', 'Active'),
-('SCH39', 'E3', '2024-11-13', N'Tại trung tâm', 'Active'),
-('SCH40', 'E4', '2024-11-13', N'Trực tuyến', 'Active'),
-('SCH41', 'E3', '2024-11-14', N'Tại trung tâm', 'Active'),
-('SCH42', 'E4', '2024-11-14', N'Trực tuyến', 'Active'),
-('SCH43', 'E3', '2024-11-15', N'Tại trung tâm', 'Active'),
-('SCH44', 'E4', '2024-11-15', N'Trực tuyến', 'Active'),
-('SCH45', 'E3', '2024-11-16', N'Tại trung tâm', 'Active'),
-('SCH46', 'E4', '2024-11-16', N'Trực tuyến', 'Active'),
-('SCH47', 'E3', '2024-11-17', N'Trực tuyến', 'Active'),
-('SCH48', 'E4', '2024-11-17', N'Trực tuyến', 'Active'),
-('SCH49', 'E3', '2024-11-18', N'Trực tuyến', 'Active'),
-('SCH50', 'E4', '2024-11-18', N'Trực tuyến', 'Active'),
-('SCH51', 'E3', '2024-11-19', N'Trực tuyến', 'Active'),
-('SCH52', 'E4', '2024-11-19', N'Tại trung tâm', 'Active'),
-('SCH53', 'E3', '2024-11-20', N'Tại trung tâm', 'Active'),
-('SCH54', 'E4', '2024-11-20', N'Tại trung tâm', 'Active'),
-('SCH55', 'E3', '2024-11-21', N'Tại trung tâm', 'Active'),
-('SCH56', 'E4', '2024-11-21', N'Tại trung tâm', 'Active'),
-('SCH57', 'E3', '2024-11-22', N'Tại trung tâm', 'Active'),
-('SCH58', 'E4', '2024-11-22', N'Tại nhà', 'Active'),
-('SCH59', 'E3', '2024-11-23', N'Tại nhà', 'Active'),
-('SCH60', 'E4', '2024-11-23', N'Tại nhà', 'Active'),
-('SCH61', 'E3', '2024-11-24', N'Tại nhà', 'Active'),
-('SCH62', 'E4', '2024-11-24', N'Tại nhà', 'Active');
 
-INSERT INTO SlotTable (SlotTableID, ScheduleID, Note, Slot, SlotCapacity, SlotOrdered, SlotStatus) VALUES
-('ST1', 'SCH9', N'Trực tuyến', 1, 10, 5, 1),
-('ST2', 'SCH9', N'Trực tuyến', 2, 10, 6, 1),
-('ST3', 'SCH9', N'Trực tuyến', 3, 10, 4, 1),
-('ST4', 'SCH9', N'Trực tuyến', 4, 10, 7, 1),
-('ST5', 'SCH9', N'Trực tuyến', 5, 10, 3, 1),
-('ST6', 'SCH9', N'Trực tuyến', 6, 10, 5, 1),
-('ST7', 'SCH9', N'Trực tuyến', 7, 10, 4, 1),
-('ST8', 'SCH9', N'Trực tuyến', 8, 10, 6, 1),
-('ST9', 'SCH10', N'Tại trung tâm', 1, 10, 4, 1),
-('ST10', 'SCH10', N'Tại trung tâm', 2, 10, 5, 1),
-('ST11', 'SCH10', N'Tại trung tâm', 3, 10, 6, 1),
-('ST12', 'SCH10', N'Tại trung tâm', 4, 10, 3, 1),
-('ST13', 'SCH10', N'Tại trung tâm', 5, 10, 7, 1),
-('ST14', 'SCH10', N'Tại trung tâm', 6, 10, 5, 1),
-('ST15', 'SCH10', N'Tại trung tâm', 7, 10, 4, 1),
-('ST16', 'SCH10', N'Tại trung tâm', 8, 10, 6, 1),
-('ST17', 'SCH11', N'Tại trung tâm', 1, 10, 5, 1),
-('ST18', 'SCH11', N'Tại trung tâm', 2, 10, 4, 1),
-('ST19', 'SCH11', N'Tại trung tâm', 3, 10, 6, 1),
-('ST20', 'SCH11', N'Tại trung tâm', 4, 10, 7, 1),
-('ST21', 'SCH11', N'Tại trung tâm', 5, 10, 3, 1),
-('ST22', 'SCH11', N'Tại trung tâm', 6, 10, 5, 1),
-('ST23', 'SCH11', N'Tại trung tâm', 7, 10, 4, 1),
-('ST24', 'SCH11', N'Tại trung tâm', 8, 10, 6, 1),
-('ST25', 'SCH12', N'Tại trung tâm', 1, 10, 5, 1),
-('ST26', 'SCH12', N'Tại trung tâm', 2, 10, 6, 1),
-('ST27', 'SCH12', N'Tại trung tâm', 3, 10, 4, 1),
-('ST28', 'SCH12', N'Tại trung tâm', 4, 10, 7, 1),
-('ST29', 'SCH12', N'Tại trung tâm', 5, 10, 3, 1),
-('ST30', 'SCH12', N'Tại trung tâm', 6, 10, 5, 1),
-('ST31', 'SCH12', N'Tại trung tâm', 7, 10, 4, 1),
-('ST32', 'SCH12', N'Tại trung tâm', 8, 10, 6, 1),
-('ST33', 'SCH13', N'Tại trung tâm', 1, 10, 4, 1),
-('ST34', 'SCH13', N'Tại trung tâm', 2, 10, 5, 1),
-('ST35', 'SCH13', N'Tại trung tâm', 3, 10, 6, 1),
-('ST36', 'SCH13', N'Tại trung tâm', 4, 10, 3, 1),
-('ST37', 'SCH13', N'Tại trung tâm', 5, 10, 7, 1),
-('ST38', 'SCH13', N'Tại trung tâm', 6, 10, 5, 1),
-('ST39', 'SCH13', N'Tại trung tâm', 7, 10, 4, 1),
-('ST40', 'SCH13', N'Tại trung tâm', 8, 10, 6, 1),
-('ST41', 'SCH14', N'Tại nhà', 1, 10, 5, 1),
-('ST42', 'SCH14', N'Tại nhà', 2, 10, 4, 1),
-('ST43', 'SCH14', N'Tại nhà', 3, 10, 6, 1),
-('ST44', 'SCH14', N'Tại nhà', 4, 10, 7, 1),
-('ST45', 'SCH14', N'Tại nhà', 5, 10, 3, 1),
-('ST46', 'SCH14', N'Tại nhà', 6, 10, 5, 1),
-('ST47', 'SCH14', N'Tại nhà', 7, 10, 4, 1),
-('ST48', 'SCH14', N'Tại nhà', 8, 10, 6, 1),
-('ST49', 'SCH15', N'Tại nhà', 1, 10, 5, 1),
-('ST50', 'SCH15', N'Tại nhà', 2, 10, 6, 1),
-('ST51', 'SCH15', N'Tại nhà', 3, 10, 4, 1),
-('ST52', 'SCH15', N'Tại nhà', 4, 10, 7, 1),
-('ST53', 'SCH15', N'Tại nhà', 5, 10, 3, 1),
-('ST54', 'SCH15', N'Tại nhà', 6, 10, 5, 1),
-('ST55', 'SCH15', N'Tại nhà', 7, 10, 4, 1),
-('ST56', 'SCH15', N'Tại nhà', 8, 10, 6, 1);
-
---NumberOfFish int not null,
-   -- IncidentalFish 
 -- Insert sample data for Booking
 INSERT INTO Booking (BookingID, CustomerID, EmployeeID, BookingDate, ExpiredDate, Deposit, NumberOfFish, IncidentalFish, NumberOfPool, IncidentalPool, VAT, BookingAddress, Distance, DistanceCost, TotalServiceCost, Status, FeedbackID, ScheduleID, Note, PaymentMethod, PaymentStatus) 
 VALUES 
 ('B1', 'C1', 'E1', '2024-10-31 09:00:00', '2024-09-01 10:00:00', 50.00, 1, 0, 0, 0, 10.00, '250 Vo Van Hat', 5.5, 11.00, 661000, 'Confirmed', 'FB1', 'SCH1', 'Home visit for koi health check', 'Credit Card', 'Pending'),
 ('B2', 'C2', 'E2', '2024-11-01 14:00:00', '2024-09-02 15:00:00', 37.50, 1, 0, 0, 0, 7.50, '456 Maple Ave', 0, 0.00, 397500, 'Confirmed', 'FB2', 'SCH2', 'Trực tuyến consultation for koi', 'PayPal', 'Pending'),
 ('B3', 'C3', 'E3', '2024-10-31 18:00:00', '2024-09-03 19:00:00', 75.00, 1, 0, 0, 0, 15.00, '789 Oak St', 3.2, 6.40, 996000, 'Cancelled', 'FB3', 'SCH3', 'Clinic visit for koi disease treatment', 'Cash', 'Pending'),
-('B4', 'C4', 'E4', '2024-11-01 22:00:00', '2024-09-05 01:00:00', 150.00, 1, 0, 0, 0, 30.00, '321 Birch Ave', 8.7, 17.40, 2000000, 'In Progress', 'FB4', 'SCH4', 'Emergency koi surgery', 'Credit Card', 'Pending')
+('B4', 'C4', 'E4', '2024-11-01 22:00:00', '2024-09-05 01:00:00', 150.00, 1, 0, 0, 0, 30.00, '321 Birch Ave', 8.7, 17.40, 2000000, 'In Progress', 'FB4', 'SCH4', 'Emergency koi surgery', 'Credit Card', 'Pending'),
+--data đúng, đừng quan tâm các data ở trên
+('B5', 'C5', 'E4', '2024-11-01 11:00:00', '2024-11-01 13:00:00', 150.00, 1, 2, 0, 0, 30.00, '321 Tran Duy Hung', 8.7, 17.40, 2000000, 'Completed', 'FB0', 'SCH12', '', 'VNPay', 'Paid'),
+('B6', 'C5', 'E4', '2024-11-02 11:00:00', '2024-11-02 13:00:00', 150.00, 1, 0, 0, 2, 30.00, '300 Tran Hung Dao', 8.7, 17.40, 2000000, 'Completed', 'FB0', 'SCH16', 'kham ho', 'VNPay', 'Paid');
+
 
 -- Insert sample data for AnimalType
 INSERT INTO AnimalType (TypeID, Name) 
@@ -425,12 +349,34 @@ VALUES
 ('AT5', 'Betta Fish');
 
 -- Insert sample data for BookingDetail
-INSERT INTO BookingDetail (BookingDetailID, BookingID, ServiceID, UnitPrice, Incidental, NoteResult, AnimalStatusDescription, ConsultDoctor, DrugList, PoolStatusDescription, ConsultTechnician, MaterialList)
+INSERT INTO BookingDetail (BookingDetailID, BookingID, ServiceID, Incidental, NoteResult, ExaminationResult, VetConsult, Formulary)
 VALUES 
-('BD1', 'B1', 'S1', 100.00, 0,'Koi appears healthy overall', 'Nishiki shows good coloration and active behavior', 'Dr. Amelia Fish', 'Probiotic supplement', 'Zen Garden Koi Pond maintains good water quality', 'Tech John Doe', 'Water testing kit, net'),
-('BD2', 'B2', 'S2', 75.00, 0,'Goldfish exhibiting signs of stress', 'Bubbles has clamped fins and reduced activity', 'Dr. Michael Scales', 'Antibiotics, stress coat additive', 'Indoor Goldfish Tank requires improved filtration', 'Tech Jane Smith', 'New filter system, air pump'),
-('BD3', 'B3', 'S3', 150.00, 0,'Tropical fish recovering from minor infection', 'Nemo shows improvement in fin condition and appetite', 'Dr. Sarah Coral', 'Broad-spectrum antibiotic, vitamin supplements', 'Tropical Reef Aquarium parameters stable', 'Tech Robert Johnson', 'UV sterilizer, coral food'),
-('BD4', 'B4', 'S4', 300.00, 0,'Emergency surgery successful',  'Azure is stable post-surgery, requires close monitoring', 'Dr. David Finn', 'Pain medication, antibiotics', 'Saltwater Lagoon quarantine section set up', 'Tech Emily Waters', 'Surgical tools, quarantine tank')
+('BD1', 'B1', 'S1', 0,'Koi appears healthy overall', 'Nishiki shows good coloration and active behavior', 'Dr. Amelia Fish', 'Probiotic supplement', 'Zen Garden Koi Pond maintains good water quality', 'Tech John Doe', 'Water testing kit, net'),
+('BD2', 'B2', 'S2', 0,'Goldfish exhibiting signs of stress', 'Bubbles has clamped fins and reduced activity', 'Dr. Michael Scales', 'Antibiotics, stress coat additive', 'Indoor Goldfish Tank requires improved filtration', 'Tech Jane Smith', 'New filter system, air pump'),
+('BD3', 'B3', 'S3', 0,'Tropical fish recovering from minor infection', 'Nemo shows improvement in fin condition and appetite', 'Dr. Sarah Coral', 'Broad-spectrum antibiotic, vitamin supplements', 'Tropical Reef Aquarium parameters stable', 'Tech Robert Johnson', 'UV sterilizer, coral food'),
+('BD4', 'B4', 'S4', 0,'Emergency surgery successful',  'Azure is stable post-surgery, requires close monitoring', 'Dr. David Finn', 'Pain medication, antibiotics', 'Saltwater Lagoon quarantine section set up', 'Tech Emily Waters', 'Surgical tools, quarantine tank')
+('BD5', 'B5', 'S31', 0,'Cá cảm nhẹ', 'cá hơi mập', 'Cần phải đem đi ướp muối cho đỡ lạnh', ' vitamin C'),
+('BD6', 'B5', 'S34', 1,'không phát hiện bất thường', 'cá hơi thừa cân', 'kiểm tra lại sau 1 tháng', ''),
+('BD7', 'B6', 'S4', 0,'không phát hiện bất thường', 'cá ổn', 'kiểm tra lại sau 1 tháng', ''),
+('BD8', 'B6', 'S20', 1,'không phát hiện bất thường', 'hồ bình thường', 'kiểm tra lại sau 1 tháng', 'muối sinh lý');
+
+
+
+INSERT INTO ServiceUse (ServiceUseID, AnimalProfileID, PoolProfileID, BookingDetailID) 
+VALUES 
+('SU1','AP1','','BD5'),
+('SU2','AP2','','BD5'),
+('SU3','AP3','','BD5'),
+('SU4','AP1','','BD6'),
+('SU5','AP2','','BD6'),
+('SU6','AP3','','BD6'),
+
+('SU7','AP4','','BD7'),
+('SU8','','PP1','BD8'),
+('SU9','','PP1','BD8');
+
+
+
 
 -- Insert sample data for AnimalProfile
 INSERT INTO AnimalProfile (AnimalProfileID, Name, TypeID, Size, Age, Color, Description, Sex, Picture) 
@@ -471,3 +417,449 @@ INSERT INTO Post (PostID, PostName, PostCategoryID, Context) VALUES
 ('P3', 'Common Koi Diseases and Solutions', 'PC3', 'An overview of common diseases that affect Koi and how to treat them.'),
 ('P4', 'Designing the Perfect Koi Pond', 'PC4', 'Explore the key elements of designing a beautiful and functional Koi pond.'),
 ('P5', 'A Guide to Popular Koi Varieties', 'PC5', 'This article highlights some of the most popular Koi varieties and their unique features.');
+
+
+
+INSERT INTO Schedule (ScheduleID, EmployeeID, Date, Note, Status) VALUES
+
+('SCH9', 'E3', '2024-11-01', N'Trực tuyến', 'Active'),
+('SCH10', 'E4', '2024-11-01', N'Tại trung tâm', 'Active'),
+('SCH11', 'E3', '2024-11-02', N'Tại trung tâm', 'Active'),
+('SCH12', 'E4', '2024-11-02', N'Tại trung tâm', 'Active'),
+('SCH13', 'E3', '2024-11-03', N'Tại trung tâm', 'Active'),
+('SCH14', 'E4', '2024-11-03', N'Tại nhà', 'Active'),
+('SCH15', 'E3', '2024-11-04', N'Tại nhà', 'Active'),
+('SCH16', 'E4', '2024-11-04', N'Tại trung tâm', 'Active'),
+('SCH17', 'E3', '2024-11-05', N'Tại nhà', 'Active'),
+('SCH18', 'E4', '2024-11-05', N'Tại nhà', 'Active'),
+('SCH19', 'E3', '2024-11-06', N'Tại nhà', 'Active'),
+('SCH20', 'E4', '2024-11-06', N'Tại nhà', 'Active'),
+('SCH21', 'E3', '2024-11-07', N'Tại nhà', 'Active'),
+('SCH22', 'E4', '2024-11-07', N'Tại nhà', 'Active'),
+('SCH23', 'E3', '2024-11-08', N'Tại nhà', 'Active'),
+('SCH24', 'E4', '2024-11-08', N'Tại nhà', 'Active'),
+('SCH25', 'E3', '2024-11-09', N'Tại trung tâm', 'Active'),
+('SCH26', 'E4', '2024-11-09', N'Tại nhà', 'Active'),
+('SCH27', 'E3', '2024-11-10', N'Tại trung tâm', 'Active'),
+('SCH28', 'E4', '2024-11-10', N'Tại nhà', 'Active'),
+('SCH29', 'E3', '2024-11-11', N'Tại trung tâm', 'Active'),
+('SCH30', 'E4', '2024-11-11', N'Tại nhà', 'Active'),
+('SCH31', 'E3', '2024-11-12', N'Tại trung tâm', 'Active'),
+('SCH32', 'E4', '2024-11-12', N'Tại nhà', 'Active'),
+('SCH33', 'E3', '2024-11-13', N'Tại trung tâm', 'Active'),
+('SCH34', 'E4', '2024-11-13', N'Tại nhà', 'Active'),
+('SCH35', 'E3', '2024-11-14', N'Tại trung tâm', 'Active'),
+('SCH36', 'E4', '2024-11-14', N'Trực tuyến', 'Active'),
+('SCH37', 'E3', '2024-11-15', N'Tại trung tâm', 'Active'),
+('SCH38', 'E4', '2024-11-15', N'Trực tuyến', 'Active'),
+('SCH39', 'E3', '2024-11-16', N'Tại trung tâm', 'Active'),
+('SCH40', 'E4', '2024-11-16', N'Trực tuyến', 'Active'),
+('SCH41', 'E3', '2024-11-17', N'Tại trung tâm', 'Active'),
+('SCH42', 'E4', '2024-11-17', N'Trực tuyến', 'Active'),
+('SCH43', 'E3', '2024-11-18', N'Tại trung tâm', 'Active'),
+('SCH44', 'E4', '2024-11-18', N'Trực tuyến', 'Active'),
+('SCH45', 'E3', '2024-11-19', N'Tại trung tâm', 'Active'),
+('SCH46', 'E4', '2024-11-19', N'Trực tuyến', 'Active'),
+('SCH47', 'E3', '2024-11-20', N'Trực tuyến', 'Active'),
+('SCH48', 'E4', '2024-11-20', N'Trực tuyến', 'Active');
+
+
+INSERT INTO SlotTable (SlotTableID, ScheduleID, Note, Slot, SlotCapacity, SlotOrdered, SlotStatus) VALUES
+-- SCH9
+('ST1', 'SCH9', N'Trực tuyến', 1, 10, 5, 1),
+('ST2', 'SCH9', N'Trực tuyến', 2, 10, 6, 1),
+('ST3', 'SCH9', N'Trực tuyến', 3, 10, 4, 1),
+('ST4', 'SCH9', N'Trực tuyến', 4, 10, 7, 1),
+('ST5', 'SCH9', N'Trực tuyến', 5, 10, 3, 1),
+('ST6', 'SCH9', N'Trực tuyến', 6, 10, 5, 1),
+('ST7', 'SCH9', N'Trực tuyến', 7, 10, 4, 1),
+('ST8', 'SCH9', N'Trực tuyến', 8, 10, 6, 1),
+
+-- SCH10
+('ST9', 'SCH10', N'Tại trung tâm', 1, 10, 4, 1),
+('ST10', 'SCH10', N'Tại trung tâm', 2, 10, 5, 1),
+('ST11', 'SCH10', N'Tại trung tâm', 3, 10, 6, 1),
+('ST12', 'SCH10', N'Tại trung tâm', 4, 10, 3, 1),
+('ST13', 'SCH10', N'Tại trung tâm', 5, 10, 7, 1),
+('ST14', 'SCH10', N'Tại trung tâm', 6, 10, 5, 1),
+('ST15', 'SCH10', N'Tại trung tâm', 7, 10, 4, 1),
+('ST16', 'SCH10', N'Tại trung tâm', 8, 10, 6, 1),
+
+-- SCH11
+('ST17', 'SCH11', N'Tại trung tâm', 1, 10, 5, 1),
+('ST18', 'SCH11', N'Tại trung tâm', 2, 10, 4, 1),
+('ST19', 'SCH11', N'Tại trung tâm', 3, 10, 6, 1),
+('ST20', 'SCH11', N'Tại trung tâm', 4, 10, 7, 1),
+('ST21', 'SCH11', N'Tại trung tâm', 5, 10, 3, 1),
+('ST22', 'SCH11', N'Tại trung tâm', 6, 10, 5, 1),
+('ST23', 'SCH11', N'Tại trung tâm', 7, 10, 4, 1),
+('ST24', 'SCH11', N'Tại trung tâm', 8, 10, 6, 1),
+
+-- SCH12
+('ST25', 'SCH12', N'Tại trung tâm', 1, 10, 5, 1),
+('ST26', 'SCH12', N'Tại trung tâm', 2, 10, 6, 1),
+('ST27', 'SCH12', N'Tại trung tâm', 3, 10, 4, 1),
+('ST28', 'SCH12', N'Tại trung tâm', 4, 10, 7, 1),
+('ST29', 'SCH12', N'Tại trung tâm', 5, 10, 3, 1),
+('ST30', 'SCH12', N'Tại trung tâm', 6, 10, 5, 1),
+('ST31', 'SCH12', N'Tại trung tâm', 7, 10, 4, 1),
+('ST32', 'SCH12', N'Tại trung tâm', 8, 10, 6, 1),
+
+-- SCH13
+('ST33', 'SCH13', N'Tại trung tâm', 1, 10, 4, 1),
+('ST34', 'SCH13', N'Tại trung tâm', 2, 10, 5, 1),
+('ST35', 'SCH13', N'Tại trung tâm', 3, 10, 6, 1),
+('ST36', 'SCH13', N'Tại trung tâm', 4, 10, 3, 1),
+('ST37', 'SCH13', N'Tại trung tâm', 5, 10, 7, 1),
+('ST38', 'SCH13', N'Tại trung tâm', 6, 10, 5, 1),
+('ST39', 'SCH13', N'Tại trung tâm', 7, 10, 4, 1),
+('ST40', 'SCH13', N'Tại trung tâm', 8, 10, 6, 1),
+
+-- SCH14
+('ST41', 'SCH14', N'Tại nhà', 1, 10, 5, 1),
+('ST42', 'SCH14', N'Tại nhà', 2, 10, 4, 1),
+('ST43', 'SCH14', N'Tại nhà', 3, 10, 6, 1),
+('ST44', 'SCH14', N'Tại nhà', 4, 10, 7, 1),
+('ST45', 'SCH14', N'Tại nhà', 5, 10, 3, 1),
+('ST46', 'SCH14', N'Tại nhà', 6, 10, 5, 1),
+('ST47', 'SCH14', N'Tại nhà', 7, 10, 4, 1),
+('ST48', 'SCH14', N'Tại nhà', 8, 10, 6, 1),
+
+-- SCH15
+('ST49', 'SCH15', N'Tại nhà', 1, 10, 5, 1),
+('ST50', 'SCH15', N'Tại nhà', 2, 10, 6, 1),
+('ST51', 'SCH15', N'Tại nhà', 3, 10, 4, 1),
+('ST52', 'SCH15', N'Tại nhà', 4, 10, 7, 1),
+('ST53', 'SCH15', N'Tại nhà', 5, 10, 3, 1),
+('ST54', 'SCH15', N'Tại nhà', 6, 10, 5, 1),
+('ST55', 'SCH15', N'Tại nhà', 7, 10, 4, 1),
+('ST56', 'SCH15', N'Tại nhà', 8, 10, 6, 1)
+
+-- SCH16
+('ST57', 'SCH16', N'Tại trung tâm', 1, 10, 5, 1),
+('ST58', 'SCH16', N'Tại trung tâm', 2, 10, 6, 1),
+('ST59', 'SCH16', N'Tại trung tâm', 3, 10, 4, 1),
+('ST60', 'SCH16', N'Tại trung tâm', 4, 10, 7, 1),
+('ST61', 'SCH16', N'Tại trung tâm', 5, 10, 3, 1),
+('ST62', 'SCH16', N'Tại trung tâm', 6, 10, 5, 1),
+('ST63', 'SCH16', N'Tại trung tâm', 7, 10, 4, 1),
+('ST64', 'SCH16', N'Tại trung tâm', 8, 10, 6, 1),
+
+-- SCH17
+('ST65', 'SCH17', N'Tại nhà', 1, 10, 4, 1),
+('ST66', 'SCH17', N'Tại nhà', 2, 10, 5, 1),
+('ST67', 'SCH17', N'Tại nhà', 3, 10, 6, 1),
+('ST68', 'SCH17', N'Tại nhà', 4, 10, 3, 1),
+('ST69', 'SCH17', N'Tại nhà', 5, 10, 7, 1),
+('ST70', 'SCH17', N'Tại nhà', 6, 10, 5, 1),
+('ST71', 'SCH17', N'Tại nhà', 7, 10, 4, 1),
+('ST72', 'SCH17', N'Tại nhà', 8, 10, 6, 1),
+
+-- SCH18
+('ST73', 'SCH18', N'Tại nhà', 1, 10, 5, 1),
+('ST74', 'SCH18', N'Tại nhà', 2, 10, 4, 1),
+('ST75', 'SCH18', N'Tại nhà', 3, 10, 6, 1),
+('ST76', 'SCH18', N'Tại nhà', 4, 10, 7, 1),
+('ST77', 'SCH18', N'Tại nhà', 5, 10, 3, 1),
+('ST78', 'SCH18', N'Tại nhà', 6, 10, 5, 1),
+('ST79', 'SCH18', N'Tại nhà', 7, 10, 4, 1),
+('ST80', 'SCH18', N'Tại nhà', 8, 10, 6, 1),
+
+-- SCH19
+('ST81', 'SCH19', N'Tại nhà', 1, 10, 5, 1),
+('ST82', 'SCH19', N'Tại nhà', 2, 10, 6, 1),
+('ST83', 'SCH19', N'Tại nhà', 3, 10, 4, 1),
+('ST84', 'SCH19', N'Tại nhà', 4, 10, 7, 1),
+('ST85', 'SCH19', N'Tại nhà', 5, 10, 3, 1),
+('ST86', 'SCH19', N'Tại nhà', 6, 10, 5, 1),
+('ST87', 'SCH19', N'Tại nhà', 7, 10, 4, 1),
+('ST88', 'SCH19', N'Tại nhà', 8, 10, 6, 1),
+
+-- SCH20
+('ST89', 'SCH20', N'Tại nhà', 1, 10, 4, 1),
+('ST90', 'SCH20', N'Tại nhà', 2, 10, 5, 1),
+('ST91', 'SCH20', N'Tại nhà', 3, 10, 6, 1),
+('ST92', 'SCH20', N'Tại nhà', 4, 10, 3, 1),
+('ST93', 'SCH20', N'Tại nhà', 5, 10, 7, 1),
+('ST94', 'SCH20', N'Tại nhà', 6, 10, 5, 1),
+('ST95', 'SCH20', N'Tại nhà', 7, 10, 4, 1),
+('ST96', 'SCH20', N'Tại nhà', 8, 10, 6, 1),
+
+-- SCH21
+('ST97', 'SCH21', N'Tại nhà', 1, 10, 5, 1),
+('ST98', 'SCH21', N'Tại nhà', 2, 10, 4, 1),
+('ST99', 'SCH21', N'Tại nhà', 3, 10, 6, 1),
+('ST100', 'SCH21', N'Tại nhà', 4, 10, 7, 1),
+('ST101', 'SCH21', N'Tại nhà', 5, 10, 3, 1),
+('ST102', 'SCH21', N'Tại nhà', 6, 10, 5, 1),
+('ST103', 'SCH21', N'Tại nhà', 7, 10, 4, 1),
+('ST104', 'SCH21', N'Tại nhà', 8, 10, 6, 1),
+
+-- SCH22
+('ST105', 'SCH22', N'Tại nhà', 1, 10, 5, 1),
+('ST106', 'SCH22', N'Tại nhà', 2, 10, 6, 1),
+('ST107', 'SCH22', N'Tại nhà', 3, 10, 4, 1),
+('ST108', 'SCH22', N'Tại nhà', 4, 10, 7, 1),
+('ST109', 'SCH22', N'Tại nhà', 5, 10, 3, 1),
+('ST110', 'SCH22', N'Tại nhà', 6, 10, 5, 1),
+('ST111', 'SCH22', N'Tại nhà', 7, 10, 4, 1),
+('ST112', 'SCH22', N'Tại nhà', 8, 10, 6, 1),
+
+-- SCH23
+('ST113', 'SCH23', N'Tại nhà', 1, 10, 4, 1),
+('ST114', 'SCH23', N'Tại nhà', 2, 10, 5, 1),
+('ST115', 'SCH23', N'Tại nhà', 3, 10, 6, 1),
+('ST116', 'SCH23', N'Tại nhà', 4, 10, 3, 1),
+('ST117', 'SCH23', N'Tại nhà', 5, 10, 7, 1),
+('ST118', 'SCH23', N'Tại nhà', 6, 10, 5, 1),
+('ST119', 'SCH23', N'Tại nhà', 7, 10, 4, 1),
+('ST120', 'SCH23', N'Tại nhà', 8, 10, 6, 1),
+-- SCH24
+('ST121', 'SCH24', N'Tại nhà', 1, 10, 4, 1),
+('ST122', 'SCH24', N'Tại nhà', 2, 10, 5, 1),
+('ST123', 'SCH24', N'Tại nhà', 3, 10, 6, 1),
+('ST124', 'SCH24', N'Tại nhà', 4, 10, 3, 1),
+('ST125', 'SCH24', N'Tại nhà', 5, 10, 7, 1),
+('ST126', 'SCH24', N'Tại nhà', 6, 10, 5, 1),
+('ST127', 'SCH24', N'Tại nhà', 7, 10, 4, 1),
+('ST128', 'SCH24', N'Tại nhà', 8, 10, 6, 1),
+
+-- SCH25
+('ST129', 'SCH25', N'Tại trung tâm', 1, 10, 5, 1),
+('ST130', 'SCH25', N'Tại trung tâm', 2, 10, 4, 1),
+('ST131', 'SCH25', N'Tại trung tâm', 3, 10, 6, 1),
+('ST132', 'SCH25', N'Tại trung tâm', 4, 10, 7, 1),
+('ST133', 'SCH25', N'Tại trung tâm', 5, 10, 3, 1),
+('ST134', 'SCH25', N'Tại trung tâm', 6, 10, 5, 1),
+('ST135', 'SCH25', N'Tại trung tâm', 7, 10, 4, 1),
+('ST136', 'SCH25', N'Tại trung tâm', 8, 10, 6, 1),
+
+-- SCH26
+('ST137', 'SCH26', N'Tại nhà', 1, 10, 5, 1),
+('ST138', 'SCH26', N'Tại nhà', 2, 10, 6, 1),
+('ST139', 'SCH26', N'Tại nhà', 3, 10, 4, 1),
+('ST140', 'SCH26', N'Tại nhà', 4, 10, 7, 1),
+('ST141', 'SCH26', N'Tại nhà', 5, 10, 3, 1),
+('ST142', 'SCH26', N'Tại nhà', 6, 10, 5, 1),
+('ST143', 'SCH26', N'Tại nhà', 7, 10, 4, 1),
+('ST144', 'SCH26', N'Tại nhà', 8, 10, 6, 1),
+
+-- SCH27
+('ST145', 'SCH27', N'Tại trung tâm', 1, 10, 4, 1),
+('ST146', 'SCH27', N'Tại trung tâm', 2, 10, 5, 1),
+('ST147', 'SCH27', N'Tại trung tâm', 3, 10, 6, 1),
+('ST148', 'SCH27', N'Tại trung tâm', 4, 10, 3, 1),
+('ST149', 'SCH27', N'Tại trung tâm', 5, 10, 7, 1),
+('ST150', 'SCH27', N'Tại trung tâm', 6, 10, 5, 1),
+('ST151', 'SCH27', N'Tại trung tâm', 7, 10, 4, 1),
+('ST152', 'SCH27', N'Tại trung tâm', 8, 10, 6, 1),
+
+-- SCH28
+('ST153', 'SCH28', N'Tại nhà', 1, 10, 5, 1),
+('ST154', 'SCH28', N'Tại nhà', 2, 10, 4, 1),
+('ST155', 'SCH28', N'Tại nhà', 3, 10, 6, 1),
+('ST156', 'SCH28', N'Tại nhà', 4, 10, 7, 1),
+('ST157', 'SCH28', N'Tại nhà', 5, 10, 3, 1),
+('ST158', 'SCH28', N'Tại nhà', 6, 10, 5, 1),
+('ST159', 'SCH28', N'Tại nhà', 7, 10, 4, 1),
+('ST160', 'SCH28', N'Tại nhà', 8, 10, 6, 1),
+
+-- SCH29
+('ST161', 'SCH29', N'Tại trung tâm', 1, 10, 5, 1),
+('ST162', 'SCH29', N'Tại trung tâm', 2, 10, 6, 1),
+('ST163', 'SCH29', N'Tại trung tâm', 3, 10, 4, 1),
+('ST164', 'SCH29', N'Tại trung tâm', 4, 10, 7, 1),
+('ST165', 'SCH29', N'Tại trung tâm', 5, 10, 3, 1),
+('ST166', 'SCH29', N'Tại trung tâm', 6, 10, 5, 1),
+('ST167', 'SCH29', N'Tại trung tâm', 7, 10, 4, 1),
+('ST168', 'SCH29', N'Tại trung tâm', 8, 10, 6, 1),
+
+-- SCH30
+('ST169', 'SCH30', N'Tại nhà', 1, 10, 4, 1),
+('ST170', 'SCH30', N'Tại nhà', 2, 10, 5, 1),
+('ST171', 'SCH30', N'Tại nhà', 3, 10, 6, 1),
+('ST172', 'SCH30', N'Tại nhà', 4, 10, 3, 1),
+('ST173', 'SCH30', N'Tại nhà', 5, 10, 7, 1),
+('ST174', 'SCH30', N'Tại nhà', 6, 10, 5, 1),
+('ST175', 'SCH30', N'Tại nhà', 7, 10, 4, 1),
+('ST176', 'SCH30', N'Tại nhà', 8, 10, 6, 1),
+
+-- SCH31
+('ST177', 'SCH31', N'Tại trung tâm', 1, 10, 5, 1),
+('ST178', 'SCH31', N'Tại trung tâm', 2, 10, 4, 1),
+('ST179', 'SCH31', N'Tại trung tâm', 3, 10, 6, 1),
+('ST180', 'SCH31', N'Tại trung tâm', 4, 10, 7, 1),
+('ST181', 'SCH31', N'Tại trung tâm', 5, 10, 3, 1),
+('ST182', 'SCH31', N'Tại trung tâm', 6, 10, 5, 1),
+('ST183', 'SCH31', N'Tại trung tâm', 7, 10, 4, 1),
+('ST184', 'SCH31', N'Tại trung tâm', 8, 10, 6, 1),
+
+-- SCH32
+('ST185', 'SCH32', N'Tại nhà', 1, 10, 5, 1),
+('ST186', 'SCH32', N'Tại nhà', 2, 10, 6, 1),
+('ST187', 'SCH32', N'Tại nhà', 3, 10, 4, 1),
+('ST188', 'SCH32', N'Tại nhà', 4, 10, 7, 1),
+('ST189', 'SCH32', N'Tại nhà', 5, 10, 3, 1),
+('ST190', 'SCH32', N'Tại nhà', 6, 10, 5, 1),
+('ST191', 'SCH32', N'Tại nhà', 7, 10, 4, 1),
+('ST192', 'SCH32', N'Tại nhà', 8, 10, 6, 1),
+
+-- SCH33
+('ST193', 'SCH33', N'Tại trung tâm', 1, 10, 4, 1),
+('ST194', 'SCH33', N'Tại trung tâm', 2, 10, 5, 1),
+('ST195', 'SCH33', N'Tại trung tâm', 3, 10, 6, 1),
+('ST196', 'SCH33', N'Tại trung tâm', 4, 10, 3, 1),
+('ST197', 'SCH33', N'Tại trung tâm', 5, 10, 7, 1),
+('ST198', 'SCH33', N'Tại trung tâm', 6, 10, 5, 1),
+('ST199', 'SCH33', N'Tại trung tâm', 7, 10, 4, 1),
+('ST200', 'SCH33', N'Tại trung tâm', 8, 10, 6, 1),
+
+-- SCH34
+('ST201', 'SCH34', N'Tại nhà', 1, 10, 5, 1),
+('ST202', 'SCH34', N'Tại nhà', 2, 10, 4, 1),
+('ST203', 'SCH34', N'Tại nhà', 3, 10, 6, 1),
+('ST204', 'SCH34', N'Tại nhà', 4, 10, 7, 1),
+('ST205', 'SCH34', N'Tại nhà', 5, 10, 3, 1),
+('ST206', 'SCH34', N'Tại nhà', 6, 10, 5, 1),
+('ST207', 'SCH34', N'Tại nhà', 7, 10, 4, 1),
+('ST208', 'SCH34', N'Tại nhà', 8, 10, 6, 1),
+
+-- SCH35
+('ST209', 'SCH35', N'Tại trung tâm', 1, 10, 5, 1),
+('ST210', 'SCH35', N'Tại trung tâm', 2, 10, 6, 1),
+('ST211', 'SCH35', N'Tại trung tâm', 3, 10, 4, 1),
+('ST212', 'SCH35', N'Tại trung tâm', 4, 10, 7, 1),
+('ST213', 'SCH35', N'Tại trung tâm', 5, 10, 3, 1),
+('ST214', 'SCH35', N'Tại trung tâm', 6, 10, 5, 1),
+('ST215', 'SCH35', N'Tại trung tâm', 7, 10, 4, 1),
+('ST216', 'SCH35', N'Tại trung tâm', 8, 10, 6, 1),
+
+-- SCH36
+('ST217', 'SCH36', N'Trực tuyến', 1, 10, 4, 1),
+('ST218', 'SCH36', N'Trực tuyến', 2, 10, 5, 1),
+('ST219', 'SCH36', N'Trực tuyến', 3, 10, 6, 1),
+('ST220', 'SCH36', N'Trực tuyến', 4, 10, 3, 1),
+('ST221', 'SCH36', N'Trực tuyến', 5, 10, 7, 1),
+('ST222', 'SCH36', N'Trực tuyến', 6, 10, 5, 1),
+('ST223', 'SCH36', N'Trực tuyến', 7, 10, 4, 1),
+('ST224', 'SCH36', N'Trực tuyến', 8, 10, 6, 1),
+
+-- SCH37
+('ST225', 'SCH37', N'Tại trung tâm', 1, 10, 5, 1),
+('ST226', 'SCH37', N'Tại trung tâm', 2, 10, 4, 1),
+('ST227', 'SCH37', N'Tại trung tâm', 3, 10, 6, 1),
+('ST228', 'SCH37', N'Tại trung tâm', 4, 10, 7, 1),
+('ST229', 'SCH37', N'Tại trung tâm', 5, 10, 3, 1),
+('ST230', 'SCH37', N'Tại trung tâm', 6, 10, 5, 1),
+('ST231', 'SCH37', N'Tại trung tâm', 7, 10, 4, 1),
+('ST232', 'SCH37', N'Tại trung tâm', 8, 10, 6, 1),
+
+-- SCH38
+('ST233', 'SCH38', N'Trực tuyến', 1, 10, 5, 1),
+('ST234', 'SCH38', N'Trực tuyến', 2, 10, 6, 1),
+('ST235', 'SCH38', N'Trực tuyến', 3, 10, 4, 1),
+('ST236', 'SCH38', N'Trực tuyến', 4, 10, 7, 1),
+('ST237', 'SCH38', N'Trực tuyến', 5, 10, 3, 1),
+('ST238', 'SCH38', N'Trực tuyến', 6, 10, 5, 1),
+('ST239', 'SCH38', N'Trực tuyến', 7, 10, 4, 1),
+('ST240', 'SCH38', N'Trực tuyến', 8, 10, 6, 1),
+
+-- SCH39
+('ST241', 'SCH39', N'Tại trung tâm', 1, 10, 5, 1),
+('ST242', 'SCH39', N'Tại trung tâm', 2, 10, 6, 1),
+('ST243', 'SCH39', N'Tại trung tâm', 3, 10, 4, 1),
+('ST244', 'SCH39', N'Tại trung tâm', 4, 10, 7, 1),
+('ST245', 'SCH39', N'Tại trung tâm', 5, 10, 3, 1),
+('ST246', 'SCH39', N'Tại trung tâm', 6, 10, 5, 1),
+('ST247', 'SCH39', N'Tại trung tâm', 7, 10, 4, 1),
+('ST248', 'SCH39', N'Tại trung tâm', 8, 10, 6, 1),
+
+-- SCH40
+('ST249', 'SCH40', N'Trực tuyến', 1, 10, 5, 1),
+('ST250', 'SCH40', N'Trực tuyến', 2, 10, 6, 1),
+('ST251', 'SCH40', N'Trực tuyến', 3, 10, 4, 1),
+('ST252', 'SCH40', N'Trực tuyến', 4, 10, 7, 1),
+('ST253', 'SCH40', N'Trực tuyến', 5, 10, 3, 1),
+('ST254', 'SCH40', N'Trực tuyến', 6, 10, 5, 1),
+('ST255', 'SCH40', N'Trực tuyến', 7, 10, 4, 1),
+('ST256', 'SCH40', N'Trực tuyến', 8, 10, 6, 1),
+
+-- SCH41
+('ST257', 'SCH41', N'Tại trung tâm', 1, 10, 5, 1),
+('ST258', 'SCH41', N'Tại trung tâm', 2, 10, 6, 1),
+('ST259', 'SCH41', N'Tại trung tâm', 3, 10, 4, 1),
+('ST260', 'SCH41', N'Tại trung tâm', 4, 10, 7, 1),
+('ST261', 'SCH41', N'Tại trung tâm', 5, 10, 3, 1),
+('ST262', 'SCH41', N'Tại trung tâm', 6, 10, 5, 1),
+('ST263', 'SCH41', N'Tại trung tâm', 7, 10, 4, 1),
+('ST264', 'SCH41', N'Tại trung tâm', 8, 10, 6, 1),
+
+-- SCH42
+('ST265', 'SCH42', N'Trực tuyến', 1, 10, 5, 1),
+('ST266', 'SCH42', N'Trực tuyến', 2, 10, 6, 1),
+('ST267', 'SCH42', N'Trực tuyến', 3, 10, 4, 1),
+('ST268', 'SCH42', N'Trực tuyến', 4, 10, 7, 1),
+('ST269', 'SCH42', N'Trực tuyến', 5, 10, 3, 1),
+('ST270', 'SCH42', N'Trực tuyến', 6, 10, 5, 1),
+('ST271', 'SCH42', N'Trực tuyến', 7, 10, 4, 1),
+('ST272', 'SCH42', N'Trực tuyến', 8, 10, 6, 1),
+
+-- SCH43
+('ST273', 'SCH43', N'Tại trung tâm', 1, 10, 5, 1),
+('ST274', 'SCH43', N'Tại trung tâm', 2, 10, 6, 1),
+('ST275', 'SCH43', N'Tại trung tâm', 3, 10, 4, 1),
+('ST276', 'SCH43', N'Tại trung tâm', 4, 10, 7, 1),
+('ST277', 'SCH43', N'Tại trung tâm', 5, 10, 3, 1),
+('ST278', 'SCH43', N'Tại trung tâm', 6, 10, 5, 1),
+('ST279', 'SCH43', N'Tại trung tâm', 7, 10, 4, 1),
+('ST280', 'SCH43', N'Tại trung tâm', 8, 10, 6, 1),
+
+-- SCH44
+('ST281', 'SCH44', N'Trực tuyến', 1, 10, 5, 1),
+('ST282', 'SCH44', N'Trực tuyến', 2, 10, 6, 1),
+('ST283', 'SCH44', N'Trực tuyến', 3, 10, 4, 1),
+('ST284', 'SCH44', N'Trực tuyến', 4, 10, 7, 1),
+('ST285', 'SCH44', N'Trực tuyến', 5, 10, 3, 1),
+('ST286', 'SCH44', N'Trực tuyến', 6, 10, 5, 1),
+('ST287', 'SCH44', N'Trực tuyến', 7, 10, 4, 1),
+('ST288', 'SCH44', N'Trực tuyến', 8, 10, 6, 1),
+
+-- SCH45
+('ST289', 'SCH45', N'Tại trung tâm', 1, 10, 5, 1),
+('ST290', 'SCH45', N'Tại trung tâm', 2, 10, 6, 1),
+('ST291', 'SCH45', N'Tại trung tâm', 3, 10, 4, 1),
+('ST292', 'SCH45', N'Tại trung tâm', 4, 10, 7, 1),
+('ST293', 'SCH45', N'Tại trung tâm', 5, 10, 3, 1),
+('ST294', 'SCH45', N'Tại trung tâm', 6, 10, 5, 1),
+('ST295', 'SCH45', N'Tại trung tâm', 7, 10, 4, 1),
+('ST296', 'SCH45', N'Tại trung tâm', 8, 10, 6, 1),
+
+-- SCH46
+('ST297', 'SCH46', N'Trực tuyến', 1, 10, 5, 1),
+('ST298', 'SCH46', N'Trực tuyến', 2, 10, 6, 1),
+('ST299', 'SCH46', N'Trực tuyến', 3, 10, 4, 1),
+('ST300', 'SCH46', N'Trực tuyến', 4, 10, 7, 1),
+('ST301', 'SCH46', N'Trực tuyến', 5, 10, 3, 1),
+('ST302', 'SCH46', N'Trực tuyến', 6, 10, 5, 1),
+('ST303', 'SCH46', N'Trực tuyến', 7, 10, 4, 1),
+('ST304', 'SCH46', N'Trực tuyến', 8, 10, 6, 1),
+
+-- SCH47
+('ST305', 'SCH47', N'Trực tuyến', 1, 10, 5, 1),
+('ST306', 'SCH47', N'Trực tuyến', 2, 10, 6, 1),
+('ST307', 'SCH47', N'Trực tuyến', 3, 10, 4, 1),
+('ST308', 'SCH47', N'Trực tuyến', 4, 10, 7, 1),
+('ST309', 'SCH47', N'Trực tuyến', 5, 10, 3, 1),
+('ST310', 'SCH47', N'Trực tuyến', 6, 10, 5, 1),
+('ST311', 'SCH47', N'Trực tuyến', 7, 10, 4, 1),
+('ST312', 'SCH47', N'Trực tuyến', 8, 10, 6, 1),
+
+-- SCH48
+('ST313', 'SCH48', N'Trực tuyến', 1, 10, 5, 1),
+('ST314', 'SCH48', N'Trực tuyến', 2, 10, 6, 1),
+('ST315', 'SCH48', N'Trực tuyến', 3, 10, 4, 1),
+('ST316', 'SCH48', N'Trực tuyến', 4, 10, 7, 1),
+('ST317', 'SCH48', N'Trực tuyến', 5, 10, 3, 1),
+('ST318', 'SCH48', N'Trực tuyến', 6, 10, 5, 1),
+('ST319', 'SCH48', N'Trực tuyến', 7, 10, 4, 1),
+('ST320', 'SCH48', N'Trực tuyến', 8, 10, 6, 1);
