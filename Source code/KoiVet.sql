@@ -1,5 +1,5 @@
 IF EXISTS (SELECT name FROM master.dbo.sysdatabases WHERE name = N'FA24_SE1854_SWP391_G1_KoiVeterinaryServiceCenter')
-    BEGIN
+BEGIN
         ALTER DATABASE [FA24_SE1854_SWP391_G1_KoiVeterinaryServiceCenter] SET OFFLINE WITH ROLLBACK IMMEDIATE;
         ALTER DATABASE [FA24_SE1854_SWP391_G1_KoiVeterinaryServiceCenter] SET ONLINE;
         Drop DATABASE [FA24_SE1854_SWP391_G1_KoiVeterinaryServiceCenter];
@@ -15,7 +15,7 @@ GO
 CREATE TABLE Role(
     RoleID nvarchar(20) PRIMARY KEY,
     Rolename nvarchar(100) NOT NULL
-)
+);
 GO
 
 Create table Account(
@@ -27,7 +27,7 @@ Create table Account(
     Password nvarchar(50) NOT NULL,
     Status nvarchar(50) NOT NULL,
 	IsActive bit not null,
-)
+);
 
 CREATE TABLE Customer(
     CustomerID nvarchar(20) PRIMARY KEY,
@@ -38,7 +38,7 @@ CREATE TABLE Customer(
     Birthday date,
     Address nvarchar(100) NOT NULL,
     Status nvarchar(50) NOT NULL
-)
+);
 GO
 
 CREATE TABLE Employee(
@@ -51,14 +51,14 @@ CREATE TABLE Employee(
     Birthday date,
     Address nvarchar(100) NOT NULL,
     Status nvarchar(50) NOT NULL,
-)
+);
 GO
 
 CREATE TABLE ServiceDeliveryMethod(
     ServiceDeliveryMethodID nvarchar(20) PRIMARY KEY,
     Name nvarchar(100) NOT NULL,
     Status nvarchar(50)
-)
+);
 GO
 
 CREATE TABLE Service(
@@ -68,7 +68,7 @@ CREATE TABLE Service(
     Price money NOT NULL,
     Description nvarchar(MAX),
     Status nvarchar(50)
-)
+);
 GO
 
 CREATE TABLE Feedback(
@@ -77,7 +77,7 @@ CREATE TABLE Feedback(
     VetRating int NOT NULL,
     Description nvarchar(MAX) NOT NULL,
     Status nvarchar(50) NOT NULL
-)
+);
 GO
 
 CREATE TABLE Schedule(
@@ -86,7 +86,7 @@ CREATE TABLE Schedule(
     Date date NOT NULL,
     Note nvarchar(MAX),
 	Status nvarchar(50) NOT NULL
-)
+);
 GO
 
 CREATE TABLE SlotTable(
@@ -97,7 +97,7 @@ CREATE TABLE SlotTable(
     SlotCapacity int,
 	SlotOrdered int,
     SlotStatus bit NOT NULL
-)
+);
 GO
 
 CREATE TABLE Booking(
@@ -122,13 +122,13 @@ CREATE TABLE Booking(
     Note nvarchar(MAX),
 	PaymentMethod nvarchar(50) NOT NULL,
     PaymentStatus nvarchar(50) NOT NULL
-)
+);
 GO 
 
 CREATE TABLE AnimalType(
     TypeID nvarchar(20) PRIMARY KEY,
     Name nvarchar(100) NOT NULL
-)
+);
 GO 
 
 CREATE TABLE BookingDetail(
@@ -137,13 +137,10 @@ CREATE TABLE BookingDetail(
     ServiceID nvarchar(20) FOREIGN KEY REFERENCES Service(ServiceID) NOT NULL,
     Incidental bit NOT NULL,
     NoteResult nvarchar(MAX),
-    AnimalStatusDescription nvarchar(MAX) ,
-    ConsultDoctor nvarchar(MAX),
-    DrugList nvarchar(MAX),
-    PoolStatusDescription nvarchar(MAX),
-    ConsultTechnician nvarchar(MAX),
-    MaterialList nvarchar(MAX),
-)
+    ExaminationResult nvarchar(MAX) ,
+    VetConsult nvarchar(MAX),
+    Formulary nvarchar(MAX),
+);
 GO 
 
 CREATE TABLE AnimalProfile(
@@ -156,7 +153,7 @@ CREATE TABLE AnimalProfile(
     Description nvarchar(MAX),
     Sex bit NOT NULL,
     Picture nvarchar(500) 
-)
+);
 GO
 
 CREATE TABLE PoolProfile(
@@ -168,7 +165,7 @@ CREATE TABLE PoolProfile(
     Height float NOT NULL,
     Depth float NOT NULL,
     Picture nvarchar(500)
-)
+);
 GO
 
 
@@ -176,13 +173,13 @@ CREATE TABLE FAQ(
     FaqID nvarchar(20) PRIMARY KEY,
     Question nvarchar(MAX) NOT NULL,
     Answer nvarchar(MAX) NOT NULL
-)
+);
 GO
 
 CREATE TABLE PostCategory(
     PostCategoryID nvarchar(20) PRIMARY KEY,
     Name nvarchar(MAX) NOT NULL,
-)
+);
 GO
 
 CREATE TABLE Post(
@@ -190,7 +187,7 @@ CREATE TABLE Post(
     PostName nvarchar(MAX) NOT NULL,
     PostCategoryID nvarchar(20) FOREIGN KEY REFERENCES PostCategory(PostCategoryID) NOT NULL,
     Context nvarchar(MAX) NOT NULL,
-)
+);
 GO 
 
 CREATE TABLE ServiceUse (
@@ -228,10 +225,9 @@ VALUES
 ('A8', '1122334455', 'Manager@gmail.com', 'R3', 'avatar3.jpg', 'vet', 'Normal', 1),
 ('A9', '1234554321', 'reception1@gmai.com', 'R1', 'avatar4.jpg', 'manager', 'Normal', 1),
 ('A10', '1234567876', 'admin@gmail.com', 'R2', 'avatar5.jpg', 'test', 'Normal', 1),
-('A11', '9987654321', 'decsr@gmail.com', 'R3', 'avatar5.jpg', 'vet', 'Normal', 1);
+('A11', '9987654321', 'decsr@gmail.com', 'R3', 'avatar5.jpg', 'vet', 'Normal', 1),
 ('A12', '0934160668', 'customer@gmail.com', 'R4', 'avatar7.jpg', 'customer', 'Normal', 1);
 GO
-
 
 INSERT INTO Customer (CustomerID, Firstname, Lastname, Sex, Birthday, Address, AccountID, Status) 
 VALUES 
@@ -240,8 +236,6 @@ VALUES
 ('C3', N'Linh', N'Phạm Gia', 0, '1995-07-22', N'789 Nguyễn Văn Cừ', 'A3', 1), 
 ('C4', N'Bình', N'Trần', 1, '1982-11-02', N'321 Lê Văn Việt', 'A4', 1),
 ('C5', N'Kiệt', N'Nguyễn', 0, '1979-08-14', N'200 vo van ha', 'A12', 1);
-GO
-
 GO
 
 -- Insert sample data for Employee
@@ -314,9 +308,6 @@ VALUES
 ('S39', 'SDM4', N'Châm cứu cho cá', 200000, N'Điều trị bằng phương pháp châm cứu', 1),
 ('S40', 'SDM4', N'Kiểm tra sinh sản', 250000, N'Kiểm tra và tư vấn về sinh sản', 1);
 
-
-
-
 INSERT INTO Feedback (FeedbackID, ServiceRating, VetRating, Description, Status) 
 VALUES 
 ('FB0', 0, 0, 'Null', 'Default'),
@@ -325,19 +316,6 @@ VALUES
 ('FB3', 5, 5, 'Very satisfied with the consultation.', 'Active'),
 ('FB4', 4, 5, 'Prompt and professional.', 'Active'),
 ('FB5', 5, 5, 'Koi surgery saved my fish!', 'Active');
-
-
--- Insert sample data for Booking
-INSERT INTO Booking (BookingID, CustomerID, EmployeeID, BookingDate, ExpiredDate, Deposit, NumberOfFish, IncidentalFish, NumberOfPool, IncidentalPool, VAT, BookingAddress, Distance, DistanceCost, TotalServiceCost, Status, FeedbackID, ScheduleID, Note, PaymentMethod, PaymentStatus) 
-VALUES 
-('B1', 'C1', 'E1', '2024-10-31 09:00:00', '2024-09-01 10:00:00', 50.00, 1, 0, 0, 0, 10.00, '250 Vo Van Hat', 5.5, 11.00, 661000, 'Confirmed', 'FB1', 'SCH1', 'Home visit for koi health check', 'Credit Card', 'Pending'),
-('B2', 'C2', 'E2', '2024-11-01 14:00:00', '2024-09-02 15:00:00', 37.50, 1, 0, 0, 0, 7.50, '456 Maple Ave', 0, 0.00, 397500, 'Confirmed', 'FB2', 'SCH2', 'Trực tuyến consultation for koi', 'PayPal', 'Pending'),
-('B3', 'C3', 'E3', '2024-10-31 18:00:00', '2024-09-03 19:00:00', 75.00, 1, 0, 0, 0, 15.00, '789 Oak St', 3.2, 6.40, 996000, 'Cancelled', 'FB3', 'SCH3', 'Clinic visit for koi disease treatment', 'Cash', 'Pending'),
-('B4', 'C4', 'E4', '2024-11-01 22:00:00', '2024-09-05 01:00:00', 150.00, 1, 0, 0, 0, 30.00, '321 Birch Ave', 8.7, 17.40, 2000000, 'In Progress', 'FB4', 'SCH4', 'Emergency koi surgery', 'Credit Card', 'Pending'),
---data đúng, đừng quan tâm các data ở trên
-('B5', 'C5', 'E4', '2024-11-01 11:00:00', '2024-11-01 13:00:00', 150.00, 1, 2, 0, 0, 30.00, '321 Tran Duy Hung', 8.7, 17.40, 2000000, 'Completed', 'FB0', 'SCH12', '', 'VNPay', 'Paid'),
-('B6', 'C5', 'E4', '2024-11-02 11:00:00', '2024-11-02 13:00:00', 150.00, 1, 0, 0, 2, 30.00, '300 Tran Hung Dao', 8.7, 17.40, 2000000, 'Completed', 'FB0', 'SCH16', 'kham ho', 'VNPay', 'Paid');
-
 
 -- Insert sample data for AnimalType
 INSERT INTO AnimalType (TypeID, Name) 
@@ -348,20 +326,6 @@ VALUES
 ('AT4', 'Saltwater Fish'),
 ('AT5', 'Betta Fish');
 
--- Insert sample data for BookingDetail
-INSERT INTO BookingDetail (BookingDetailID, BookingID, ServiceID, Incidental, NoteResult, ExaminationResult, VetConsult, Formulary)
-VALUES 
-('BD1', 'B1', 'S1', 0,'Koi appears healthy overall', 'Nishiki shows good coloration and active behavior', 'Dr. Amelia Fish', 'Probiotic supplement', 'Zen Garden Koi Pond maintains good water quality', 'Tech John Doe', 'Water testing kit, net'),
-('BD2', 'B2', 'S2', 0,'Goldfish exhibiting signs of stress', 'Bubbles has clamped fins and reduced activity', 'Dr. Michael Scales', 'Antibiotics, stress coat additive', 'Indoor Goldfish Tank requires improved filtration', 'Tech Jane Smith', 'New filter system, air pump'),
-('BD3', 'B3', 'S3', 0,'Tropical fish recovering from minor infection', 'Nemo shows improvement in fin condition and appetite', 'Dr. Sarah Coral', 'Broad-spectrum antibiotic, vitamin supplements', 'Tropical Reef Aquarium parameters stable', 'Tech Robert Johnson', 'UV sterilizer, coral food'),
-('BD4', 'B4', 'S4', 0,'Emergency surgery successful',  'Azure is stable post-surgery, requires close monitoring', 'Dr. David Finn', 'Pain medication, antibiotics', 'Saltwater Lagoon quarantine section set up', 'Tech Emily Waters', 'Surgical tools, quarantine tank')
-('BD5', 'B5', 'S31', 0,'Cá cảm nhẹ', 'cá hơi mập', 'Cần phải đem đi ướp muối cho đỡ lạnh', ' vitamin C'),
-('BD6', 'B5', 'S34', 1,'không phát hiện bất thường', 'cá hơi thừa cân', 'kiểm tra lại sau 1 tháng', ''),
-('BD7', 'B6', 'S4', 0,'không phát hiện bất thường', 'cá ổn', 'kiểm tra lại sau 1 tháng', ''),
-('BD8', 'B6', 'S20', 1,'không phát hiện bất thường', 'hồ bình thường', 'kiểm tra lại sau 1 tháng', 'muối sinh lý');
-
-
-
 INSERT INTO ServiceUse (ServiceUseID, AnimalProfileID, PoolProfileID, BookingDetailID) 
 VALUES 
 ('SU1','AP1','','BD5'),
@@ -370,13 +334,9 @@ VALUES
 ('SU4','AP1','','BD6'),
 ('SU5','AP2','','BD6'),
 ('SU6','AP3','','BD6'),
-
 ('SU7','AP4','','BD7'),
 ('SU8','','PP1','BD8'),
 ('SU9','','PP1','BD8');
-
-
-
 
 -- Insert sample data for AnimalProfile
 INSERT INTO AnimalProfile (AnimalProfileID, Name, TypeID, Size, Age, Color, Description, Sex, Picture) 
@@ -384,7 +344,7 @@ VALUES
 ('AP1', 'Nishiki', 'AT1', 24.5, 3, 'Red and White', 'A beautiful Kohaku koi with vibrant red patches on a white body', 1, 'nishiki_koi.jpg'),
 ('AP2', 'Bubbles', 'AT2', 6.0, 2, 'Orange', 'Energetic fancy goldfish with a bubbly personality', 0, 'bubbles_goldfish.jpg'),
 ('AP3', 'Nemo', 'AT3', 3.5, 1, 'Orange and White', 'Playful clownfish, always hiding in the anemone', 1, 'nemo_clownfish.jpg'),
-('AP4', 'Azure', 'AT4', 12.0, 4, 'Blue', 'Majestic blue tang with vibrant coloration', 0, 'azure_bluetang.jpg')
+('AP4', 'Azure', 'AT4', 12.0, 4, 'Blue', 'Majestic blue tang with vibrant coloration', 0, 'azure_bluetang.jpg');
 
 -- Insert sample data for PoolProfile
 INSERT INTO PoolProfile (PoolProfileID, Name, Note, Width, Description, Height, Depth, Picture)
@@ -392,7 +352,7 @@ VALUES
 ('PP1', 'Zen Garden Koi Pond','Requires weekly maintenance', 15.0, 'A traditional Japanese-style koi pond with a small waterfall and surrounding rock garden', 2.5, 4.0, 'zen_garden_pond.jpg'),
 ('PP2', 'Indoor Goldfish Tank', 'Check filter system monthly', 4.0, 'A large, well-lit indoor aquarium designed for multiple goldfish', 2.0, 2.0, 'indoor_goldfish_tank.jpg'),
 ('PP3', 'Tropical Reef Aquarium', 'Maintain consistent water temperature', 6.0, 'A colorful reef tank with live corals and various tropical fish species', 3.0, 2.5, 'tropical_reef_aquarium.jpg'),
-('PP4', 'Saltwater Lagoon', 'Monitor salinity levels regularly', 20.0, 'An expansive outdoor saltwater pool mimicking a natural lagoon environment', 5.0, 6.0, 'saltwater_lagoon.jpg')
+('PP4', 'Saltwater Lagoon', 'Monitor salinity levels regularly', 20.0, 'An expansive outdoor saltwater pool mimicking a natural lagoon environment', 5.0, 6.0, 'saltwater_lagoon.jpg');
 
 -- Insert sample data for FAQ
 INSERT INTO FAQ (FaqID, Question, Answer) VALUES
@@ -418,53 +378,53 @@ INSERT INTO Post (PostID, PostName, PostCategoryID, Context) VALUES
 ('P4', 'Designing the Perfect Koi Pond', 'PC4', 'Explore the key elements of designing a beautiful and functional Koi pond.'),
 ('P5', 'A Guide to Popular Koi Varieties', 'PC5', 'This article highlights some of the most popular Koi varieties and their unique features.');
 
-
-
 INSERT INTO Schedule (ScheduleID, EmployeeID, Date, Note, Status) VALUES
-
-('SCH9', 'E3', '2024-11-01', N'Trực tuyến', 'Active'),
-('SCH10', 'E4', '2024-11-01', N'Tại trung tâm', 'Active'),
-('SCH11', 'E3', '2024-11-02', N'Tại trung tâm', 'Active'),
-('SCH12', 'E4', '2024-11-02', N'Tại trung tâm', 'Active'),
-('SCH13', 'E3', '2024-11-03', N'Tại trung tâm', 'Active'),
-('SCH14', 'E4', '2024-11-03', N'Tại nhà', 'Active'),
-('SCH15', 'E3', '2024-11-04', N'Tại nhà', 'Active'),
-('SCH16', 'E4', '2024-11-04', N'Tại trung tâm', 'Active'),
-('SCH17', 'E3', '2024-11-05', N'Tại nhà', 'Active'),
-('SCH18', 'E4', '2024-11-05', N'Tại nhà', 'Active'),
-('SCH19', 'E3', '2024-11-06', N'Tại nhà', 'Active'),
-('SCH20', 'E4', '2024-11-06', N'Tại nhà', 'Active'),
-('SCH21', 'E3', '2024-11-07', N'Tại nhà', 'Active'),
-('SCH22', 'E4', '2024-11-07', N'Tại nhà', 'Active'),
-('SCH23', 'E3', '2024-11-08', N'Tại nhà', 'Active'),
-('SCH24', 'E4', '2024-11-08', N'Tại nhà', 'Active'),
-('SCH25', 'E3', '2024-11-09', N'Tại trung tâm', 'Active'),
-('SCH26', 'E4', '2024-11-09', N'Tại nhà', 'Active'),
-('SCH27', 'E3', '2024-11-10', N'Tại trung tâm', 'Active'),
-('SCH28', 'E4', '2024-11-10', N'Tại nhà', 'Active'),
-('SCH29', 'E3', '2024-11-11', N'Tại trung tâm', 'Active'),
-('SCH30', 'E4', '2024-11-11', N'Tại nhà', 'Active'),
-('SCH31', 'E3', '2024-11-12', N'Tại trung tâm', 'Active'),
-('SCH32', 'E4', '2024-11-12', N'Tại nhà', 'Active'),
-('SCH33', 'E3', '2024-11-13', N'Tại trung tâm', 'Active'),
-('SCH34', 'E4', '2024-11-13', N'Tại nhà', 'Active'),
-('SCH35', 'E3', '2024-11-14', N'Tại trung tâm', 'Active'),
-('SCH36', 'E4', '2024-11-14', N'Trực tuyến', 'Active'),
-('SCH37', 'E3', '2024-11-15', N'Tại trung tâm', 'Active'),
-('SCH38', 'E4', '2024-11-15', N'Trực tuyến', 'Active'),
-('SCH39', 'E3', '2024-11-16', N'Tại trung tâm', 'Active'),
-('SCH40', 'E4', '2024-11-16', N'Trực tuyến', 'Active'),
-('SCH41', 'E3', '2024-11-17', N'Tại trung tâm', 'Active'),
-('SCH42', 'E4', '2024-11-17', N'Trực tuyến', 'Active'),
-('SCH43', 'E3', '2024-11-18', N'Tại trung tâm', 'Active'),
-('SCH44', 'E4', '2024-11-18', N'Trực tuyến', 'Active'),
-('SCH45', 'E3', '2024-11-19', N'Tại trung tâm', 'Active'),
-('SCH46', 'E4', '2024-11-19', N'Trực tuyến', 'Active'),
-('SCH47', 'E3', '2024-11-20', N'Trực tuyến', 'Active'),
-('SCH48', 'E4', '2024-11-20', N'Trực tuyến', 'Active');
-
+('SCH0', 'E0', '2024-11-08', N'', 'Default'),
+('SCH9', 'E3', '2024-11-08', N'Trực tuyến', 'Active'),
+('SCH10', 'E4', '2024-11-08', N'Tại trung tâm', 'Active'),
+('SCH11', 'E3', '2024-11-09', N'Tại trung tâm', 'Active'),
+('SCH12', 'E4', '2024-11-09', N'Tại trung tâm', 'Active'),
+('SCH13', 'E3', '2024-11-10', N'Tại trung tâm', 'Active'),
+('SCH14', 'E4', '2024-11-10', N'Tại nhà', 'Active'),
+('SCH15', 'E3', '2024-11-11', N'Tại nhà', 'Active'),
+('SCH16', 'E4', '2024-11-11', N'Tại trung tâm', 'Active'),
+('SCH17', 'E3', '2024-11-12', N'Tại nhà', 'Active'),
+('SCH18', 'E4', '2024-11-12', N'Tại nhà', 'Active'),
+('SCH19', 'E3', '2024-11-13', N'Tại nhà', 'Active'),
+('SCH20', 'E4', '2024-11-13', N'Tại nhà', 'Active'),
+('SCH21', 'E3', '2024-11-14', N'Tại nhà', 'Active'),
+('SCH22', 'E4', '2024-11-14', N'Tại nhà', 'Active'),
+('SCH23', 'E3', '2024-11-15', N'Tại nhà', 'Active'),
+('SCH24', 'E4', '2024-11-15', N'Tại nhà', 'Active'),
+('SCH25', 'E3', '2024-11-16', N'Tại trung tâm', 'Active'),
+('SCH26', 'E4', '2024-11-16', N'Tại nhà', 'Active'),
+('SCH27', 'E3', '2024-11-17', N'Tại trung tâm', 'Active'),
+('SCH28', 'E4', '2024-11-17', N'Tại nhà', 'Active'),
+('SCH29', 'E3', '2024-11-18', N'Tại trung tâm', 'Active'),
+('SCH30', 'E4', '2024-11-18', N'Tại nhà', 'Active'),
+('SCH31', 'E3', '2024-11-19', N'Tại trung tâm', 'Active'),
+('SCH32', 'E4', '2024-11-19', N'Tại nhà', 'Active'),
+('SCH33', 'E3', '2024-11-20', N'Tại trung tâm', 'Active'),
+('SCH34', 'E4', '2024-11-20', N'Tại nhà', 'Active'),
+('SCH35', 'E3', '2024-11-21', N'Tại trung tâm', 'Active'),
+('SCH36', 'E4', '2024-11-21', N'Trực tuyến', 'Active'),
+('SCH37', 'E3', '2024-11-22', N'Tại trung tâm', 'Active'),
+('SCH38', 'E4', '2024-11-22', N'Trực tuyến', 'Active'),
+('SCH39', 'E3', '2024-11-23', N'Tại trung tâm', 'Active'),
+('SCH40', 'E4', '2024-11-23', N'Trực tuyến', 'Active'),
+('SCH41', 'E3', '2024-11-24', N'Tại trung tâm', 'Active'),
+('SCH42', 'E4', '2024-11-24', N'Trực tuyến', 'Active'),
+('SCH43', 'E3', '2024-11-25', N'Tại trung tâm', 'Active'),
+('SCH44', 'E4', '2024-11-25', N'Trực tuyến', 'Active'),
+('SCH45', 'E3', '2024-11-26', N'Tại trung tâm', 'Active'),
+('SCH46', 'E4', '2024-11-26', N'Trực tuyến', 'Active'),
+('SCH47', 'E3', '2024-11-27', N'Trực tuyến', 'Active'),
+('SCH48', 'E4', '2024-11-27', N'Trực tuyến', 'Active');
 
 INSERT INTO SlotTable (SlotTableID, ScheduleID, Note, Slot, SlotCapacity, SlotOrdered, SlotStatus) VALUES
+-- SCH0
+('ST0', 'SCH0', N'Trực tuyến', 0, 0, 0, 0),
+
 -- SCH9
 ('ST1', 'SCH9', N'Trực tuyến', 1, 10, 5, 1),
 ('ST2', 'SCH9', N'Trực tuyến', 2, 10, 6, 1),
@@ -533,7 +493,7 @@ INSERT INTO SlotTable (SlotTableID, ScheduleID, Note, Slot, SlotCapacity, SlotOr
 ('ST53', 'SCH15', N'Tại nhà', 5, 10, 3, 1),
 ('ST54', 'SCH15', N'Tại nhà', 6, 10, 5, 1),
 ('ST55', 'SCH15', N'Tại nhà', 7, 10, 4, 1),
-('ST56', 'SCH15', N'Tại nhà', 8, 10, 6, 1)
+('ST56', 'SCH15', N'Tại nhà', 8, 10, 6, 1),
 
 -- SCH16
 ('ST57', 'SCH16', N'Tại trung tâm', 1, 10, 5, 1),
@@ -863,3 +823,27 @@ INSERT INTO SlotTable (SlotTableID, ScheduleID, Note, Slot, SlotCapacity, SlotOr
 ('ST318', 'SCH48', N'Trực tuyến', 6, 10, 5, 1),
 ('ST319', 'SCH48', N'Trực tuyến', 7, 10, 4, 1),
 ('ST320', 'SCH48', N'Trực tuyến', 8, 10, 6, 1);
+
+-- Insert sample data for Booking, have to move down because sql query run top down
+INSERT INTO Booking (BookingID, CustomerID, EmployeeID, BookingDate, ExpiredDate, Deposit, NumberOfFish, IncidentalFish, NumberOfPool, IncidentalPool, VAT, BookingAddress, Distance, DistanceCost, TotalServiceCost, Status, FeedbackID, ScheduleID, Note, PaymentMethod, PaymentStatus) 
+VALUES 
+('B1', 'C1', 'E1', '2024-10-31 09:00:00', '2024-09-01 10:00:00', 50.00, 1, 0, 0, 0, 10.00, '250 Vo Van Hat', 5.5, 11.00, 661000, 'Confirmed', 'FB1', 'SCH0', 'Home visit for koi health check', 'Credit Card', 'Pending'),
+('B2', 'C2', 'E2', '2024-11-01 14:00:00', '2024-09-02 15:00:00', 37.50, 1, 0, 0, 0, 7.50, '456 Maple Ave', 0, 0.00, 397500, 'Confirmed', 'FB2', 'SCH9', 'Trực tuyến consultation for koi', 'PayPal', 'Pending'),
+('B3', 'C3', 'E3', '2024-10-31 18:00:00', '2024-09-03 19:00:00', 75.00, 1, 0, 0, 0, 15.00, '789 Oak St', 3.2, 6.40, 996000, 'Cancelled', 'FB3', 'SCH10', 'Clinic visit for koi disease treatment', 'Cash', 'Pending'),
+('B4', 'C4', 'E4', '2024-11-01 22:00:00', '2024-09-05 01:00:00', 150.00, 1, 0, 0, 0, 30.00, '321 Birch Ave', 8.7, 17.40, 2000000, 'In Progress', 'FB4', 'SCH11', 'Emergency koi surgery', 'Credit Card', 'Pending'),
+--data đúng, đừng quan tâm các data ở trên
+('B5', 'C5', 'E4', '2024-11-01 11:00:00', '2024-11-01 13:00:00', 150.00, 1, 2, 0, 0, 30.00, '321 Tran Duy Hung', 8.7, 17.40, 2000000, 'Completed', 'FB0', 'SCH12', '', 'VNPay', 'Paid'),
+('B6', 'C5', 'E4', '2024-11-02 11:00:00', '2024-11-02 13:00:00', 150.00, 1, 0, 0, 2, 30.00, '300 Tran Hung Dao', 8.7, 17.40, 2000000, 'Completed', 'FB0', 'SCH16', 'kham ho', 'VNPay', 'Paid');
+
+-- Insert sample data for BookingDetail
+INSERT INTO BookingDetail (BookingDetailID, BookingID, ServiceID, Incidental, NoteResult, ExaminationResult, VetConsult, Formulary)
+VALUES 
+('BD1', 'B1', 'S1', 0,'Koi appears healthy overall', 'Nishiki shows good coloration and active behavior', 'Dr. Amelia Fish', 'Probiotic supplement'),
+('BD2', 'B2', 'S2', 0,'Goldfish exhibiting signs of stress', 'Bubbles has clamped fins and reduced activity', 'Dr. Michael Scales', 'Antibiotics, stress coat additive'),
+('BD3', 'B3', 'S3', 0,'Tropical fish recovering from minor infection', 'Nemo shows improvement in fin condition and appetite', 'Dr. Sarah Coral', 'Broad-spectrum antibiotic, vitamin supplements'),
+('BD4', 'B4', 'S4', 0,'Emergency surgery successful',  'Azure is stable post-surgery, requires close monitoring', 'Dr. David Finn', 'Pain medication, antibiotics'),
+('BD5', 'B5', 'S3', 0,'Cá cảm nhẹ', 'cá hơi mập', 'Cần phải đem đi ướp muối cho đỡ lạnh', ' vitamin C'),
+('BD6', 'B5', 'S3', 1,'không phát hiện bất thường', 'cá hơi thừa cân', 'kiểm tra lại sau 1 tháng', ''),
+('BD7', 'B6', 'S4', 0,'không phát hiện bất thường', 'cá ổn', 'kiểm tra lại sau 1 tháng', ''),
+('BD8', 'B6', 'S2', 1,'không phát hiện bất thường', 'hồ bình thường', 'kiểm tra lại sau 1 tháng', 'muối sinh lý');
+
