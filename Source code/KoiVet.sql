@@ -336,7 +336,10 @@ VALUES
 ('SU6','AP3','','BD6'),
 ('SU7','AP4','','BD7'),
 ('SU8','','PP1','BD8'),
-('SU9','','PP1','BD8');
+('SU9','','PP1','BD8'),
+('SU10','AP4','','BD9');
+
+
 
 -- Insert sample data for AnimalProfile
 INSERT INTO AnimalProfile (AnimalProfileID, Name, TypeID, Size, Age, Color, Description, Sex, Picture) 
@@ -834,7 +837,9 @@ VALUES
 ('B4', 'C4', 'E4', '2024-11-01 22:00:00', '2024-09-05 01:00:00', 150.00, 1, 0, 0, 0, 30.00, '321 Birch Ave', 8.7, 17.40, 2000000, 'In Progress', 'FB4', 'SCH11', 'Emergency koi surgery', 'Credit Card', 'Pending'),
 --data đúng, đừng quan tâm các data ở trên
 ('B5', 'C5', 'E4', '2024-11-01 11:00:00', '2024-11-01 13:00:00', 150.00, 1, 2, 0, 0, 30.00, '321 Tran Duy Hung', 8.7, 17.40, 2000000, 'Completed', 'FB0', 'SCH12', '', 'VNPay', 'Paid'),
-('B6', 'C5', 'E4', '2024-11-02 11:00:00', '2024-11-02 13:00:00', 150.00, 1, 0, 0, 2, 30.00, '300 Tran Hung Dao', 8.7, 17.40, 2000000, 'Completed', 'FB0', 'SCH16', 'kham ho', 'VNPay', 'Paid');
+('B6', 'C5', 'E4', '2024-11-02 11:00:00', '2024-11-02 13:00:00', 150.00, 1, 0, 0, 2, 30.00, '300 Tran Hung Dao', 8.7, 17.40, 2000000, 'Completed', 'FB0', 'SCH16', 'kham ho', 'VNPay', 'Paid'),
+('B7', 'C5', 'E4', '2024-11-03 11:00:00', '2024-11-03 13:00:00', 150.00, 1, 0, 0, 0, 30.00, '300 Tran Hung Dao', 8.7, 17.40, 2000000, 'Confirmed', 'FB0', 'SCH18', '', 'VNPay', 'Paid');
+
 
 -- Insert sample data for BookingDetail
 INSERT INTO BookingDetail (BookingDetailID, BookingID, ServiceID, IsIncidental, NoteResult, ExaminationResult, VetConsult, Formulary)
@@ -846,5 +851,7 @@ VALUES
 ('BD5', 'B5', 'S3', 0,'Cá cảm nhẹ', 'cá hơi mập', 'Cần phải đem đi ướp muối cho đỡ lạnh', ' vitamin C'),
 ('BD6', 'B5', 'S3', 1,'không phát hiện bất thường', 'cá hơi thừa cân', 'kiểm tra lại sau 1 tháng', ''),
 ('BD7', 'B6', 'S4', 0,'không phát hiện bất thường', 'cá ổn', 'kiểm tra lại sau 1 tháng', ''),
-('BD8', 'B6', 'S2', 1,'không phát hiện bất thường', 'hồ bình thường', 'kiểm tra lại sau 1 tháng', 'muối sinh lý');
+('BD8', 'B6', 'S2', 1,'không phát hiện bất thường', 'hồ bình thường', 'kiểm tra lại sau 1 tháng', 'muối sinh lý'),
+('BD9', 'B7', 'S5', 0,'vết sẹo 2cm bên mang trái', 'đã phục hồi thu nhỏ sẹo còn 1cm tình trạng cá ổn,', 'kiểm tra lại sau 1 tháng', 'muối sinh lý');
+
 
