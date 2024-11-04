@@ -44,7 +44,6 @@ namespace Repositories.Repository
             Service? service = await servicerepo.GetByIdAsync(bd.ServiceID);
             if (service == null)
                 return 0;
-            bd.UnitPrice = service.Price;
             return await base.CreateAsync(bd);
         }
 

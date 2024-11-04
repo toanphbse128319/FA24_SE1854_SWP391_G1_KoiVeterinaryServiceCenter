@@ -128,7 +128,6 @@ public class BookingDetailController : ControllerBase {
                 Service s;
                 if ((s = await _unitOfWork.ServiceRepository.GetByIdAsync(item.ServiceID)) == null)
                     return BadRequest("Service not found!");
-                item.UnitPrice = s.Price;
             }
 
             foreach (var item in exam.AnimalProfile)

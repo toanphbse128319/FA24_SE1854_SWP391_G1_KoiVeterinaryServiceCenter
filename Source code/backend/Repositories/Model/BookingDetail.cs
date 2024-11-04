@@ -9,7 +9,6 @@ public class BookingDetail
     public string BookingDetailID { get; set; }
     public string BookingID { get; set; }
     public string ServiceID { get; set; }
-    public decimal UnitPrice { get; set; }
     public bool IsIncidental {  get; set; }
     public string NoteResult { get; set; }
     public string ExaminationResult { get; set; }
