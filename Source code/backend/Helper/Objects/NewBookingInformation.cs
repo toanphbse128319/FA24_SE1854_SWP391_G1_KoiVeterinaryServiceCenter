@@ -5,6 +5,7 @@ public class NewBookingInformation(){
     public string CustomerID{ get; set; }
     public string EmployeeID{ get; set; }
     public string ServiceID{ get; set; }
+    public string ServiceDeliveryMethodID { get; set; }
     public DateTime BookingDate{ get; set; }
     public int NumberOfFish{ get; set; }
     public int NumberOfPool{ get; set; }

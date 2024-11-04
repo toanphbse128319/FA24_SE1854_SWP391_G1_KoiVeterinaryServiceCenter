@@ -8,6 +8,7 @@ public class Booking
     public string BookingID { get; set; }
     public string CustomerID { get; set; }
     public string EmployeeID { get; set; }
+    public string ServiceDeliveryMethodID { get; set; }
     public DateTime BookingDate { get; set; } 
     public DateTime ExpiredDate { get; set; }
     public decimal Deposit { get; set; }

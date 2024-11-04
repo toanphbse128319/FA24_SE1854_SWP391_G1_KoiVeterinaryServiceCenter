@@ -67,6 +67,8 @@ createRoot(document.getElementById("root")).render(
             </PageTransition>
           }   
         />
+        Test
+        <Route path="/test" element={<BookingList />} />
         <Route path="/StaffPage" element={<StaffPage />} />
         <Route path="/PaymentNotice" element={<PaymentNotice />} />
         <Route path="/temp" element={<BookingList />} />
