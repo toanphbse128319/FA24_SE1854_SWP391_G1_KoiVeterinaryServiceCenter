@@ -135,7 +135,7 @@ CREATE TABLE BookingDetail(
     BookingDetailID nvarchar(20) PRIMARY KEY,
     BookingID nvarchar(20) FOREIGN KEY REFERENCES Booking(BookingID) NOT NULL,
     ServiceID nvarchar(20) FOREIGN KEY REFERENCES Service(ServiceID) NOT NULL,
-    Incidental bit NOT NULL,
+    IsIncidental bit NOT NULL,
     NoteResult nvarchar(MAX),
     ExaminationResult nvarchar(MAX) ,
     VetConsult nvarchar(MAX),
@@ -221,9 +221,9 @@ VALUES
 ('A4', '0121111111', 'manager2@gmail.com', 'R4', 'avatar4.jpg', 'manager123', 'Normal', 1),
 ('A5', '0123212313', 'Test@gmail.com', 'R4', 'avatar5.jpg', 'test12345', 'Normal', 1),
 ('A6', '8765785746', 'longtnhse173174@fpt.edu.vn', 'R4', 'avatar1.jpg', 'tangdeptrai', 'Normal', 1),
-('A7', '0835377623', 'vet2@gmail.com', 'R2', 'avatar2.jpg', 'vettemp', 'Normal', 1),
+('A9', '0835377623', 'vet2@gmail.com', 'R2', 'avatar2.jpg', 'vettemp', 'Normal', 1),
 ('A8', '1122334455', 'Manager@gmail.com', 'R2', 'avatar3.jpg', 'vet12345', 'Normal', 1),
-('A9', '1234554321', 'reception1@gmai.com', 'R3', 'avatar4.jpg', 'manager123', 'Normal', 1),
+('A7', '1234554321', 'reception1@gmai.com', 'R3', 'avatar4.jpg', 'manager123', 'Normal', 1),
 ('A10', '1234567876', 'admin@gmail.com', 'R2', 'avatar5.jpg', 'test12345', 'Normal', 1),
 ('A11', '9987654321', 'decsr@gmail.com', 'R3', 'avatar5.jpg', 'long12345', 'Normal123', 1),
 ('A12', '0100101010', 'kiet@gmail.com', 'R4', 'avatar6.jpg', 'kiet12345', 'Normal123', 1);
@@ -837,7 +837,7 @@ VALUES
 ('B6', 'C5', 'E4', '2024-11-02 11:00:00', '2024-11-02 13:00:00', 150.00, 1, 0, 0, 2, 30.00, '300 Tran Hung Dao', 8.7, 17.40, 2000000, 'Completed', 'FB0', 'SCH16', 'kham ho', 'VNPay', 'Paid');
 
 -- Insert sample data for BookingDetail
-INSERT INTO BookingDetail (BookingDetailID, BookingID, ServiceID, Incidental, NoteResult, ExaminationResult, VetConsult, Formulary)
+INSERT INTO BookingDetail (BookingDetailID, BookingID, ServiceID, IsIncidental, NoteResult, ExaminationResult, VetConsult, Formulary)
 VALUES 
 ('BD1', 'B1', 'S1', 0,'Koi appears healthy overall', 'Nishiki shows good coloration and active behavior', 'Dr. Amelia Fish', 'Probiotic supplement'),
 ('BD2', 'B2', 'S2', 0,'Goldfish exhibiting signs of stress', 'Bubbles has clamped fins and reduced activity', 'Dr. Michael Scales', 'Antibiotics, stress coat additive'),

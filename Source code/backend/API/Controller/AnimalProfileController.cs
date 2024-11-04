@@ -66,20 +66,14 @@ public class AnimalProfileController : ControllerBase {
             BookingDetail bd = await _unitOfWork.BookingDetailRepository.GetByIdAsync(profile.BookingDetail.BookingDetailID);
             if (bd == null)
                 return NotFound("BookingDetail does not existed!");
-            if (profile.BookingDetail.PoolStatusDescription != "" && bd.PoolStatusDescription != profile.BookingDetail.PoolStatusDescription)
-                bd.PoolStatusDescription = profile.BookingDetail.PoolStatusDescription;
-            if (profile.BookingDetail.AnimalStatusDescription != "" && bd.AnimalStatusDescription != profile.BookingDetail.AnimalStatusDescription)
-                bd.AnimalStatusDescription = profile.BookingDetail.AnimalStatusDescription;
-            if (profile.BookingDetail.ConsultDoctor != "" && bd.ConsultDoctor != profile.BookingDetail.ConsultDoctor)
-                bd.ConsultDoctor = profile.BookingDetail.ConsultDoctor;
-            if (profile.BookingDetail.DrugList != "" && bd.DrugList != profile.BookingDetail.DrugList)
-                bd.DrugList = profile.BookingDetail.DrugList;
-            if (profile.BookingDetail.MaterialList != "" && bd.MaterialList != profile.BookingDetail.MaterialList)
-                bd.MaterialList = profile.BookingDetail.MaterialList;
-            if (profile.BookingDetail.ConsultTechnician != "" && bd.ConsultTechnician != profile.BookingDetail.ConsultTechnician)
-                bd.ConsultTechnician = profile.BookingDetail.ConsultTechnician;
-            if (profile.BookingDetail.Incidental != profile.BookingDetail.Incidental)
-                bd.Incidental = profile.BookingDetail.Incidental;
+            if (profile.BookingDetail.ExaminationResult != "" && bd.ExaminationResult != profile.BookingDetail.ExaminationResult)
+                bd.ExaminationResult = profile.BookingDetail.ExaminationResult;
+            if (profile.BookingDetail.VetConsult != "" && bd.VetConsult != profile.BookingDetail.VetConsult)
+                bd.VetConsult = profile.BookingDetail.VetConsult;
+            if (profile.BookingDetail.Formulary != "" && bd.Formulary != profile.BookingDetail.Formulary)
+                bd.Formulary = profile.BookingDetail.Formulary;
+            if (profile.BookingDetail.IsIncidental != profile.BookingDetail.IsIncidental)
+                bd.IsIncidental = profile.BookingDetail.IsIncidental;
             if (profile.BookingDetail.NoteResult != "" && bd.NoteResult != profile.BookingDetail.NoteResult)
                 bd.NoteResult = profile.BookingDetail.NoteResult;
             if (await _unitOfWork.AnimalProfileRepository.AddProfilesAsync(profile) == 1 && await _unitOfWork.BookingDetailRepository.UpdateAsync(bd) != 0)

@@ -298,6 +298,7 @@ async function FetchServices(){
 
 async function FetchBookingDetail(){
     let id = window.sessionStorage.getItem("id");
+    console.log(id);
     let response = await FetchAPI( { endpoint: "/bookingdetail/getbyprofile?id=" + id } );
     if( !response.ok )
         return null;
@@ -326,15 +327,15 @@ const BookingList = ({
     const [bookingDetail, setBookingDetail] = useState([]);
 
     useEffect( () => {
-        if( window.sessionStorage.getItem("token") == null )
-            navigate("/Login");
-        FetchServices().then(results => { setServices( results ); setLoading( loading + 1 )} );
-        FetchSDM().then(results => { setSDM( results ); setLoading( loading + 1 ) } );
+        // if( window.sessionStorage.getItem("token") == null )
+        //     navigate("/Login");
+      //  FetchServices().then(results => { setServices( results ); setLoading( loading + 1 )} );
+FetchSDM().then(results => { setSDM( results ); setLoading( loading + 1 ) } );
         FetchBookingList().then(results => { 
             setBookings( results ); setLoading( loading + 1 );
         } );
         FetchBookingDetail().then( results => {
-            setBookingDetail( results ); setLoading( loading + 1 ); console.log( results );
+            setBookingDetail( results ); setLoading( loading + 1 ); console.log( results +'  1');
         } );
     }, [] );
     if( loading == 0  ){

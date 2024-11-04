@@ -60,20 +60,14 @@ public class BookingDetailController : ControllerBase {
             BookingDetail bd = await _unitOfWork.BookingDetailRepository.GetByIdAsync(info.BookingDetailID);
             if (bd == null)
                 return NotFound("BookingDetail does not existed!");
-            if (info.PoolStatusDescription != "" && bd.PoolStatusDescription != info.PoolStatusDescription)
-                bd.PoolStatusDescription = info.PoolStatusDescription;
-            if (info.AnimalStatusDescription != "" && bd.AnimalStatusDescription != info.AnimalStatusDescription)
-                bd.AnimalStatusDescription = info.AnimalStatusDescription;
-            if (info.ConsultDoctor != "" && bd.ConsultDoctor != info.ConsultDoctor)
-                bd.ConsultDoctor = info.ConsultDoctor;
-            if (info.DrugList != "" && bd.DrugList != info.DrugList)
-                bd.DrugList = info.DrugList;
-            if (info.MaterialList != "" && bd.MaterialList != info.MaterialList)
-                bd.MaterialList = info.MaterialList;
-            if (info.ConsultTechnician != "" && bd.ConsultTechnician != info.ConsultTechnician)
-                bd.ConsultTechnician = info.ConsultTechnician;
-            if (info.Incidental != info.Incidental)
-                bd.Incidental = info.Incidental;
+            if (info.ExaminationResult != "" && bd.ExaminationResult != info.ExaminationResult)
+                bd.ExaminationResult = info.ExaminationResult;
+            if (info.VetConsult != "" && bd.VetConsult != info.VetConsult)
+                bd.VetConsult = info.VetConsult;
+            if (info.Formulary != "" && bd.Formulary != info.Formulary)
+                bd.Formulary = info.Formulary;
+            if (info.IsIncidental != info.IsIncidental)
+                bd.IsIncidental = info.IsIncidental;
             if (info.NoteResult != "" && bd.NoteResult != info.NoteResult)
                 bd.NoteResult = info.NoteResult;
             if (await _unitOfWork.BookingDetailRepository.UpdateAsync(bd) == 0)
