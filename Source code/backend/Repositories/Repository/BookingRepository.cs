@@ -119,6 +119,7 @@ public class BookingRepository : GenericRepository<Booking>
             newOrder.CustomerID = info.CustomerID;
             newOrder.EmployeeID = info.EmployeeID;
             newOrder.BookingDate = info.BookingDate;
+            newOrder.ServiceDeliveryMethodID = info.ServiceDeliveryMethodID;
             newOrder.ExpiredDate = info.BookingDate.AddHours(2);
             newOrder.NumberOfFish = info.NumberOfFish;
             newOrder.IncidentalFish = 0;

@@ -66,7 +66,8 @@ const BookingActions = ({
   selectedService,
   bookingDetail,
 }) => {
-    
+    console.log('day la bôking detail ben selected sẻvice' +bookingDetail)
+    console.log('Service ID:', bookingDetail?.ServiceID);
   const [activeTab, setActiveTab] = useState(0);
   const [currentStep, setCurrentStep] = useState('CheckInFish');
 
@@ -196,7 +197,7 @@ const BookingActions = ({
 
   const handleSubmit = async () => {
     try {
-       console.log(fishProfiles,poolProfiles)
+       console.log('day la fish va pool '+ fishProfiles,poolProfiles)
 
        const bookingDetail1 ={
         BookingDetailID: bookingDetail.BookingDetailID,
@@ -266,7 +267,7 @@ const BookingActions = ({
       [field]: event.target.value
     });
   };
-  console.log(selectedService)
+  console.log('day la service dat trc ' +selectedService);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">

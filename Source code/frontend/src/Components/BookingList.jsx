@@ -298,7 +298,7 @@ async function FetchServices(){
 
 async function FetchBookingDetail(){
     let id = window.sessionStorage.getItem("id");
-    console.log(id);
+    console.log('day la id '+id);
     let response = await FetchAPI( { endpoint: "/bookingdetail/getbyprofile?id=" + id } );
     if( !response.ok )
         return null;
@@ -335,7 +335,7 @@ FetchSDM().then(results => { setSDM( results ); setLoading( loading + 1 ) } );
             setBookings( results ); setLoading( loading + 1 );
         } );
         FetchBookingDetail().then( results => {
-            setBookingDetail( results ); setLoading( loading + 1 ); console.log( results +'  1');
+            setBookingDetail( results ); setLoading( loading + 1 );
         } );
     }, [] );
     if( loading == 0  ){
@@ -393,6 +393,11 @@ FetchSDM().then(results => { setSDM( results ); setLoading( loading + 1 ) } );
     setSelectedBookingId(bookingId);
     setShowFeedbackModal(true);
   };
+
+  const handleConsoleLog = (temp) =>{
+
+    console.log('day la service ' +temp)
+  }
 
   const handleCloseFeedback = () => {
     setShowFeedbackModal(false);
@@ -524,11 +529,16 @@ FetchSDM().then(results => { setSDM( results ); setLoading( loading + 1 ) } );
                         isOpen={showBookingActions}
                         onClose={handleCloseBookingActions}
                         onSubmitSuccess={() => setIsIncidental(true)}
-                        selectedService={services.find(service =>
-                          service.ServiceID === bookingDetail.find(detail =>
+                        selectedService={handleConsoleLog(
+                          bookingDetail.find(detail =>
                             detail.BookingID === booking.BookingID
-                          ).ServiceID
-                        )}
+                          ))
+                        
+                        // (services.find(service =>
+                        //   service.ServiceID === bookingDetail.find(detail =>
+                        //     detail.BookingID === booking.BookingID
+                        //   ).ServiceID)
+                      }
                         bookingDetail= {bookingDetail.find(detail => detail.BookingID === booking.BookingID)}
                       />
                     </>
