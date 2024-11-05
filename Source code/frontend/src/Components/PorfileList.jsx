@@ -8,7 +8,7 @@ const ProfileListModal = ({ fishProfiles, poolProfiles, onUpdateFishProfile, onU
   const [open, setOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
   const [editingItem, setEditingItem] = useState(null);
-  
+
   const handleClose = () => {
     setOpen(false);
     setEditingItem(null);
@@ -39,11 +39,19 @@ const ProfileListModal = ({ fishProfiles, poolProfiles, onUpdateFishProfile, onU
     setEditingItem(null);
   };
 
+  const renderEmptyState = (type) => (
+    <Box className="flex flex-col items-center justify-center py-8">
+      <Typography variant="h6" className="text-gray-500 mb-2">
+        {type === 'fish' ? 'Không có thông tin về cá' : 'Không có thông tin về hồ'}
+      </Typography>
+    </Box>
+  );
+
   return (
-    <div className="relative">
-      <IconButton 
+    <div className="relative" title="Danh sách cá và hồ">
+      <IconButton
         onClick={() => setOpen(true)}
-        sx={{ color: '#64B0E0', fontSize: '25px' }}
+        sx={{ color: 'white', fontSize: '25px' }}
       >
         <FormatListBulletedIcon />
       </IconButton>
@@ -80,14 +88,19 @@ const ProfileListModal = ({ fishProfiles, poolProfiles, onUpdateFishProfile, onU
                   <TextField
                     label="Kích thước"
                     value={editingItem.data.Size || ''}
+                     type="number"
                     onChange={(e) => setEditingItem({
                       ...editingItem,
                       data: { ...editingItem.data, Size: e.target.value }
                     })}
+                    InputProps={{
+                      endAdornment: <span className="text-gray-500">cm</span>
+                    }}
                   />
                   <TextField
                     label="Tuổi"
                     value={editingItem.data.Age || ''}
+                     type="number"
                     onChange={(e) => setEditingItem({
                       ...editingItem,
                       data: { ...editingItem.data, Age: e.target.value }
@@ -131,26 +144,38 @@ const ProfileListModal = ({ fishProfiles, poolProfiles, onUpdateFishProfile, onU
                   <TextField
                     label="Chiều rộng"
                     value={editingItem.data.Width || ''}
+                     type="number"
                     onChange={(e) => setEditingItem({
                       ...editingItem,
                       data: { ...editingItem.data, Width: e.target.value }
                     })}
+                    InputProps={{
+                      endAdornment: <span className="text-gray-500">m</span>
+                    }}
                   />
                   <TextField
                     label="Chiều cao"
                     value={editingItem.data.Height || ''}
+                     type="number"
                     onChange={(e) => setEditingItem({
                       ...editingItem,
                       data: { ...editingItem.data, Height: e.target.value }
                     })}
+                    InputProps={{
+                      endAdornment: <span className="text-gray-500">m</span>
+                    }}
                   />
                   <TextField
                     label="Độ sâu"
                     value={editingItem.data.Depth || ''}
+                     type="number"
                     onChange={(e) => setEditingItem({
                       ...editingItem,
                       data: { ...editingItem.data, Depth: e.target.value }
                     })}
+                    InputProps={{
+                      endAdornment: <span className="text-gray-500">m</span>
+                    }}
                   />
                   <TextField
                     label="Mô tả"
@@ -166,8 +191,8 @@ const ProfileListModal = ({ fishProfiles, poolProfiles, onUpdateFishProfile, onU
                 <Button variant="outlined" onClick={() => setEditingItem(null)}>
                   Hủy
                 </Button>
-                <Button 
-                  variant="contained" 
+                <Button
+                  variant="contained"
                   onClick={handleUpdateProfile}
                   style={{
                     background: 'linear-gradient(90deg, #64B0E0 25%, rgba(25, 200, 254, 0.75) 75%)'
@@ -180,50 +205,54 @@ const ProfileListModal = ({ fishProfiles, poolProfiles, onUpdateFishProfile, onU
           ) : (
             <div>
               {activeTab === 0 ? (
-                fishProfiles.map((profile, index) => (
-                  <Box 
-                    key={index}
-                    className="p-3 mb-2 border rounded hover:bg-gray-50 flex justify-between items-start"
-                  >
-                    <div>
-                      <Typography variant="subtitle1" className="font-medium">
-                        {profile.Name || 'Chưa đặt tên'}
-                      </Typography>
-                      <div className="text-sm text-gray-600 mt-1">
-                        <div>Kích thước: {profile.Size || 'N/A'}</div>
-                        <div>Tuổi: {profile.Age || 'N/A'}</div>
-                        <div>Màu sắc: {profile.Color || 'N/A'}</div>
-                        <div>Mô tả: {profile.Description || 'N/A'}</div>
-                        <div>Giới tính: {profile.Sex || 'N/A'}</div>
+                fishProfiles.length > 0 ? (
+                  fishProfiles.map((profile, index) => (
+                    <Box
+                      key={index}
+                      className="p-3 mb-2 border rounded hover:bg-gray-50 flex justify-between items-start"
+                    >
+                      <div>
+                        <Typography variant="subtitle1" className="font-medium">
+                          {profile.Name || 'Chưa đặt tên'}
+                        </Typography>
+                        <div className="text-sm text-gray-600 mt-1">
+                          <div>Kích thước: {profile.Size ? `${profile.Size} cm` : 'Chưa có dữ liệu'}</div>
+                          <div>Tuổi: {profile.Age || 'Chưa có dữ liệu'}</div>
+                          <div>Màu sắc: {profile.Color || 'Chưa có dữ liệu'}</div>
+                          <div>Mô tả: {profile.Description || 'Chưa có dữ liệu'}</div>
+                          <div>Giới tính: {profile.Sex || 'Chưa có dữ liệu'}</div>
+                        </div>
                       </div>
-                    </div>
-                    <IconButton onClick={() => handleEditFish(index, profile)}>
-                      <EditIcon sx={{ color: '#64B0E0' }} />
-                    </IconButton>
-                  </Box>
-                ))
+                      <IconButton onClick={() => handleEditFish(index, profile)}>
+                        <EditIcon sx={{ color: '#64B0E0' }} />
+                      </IconButton>
+                    </Box>
+                  ))
+                ) : renderEmptyState('fish')
               ) : (
-                poolProfiles.map((profile, index) => (
-                  <Box 
-                    key={index}
-                    className="p-3 mb-2 border rounded hover:bg-gray-50 flex justify-between items-start"
-                  >
-                    <div>
-                      <Typography variant="subtitle1" className="font-medium">
-                        {profile.Name || 'Chưa đặt tên'}
-                      </Typography>
-                      <div className="text-sm text-gray-600 mt-1">
-                        <div>Chiều rộng: {profile.Width || 'N/A'}</div>
-                        <div>Chiều cao: {profile.Height || 'N/A'}</div>
-                        <div>Độ sâu: {profile.Depth || 'N/A'}</div>
-                        <div>Mô tả: {profile.Description || 'N/A'}</div>
+                poolProfiles.length > 0 ? (
+                  poolProfiles.map((profile, index) => (
+                    <Box
+                      key={index}
+                      className="p-3 mb-2 border rounded hover:bg-gray-50 flex justify-between items-start"
+                    >
+                      <div>
+                        <Typography variant="subtitle1" className="font-medium">
+                          {profile.Name || 'Chưa đặt tên'}
+                        </Typography>
+                        <div className="text-sm text-gray-600 mt-1">
+                          <div>Chiều rộng: {profile.Width ? `${profile.Width} m` : 'Chưa có dữ liệu'}</div>
+                          <div>Chiều cao: {profile.Height ? `${profile.Height} m` : 'Chưa có dữ liệu'}</div>
+                          <div>Độ sâu: {profile.Depth ? `${profile.Depth} m` : 'Chưa có dữ liệu'}</div>
+                          <div>Mô tả: {profile.Description || 'Chưa có dữ liệu'}</div>
+                        </div>
                       </div>
-                    </div>
-                    <IconButton onClick={() => handleEditPool(index, profile)}>
-                      <EditIcon sx={{ color: '#64B0E0' }} />
-                    </IconButton>
-                  </Box>
-                ))
+                      <IconButton onClick={() => handleEditPool(index, profile)}>
+                        <EditIcon sx={{ color: '#64B0E0' }} />
+                      </IconButton>
+                    </Box>
+                  ))
+                ) : renderEmptyState('pool')
               )}
             </div>
           )}
