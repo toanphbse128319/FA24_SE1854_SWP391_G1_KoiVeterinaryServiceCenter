@@ -236,7 +236,7 @@ VALUES
 ('C2', N'Bình', N'Hoàng', 0, '1985-03-15', N'456 Điện Biên Phủ', 'A2', 1),
 ('C3', N'Linh', N'Phạm Gia', 0, '1995-07-22', N'789 Nguyễn Văn Cừ', 'A3', 1), 
 ('C4', N'Bình', N'Trần', 1, '1982-11-02', N'321 Lê Văn Việt', 'A4', 1),
-('C5', N'Kiệt', N'Nguyễn', 0, '1979-08-14', N'200 vo van ha', 'A12', 1);
+('C5', N'Kiệt', N'Nguyễn', 0, '1979-08-14', N'200 vo van hat', 'A12', 1);
 GO
 
 -- Insert sample data for Employee

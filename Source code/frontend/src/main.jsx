@@ -23,6 +23,9 @@ import StaffManage from "./Components/Manager/StaffManage.jsx"
 import PageTransition from "./Components/PageTransition.tsx";
 import PaymentNotice from "./Components/PaymentNotice.jsx";
 import ManageAccount from "./Components/Manager/ManageAccount.jsx";
+import Map from "./Components/MapPicker.jsx";
+
+
 import {
   BrowserRouter,
   createBrowserRouter,
@@ -59,6 +62,7 @@ createRoot(document.getElementById("root")).render(
         <Route path="/Login" element={<Login />} />
         <Route path="/Booking" element={<Booking />} />
         <Route path="/Confirm" element={<Confirm />} />
+        <Route path="/Map" element={<Map />} />
         <Route
           path="/MyProfile"
           element={

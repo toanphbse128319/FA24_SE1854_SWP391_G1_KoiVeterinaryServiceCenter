@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Map from './MapPicker'
 import { 
   Dialog,
   DialogTitle,
@@ -20,6 +21,7 @@ const CustomerEditDialog = ({ open, onClose, onSave, initialData }) => {
   });
 
   const [errors, setErrors] = useState({});
+  const [adddress, setAdddress] = useState(formData.address);
 
   const validateForm = () => {
     const newErrors = {};
@@ -62,6 +64,7 @@ const CustomerEditDialog = ({ open, onClose, onSave, initialData }) => {
             fullWidth
             label="Số điện thoại"
             value={formData.phone}
+            text='number'
             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
             error={!!errors.phone}
             helperText={errors.phone}
@@ -75,9 +78,18 @@ const CustomerEditDialog = ({ open, onClose, onSave, initialData }) => {
             error={!!errors.address}
             helperText={errors.address}
             multiline
-            rows={3}
+            rows={1}
             variant="outlined"
           />
+          <div style={{
+            width:'100%',
+            height:'35vh',
+          }}>
+          <Map
+          address={formData.address}
+          />
+          </div>
+        
         </Box>
       </DialogContent>
       <DialogActions sx={{ p: 2 }}>
@@ -171,7 +183,7 @@ const CustomerSummary = ({ name, phone, address, onUpdateInfo }) => {
             sx={{
               background: 'linear-gradient(90deg, #64B0E0 25%, rgba(25, 200, 254, 0.75) 75%)',
               fontWeight: 'bold',
-              padding: '12px',
+              padding: '10px',
               borderRadius: '10px',
               '&:hover': {
                 background: 'linear-gradient(90deg, #5299c7 25%, rgba(20, 180, 230, 0.75) 75%)'
