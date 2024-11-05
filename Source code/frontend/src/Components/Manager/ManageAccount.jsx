@@ -4,88 +4,107 @@ import { FetchAPI } from "../../Helper/Utilities";
 const ManageCustomer = () => {
   const [customers, setCustomers] = useState([]);
 
-  const handleDelete = (customerID) => {
-    // Logic để xóa customer
-    console.log("Delete customer with ID:", customerID);
+  const handleUpdateStatus = async (customerID, status) => {
+    const action = status === "0" ? "xóa" : "kích hoạt lại";
+    const confirmed = window.confirm(`Bạn có chắc chắn muốn ${action} người dùng này?`);
+    
+    if (confirmed) {
+      try {
+        // Call the FetchAPI to send the PUT request to update the status
+        const response = await FetchAPI({
+          endpoint: "/Customer/updatestatus",
+          method: "PUT",
+          body: { id: customerID, Message: status }, // Status is either "0" or "1"
+        });
+
+        if (response.ok) {
+          alert(`Khách hàng với ID ${customerID} đã được cập nhật trạng thái thành công.`);
+          // Optionally, update the local customer data to reflect the status change
+          setCustomers((prevCustomers) =>
+            prevCustomers.map((customer) =>
+              customer.CustomerID === customerID
+                ? { ...customer, Status: status }
+                : customer
+            )
+          );
+        } else {
+          alert("Có lỗi xảy ra khi cập nhật trạng thái người dùng.");
+        }
+      } catch (error) {
+        console.error("Error updating customer status:", error);
+        alert("Không thể kết nối tới server.");
+      }
+    }
   };
 
   useEffect(() => {
     async function getCustomers() {
       try {
-        let response = await FetchAPI({ endpoint: "/Customer" });
+        const response = await FetchAPI({ endpoint: "/Customer" });
         if (!response.ok) throw new Error("Failed to fetch data");
 
-        let json = await response.json();
+        const json = await response.json();
         setCustomers(json);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     }
 
-    getCustomers(); // Gọi hàm để lấy dữ liệu khách hàng
+    getCustomers();
   }, []);
 
   return (
-    <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
+    <div className="rounded-lg border border-gray-300 bg-white px-5 py-6 shadow-lg dark:border-gray-700 dark:bg-gray-800">
       <div className="max-w-full overflow-x-auto">
-        <table className="w-full table-auto">
+        <table className="w-full table-auto text-lg">
           <thead>
-            <tr className="bg-gray-2 text-left dark:bg-meta-4">
-              <th className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                ID
-              </th>
-              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
-                Tên
-              </th>
-              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
-                Giới tính
-              </th>
-              <th className="py-4 px-4 font-medium text-black dark:text-white">
-                Ngày sinh
-              </th>
-              <th className="py-4 px-4 font-medium text-black dark:text-white">
-                Địa chỉ
-              </th>
-              <th className="py-4 px-4 font-medium text-black dark:text-white">
-                Hành động
-              </th>
+            <tr className="bg-gray-100 text-left text-gray-700 dark:bg-gray-700 dark:text-gray-200">
+              <th className="w-16 py-4 px-2 font-semibold text-center">ID</th>
+              <th className="min-w-[150px] py-4 px-4 font-semibold">Tên</th>
+              <th className="min-w-[100px] py-4 px-4 font-semibold">Giới tính</th>
+              <th className="py-4 px-4 font-semibold">Ngày sinh</th>
+              <th className="py-4 px-4 font-semibold">Địa chỉ</th>
+              <th className="py-4 px-4 font-semibold text-center">Hành động</th>
             </tr>
           </thead>
           <tbody>
             {customers.map((customer) => (
-              <tr key={customer.CustomerID}>
-                <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
-                  <h5 className="font-medium text-black dark:text-white">
-                    {customer.CustomerID}
-                  </h5>
+              <tr key={customer.CustomerID} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <td className="border-b border-gray-200 py-5 px-2 text-center font-semibold dark:border-gray-600">
+                  <h5 className="text-gray-800 dark:text-gray-200">{customer.CustomerID}</h5>
                 </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <p className="text-black dark:text-white">
+                <td className="border-b border-gray-200 py-5 px-4 font-semibold dark:border-gray-600">
+                  <p className="text-gray-800 dark:text-gray-200">
                     {customer.FirstName} {customer.LastName}
                   </p>
                 </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <p className="text-black dark:text-white">
+                <td className="border-b border-gray-200 py-5 px-4 font-semibold dark:border-gray-600">
+                  <p className="text-gray-800 dark:text-gray-200">
                     {customer.Sex ? "Nam" : "Nữ"}
                   </p>
                 </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <p className="text-black dark:text-white">
-                    {customer.BirthDay}
-                  </p>
+                <td className="border-b border-gray-200 py-5 px-4 font-semibold dark:border-gray-600">
+                  <p className="text-gray-800 dark:text-gray-200">{customer.BirthDay}</p>
                 </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <p className="text-black dark:text-white">
-                    {customer.Address}
-                  </p>
+                <td className="border-b border-gray-200 py-5 px-4 font-semibold dark:border-gray-600">
+                  <p className="text-gray-800 dark:text-gray-200">{customer.Address}</p>
                 </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <button
-                    onClick={() => handleDelete(customer.CustomerID)}
-                    className="bg-red-400 hover:bg-red-500 text-white font-bold py-2 px-4 rounded-md border border-red-600 transition duration-300 ease-in-out"
-                  >
-                    Xóa
-                  </button>
+                <td className="border-b border-gray-200 py-5 px-4 text-center dark:border-gray-600">
+                  {customer.Status === "1" ? (
+                    <button
+                      onClick={() => handleUpdateStatus(customer.CustomerID, "0")}
+                      className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md border border-red-600 transition duration-300"
+                    >
+                      Xóa
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => handleUpdateStatus(customer.CustomerID, "1")}
+                      className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md border border-green-600 transition duration-300"
+                    >
+                      Kích hoạt lại
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}

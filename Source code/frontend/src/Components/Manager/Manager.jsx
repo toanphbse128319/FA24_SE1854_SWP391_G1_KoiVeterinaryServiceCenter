@@ -4,6 +4,7 @@ import ManageLanding from "./ManageLanding";
 import ManageAccount from "./ManageAccount";
 import AssignVet from "../Staff/AssignVet";
 import App from "../../App";
+import DashBoard from "./DashBoard"
 import { Navigate, useNavigate } from "react-router-dom";
 import { LogOut } from "../../Helper/Utilities";
 
@@ -20,8 +21,8 @@ const StaffManage = () => {
         return <ManageLanding />;
       case "ManageAccount":
         return <ManageAccount />;
-      case "AssignVet":
-        return <AssignVet />;
+      case "DashBoard":
+        return <DashBoard/>;
       case "Logout":
         return <App />;
       default:
@@ -61,9 +62,9 @@ const StaffManage = () => {
                 ? "bg-blue-600"
                 : "bg-gray-700 hover:bg-blue-500"
             }`}
-            onClick={() => setActivePage("AssignVet")}
+            onClick={() => setActivePage("DashBoard")}
           >
-            Assign Vet
+            Dashboard
           </button>
           <button
             onClick={() => {
