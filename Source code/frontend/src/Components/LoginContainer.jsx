@@ -132,7 +132,7 @@ function Login() {
             navigate("/StaffPage");
           }
           if (role === "Manager") {
-            navigate("/StaffManage");  
+            navigate("/Manager");  
           } else {
             navigate("/");
           }

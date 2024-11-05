@@ -19,7 +19,7 @@ import News from "./Components/News.jsx";
 import PaymentStatusPage from "./pages/PaymentConfirmation.jsx";
 import Test from "./Components/BookingList.jsx";
 import MyProfile from "./pages/MyProfile.jsx";
-import StaffManage from "./Components/Manager/StaffManage.jsx"
+import Manager from "./Components/Manager/Manager.jsx"
 import PageTransition from "./Components/PageTransition.tsx";
 import PaymentNotice from "./Components/PaymentNotice.jsx";
 import ManageAccount from "./Components/Manager/ManageAccount.jsx";
@@ -78,7 +78,7 @@ createRoot(document.getElementById("root")).render(
         <Route path="/temp" element={<BookingList />} />
         <Route path="/bookinglist" element={<BookingList />} />
         <Route path="/ManageLanding" element={<ManageLanding />} />
-        <Route path="/StaffManage" element={<StaffManage />} />
+        <Route path="/Manager" element={<Manager />} />
        
 
       </Routes>

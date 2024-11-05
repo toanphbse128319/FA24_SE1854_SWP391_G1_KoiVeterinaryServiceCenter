@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Button, TextField, Card, CardContent, CardActions, Typography } from '@mui/material';
+import { Button, TextField, Card, CardContent, CardActions, Typography, RadioGroup, FormControlLabel, Radio } from '@mui/material';
+import { FetchAPI } from '../Helper/Utilities';
 
 function SignUp() {
   const [firstName, setFirstName] = useState('');
@@ -8,11 +9,52 @@ function SignUp() {
   const [address, setAddress] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
+  const [sex, setSex] = useState(true); // Default to true (Nam)
+  const [birthday, setBirthday] = useState(''); // Trường birthday
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Xử lý đăng ký ở đây
-    console.log('Đăng ký với:', { firstName, lastName, email, address, phone, password });
+    
+    // Prepare the payload according to the API
+    const payload = {
+      email: email,
+      phoneNumber: phone,
+      avatar: "string", // You can replace this with an actual avatar value
+      password: password,
+      firstname: firstName,
+      lastname: lastName,
+      sex: sex, // true for Nam, false for Nữ
+      birthday: birthday, // Ngày sinh nhập từ người dùng
+      address: address
+    };
+    
+    try {
+      // Make API call using FetchAPI
+      const response = await FetchAPI({
+        endpoint: "/Signup",
+        method: "POST",
+        body: payload,
+      });
+
+      // Handle the API response
+      const contentType = response.headers.get("Content-Type");
+      let data;
+      if (contentType && contentType.includes("application/json")) {
+        data = await response.json();
+      } else {
+        data = await response.text();
+      }
+
+      if (response.ok) {
+        alert("Đăng ký thành công!");
+        console.log('Signup response:', data);
+      } else {
+        alert("Đăng ký thất bại.");
+      }
+    } catch (error) {
+      console.error("Error during signup:", error);
+      alert("Không thể kết nối tới server.");
+    }
   };
 
   return (
@@ -22,7 +64,7 @@ function SignUp() {
           Đăng ký tài khoản
         </Typography>
         <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: 16 ,backgroundColor:"white",borderRadius:"4px"}}>
+          <div style={{ marginBottom: 16, backgroundColor: "white", borderRadius: "4px" }}>
             <TextField
               id="firstName"
               label="Tên"
@@ -32,7 +74,7 @@ function SignUp() {
               required
             />
           </div>
-          <div style={{ marginBottom: 16,backgroundColor:"white",borderRadius:"4px" }}>
+          <div style={{ marginBottom: 16, backgroundColor: "white", borderRadius: "4px" }}>
             <TextField
               id="lastName"
               label="Họ"
@@ -42,7 +84,7 @@ function SignUp() {
               required
             />
           </div>
-          <div style={{ marginBottom: 16 ,backgroundColor:"white",borderRadius:"4px"}}>
+          <div style={{ marginBottom: 16, backgroundColor: "white", borderRadius: "4px" }}>
             <TextField
               id="email"
               label="Email"
@@ -54,7 +96,7 @@ function SignUp() {
               required
             />
           </div>
-          <div style={{ marginBottom: 16 ,backgroundColor:"white",borderRadius:"4px"}}>
+          <div style={{ marginBottom: 16, backgroundColor: "white", borderRadius: "4px" }}>
             <TextField
               id="address"
               label="Địa chỉ"
@@ -64,7 +106,7 @@ function SignUp() {
               required
             />
           </div>
-          <div style={{ marginBottom: 16 ,backgroundColor:"white",borderRadius:"4px"}}>
+          <div style={{ marginBottom: 16, backgroundColor: "white", borderRadius: "4px" }}>
             <TextField
               id="phone"
               label="Số điện thoại"
@@ -74,7 +116,7 @@ function SignUp() {
               required
             />
           </div>
-          <div style={{ marginBottom: 16 ,backgroundColor:"white",borderRadius:"4px"}}>
+          <div style={{ marginBottom: 16, backgroundColor: "white", borderRadius: "4px" }}>
             <TextField
               id="password"
               label="Mật khẩu"
@@ -84,6 +126,31 @@ function SignUp() {
               fullWidth
               required
             />
+          </div>
+          <div style={{ marginBottom: 16, backgroundColor: "white", borderRadius: "4px" }}>
+            <TextField
+              id="birthday"
+              label="Ngày sinh"
+              type="date"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              value={birthday}
+              onChange={(e) => setBirthday(e.target.value)}
+              fullWidth
+              required
+            />
+          </div>
+          <div style={{ marginBottom: 16, backgroundColor: "white", borderRadius: "4px" }}>
+            <Typography variant="subtitle1">Giới tính</Typography>
+            <RadioGroup
+              row
+              value={sex}
+              onChange={(e) => setSex(e.target.value === 'true')} // Convert to boolean
+            >
+              <FormControlLabel value={true} control={<Radio />} label="Nam" />
+              <FormControlLabel value={false} control={<Radio />} label="Nữ" />
+            </RadioGroup>
           </div>
           <CardActions>
             <Button type="submit" variant="contained" fullWidth>
