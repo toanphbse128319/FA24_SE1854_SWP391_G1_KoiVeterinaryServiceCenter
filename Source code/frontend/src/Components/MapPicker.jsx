@@ -6,7 +6,12 @@ import './Styling/Map.css'
 import React, { useState, useRef, useEffect } from "react";
 
 //setDistance is the setter for distance as there's no way to return the result
-export default function Map( {setDistance}){
+export default function Map({address} ){
+ 
+    const [distance, setDistance] = useState('');
+    const [adddress, setAdddress] = useState('');
+
+    console.log(address)
     let marker = useRef(null); 
     const mapContainer = useRef(null);
     const map = useRef(null);
@@ -50,7 +55,8 @@ export default function Map( {setDistance}){
         }
         //this line below will get result in syncronous function
         //CalculateDistance( { lng: lng.current, lat: lat.current } ).then( result => console.log( result ) );
-        CalculateDistance( { lng: lng.current, lat: lat.current } ).then( result => setDistance( result ) );
+        // CalculateDistance( { lng: lng.current, lat: lat.current } ).then( result => setDistance( result ) );
+        GetAddress({lat: lat.current, lng: lng.current}).then(result => address =result );
     }
 
     return (
@@ -74,6 +80,23 @@ export async function GetGeoLocation( {address} ){
         return [0.0, 0.0];
     const json = await response.json();
     return [json?.features[0]?.properties.lon || 0, json?.features[0]?.properties.lat || 0 ];
+}
+
+export async function GetAddress( {lng, lat} ){
+    if( lng == null || lat == null ){
+        return "Unknown";
+    }
+    const APIKey = import.meta.env.VITE_GEOAPIFY_APIKEY;
+    if( APIKey == null )
+        console.error("Missing VITE_GEOAPIFY_APIKEY from .env");
+
+    let url = `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lng}&limit=1&apiKey=${APIKey}`    
+    const response = await fetch(url).catch( error => console.error(error) );
+    if( !response.ok )
+        return "Unknown";
+    const json = await response.json();
+    
+    return json.features[0].properties.formatted;
 }
 
 export async function CalculateDistance( {lng, lat} ){

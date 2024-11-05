@@ -298,6 +298,7 @@ async function FetchServices(){
 
 async function FetchBookingDetail(){
     let id = window.sessionStorage.getItem("id");
+    console.log('day la id '+id);
     let response = await FetchAPI( { endpoint: "/bookingdetail/getbyprofile?id=" + id } );
     if( !response.ok )
         return null;
@@ -326,15 +327,15 @@ const BookingList = ({
     const [bookingDetail, setBookingDetail] = useState([]);
 
     useEffect( () => {
-        if( window.sessionStorage.getItem("token") == null )
-            navigate("/Login");
+        // if( window.sessionStorage.getItem("token") == null )
+        //     navigate("/Login");
         FetchServices().then(results => { setServices( results ); setLoading( loading + 1 )} );
-        FetchSDM().then(results => { setSDM( results ); setLoading( loading + 1 ) } );
+FetchSDM().then(results => { setSDM( results ); setLoading( loading + 1 ) } );
         FetchBookingList().then(results => { 
             setBookings( results ); setLoading( loading + 1 );
         } );
         FetchBookingDetail().then( results => {
-            setBookingDetail( results ); setLoading( loading + 1 ); console.log( results );
+            setBookingDetail( results ); setLoading( loading + 1 );
         } );
     }, [] );
     if( loading == 0  ){
@@ -393,21 +394,31 @@ const BookingList = ({
     setShowFeedbackModal(true);
   };
 
+  const handleConsoleLog = (temp) =>{
+
+    console.log('day la service ' +temp)
+  }
+
   const handleCloseFeedback = () => {
     setShowFeedbackModal(false);
     setSelectedBookingId(null);
   };
   // Utility functions
-  const formatDate = (dateString) => {
+  const formatDateDay = (dateString) => {
     return new Date(dateString).toLocaleString('vi-VN', {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit'
+      
     });
   };
-
+  
+  const formatDateTime = (dateString) => {
+    return new Date(dateString).toLocaleString('vi-VN', {
+      hour:'2-digit',
+      minute:'2-digit',
+    });
+  };
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
@@ -415,28 +426,53 @@ const BookingList = ({
     }).format(amount);
   };
 
+  
   const renderBookingContent = (booking) => {
     const isCustomerOrVet = userRole === 'Customer' || userRole === 'Veterinarian';
+    const sdm = [
+      {
+          ServiceDeliveryMethodID: 'SDM1',
+          Name: 'Khám cá tại nhà',
+          Status: 1
+      },
+      {
+          ServiceDeliveryMethodID: 'SDM2',
+          Name: 'Khám hồ tại nhà',
+          Status: 1
+      },
+      {
+          ServiceDeliveryMethodID: 'SDM3',
+          Name: 'Trực tuyến',
+          Status: 1
+      },
+      {
+          ServiceDeliveryMethodID: 'SDM4',
+          Name: 'Tại cơ sở',
+          Status: 1
+      }
+  ];
 
+const getServiceDeliveryMethodName = (methodId) => {
+  const method = sdm.find(item => item.ServiceDeliveryMethodID === methodId);
+  return method ? method.Name : methodId;
+};
     return (
       <div>
         <InfoRow label="Mã đơn" value={booking.BookingID} />
 
         {isCustomerOrVet && (
           <>
-            <InfoRow label="Ngày khám" value={formatDate(booking.BookingDate)} />
+            <InfoRow label="Ngày khám" value={formatDateDay(booking.BookingDate)} />
+            <InfoRow label="Giờ khám" value={formatDateTime(booking.BookingDate)} />
+
             <InfoRow label="Bác sĩ" value="Nguyễn Văn A" />
           </>
         )}
 
         <InfoRow
           label="Hình thức"
-          value={ sdm.find( sdm => {
-            sdm == bookingDetail.find( detail => {
-                detail.BookingID == booking.BookingID
-            })
-          })  } />
-        <InfoRow label="Tổng tiền" value={formatCurrency(booking.TotalServiceCost)} />
+           value={getServiceDeliveryMethodName(booking.ServiceDeliveryMethodID)} />
+        <InfoRow label="Tổng tiền " value={formatCurrency(booking.TotalServiceCost)} />
 
         {!isCustomerOrVet && (
           <>
@@ -522,13 +558,12 @@ const BookingList = ({
                         bookingId={booking.BookingID}
                         isOpen={showBookingActions}
                         onClose={handleCloseBookingActions}
-                        onSubmitSuccess={() => setIsIncidental(true)}
-                        selectedService={services.find(service =>
-                          service.ServiceID === bookingDetail.find(detail =>
-                            detail.BookingID === booking.BookingID
-                          ).ServiceID
-                        )}
                         bookingDetail= {bookingDetail.find(detail => detail.BookingID === booking.BookingID)}
+                       
+                        service={services.find(service => service.ServiceID === bookingDetail?.find(detail => detail.BookingID === booking.BookingID)?.ServiceID)}
+                        //  initialFishCount = {booking.NumberOfFish}
+                      //  initialPoolCount ={booking.NumberOfPool}
+                       setIsIncidental={setIsIncidental} 
                       />
                     </>
 

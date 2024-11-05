@@ -14,7 +14,8 @@ const PRICE_PER_KM = 5000; // 5000 VND per km
 function IsAtHome( {sdm} ){
     if( sdm == null )
         return null;
-    if( sdm.Name == "Tại nhà" )
+     console.log(' sdm.Name.toLowerCase().includes("tại nhà")' + sdm.Name.toLowerCase().includes("tại nhà"))
+    if ( sdm.Name.toLowerCase().includes("tại nhà")) 
         return true;
     return false;
 }
@@ -25,9 +26,10 @@ async function GetDistanceFromAddress( { address } ){
         return 0;
     } 
     const coordinate = await GetGeoLocation( { address } );
+    console.log( coordinate );
+
     if( coordinate == [0.0, 0.0] || coordinate[0] == 0 || coordinate[1] == 0 )
         return 0;
-    console.log( coordinate );
     return await CalculateDistance( {lng: coordinate[0], lat: coordinate[1] } )
 }
 

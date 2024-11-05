@@ -63,9 +63,22 @@ public class AnimalProfileController : ControllerBase {
                     return BadRequest("Pool profile is already existed!");
             }
 
-            if (await _unitOfWork.AnimalProfileRepository.AddProfilesAsync(profile) == 1)
-                return Ok("Added successfully!");
-            else return BadRequest("Added failed!");
+            BookingDetail bd = await _unitOfWork.BookingDetailRepository.GetByIdAsync(profile.BookingDetail.BookingDetailID);
+            if (bd == null)
+                return NotFound("BookingDetail does not existed!");
+            if (profile.BookingDetail.ExaminationResult != "" && bd.ExaminationResult != profile.BookingDetail.ExaminationResult)
+                bd.ExaminationResult = profile.BookingDetail.ExaminationResult;
+            if (profile.BookingDetail.VetConsult != "" && bd.VetConsult != profile.BookingDetail.VetConsult)
+                bd.VetConsult = profile.BookingDetail.VetConsult;
+            if (profile.BookingDetail.Formulary != "" && bd.Formulary != profile.BookingDetail.Formulary)
+                bd.Formulary = profile.BookingDetail.Formulary;
+            if (profile.BookingDetail.IsIncidental != profile.BookingDetail.IsIncidental)
+                bd.IsIncidental = profile.BookingDetail.IsIncidental;
+            if (profile.BookingDetail.NoteResult != "" && bd.NoteResult != profile.BookingDetail.NoteResult)
+                bd.NoteResult = profile.BookingDetail.NoteResult;
+            if (await _unitOfWork.AnimalProfileRepository.AddProfilesAsync(profile) == 1 && await _unitOfWork.BookingDetailRepository.UpdateAsync(bd) != 0)
+                return Ok("Added/updated successfully!");
+            else return BadRequest("Added/updated failed!");
         }
         catch (Exception ex)
         {

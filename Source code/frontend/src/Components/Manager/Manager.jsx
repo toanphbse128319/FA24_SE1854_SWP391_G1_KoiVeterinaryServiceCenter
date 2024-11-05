@@ -1,9 +1,10 @@
 // StaffManage.jsx
 import React, { useState } from "react";
 import ManageLanding from "./ManageLanding";
-import ManageUser from "./ManageUser";
-import AssignVet from "./AssignVet";
+import ManageAccount from "./ManageAccount";
+import AssignVet from "../Staff/AssignVet";
 import App from "../../App";
+import DashBoard from "./DashBoard"
 import { Navigate, useNavigate } from "react-router-dom";
 import { LogOut } from "../../Helper/Utilities";
 
@@ -18,10 +19,10 @@ const StaffManage = () => {
     switch (activePage) {
       case "ManageLanding":
         return <ManageLanding />;
-      case "ManageUser":
-        return <ManageUser />;
-      case "AssignVet":
-        return <AssignVet />;
+      case "ManageAccount":
+        return <ManageAccount />;
+      case "DashBoard":
+        return <DashBoard/>;
       case "Logout":
         return <App />;
       default:
@@ -32,7 +33,7 @@ const StaffManage = () => {
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
-      <div className="w-1/6 bg-gray-800 text-white p-4">
+      <div className="h-full w-1/6 bg-gray-800 text-white p-4">
         <h2 className="text-lg font-bold mb-6 text-center">Staff Management</h2>
         <div className="space-y-3">
           <button
@@ -43,17 +44,17 @@ const StaffManage = () => {
             }`}
             onClick={() => setActivePage("ManageLanding")}
           >
-            Manage Landing
+            Manage Landing Service
           </button>
           <button
             className={`w-full text-left p-3 rounded-lg transition-colors font-medium ${
-              activePage === "ManageUser"
+              activePage === "ManageAccount"
                 ? "bg-blue-600"
                 : "bg-gray-700 hover:bg-blue-500"
             }`}
-            onClick={() => setActivePage("ManageUser")}
+            onClick={() => setActivePage("ManageAccount")}
           >
-            Manage User
+            Manage Account
           </button>
           <button
             className={`w-full text-left p-3 rounded-lg transition-colors font-medium ${
@@ -61,9 +62,9 @@ const StaffManage = () => {
                 ? "bg-blue-600"
                 : "bg-gray-700 hover:bg-blue-500"
             }`}
-            onClick={() => setActivePage("AssignVet")}
+            onClick={() => setActivePage("DashBoard")}
           >
-            Assign Vet
+            Dashboard
           </button>
           <button
             onClick={() => {
