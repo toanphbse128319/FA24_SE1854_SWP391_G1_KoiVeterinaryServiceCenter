@@ -3,6 +3,13 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { FetchAPI } from "../../Helper/Utilities";
 
+async function fetchVet(){
+  let response = await FetchAPI({ endpoint: '/Employee/getbyrolename?info=Veterinarian' });
+  if ( !response.ok )
+      return null;
+  return await response.json();
+}
+
 const AddSchedule = () => {
   const navigate = useNavigate();
 
@@ -12,6 +19,9 @@ const AddSchedule = () => {
   const [SlotSchedule, SetSlotSchedule] = useState([]);
   const [loading, SetLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [Employee, SetEmployee] = useState([]);
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
+  const [doctors, setDoctors] = useState([]);
 
   const DoctorDB = [
     { DoctorID: 'D1', DoctorName: 'Dr. John Doe' },
@@ -31,6 +41,8 @@ const AddSchedule = () => {
         const slotScheduleData = await slotScheduleResponse.json();
         SetDoctorSchedule(doctorScheduleData);
         SetSlotSchedule(slotScheduleData);
+        
+        fetchVet().then( result => setDoctors(result) );
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -83,6 +95,16 @@ const AddSchedule = () => {
     [DoctorSchedule, SlotSchedule]
   );
 
+  const handleAddScheduleClick = (doctor) => {
+    setSelectedDoctor(doctor);
+    setShowModal(true);
+    alert("Add schedule completed");
+  };
+  
+  // const handleShowModel = () => {
+
+  // }
+
   const getDaysInMonth = (date) => {
     const year = date.getFullYear();
     const month = date.getMonth();
@@ -115,6 +137,11 @@ const AddSchedule = () => {
     setSelectedDate(date);
     setShowModal(true);
   };
+
+  const handleShowModal = () => {
+    setSelectedDoctor(null);
+    setShowModal(false);
+  }
 
   const handlePrevMonth = () => {
     const prevMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1);
@@ -216,14 +243,35 @@ const AddSchedule = () => {
           <div style={styles.modalContent}>
             <h3>Doctors Working on {selectedDate.toDateString()}</h3>
             <div style={styles.doctorList}>
-              {DoctorDB.map((doctor, index) => (
+              {doctors.map((doctor, index) => (
                 <div key={index} style={styles.doctorItem}>
-                  <p>{doctor.DoctorName}</p>
-                  <button style={styles.assign} onClick={() => alert(`Add new schedule for ${doctor.DoctorName}`)}>Add new schedule</button>
+                  <p>{doctor.FirstName + " " + doctor.LastName}</p>
+                  <button style={styles.assign} onClick={() => {
+                    handleAddScheduleClick(doctor);
+                    let temp = selectedDoctor;
+                    temp.EmployeeID = doctor.EmployeeID;
+                    setDoctors( temp );
+                    FetchAPI({ endpoint: `/Schedule`, method: 'PUT', body: {} });
+                    }}>
+                      
+                    Add new schedule
+                  </button>  
                 </div>
               ))}
             </div>
-            <button style={styles.assign} onClick={() => setShowModal(false)}>Close</button>
+            <button style={styles.assign} onClick={() => handleShowModal()}>Close</button>
+          </div>
+        </div>
+      )}
+
+      {showModal && selectedDate && selectedDoctor && (
+        <div style={styles.modal}>
+          <div style={styles.modalContent}>
+            <h3>Doctor Information</h3>
+            <p><strong>Name:</strong> {selectedDoctor.DoctorName}</p>
+            <p><strong>Employee ID:</strong> {selectedDoctor.DoctorID}</p>
+            <p><strong>Specialization:</strong> {selectedDoctor.Specialization}</p>
+            <button style={styles.assign} onClick={() => handleShowModal()}>Close</button>
           </div>
         </div>
       )}
