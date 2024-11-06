@@ -251,7 +251,7 @@ const AddSchedule = () => {
                     let temp = selectedDoctor;
                     temp.EmployeeID = doctor.EmployeeID;
                     setDoctors( temp );
-                    FetchAPI({ endpoint: `/Schedule`, method: 'PUT', body: {} });
+                    FetchAPI({ endpoint: `/Schedule`, method: 'POST', body: {} });
                     }}>
                       
                     Add new schedule
@@ -458,7 +458,6 @@ const styles = {
     borderBottom: '1px solid #e0e0e0',
     borderRight: '1px solid #e0e0e0',
     cursor: 'pointer',
-    transition: 'background-color 0.3s',
     color: 'black',
     backgroundColor: '#f0f0f0',
     padding: '5px 15px',
