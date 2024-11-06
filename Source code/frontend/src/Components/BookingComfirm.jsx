@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardHeader, CardContent, Typography } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 
-const OrderConfirmation = ({ service, doctor, time, scheduleId, fishCount, movingCost, sdm }) => {
+const OrderConfirmation = ({ service, doctor, time, scheduleId, fishCount, poolCount, movingCost, sdm }) => {
   // Kiểm tra service trước khi sử dụng
   if (!service) {
     return (
@@ -26,7 +26,10 @@ const OrderConfirmation = ({ service, doctor, time, scheduleId, fishCount, movin
   };
 
   const calculateTotal = () => {
-    const servicePrice = (service?.Price * fishCount) || 0;
+      let count = fishCount;
+      if( count == 0 )
+          count = poolCount;
+    const servicePrice = (service?.Price * count ) || 0;
     const moving = movingCost || 0;
     return servicePrice + moving;
   };
@@ -44,12 +47,23 @@ const OrderConfirmation = ({ service, doctor, time, scheduleId, fishCount, movin
         label: 'Dịch vụ', 
         value: service?.Name || 'Chưa xác định'
       },
-      { 
+    ];
+
+    if( poolCount ){
+      columns.push({ 
+        key: 'poolCount', 
+        label: 'Số hồ', 
+        value: poolCount 
+      }); 
+    }
+
+    if( fishCount ){
+      columns.push({ 
         key: 'fishCount', 
         label: 'Số cá', 
-        value: fishCount || 0
-      }, 
-    ];
+        value: fishCount
+      }); 
+    }
 
     if (doctor) {
       columns.push({ 

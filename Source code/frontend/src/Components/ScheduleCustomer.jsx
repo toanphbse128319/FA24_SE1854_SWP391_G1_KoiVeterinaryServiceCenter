@@ -59,7 +59,8 @@ const ScheduleCalendar = ({ doctor, service, SlotSchedule , DocterSchedule, sdm 
   const [currentDate, setCurrentDate] = useState(new Date( (new Date()).toISOString().split('T')[0] ) );
   const [isWeekView, setIsWeekView] = useState(false);
   const [selectedDay, setSelectedDay] = useState(null);
-  const [fishCount, setFishCount] = useState('1');
+  const [fishCount, setFishCount] = useState(0);
+  const [poolCount, setPoolCount] = useState(0);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const transformScheduleData = (doctorSchedules, slotSchedules) => {
     const transformedData = [];
@@ -286,6 +287,10 @@ const ScheduleCalendar = ({ doctor, service, SlotSchedule , DocterSchedule, sdm 
     setSelectedDay(null);
   };
 
+  const handlePoolCountChange = (event) => {
+    setPoolCount(event.target.value);
+  };
+
   const handleFishCountChange = (event) => {
     setFishCount(event.target.value);
   };
@@ -296,6 +301,7 @@ const ScheduleCalendar = ({ doctor, service, SlotSchedule , DocterSchedule, sdm 
       const time = selectedSlot.time + ' ' + dateString;
       navigate('/Confirm', {
         state: {
+          poolCount,
           fishCount,
           service,
           doctor,
@@ -456,19 +462,34 @@ const ScheduleCalendar = ({ doctor, service, SlotSchedule , DocterSchedule, sdm 
               })}
             </div>
           </div>
-          <div style={styles.fishCountContainer}>
-            <label htmlFor="fishCount" style={styles.fishCountLabel}>
-              Hãy nhập số cá:
-            </label>
-            <input
-              type="number"
-              id="fishCount"
-              value={fishCount}
-              onChange={handleFishCountChange}
-              style={styles.fishCountInput}
 
-            />
-          </div>
+          { sdm.Name.toLowerCase().includes("hồ") ? (
+              <div style={styles.fishCountContainer}>
+                <label htmlFor="poolCount" style={styles.fishCountLabel}>
+                  Hãy nhập số hồ:
+                </label>
+                <input
+                  type="number"
+                  id="poolCount"
+                  value={poolCount}
+                  onChange={handlePoolCountChange}
+                  style={styles.fishCountInput}
+                />
+              </div>
+          ) : (
+              <div style={styles.fishCountContainer}>
+                <label htmlFor="fishCount" style={styles.fishCountLabel}>
+                  Hãy nhập số cá:
+                </label>
+                <input
+                  type="number"
+                  id="fishCount"
+                  value={fishCount}
+                  onChange={handleFishCountChange}
+                  style={styles.fishCountInput}
+                />
+              </div>
+          ) }
 
           <button
             style={styles.navigationButton}
