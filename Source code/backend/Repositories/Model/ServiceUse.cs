@@ -13,8 +13,8 @@ namespace Repositories.Model
     public class ServiceUse
     {
         public string ServiceUseID { get; set; }
-        public string AnimalProfileID { get; set; }
-        public string PoolProfileID { get; set; }
-        public string BookingDetailID { get; set; }
+        public string? AnimalProfileID { get; set; }
+        public string? PoolProfileID { get; set; }
+        public string? BookingDetailID { get; set; }
     }
 }
