@@ -12,6 +12,17 @@ public class BookingRepository : GenericRepository<Booking>
         _context = context;
     }
 
+    public async Task<int> UpdateIncidentalByIDAsync(string id,int fish, int pool)
+    {
+        Booking booking = await base.GetByIdAsync(id);
+        booking.IncidentalFish += fish;
+        booking.IncidentalPool += pool;
+        if (await base.UpdateAsync(booking) == 0)
+            return 0;
+        else 
+            return 1;
+    }
+
     public async Task<List<Booking>> GetByProfileIDAsync( string id ){
         if( id.Contains( 'C' ) || id.Contains('c') )
             return await _context.Bookings.Where( order => order.CustomerID == id ).ToListAsync();
