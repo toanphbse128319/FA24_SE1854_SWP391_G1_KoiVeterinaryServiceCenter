@@ -256,7 +256,7 @@ VALUES
 ('SDM1', N'Khám cá tại nhà', 1),
 ('SDM2', N'Khám hồ tại nhà', 1),
 ('SDM3', N'Trực tuyến', 1),
-('SDM4', N'Tại cơ sở', 1);
+('SDM4', N'Tại trung tâm', 1);
 
 -- Insert sample data for Service
 INSERT INTO Service (ServiceID, ServiceDeliveryMethodID, Name, Price, Description, Status) 
