@@ -225,7 +225,7 @@ VALUES
 ('A9', '0835377623', 'vet2@gmail.com', 'R2', 'avatar2.jpg', 'vettemp', 'Normal', 1),
 ('A8', '1122334455', 'Manager@gmail.com', 'R2', 'avatar3.jpg', 'vet12345', 'Normal', 1),
 ('A7', '1234554321', 'reception1@gmai.com', 'R3', 'avatar4.jpg', 'manager123', 'Normal', 1),
-('A10', '1234567876', 'admin@gmail.com', 'R2', 'avatar5.jpg', 'test12345', 'Normal', 1),
+('A10', '1234567876', 'admin@gmail.com', 'R1', 'avatar5.jpg', 'test12345', 'Normal', 1),
 ('A11', '9987654321', 'decsr@gmail.com', 'R3', 'avatar5.jpg', 'long12345', 'Normal123', 1),
 ('A12', '0100101010', 'kiet@gmail.com', 'R4', 'avatar6.jpg', 'kiet12345', 'Normal123', 1);
 GO

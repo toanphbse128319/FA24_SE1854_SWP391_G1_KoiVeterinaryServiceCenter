@@ -111,6 +111,19 @@ public class BookingController : ControllerBase {
             return StatusCode( StatusCodes.Status500InternalServerError, ex.Message );
         }
     }
+    [HttpGet("getall")]
+    public async Task<ActionResult<IEnumerable<Booking>>> GetAll()
+    {
+        try
+        {
+            return await _unitOfWork.BookingRepository.GetAllAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
 
     [Route("add")]
     [HttpPost]
@@ -144,4 +157,5 @@ public class BookingController : ControllerBase {
             return StatusCode( StatusCodes.Status500InternalServerError, ex.Message );
         }
     }
+    
 }

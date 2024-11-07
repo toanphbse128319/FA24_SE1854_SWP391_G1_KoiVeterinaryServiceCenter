@@ -54,6 +54,7 @@ public class UnitOfWork
         get { return _serviceDeliveryMethoddRepository ??= new ServiceDeliveryMethodRepository(_context); }
     }
 
+
     public BookingRepository BookingRepository
     {
         get { return _bookingRepository ??= new BookingRepository(_context); }
@@ -94,6 +95,7 @@ public class UnitOfWork
     {
         get { return _customerRepository ??= new CustomerRepository(_context); }
     }
+
 
     public ScheduleRepository ScheduleRepository
     {

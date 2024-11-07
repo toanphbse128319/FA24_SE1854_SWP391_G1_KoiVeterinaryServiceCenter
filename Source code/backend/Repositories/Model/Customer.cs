@@ -16,3 +16,11 @@ public class Customer
     public string Status { get; set; }
 
 }
+public class UpdateCustomerInformation
+{
+    public string Id { get; set; } // Customer ID
+    public string Address { get; set; } // New Address
+    public DateOnly DOB { get; set; } // New Date of Birth
+    public bool Gender { get; set; } // Gender (true for Male, false for Female)
+}
+
