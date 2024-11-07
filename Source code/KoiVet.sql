@@ -193,8 +193,7 @@ GO
 
 CREATE TABLE ServiceUse (
 	ServiceUseID nvarchar(20) PRIMARY KEY,
-    AnimalProfileID nvarchar(20) ,
-    PoolProfileID nvarchar(20) ,
+    ProfileID nvarchar(20) ,
     BookingDetailID nvarchar(20)
 );
 GO
@@ -327,18 +326,18 @@ VALUES
 ('AT4', 'Saltwater Fish'),
 ('AT5', 'Betta Fish');
 
-INSERT INTO ServiceUse (ServiceUseID, AnimalProfileID, PoolProfileID, BookingDetailID) 
+INSERT INTO ServiceUse (ServiceUseID, ProfileID, BookingDetailID) 
 VALUES 
-('SU1','AP1','','BD5'),
-('SU2','AP2','','BD5'),
-('SU3','AP3','','BD5'),
-('SU4','AP1','','BD6'),
-('SU5','AP2','','BD6'),
-('SU6','AP3','','BD6'),
-('SU7','AP4','','BD7'),
-('SU8','','PP1','BD8'),
-('SU9','','PP1','BD8'),
-('SU10','AP4','','BD9');
+('SU1','AP1','BD5'),
+('SU2','AP2','BD5'),
+('SU3','AP3','BD5'),
+('SU4','AP1','BD6'),
+('SU5','AP2','BD6'),
+('SU6','AP3','BD6'),
+('SU7','AP4','BD7'),
+('SU8','PP1','BD8'),
+('SU9','PP1','BD8'),
+('SU10','AP4','BD9');
 
 
 
