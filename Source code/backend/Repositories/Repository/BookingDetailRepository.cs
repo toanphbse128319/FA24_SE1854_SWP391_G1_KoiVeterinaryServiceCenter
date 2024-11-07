@@ -23,6 +23,11 @@ namespace Repositories.Repository
             return _context.BookingDetails.Where(bookingdetail => bookingdetail.ServiceID.ToLower() == id.ToLower()).ToListAsync()!;
         }
 
+        public async Task<List<BookingDetail>> GetBookingDetailsByBookingIDAsync(string id)
+        {
+            return await (_context.BookingDetails.Where(bookingdetail => bookingdetail.BookingID.ToLower() == id)).ToListAsync();
+        }
+
         public async Task<List<BookingDetail>> GetByProfileIDAsync( string id ){
             List<Booking> bookings = await (new BookingRepository(_context)).GetByProfileIDAsync(id);
             List<BookingDetail> bookingDetails = new List<BookingDetail>();
@@ -52,63 +57,53 @@ namespace Repositories.Repository
             var transaction = await _context.Database.BeginTransactionAsync();
             bool rs = false;
             int count = 0;
+            ServiceUseRepository surepo = new(_context);
             try
             {
+                //cap nhat so ca cua booking
                 BookingRepository bookingrepo = new BookingRepository(_context);
-                Booking booking = await bookingrepo.GetByIdAsync(exam.BookingDetail[0].BookingID);
-                booking.IncidentalFish += exam.AnimalProfile.Count;
-                booking.IncidentalPool += exam.PoolProfile.Count;
-                if (await bookingrepo.UpdateAsync(booking) == 0)
+                if (await bookingrepo.UpdateIncidentalByIDAsync(exam.BookingDetail[0].BookingID,exam.AnimalProfile.Count(),exam.PoolProfile.Count()) == 0)
                     return 0;
-                foreach (var item in exam.BookingDetail)
+
+                //tao moi profile,bd phat sinh, tao service use luon
+                foreach (var bd in exam.BookingDetail)
                 {
-                    item.BookingDetailID = GetNextID("BD");
-                    if (await base.CreateAsync(item) != 0)
+                    bd.BookingDetailID = GetNextID("BD");
+                    if (await base.CreateAsync(bd) != 0)
                         count++;
+                    foreach (var ap in exam.AnimalProfile)
+                    {
+                        AnimalProfileRepository aprepo = new AnimalProfileRepository(_context);
+                        ap.AnimalProfileID = aprepo.GetNextID("AP");
+                        if (await aprepo.CreateAsync(ap) != 0)
+                            count++;
+                        surepo = new ServiceUseRepository(_context);
+                        await surepo.CreateAsync(new ServiceUse() { ServiceUseID = surepo.GetNextID("SU"), AnimalProfileID = ap.AnimalProfileID, BookingDetailID = bd.BookingDetailID });
+                    }
+                    foreach (var pp in exam.PoolProfile)
+                    {
+                        PoolProfileRepository pprepo = new PoolProfileRepository(_context);
+                        pp.PoolProfileID = pprepo.GetNextID("PP");
+                        if (await pprepo.CreateAsync(pp) != 0)
+                            count++;
+                        surepo = new ServiceUseRepository(_context);
+                        await surepo.CreateAsync(new ServiceUse() { ServiceUseID = surepo.GetNextID("SU"), PoolProfileID = pp.PoolProfileID, BookingDetailID = bd.BookingDetailID });
+                    }
                 }
-                foreach (var item in exam.AnimalProfile)
-                {
-                    AnimalProfileRepository ap = new AnimalProfileRepository(_context);
-                    item.AnimalProfileID = ap.GetNextID("AP");
-                    if (await ap.CreateAsync(item) != 0)
-                        count++;
-                }
-                foreach (var item in exam.PoolProfile)
-                {
-                    PoolProfileRepository pp = new PoolProfileRepository(_context);
-                    item.PoolProfileID = pp.GetNextID("PP");
-                    if (await pp.CreateAsync(item) != 0)
-                        count++;
-                }
+                
+
+                //so sanh so cot da duoc tao trong db so voi du lieu da dc nhap neu sai thi rollback
                 if(count == (exam.AnimalProfile.Count + exam.BookingDetail.Count + exam.PoolProfile.Count))
                     rs = true;
 
-                //List<BookingDetail?> oldbds = await GetByBookingID(exam.BookingDetail[0].BookingID);
-                //foreach (var bd in oldbds)
-                //{
-                //    ServiceUseRepository surepo = new ServiceUseRepository(_context);
-                //    List<ServiceUse> su = await surepo.FindSUByListBookingDetailIDAsync(bd.BookingDetailID);
-                //    foreach (var ap in su)
-                //    {
-                //        foreach (var item in exam.BookingDetail)
-                //        {
-                //            ServiceUse ser = new ServiceUse() { AnimalProfileID = ap.AnimalProfileID, BookingDetailID = item.BookingDetailID };
-                //            await surepo.CreateAsync(ser);
-                //        }
-                //    }
-                //}
+                //Buoc 1 lay booking tu 1 bd co san
+                //Buoc 2 lay list bd = bookingid
+                //Buoc 3 lay list su da co san = list bd o buoc 2
+                //Buoc 4 sau khi co serviceuse co san ta se lay tu no FishID hoac PoolID
+                //de tien hanh them dich vu moi cho Fish or Pool
 
-
-
-                //ServiceUseRepository surepo = new ServiceUseRepository(_context);
-                //foreach (var bd in exam.BookingDetail)
-                //{
-                //    foreach (var ap in exam.AnimalProfile)
-                //    {
-                //        ServiceUse su = new ServiceUse() { ServiceUseID = surepo.GetNextID("SU"), AnimalProfileID = ap.AnimalProfileID, BookingDetailID = bd.BookingDetailID };
-                //        await surepo.CreateAsync(su);
-                //    }
-                //}
+                if (await surepo.AddServiceUsesAsync(await surepo.GetServiceUsesByBDsAsync(await GetBookingDetailsByBookingIDAsync(exam.BookingDetail[0].BookingID)), exam.BookingDetail) == 0)
+                    rs = false;
                 await transaction.CommitAsync();
                 return rs ? 1 : 0;
             }

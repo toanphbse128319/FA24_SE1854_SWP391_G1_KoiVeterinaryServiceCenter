@@ -12,6 +12,17 @@ public class BookingRepository : GenericRepository<Booking>
         _context = context;
     }
 
+    public async Task<int> UpdateIncidentalByIDAsync(string id,int fish, int pool)
+    {
+        Booking booking = await base.GetByIdAsync(id);
+        booking.IncidentalFish += fish;
+        booking.IncidentalPool += pool;
+        if (await base.UpdateAsync(booking) == 0)
+            return 0;
+        else 
+            return 1;
+    }
+
     public async Task<List<Booking>> GetByProfileIDAsync( string id ){
         if( id.Contains( 'C' ) || id.Contains('c') )
             return await _context.Bookings.Where( order => order.CustomerID == id ).ToListAsync();
@@ -76,10 +87,13 @@ public class BookingRepository : GenericRepository<Booking>
     }
 
     public bool checkValidPrice( Service service, Decimal total, int number ){
+            Console.WriteLine( service.Price + ", " + number + ", " + total );
+
         if( service.Price * number > total )
             return false;
         return true;
     }
+
     public async Task<string> AddNewBooking(NewBookingInformation info ){
         var transaction = await _context.Database.BeginTransactionAsync();
         string result = "";
@@ -109,7 +123,7 @@ public class BookingRepository : GenericRepository<Booking>
                     number = info.NumberOfFish;
                 else number = info.NumberOfPool;
             if( checkValidPrice(service, info.TotalServiceCost, number ) == false ){
-                return "Pricing is invalid, must be higher than " + service.Price * number ;
+                return "Pricing is invalid";
             }
                 
             string? vat = Configuration.GetConfiguration()["Other:VAT"];
