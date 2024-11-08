@@ -76,10 +76,13 @@ public class BookingRepository : GenericRepository<Booking>
     }
 
     public bool checkValidPrice( Service service, Decimal total, int number ){
+            Console.WriteLine( service.Price + ", " + number + ", " + total );
+
         if( service.Price * number > total )
             return false;
         return true;
     }
+
     public async Task<string> AddNewBooking(NewBookingInformation info ){
         var transaction = await _context.Database.BeginTransactionAsync();
         string result = "";
@@ -109,7 +112,7 @@ public class BookingRepository : GenericRepository<Booking>
                     number = info.NumberOfFish;
                 else number = info.NumberOfPool;
             if( checkValidPrice(service, info.TotalServiceCost, number ) == false ){
-                return "Pricing is invalid, must be higher than " + service.Price * number ;
+                return "Pricing is invalid";
             }
                 
             string? vat = Configuration.GetConfiguration()["Other:VAT"];
@@ -119,7 +122,7 @@ public class BookingRepository : GenericRepository<Booking>
             newOrder.CustomerID = info.CustomerID;
             newOrder.EmployeeID = info.EmployeeID;
             newOrder.BookingDate = info.BookingDate;
-            newOrder.ServiceDeliveryMethodID = info.ServiceDeliveryMethodID;
+            newOrder.ServiceDeliveryMethodID = sdm.ServiceDeliveryMethodID;
             newOrder.ExpiredDate = info.BookingDate.AddHours(2);
             newOrder.NumberOfFish = info.NumberOfFish;
             newOrder.IncidentalFish = 0;

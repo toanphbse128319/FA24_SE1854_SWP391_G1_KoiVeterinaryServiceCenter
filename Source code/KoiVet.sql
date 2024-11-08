@@ -193,8 +193,7 @@ GO
 
 CREATE TABLE ServiceUse (
 	ServiceUseID nvarchar(20) PRIMARY KEY,
-    AnimalProfileID nvarchar(20) ,
-    PoolProfileID nvarchar(20) ,
+    ProfileID nvarchar(20) ,
     BookingDetailID nvarchar(20)
 );
 GO
@@ -225,7 +224,7 @@ VALUES
 ('A9', '0835377623', 'vet2@gmail.com', 'R2', 'avatar2.jpg', 'vettemp', 'Normal', 1),
 ('A8', '1122334455', 'Manager@gmail.com', 'R2', 'avatar3.jpg', 'vet12345', 'Normal', 1),
 ('A7', '1234554321', 'reception1@gmai.com', 'R3', 'avatar4.jpg', 'manager123', 'Normal', 1),
-('A10', '1234567876', 'admin@gmail.com', 'R2', 'avatar5.jpg', 'test12345', 'Normal', 1),
+('A10', '1234567876', 'admin@gmail.com', 'R1', 'avatar5.jpg', 'test12345', 'Normal', 1),
 ('A11', '9987654321', 'decsr@gmail.com', 'R3', 'avatar5.jpg', 'long12345', 'Normal123', 1),
 ('A12', '0100101010', 'kiet@gmail.com', 'R4', 'avatar6.jpg', 'kiet12345', 'Normal123', 1);
 GO
@@ -256,7 +255,7 @@ VALUES
 ('SDM1', N'Khám cá tại nhà', 1),
 ('SDM2', N'Khám hồ tại nhà', 1),
 ('SDM3', N'Trực tuyến', 1),
-('SDM4', N'Tại cơ sở', 1);
+('SDM4', N'Tại trung tâm', 1);
 
 -- Insert sample data for Service
 INSERT INTO Service (ServiceID, ServiceDeliveryMethodID, Name, Price, Description, Status) 
@@ -327,18 +326,18 @@ VALUES
 ('AT4', 'Saltwater Fish'),
 ('AT5', 'Betta Fish');
 
-INSERT INTO ServiceUse (ServiceUseID, AnimalProfileID, PoolProfileID, BookingDetailID) 
+INSERT INTO ServiceUse (ServiceUseID, ProfileID, BookingDetailID) 
 VALUES 
-('SU1','AP1','','BD5'),
-('SU2','AP2','','BD5'),
-('SU3','AP3','','BD5'),
-('SU4','AP1','','BD6'),
-('SU5','AP2','','BD6'),
-('SU6','AP3','','BD6'),
-('SU7','AP4','','BD7'),
-('SU8','','PP1','BD8'),
-('SU9','','PP1','BD8'),
-('SU10','AP4','','BD9');
+('SU1','AP1','BD5'),
+('SU2','AP2','BD5'),
+('SU3','AP3','BD5'),
+('SU4','AP1','BD6'),
+('SU5','AP2','BD6'),
+('SU6','AP3','BD6'),
+('SU7','AP4','BD7'),
+('SU8','PP1','BD8'),
+('SU9','PP1','BD8'),
+('SU10','AP4','BD9');
 
 
 

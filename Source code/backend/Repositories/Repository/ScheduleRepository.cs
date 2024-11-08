@@ -38,10 +38,10 @@ public class ScheduleRepository : GenericRepository<Schedule>
                                                                             schedule.EmployeeID == empID);
         if (empID == "E0")
             return await _context.Schedules.FirstOrDefaultAsync(schedule => schedule.Date == date &&
-                                                                            schedule.Note == note);
+                                                                            note.Contains(schedule.Note));
         return await _context.Schedules.FirstOrDefaultAsync(schedule => schedule.Date == date &&
                                                                         schedule.EmployeeID == empID &&
-                                                                        schedule.Note == note);
+                                                                        note.Contains(schedule.Note));
     }
     public async Task<Schedule?> CheckValidScheduleAsync(DateOnly date)
     {

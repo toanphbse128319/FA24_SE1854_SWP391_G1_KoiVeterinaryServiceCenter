@@ -59,7 +59,8 @@ public class SlotTableRepository : GenericRepository<SlotTable>
         SlotTable? slot = await SearchSpecificSlotAsync(scheduleID, num);
         if (slot == null)
             return null!;
-        if (slot.Note != note)
+        Console.WriteLine( scheduleID + ", " + note + ", " + slot.Note);
+        if (note.ToLower().Contains(slot.Note.ToLower()) == false)
             return null!;
         if (slot.SlotStatus == true)
         {

@@ -33,6 +33,39 @@ namespace Repositories.Repository
             await base.CreateAsync(customer);
             return customer.CustomerID;
         }
+        public async Task<int> UpdateStatusAsync(string id, string msg)
+        {
+            Customer customer = await base.GetByIdAsync(id);
+            if (customer == null)
+            {
+                return 0;
+            }
+            else
+            {
+                customer.Status = msg;
+                return await UpdateAsync(customer);
+            }
+        }
+        public async Task<int> updateInfo(string id, string address, DateOnly dob, bool sex)
+        {
+            Customer customer = await base.GetByIdAsync(id); // Fetch by string ID
+
+            if (customer == null)
+            {
+                return 0;
+            }
+            else
+            {
+                customer.Address = address;
+                customer.BirthDay = dob;
+                customer.Sex = sex;
+
+                return await UpdateAsync(customer);
+            }
+        }
+
+
+
     }
 }
 

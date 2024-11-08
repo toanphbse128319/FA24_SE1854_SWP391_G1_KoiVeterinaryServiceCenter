@@ -111,14 +111,29 @@ public class BookingController : ControllerBase {
             return StatusCode( StatusCodes.Status500InternalServerError, ex.Message );
         }
     }
+    [HttpGet("getall")]
+    public async Task<ActionResult<IEnumerable<Booking>>> GetAll()
+    {
+        try
+        {
+            return await _unitOfWork.BookingRepository.GetAllAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
 
     [Route("add")]
     [HttpPost]
     public async Task<ActionResult<string>> AddBooking(NewBookingInformation info){
         try{
             string result = await _unitOfWork.BookingRepository.AddNewBooking(info);
-            if( result.Contains("cannot be") )
+            if( result.ToLower().Contains("cannot") )
                 return StatusCode(StatusCodes.Status400BadRequest, result);
+            if( result.ToLower().Contains("pricing cannot be") )
+                return StatusCode(StatusCodes.Status406NotAcceptable, result);
             switch (result){
                 case "Cannot place an booking order with that date":
                 case "Cannot determine the service":
@@ -144,4 +159,5 @@ public class BookingController : ControllerBase {
             return StatusCode( StatusCodes.Status500InternalServerError, ex.Message );
         }
     }
+    
 }

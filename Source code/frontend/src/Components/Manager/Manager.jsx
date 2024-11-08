@@ -33,7 +33,7 @@ const StaffManage = () => {
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
-      <div className="h-full w-1/6 bg-gray-800 text-white p-4">
+      <div className="fixed top-0 h-full w-1/6 bg-gray-800 text-white p-4 ">
         <h2 className="text-lg font-bold mb-6 text-center">Staff Management</h2>
         <div className="space-y-3">
           <button
@@ -81,7 +81,7 @@ const StaffManage = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 p-8">{renderPage()}</div>
+      <div className="ml-[16.6667%] w-5/6 p-8">{renderPage()}</div>
     </div>
   );
 };
