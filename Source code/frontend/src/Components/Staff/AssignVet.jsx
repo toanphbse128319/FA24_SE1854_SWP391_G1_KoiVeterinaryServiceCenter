@@ -3,67 +3,6 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { FetchAPI } from "../../Helper/Utilities";
 
-async function fetchBooking(){
-    let currentDate = new Date().toISOString().split("T")[0];
-    let target = (new Date());
-    target.setDate( target.getDate() + 30 );
-    let targetDate = target.toISOString().split("T")[0];
-    let response = await FetchAPI({ endpoint: `/Booking/getbookingfromto?from=${currentDate}&to=${targetDate}` })
-    if ( !response.ok )
-        return null;
-    return await response.json();
-}
-
-async function fetchVet(){
-    let response = await FetchAPI({ endpoint: '/Employee/getbyrolename?info=Veterinarian' });
-    if ( !response.ok )
-        return null;
-    return await response.json();
-}
-
-async function fetchSchedule(){
-    let currentDate = new Date().toISOString().split("T")[0];
-    let response = await FetchAPI({ endpoint: '/Schedule/get30daysschedule?date=' + currentDate });
-    if ( !response.ok )
-        return null;
-    return await response.json();
-}
-
-async function fetchSlot(){
-    let currentDate = new Date().toISOString().split("T")[0];
-    let response = await FetchAPI({ endpoint: '/Schedule/getslotin30days?date=' + currentDate });
-    if ( !response.ok )
-        return null;
-    return await response.json();
-}
-
-async function fetchSDM(){
-    let response = await FetchAPI({ endpoint: '/ServiceDeliveryMethod' });
-    if ( !response.ok )
-        return null;
-    return await response.json();
-}
-
-async function fetchCustomer({bookings}){
-    let temp = [];
-    bookings.map( booking => {
-        FetchAPI({ endpoint: `/Customer/${booking.CustomerID}`}).then( response => response.json().then( json => {
-            temp.push(json);
-        } ) );
-    });
-    return temp;
-}
-
-async function fetchBookingDetails({bookings}){
-    let temp = [];
-    bookings.map( booking => {
-        FetchAPI({ endpoint: `/bookingdetail/bybookingid?id=${booking.BookingID}`}).then( response => response.json().then( json => {
-            temp.push(json);
-        } ) );
-    });
-    return temp;
-}
-
 function CustomerNameOfTHeBooking({booking, customers}){
     let result = "Nguyen Van A"
     customers.map( customer => {
@@ -99,23 +38,23 @@ function getSDMName({Booking, bds, sdms}){
     return result.Name;
 }
 
-const AssignVet = () => {
+function filterBooking(bookings){
+    let filtered = [];
+    bookings.forEach( booking => {
+        if( bookings.EmployeeID == "E0" )
+            filtered.push( bookings );
+    })
+    return filtered;
+}
+
+const AssignVet = ({DoctorSchedule, SlotSchedule, BookingDetails, bookings, doctors, customers, sdm, SetBookingDetails}) => {
   const navigate = useNavigate();
 
   const [selectedDate, setSelectedDate] = useState(null);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedSlots, setSelectedSlots] = useState([]);
-  const [DoctorSchedule, SetDoctorSchedule] = useState([]);
-  const [SlotSchedule, SetSlotSchedule] = useState([]);
-  const [BookingDetails, SetBookingDetails] = useState([]);
-  const [loading, SetLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
-  const [bookings, setBookings] = useState([]);
-  const [doctors, setDoctors] = useState([]);
-  const [customers, setCustomer] = useState([]);
-  const [sdm, SetSDM] = useState([]);
-
 //  const bookings = [
 //    { BookingID: 'B1', CustomerName: 'Nguyen Van A', Date: '2024-10-31 08:00:00.000', SlotNo: 1, ServiceDeliveryMethod: 'Tại nhà', DoctorName: 'Dr. John Doe' },
 //    { BookingID: 'B2', CustomerName: 'Tran Thi B', Date: '2024-10-31 09:00:00.000', SlotNo: 2, ServiceDeliveryMethod: 'Tại trung tâm', DoctorName: '' },
@@ -130,25 +69,6 @@ const AssignVet = () => {
 //    { DoctorID: 'E4', DoctorName: 'Dr. Michael Brown' },
 //  ];
 //
-
-    useEffect(() => {
-        // Set loading to true before fetching
-        SetLoading(true);
-        fetchBooking().then( result => { 
-            setBookings(result);
-            fetchCustomer( {bookings: result }).then( customer => {
-                setCustomer( customer ); SetLoading( false );
-            });
-            fetchBookingDetails( {bookings: result} ).then( bd => {
-                SetBookingDetails( bd );
-            });
-            console.log(result);
-        } );
-        fetchVet().then( result => setDoctors(result) );
-        fetchSchedule().then( result => SetDoctorSchedule( result ) );
-        fetchSDM().then( result => SetSDM( result ) );
-        fetchSlot().then( result => SetSlotSchedule( result ) );
-    }, []);
 
   const transformScheduleData = (doctorSchedules = [], slotSchedules = []) => {
     const transformedData = [];
@@ -173,17 +93,29 @@ const AssignVet = () => {
     return transformedData;
   };
 
+    function checkbookingDate(bookings, date){
+        let check = false;
+        bookings.map( booking => {
+            let bookingDate = booking.BookingDate.split("T")[0];
+            console.log
+            if( bookingDate == date )
+                check = true;
+        })
+        return check;
+    }
+
   const createScheduleMap = (doctorSchedules = [], slotSchedules = []) => {
     const map = new Map();
     const transformedData = transformScheduleData(doctorSchedules, slotSchedules);
 
     transformedData.forEach(schedule => {
       const dateKey = new Date(schedule.date).toISOString().split('T')[0];
-      if (!map.has(dateKey)) {
+      if (!map.has(dateKey) && checkbookingDate( bookings, dateKey ) ) {
         map.set(dateKey, []);
       }
-      map.get(dateKey).push(schedule);
+      map.get(dateKey)?.push(schedule);
     });
+      console.log( map );
 
     return map;
   };
@@ -281,10 +213,6 @@ const AssignVet = () => {
     SetBookingDetails(updatedBookings);
     setShowModal(false);
   };
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div style={styles.calendarContainer}>
@@ -548,6 +476,13 @@ const styles = {
   },
   bookingDetails: {
     padding: '16px'
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: '20px',
+    borderRadius: '10px',
+    width: '400px',
+    textAlign: 'center',
   },
   bookingList: {
     display: 'flex',
