@@ -142,6 +142,7 @@ const AssignVet = () => {
             fetchBookingDetails( {bookings: result} ).then( bd => {
                 SetBookingDetails( bd );
             });
+            console.log(result);
         } );
         fetchVet().then( result => setDoctors(result) );
         fetchSchedule().then( result => SetDoctorSchedule( result ) );
@@ -220,11 +221,11 @@ const AssignVet = () => {
   const daysToShow = getDaysInMonth(currentDate);
 
   const handleDateClick = async (date) => {
-    if (!date) return;
+    if (!date)
+      return;
     const dateString = date.toISOString().split('T')[0];
     setSelectedDate(date);
     setSelectedSlots(scheduleMap.get(dateString) || []);
-
     const bookingDetailsForDate = bookings.filter(booking => booking.BookingDate.startsWith(dateString));
     SetBookingDetails(bookingDetailsForDate);
   };
