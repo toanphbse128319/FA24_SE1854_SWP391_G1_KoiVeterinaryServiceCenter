@@ -177,9 +177,9 @@ public class AccountRepository : GenericRepository<Account>
         else if (account.AccountID.Count() == 0)
             account.AccountID = GetNextID("A");
         if( account.RoleID == null )
-            account.RoleID = "R2";
+            account.RoleID = "R4";
         if( account.RoleID.ElementAt(0) != 'R' )
-            account.RoleID = "R2";
+            account.RoleID = "R4";
         await base.CreateAsync(account);
         return account.AccountID;
     }
