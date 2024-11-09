@@ -58,7 +58,7 @@ const MyProfile = () => {
 
     // Make the API call
     const response = await FetchAPI({
-        endpoint: `Booking/updateCusInfo`,
+        endpoint: `/customer/updatecusinfo`,
         method: "PUT",
         body: updatedInfo,
     });
