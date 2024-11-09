@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Objects;
+using Helper;
 
 namespace Repositories.Repository;
 
@@ -65,12 +66,22 @@ public class ServiceUseRepository : GenericRepository<ServiceUse>
         ServiceDeliveryMethodRepository sdmRepo = new(_context);
         ServiceRepository serviceRepo = new(_context);
         BookingDetail bd = await bdRepo.GetByIdAsync( profiles.BookingDetail.BookingDetailID );
+        BookingRepository bookRepo = new(_context);
+        Booking bookingOrder = await bookRepo.GetByIdAsync( profiles.BookingDetail.BookingID );
+        if( bookingOrder == null )
+            return "Invalid: Cannot find the booking order";
         if( bd == null )
             return "Invalid: Cannot determined the booking detail info";
         Service service = await serviceRepo.GetByIdAsync( bd.ServiceID );
         if( service == null )
             return "Invalid: Cannot determined the service";
         string type = await sdmRepo.GetServicedType( service.ServiceDeliveryMethodID );
+        bdRepo.Copy(profiles.BookingDetail, bd);
+        bookingOrder.Status += " " + Configuration.GetConfiguration()["Other:PreOrderedWorkConfirmation"];
+        if( await bookRepo.UpdateAsync( bookingOrder ) < 1 )
+            return "Invalid: Failed to update booking status";
+        if( await bdRepo.UpdateAsync( bd ) < 1 ) 
+            return "Invalid: Failed to update booking detail info";
         if( type == "fish" ){
             foreach( var profile in profiles.AnimalProfiles ){
                 profile.AnimalProfileID = await animalRepo.AddAnimalProfileAsync( profile );

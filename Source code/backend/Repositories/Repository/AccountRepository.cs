@@ -289,6 +289,8 @@ public class AccountRepository : GenericRepository<Account>
             return "No need for OTP";
         }
         string[] statuses = result.Status.Split(' ');
+        if( statuses.Length < 5 )
+            return "There's no OTP code sent to this email";
         string luckyNumber = statuses[3];
         DateTime timeSinceCreated = DateTime.Parse(statuses[4] + ' ' + statuses[5]);
         if (timeSinceCreated.AddMinutes(10) <= DateTime.Now)

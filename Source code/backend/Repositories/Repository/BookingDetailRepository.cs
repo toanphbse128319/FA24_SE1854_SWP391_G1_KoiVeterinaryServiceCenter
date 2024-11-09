@@ -51,6 +51,15 @@ namespace Repositories.Repository
             await base.CreateAsync(bd);
             return bd.BookingDetailID;
         }
+
+        public void Copy(BookingDetail from, BookingDetail to){
+            to.ServiceID = from.ServiceID;
+            to.Formulary = from.Formulary;
+            to.NoteResult = from.NoteResult;
+            to.ExaminationResult = from.ExaminationResult;
+            to.IsIncidental = from.IsIncidental;
+            to.VetConsult = from.VetConsult;
+        }
         
     }
 }

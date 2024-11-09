@@ -574,8 +574,8 @@ INSERT INTO SlotTable (SlotTableID, ScheduleID, Note, Slot, SlotCapacity, SlotOr
 ('ST115', 'SCH23', N'Tại nhà', 3, 10, 6, 1),
 ('ST116', 'SCH23', N'Tại nhà', 4, 10, 3, 1),
 ('ST117', 'SCH23', N'Tại nhà', 5, 10, 7, 1),
-('ST118', 'SCH23', N'Tại nhà', 6, 10, 5, 1),
-('ST119', 'SCH23', N'Tại nhà', 7, 10, 4, 1),
+('ST118', 'SCH23', N'Tại nhà', 6, 10, 10, 0),
+('ST119', 'SCH23', N'Tại nhà', 7, 10, 10, 0),
 ('ST120', 'SCH23', N'Tại nhà', 8, 10, 6, 1),
 -- SCH24
 ('ST121', 'SCH24', N'Tại nhà', 1, 10, 4, 1),
