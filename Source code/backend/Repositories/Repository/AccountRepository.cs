@@ -306,4 +306,49 @@ public class AccountRepository : GenericRepository<Account>
         await base.UpdateAsync(result);
         return "OTP verify successfully";
     }
+
+    public string checkValid( Account info ){
+        if( string.IsNullOrEmpty(info.RoleID) )
+            return "Invalid: missing info";
+        if( string.IsNullOrEmpty( info.Status ) )
+            return "Invalid: missing info";
+        if( string.IsNullOrEmpty( info.PhoneNumber ) )
+            return "Invalid: missing info";
+        if( string.IsNullOrEmpty( info.Password ) )
+            return "Invalid: missing info";
+        if( string.IsNullOrEmpty( info.Email ) )
+            return "Invalid: missing info";
+        if( string.IsNullOrEmpty( info.Avatar ) )
+            return "Invalid: missing info";
+        return "Ok";
+    }
+
+    public async Task<string> UpdateAccountAsync( Account info ){
+        string result = "";
+        result = checkValid( info );
+        if( result != "Ok" )
+            return result;
+        if( string.IsNullOrEmpty( info.AccountID ) )
+            return "Invalid: missing info";
+        if( await base.UpdateAsync( info ) < 1 )
+            return "Invalid: failed to update";
+        return "Ok";
+    }
+
+    public async Task<string> CreateAccountAsync( Account info ){
+        string result = "";
+        result = checkValid( info );
+        if( result != "Ok" )
+            return result;
+        info.AccountID = base.GetNextID("A");
+        if( await base.CreateAsync( info ) < 1 )
+            return "Invalid: failed to update";
+        return "Ok";
+    }
+
+    public async Task<string> UpdateOrAdd( Account info ){
+        if( string.IsNullOrEmpty( info.AccountID ) )
+            return await CreateAccountAsync( info );
+        return await UpdateAccountAsync( info );
+    }
 }

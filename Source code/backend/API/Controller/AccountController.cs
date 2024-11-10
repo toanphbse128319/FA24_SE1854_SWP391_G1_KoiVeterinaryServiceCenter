@@ -32,5 +32,28 @@ public class AccountController : ControllerBase {
         }
     }
 
+    [HttpPut]
+    public async Task<ActionResult> AddOrUpdate( Account info ){
+        try{
+            string result = await _unitOfWork.AccountRepository.UpdateOrAdd( info );
+            if( result != "Ok" )
+                return StatusCode(StatusCodes.Status400BadRequest, result );
+            return Ok();
+        } catch ( Exception ex ) {
+            Console.WriteLine(ex);
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+
+    [HttpGet]
+    public async Task<ActionResult> GetAll(){
+        try{
+            return Ok(await _unitOfWork.AccountRepository.GetAllAsync() );
+        } catch ( Exception ex ) {
+            Console.WriteLine(ex);
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+
 }
 

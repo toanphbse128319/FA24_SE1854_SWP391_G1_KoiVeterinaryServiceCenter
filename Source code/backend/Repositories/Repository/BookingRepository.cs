@@ -76,8 +76,6 @@ public class BookingRepository : GenericRepository<Booking>
     }
 
     public bool checkValidPrice( Service service, Decimal total, int number ){
-            Console.WriteLine( service.Price + ", " + number + ", " + total );
-
         if( service.Price * number > total )
             return false;
         return true;

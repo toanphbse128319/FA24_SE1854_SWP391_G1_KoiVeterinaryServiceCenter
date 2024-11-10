@@ -95,7 +95,6 @@ public class ScheduleRepository : GenericRepository<Schedule>
 //        schedule.Status = info.Status;
 
         info.ScheduleID = GetNextID("SCH");
-        Console.WriteLine( info.ScheduleID );
         await base.CreateAsync(info);
         await (new SlotTableRepository(_context).GenerateVetScheduleAsync(info.ScheduleID, info.Note));
         return info;
