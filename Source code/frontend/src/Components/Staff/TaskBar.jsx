@@ -3,13 +3,21 @@ import AssignVet from './AssignVet';
 import ManageUser from './ManageUser';
 import AddSchedule from './AddSchedule';
 import { useNavigate } from 'react-router-dom';
+import { FetchAPI } from "../../Helper/Utilities";
+
+function AddDate({date, amount}){
+    let temp = date;
+
+    temp.setDate( temp.getDate() + amount );
+    return temp.toISOString().split("T")[0]
+}
 
 async function fetchBooking(){
-    let currentDate = new Date().toISOString().split("T")[0];
-    let target = (new Date());
-    target.setDate( target.getDate() + 30 );
-    let targetDate = target.toISOString().split("T")[0];
-    let response = await FetchAPI({ endpoint: `/Booking/getbookingfromto?from=${currentDate}&to=${targetDate}` })
+    let currentDate = new Date();
+    let from = AddDate({date: currentDate, amount: 2});
+    
+    let to = AddDate({date: currentDate, amount: 32});
+    let response = await FetchAPI({ endpoint: `/Booking/getbookingfromto?from=${from}&to=${to}` })
     if ( !response.ok )
         return null;
     return await response.json();
@@ -23,16 +31,18 @@ async function fetchVet(){
 }
 
 async function fetchSchedule(){
-    let currentDate = new Date().toISOString().split("T")[0];
-    let response = await FetchAPI({ endpoint: '/Schedule/get30daysschedule?date=' + currentDate });
+    let currentDate = new Date();
+    let target = AddDate({date: currentDate, amount: 2});
+    let response = await FetchAPI({ endpoint: '/Schedule/get30daysschedule?date=' + target });
     if ( !response.ok )
         return null;
     return await response.json();
 }
 
 async function fetchSlot(){
-    let currentDate = new Date().toISOString().split("T")[0];
-    let response = await FetchAPI({ endpoint: '/Schedule/getslotin30days?date=' + currentDate });
+    let currentDate = new Date();
+    let target = AddDate({date: currentDate, amount: 2});
+    let response = await FetchAPI({ endpoint: '/Schedule/getslotin30days?date=' + target });
     if ( !response.ok )
         return null;
     return await response.json();
@@ -65,7 +75,6 @@ async function fetchBookingDetails({bookings}){
     return temp;
 }
 
-import { FetchAPI } from "../../Helper/Utilities";
 const TaskBar = () => {
   const [DoctorSchedule, SetDoctorSchedule] = useState([]);
   const [SlotSchedule, SetSlotSchedule] = useState([]);
@@ -76,12 +85,15 @@ const TaskBar = () => {
   const [customers, setCustomer] = useState([]);
   const [sdm, SetSDM] = useState([]);
   const navigate = useNavigate();
+    //This will change when the data from database is changed!
+    const [update, setUpdate] = useState( false );
 
 const STEPS = {
     ASSIGN_VET: 'assignVet',
     ADD_SCHEDULE: 'addSchedule',
     MANAGE_USER: 'manageUser'
   };
+
   const [currentStep, setCurrentStep] = useState(STEPS.ASSIGN_VET);
     useEffect(() => {
         // Set loading to true before fetching
@@ -99,19 +111,24 @@ const STEPS = {
         fetchSchedule().then( result => SetDoctorSchedule( result ) );
         fetchSDM().then( result => SetSDM( result ) );
         fetchSlot().then( result => SetSlotSchedule( result ) );
-    }, []);
+    }, [ update ]);
 
   if (loading) {
     return <div>Loading...</div>;
   }
-    console.log(bookings);
+
+    function Update(){
+        setUpdate( !update );
+    }
+
+    console.log(DoctorSchedule);
 
   const renderComponent = () => {
     switch (currentStep) {
       case STEPS.ASSIGN_VET:
         return <AssignVet DoctorSchedule={DoctorSchedule} SlotSchedule={SlotSchedule} BookingDetails={BookingDetails} bookings={bookings} doctors={doctors} customers={customers} sdm={sdm} SetBookingDetails={SetBookingDetails}/>;
       case STEPS.ADD_SCHEDULE:
-        return <AddSchedule />;
+        return <AddSchedule DoctorSchedule={DoctorSchedule} doctors={doctors} SlotSchedule={SlotSchedule} Update={Update} />;
       case STEPS.MANAGE_USER:
         return <ManageUser />;
       default:

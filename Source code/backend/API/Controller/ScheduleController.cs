@@ -17,9 +17,12 @@ public class ScheduleController : ControllerBase
         _unitOfWork = unitOfWork;
     }
 
+    //Change AddSchedule from receive UpdateSchedule to Schedule for easier validation
     [HttpPost]
-    public async Task<ActionResult<Schedule>> AddScheduleAsync(UpdateSchedule info)
+    public async Task<ActionResult<Schedule>> AddScheduleAsync(Schedule info)
     {
+        _unitOfWork.BeginTransactionAsync();
+        string result = "";
         try
         {
             if (info.EmployeeID == null)
@@ -32,7 +35,8 @@ public class ScheduleController : ControllerBase
             {
                 Schedule schedule = new Schedule()
                 {
-                    ScheduleID = info.ScheduleID,
+                    //Tại sao lại thêm id ở dây làm gì nếu AddNewScheduleAsync đã làm??
+                    //ScheduleID = info.ScheduleID, 
                     Status = info.Status,
                     Date = info.Date.AddDays(i * 7),
                     EmployeeID = info.EmployeeID,
@@ -41,12 +45,18 @@ public class ScheduleController : ControllerBase
                 await _unitOfWork.ScheduleRepository.AddNewScheduleAsync(schedule);
             }
             
+            _unitOfWork.CommitTransactionAsync();
+            result = "Ok";
             return Ok("Added successfully!");
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex);
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        } finally {
+            if( result != "Ok" ){
+                _unitOfWork.RollbackTransactionAsync();
+            }
         }
     }
 
