@@ -36,12 +36,14 @@ public class FeedbackController : ControllerBase {
     }
 
     [HttpPut]
-    public ActionResult<Feedback> SaveFeedback(Feedback feedback) {
+    public async Task<ActionResult<Feedback>>  AddFeedback(Feedback feedback,String bookingID) 
+    {
         try {
             feedback.FeedbackID = null;
-            _unitOfWork.FeedbackRepository.SaveFeedBack(feedback);
-            return Ok("them feedback thanh cong");
+        Booking booking = await _unitOfWork.FeedbackRepository.AddFeedBack(feedback, bookingID);
+            return Ok(booking);
         } catch (Exception ex) {
+            Console.WriteLine( ex );
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }

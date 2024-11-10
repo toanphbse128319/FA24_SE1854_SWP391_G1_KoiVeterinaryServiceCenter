@@ -72,7 +72,7 @@ createRoot(document.getElementById("root")).render(
           }   
         />
         Test
-        <Route path="/test" element={<BookingList />} />
+        <Route path="/test" element={<Test />} />
         <Route path="/StaffPage" element={<StaffPage />} />
         <Route path="/PaymentNotice" element={<PaymentNotice />} />
         <Route path="/temp" element={<BookingList />} />

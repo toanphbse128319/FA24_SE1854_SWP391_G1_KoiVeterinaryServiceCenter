@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Confirm from './ConfirmToSubmit';
 import ProfileListModal from './PorfileList';
 import Toast from './Toast';
 import {
@@ -14,69 +13,105 @@ import {
   Typography,
 } from '@mui/material';
 import { Fish } from 'phosphor-react';
+import { Info as InfoIcon, Close as CloseIcon } from '@mui/icons-material';
 
-import {
-  Info as InfoIcon,
-  Close as CloseIcon
-} from '@mui/icons-material';
+// Utility để xử lý input số
+const numberUtils = {
+  formatNumberValue: (value) => {
+    if (!value) return '';
+    return String(parseFloat(value) || 0);
+  },
 
-const INITIAL_FISH_PROFILE = {
-  AnimalProfileID: '',
-  Name: '',
-  TypeID: 'AT1',
-  Size: 0,
-  Age: 0,
-  Color: '',
-  Description: '',
-  Sex: true,
-  Picture: ''
+  handleNumberKeyDown: (e) => {
+    const allowedKeys = [
+      '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+      'Backspace', 'Delete', 'Tab', 'Enter', '.', 'a',
+      'ArrowLeft', 'ArrowRight'
+    ];
+    
+    if (!allowedKeys.includes(e.key)) {
+      e.preventDefault();
+      return;
+    }
+
+    // Xử lý nhập dấu thập phân
+    if (e.key === '.') {
+      const value = e.target.value;
+      if (value.includes('.') || !value.length || !/\d/.test(value[value.length - 1])) {
+        e.preventDefault();
+      }
+    }
+  },
+
+  getNumberInputProps: (unit = '') => ({
+    type: "text",
+    onKeyDown: numberUtils.handleNumberKeyDown,
+    InputProps: unit ? {
+      endAdornment: <span className="text-gray-500">{unit}</span>
+    } : undefined,
+    inputProps: {
+      min: 0,
+      step: "any",
+      inputMode: "decimal",
+      pattern: "[0-9]*\\.?[0-9]*"
+    }
+  })
 };
-
-const INITIAL_POOL_PROFILE = {
-  PoolProfileID: '',
-  Name: '',
-  Note: '',
-  Width: '',
-  Description: '',
-  Height: '',
-  Depth: '',
-  Picture: '',
-};
-const INITIAL_FORM_STATE = {
-  NoteResult: '',
-  ExaminationResult: '',
-  VetConsult: '',
-  Formulary: ''
+// Các giá trị mặc định cho form
+const INITIAL_STATES = {
+  FISH_PROFILE: {
+    AnimalProfileID: '',
+    Name: '',
+    TypeID: 'AT1',
+    Size: 0,
+    Age: 0,
+    Color: '',
+    Description: '',
+    Sex: true,
+    Picture: ''
+  },
+  POOL_PROFILE: {
+    PoolProfileID: '',
+    Name: '',
+    Note: '',
+    Width: '',
+    Description: '',
+    Height: '',
+    Depth: '',
+    Picture: '',
+  },
+  FORM: {
+    NoteResult: '',
+    ExaminationResult: '',
+    VetConsult: '',
+    Formulary: ''
+  }
 };
 
 const BookingActions = ({
   bookingId,
   isOpen,
   onClose,
-  initialFishCount = 0,
-  initialPoolCount = 1,
+  initialFishCount ,
+  initialPoolCount ,
   bookingDetail,
   setIsIncidental,
   service,
 }) => {
-  const [activeTab, setActiveTab] = useState(0);
-  const [currentStep, setCurrentStep] = useState('CheckInFish');
-  const [additionalFishCount, setAdditionalFishCount] = useState(0);
-  const [additionalPoolCount, setAdditionalPoolCount] = useState(0);
-  const [fishProfiles, setFishProfiles] = useState([]);
-  const [poolProfiles, setPoolProfiles] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [currentFishProfile, setCurrentFishProfile] = useState(INITIAL_FISH_PROFILE);
-  const [currentPoolProfile, setCurrentPoolProfile] = useState(INITIAL_POOL_PROFILE);
-  const [showConfirmation, setShowConfirmation] = useState(false);
-  const [formData, setFormData] = useState(INITIAL_FORM_STATE);
-  const [formErrors, setFormErrors] = useState({});
-  const totalFishCount = initialFishCount + Number(additionalFishCount);
-  const totalPoolCount = initialPoolCount + Number(additionalPoolCount);
-  const [error, setError] = useState('');
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
-
+    // States cần thiết cho component
+    const [activeTab, setActiveTab] = useState(0);
+    const [currentStep, setCurrentStep] = useState('CheckInFish');
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [fishProfiles, setFishProfiles] = useState([]);
+    const [poolProfiles, setPoolProfiles] = useState([]);
+    const [currentFishProfile, setCurrentFishProfile] = useState(INITIAL_STATES.FISH_PROFILE);
+    const [currentPoolProfile, setCurrentPoolProfile] = useState(INITIAL_STATES.POOL_PROFILE);
+    const [formData, setFormData] = useState(INITIAL_STATES.FORM);
+    const [formErrors, setFormErrors] = useState({});
+  
+    // Tính toán tổng số lượng cá và hồ
+    const totalFishCount = initialFishCount;
+    const totalPoolCount = initialPoolCount;
   useEffect(() => {
     setCurrentStep(activeTab === 0 ? 'CheckInFish' : 'SelectServices');
   }, [activeTab]);
@@ -85,56 +120,50 @@ const BookingActions = ({
     setActiveTab(1);
   };
   if (!isOpen) return null;
-  const isProfileLimitReached = () => {
-    return fishProfiles.length >= totalFishCount && poolProfiles.length >= totalPoolCount;
-  };
 
-  const isProfilesComplete = () => {
-    return fishProfiles.length === totalFishCount && poolProfiles.length === totalPoolCount;
-  };
+  const isProfileLimitReached = () => fishProfiles.length >= totalFishCount && poolProfiles.length >= totalPoolCount;
+  const isProfilesComplete = () => fishProfiles.length === totalFishCount && poolProfiles.length === totalPoolCount;
 
+     // Xử lý việc submit profile cá/hồ
   const handleProfileSubmit = (skip = false) => {
     const isPoolProfile = currentIndex >= totalFishCount;
+    const newProfile = skip ? 
+      (isPoolProfile ? INITIAL_STATES.POOL_PROFILE : INITIAL_STATES.FISH_PROFILE) :
+      (isPoolProfile ? currentPoolProfile : currentFishProfile);
 
-    if (skip) {
-      if (isPoolProfile) {
-        setPoolProfiles([...poolProfiles, { ...INITIAL_POOL_PROFILE }]);
-      } else {
-        setFishProfiles([...fishProfiles, { ...INITIAL_FISH_PROFILE }]);
-      }
+    if (isPoolProfile) {
+      setPoolProfiles([...poolProfiles, { ...newProfile }]);
+      setCurrentPoolProfile(INITIAL_STATES.POOL_PROFILE);
     } else {
-      if (isPoolProfile) {
-        setPoolProfiles([...poolProfiles, { ...currentPoolProfile }]);
-        setCurrentPoolProfile(INITIAL_POOL_PROFILE);
-      } else {
-        setFishProfiles([...fishProfiles, { ...currentFishProfile }]);
-        setCurrentFishProfile(INITIAL_FISH_PROFILE);
-      }
+      setFishProfiles([...fishProfiles, { ...newProfile }]);
+      setCurrentFishProfile(INITIAL_STATES.FISH_PROFILE);
     }
 
     setCurrentIndex(prev => prev + 1);
   };
 
-  const handleUpdateFishProfile = (index, updatedProfile) => {
-    const newFishProfiles = [...fishProfiles];
-    newFishProfiles[index] = updatedProfile;
-    setFishProfiles(newFishProfiles);
-  };
+// Xử lý cập nhật thông tin profile
+const handleUpdateFishProfile = (index, updatedProfile) => {
+  setFishProfiles(profiles => {
+    const newProfiles = [...profiles];
+    newProfiles[index] = updatedProfile;
+    return newProfiles;
+  });
+};
 
-  const handleUpdatePoolProfile = (index, updatedProfile) => {
-    const newPoolProfiles = [...poolProfiles];
-    newPoolProfiles[index] = updatedProfile;
-    setPoolProfiles(newPoolProfiles);
-  };
+const handleUpdatePoolProfile = (index, updatedProfile) => {
+  setPoolProfiles(profiles => {
+    const newProfiles = [...profiles];
+    newProfiles[index] = updatedProfile;
+    return newProfiles;
+  });
+};
 
-  const handleFishProfileChange = (field) => (event) => {
-    setCurrentFishProfile({
-      ...currentFishProfile,
-      [field]: event.target.value
-    });
-  };
-
-
+ // Xử lý thay đổi giá trị trong form
+ const handleProfileChange = (field, isPool = false) => (event) => {
+  const setter = isPool ? setCurrentPoolProfile : setCurrentFishProfile;
+  setter(prev => ({ ...prev, [field]: event.target.value }));
+};
   const handlePoolProfileChange = (field) => (event) => {
     setCurrentPoolProfile({
       ...currentPoolProfile,
@@ -142,158 +171,112 @@ const BookingActions = ({
     });
   };
 
-  const handleTabChange = (newValue) => {
-    if (newValue === 1 && !isProfilesComplete()) {
-      return;
-    }
+   // Xử lý chuyển đổi tab
+   const handleTabChange = (newValue) => {
+    if (newValue === 1 && !isProfilesComplete()) return;
     setActiveTab(newValue);
   };
 
 
 
-  // Helper function to process numeric fields
+
   const processNumericField = (value) => {
     if (value === 'Chưa có dữ liệu' || value === '') return 0;
     return Number(value) || 0;
   };
-
-  // Helper function to process string fields
   const processStringField = (value) => {
     if (value === 'Chưa có dữ liệu' || value === '') return 'N/A';
     return String(value);
   };
-
-  const processData = (fishProfiles, poolProfiles, bookingDetail) => {
-    // Process fish profiles
-    const processedFishProfiles = fishProfiles.map(profile => ({
-      ...INITIAL_FISH_PROFILE,
-      ...profile,
-      Size: processNumericField(profile.Size),
-      Age: processNumericField(profile.Age),
-      Name: processStringField(profile.Name),
-      Color: processStringField(profile.Color),
-      Description: processStringField(profile.Description),
-      Picture: processStringField(profile.Picture),
-      // TypeID and Sex retain their original values or defaults
-    }));
-
-    // Process pool profiles
-    const processedPoolProfiles = poolProfiles.map(profile => ({
-      ...INITIAL_POOL_PROFILE,
-      ...profile,
-      Width: processNumericField(profile.Width),
-      Height: processNumericField(profile.Height),
-      Depth: processNumericField(profile.Depth),
-      Name: processStringField(profile.Name),
-      Note: processStringField(profile.Note),
-      Description: processStringField(profile.Description),
-      Picture: processStringField(profile.Picture),
-    }));
-
-    // Process booking detail
-    const processedBookingDetail = {
-      ...INITIAL_FORM_STATE,
-      ...bookingDetail,
-      NoteResult: processStringField(bookingDetail.NoteResult),
-      ExaminationResult: processStringField(bookingDetail.ExaminationResult),
-      VetConsult: processStringField(bookingDetail.VetConsult),
-      Formulary: processStringField(bookingDetail.Formulary),
-      // Preserve the original values for IDs and IsIncidental
-      BookingDetailID: bookingDetail.BookingDetailID,
-      BookingID: bookingDetail.BookingID,
-      ServiceID: bookingDetail.ServiceID,
-      IsIncidental: bookingDetail.IsIncidental
+ 
+  // Xử lý dữ liệu trước khi gửi API
+  const processData = () => {
+    const processField = (value, isNumeric = false) => {
+      if (!value || value === 'Chưa có dữ liệu') return isNumeric ? 0 : 'N/A';
+      return isNumeric ? Number(value) : String(value);
     };
+
+    const processedFishProfiles = fishProfiles.map(profile => ({
+      ...INITIAL_STATES.FISH_PROFILE,
+      ...profile,
+      Size: processField(profile.Size, true),
+      Age: processField(profile.Age, true),
+      Name: processField(profile.Name),
+      Color: processField(profile.Color),
+      Description: processField(profile.Description),
+      Picture: processField(profile.Picture)
+    }));
+
+    const processedPoolProfiles = poolProfiles.map(profile => ({
+      ...INITIAL_STATES.POOL_PROFILE,
+      ...profile,
+      Width: processField(profile.Width, true),
+      Height: processField(profile.Height, true),
+      Depth: processField(profile.Depth, true),
+      Name: processField(profile.Name),
+      Note: processField(profile.Note),
+      Description: processField(profile.Description),
+      Picture: processField(profile.Picture)
+    }));
 
     return {
       AnimalProfile: processedFishProfiles,
       PoolProfile: processedPoolProfiles,
-      BookingDetail: processedBookingDetail
-    };
-  };
-
-  const validateForm = () => {
-    const errors = {};
-    const isAnimalService = service.ServiceDeliveryMethodID === 'SDM1' || service.ServiceDeliveryMethodID === 'SDM4';
-    const isPoolService = service.ServiceDeliveryMethodID === 'SDM2';
-
-    if (isAnimalService) {
-      if (!formData.ExaminationResult.trim()) {
-        errors.ExaminationResult = 'Vui lòng nhập tình trạng động vật';
-      }
-      if (!formData.VetConsult.trim()) {
-        errors.VetConsult = 'Vui lòng nhập thông tin bác sĩ tư vấn';
-      }
-    }
-
-    if (isPoolService) {
-      if (!formData.ExaminationResult.trim()) {
-        errors.ExaminationResult = 'Vui lòng nhập tình trạng hồ';
-      }
-      if (!formData.VetConsult.trim()) {
-        errors.VetConsult = 'Vui lòng nhập thông tin kỹ thuật viên tư vấn';
-      }
-    }
-
-    setFormErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
-  const handleShowConfirmation = () => {
-    if (validateForm()) {
-      setShowConfirmation(true);
-    } else {
-      setToastMessage('Vui lòng điền đầy đủ thông tin bắt buộc!');
-      setShowToast(true);
-    }
-  };
-
-
-
-  //ham gui api
-  const handleSubmit = async () => {
-    try {
-
-      const bookingDetail1 = {
+      BookingDetail: {
+        ...INITIAL_STATES.FORM,
+        ...formData,
         BookingDetailID: bookingDetail.BookingDetailID,
         BookingID: bookingId,
         ServiceID: service.ServiceID,
-        IsIncidental: false,
-        NoteResult: formData.NoteResult,
-        ExaminationResult: formData.ExaminationResult,
-        VetConsult: formData.VetConsult,
-        Formulary: formData.Formulary
+        IsIncidental: false
       }
-      const processedData = processData(fishProfiles, poolProfiles, bookingDetail1);
+    };
+  };
+
+// Validate form trước khi submit
+const validateForm = () => {
+  const errors = {};
+  const isAnimalService = service.ServiceDeliveryMethodID === 'SDM1' || service.ServiceDeliveryMethodID === 'SDM4';
+  const isPoolService = service.ServiceDeliveryMethodID === 'SDM2';
+
+  if ((isAnimalService || isPoolService) && !formData.ExaminationResult.trim()) {
+    errors.ExaminationResult = `Vui lòng nhập tình trạng ${isAnimalService ? 'động vật' : 'hồ'}`;
+  }
+
+  if (!formData.VetConsult.trim()) {
+    errors.VetConsult = `Vui lòng nhập thông tin ${isAnimalService ? 'bác sĩ' : 'kỹ thuật viên'} tư vấn`;
+  }
+
+  setFormErrors(errors);
+  return Object.keys(errors).length === 0;
+};
 
 
+
+
+  const handleSubmit = async () => {
+    if (!validateForm()) {
+      window.showToast("Vui lòng điền đầy đủ thông tin bắt buộc");
+      return;
+    }
+
+    try {
       const response = await fetch('http://localhost:5145/api/AnimalProfile/addProfiles', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(processedData),
-
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(processData())
       });
 
+      if (!response.ok) throw new Error('Failed to submit data');
 
-
-      if (!response.ok) {
-        throw new Error('Failed to change booking status');
-      }
-
-      const data = await response.text();
-      console.log('Status changed successfully:' + data);
-      setToastMessage('Thông tin đơn khám đã được gửi thành công!');
-      setShowToast(true);
-      setTimeout(() => {
-        setIsIncidental(true);
-        setShowConfirmation(false);
-      }, 1500);
+      window.showToast("Kết quả đã ghi nhận thành công");
+      setTimeout(() => setIsIncidental(true), 1500);
     } catch (error) {
-      console.error('Error changing status:' + error);
+      console.error('Error submitting data:', error);
+      window.showToast("Có lỗi xảy ra khi gửi dữ liệu");
     }
   };
+      
 
 
   const handleFormChange = (field) => (event) => {
@@ -306,11 +289,7 @@ const BookingActions = ({
 
   return (
     <>
-      <Toast
-        message={toastMessage}
-        isVisible={showToast}
-        onHide={() => setShowToast(false)}
-      />
+      <Toast time={2000} />
       <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
         <div className="bg-white rounded-lg w-11/12 max-w-6xl h-5/6 overflow-hidden relative flex flex-col">
           {/* Header with Tabs */}
@@ -325,7 +304,7 @@ const BookingActions = ({
                 '& .MuiTab-root': {
                   color: 'rgba(255, 255, 255, 0.5)',
                   opacity: 0.5,
-                  height: '6vh',  // Chiều cao của từng tab
+                  height: '6vh',
                   '&.Mui-selected': {
                     color: 'white',
                     opacity: 1
@@ -334,12 +313,12 @@ const BookingActions = ({
                 '& .MuiTabs-indicator': {
                   backgroundColor: 'white'
                 },
-                // Chiều cao tối thiểu của Tabs container
               }}
             >
               <Tab
                 icon={<Fish size={28} />}
                 label="Thông tin cá và hồ"
+                disabled={activeTab !== 0}
               />
               <Tab
                 icon={<InfoIcon />}
@@ -348,7 +327,7 @@ const BookingActions = ({
               />
             </Tabs>
           </div>
-
+  
           {/* Top right buttons */}
           <div className="absolute top-8 right-8 z-10 flex items-center">
             <Badge
@@ -359,7 +338,6 @@ const BookingActions = ({
                   color: "white",
                 }
               }}
-
             >
               <ProfileListModal
                 fishProfiles={fishProfiles}
@@ -372,27 +350,20 @@ const BookingActions = ({
               <CloseIcon sx={{ color: "white" }} />
             </IconButton>
           </div>
-
+  
           {/* Main Content Area */}
-          <div className="flex-1 overflow-y-auto"
-            style={{
-
-            }}>
+          <div className="flex-1 overflow-y-auto">
             {currentStep === 'CheckInFish' && (
-              <div className="p-6"              >
+              <div className="p-6">
                 {isProfileLimitReached() && (
                   <Alert severity="warning">
                     Đã ghi nhận đầy đủ thông tin!
                   </Alert>
                 )}
-
+  
                 {/* Initial Count Card */}
                 {(initialFishCount > 0 || initialPoolCount > 0) && (
-                  <Card className="p-4 mb-3"
-                    style={{
-
-                      background: 'white',
-                    }}>
+                  <Card className="p-4 mb-3" style={{ background: 'white' }}>
                     <Typography variant="h6">Số lượng đặt trước</Typography>
                     {initialFishCount > 0 && (
                       <Typography>Cá: {initialFishCount}</Typography>
@@ -402,64 +373,51 @@ const BookingActions = ({
                     )}
                   </Card>
                 )}
-
+  
                 {/* Profile Input Form */}
                 {!isProfileLimitReached() && (
-                  <Card className="p-4 "
-                    style={{
-
-
-                      background: 'white',
-                    }}>
+                  <Card className="p-4" style={{ background: 'white' }}>
                     <Typography variant="h6">
                       {currentIndex < totalFishCount ? 'Thông tin cá' : 'Thông tin hồ'}
                       ({currentIndex + 1}/{totalFishCount + totalPoolCount})
                     </Typography>
-
+  
                     {currentIndex < totalFishCount ? (
-                      <div className="grid grid-cols-2 gap-2 mt-4"
-                      >
+                      <div className="grid grid-cols-2 gap-2 mt-4">
                         <TextField
                           label="Tên"
                           value={currentFishProfile.Name}
-                          onChange={handleFishProfileChange('Name')}
+                          onChange={handleProfileChange('Name')}
                           fullWidth
                           variant="outlined"
                         />
                         <TextField
                           label="Kích thước"
-                          value={currentFishProfile.Size}
-                          onChange={handleFishProfileChange('Size')}
-                          type="number"
-                          InputProps={{
-                            endAdornment: <span className="text-gray-500">cm</span>,
-                            inputProps: { min: 0 }
-                          }}
+                          value={numberUtils.formatNumberValue(currentFishProfile.Size)}
+                          onChange={handleProfileChange('Size')}
+                          {...numberUtils.getNumberInputProps('cm')}
                           fullWidth
                           variant="outlined"
                         />
                         <TextField
                           label="Tuổi"
-                          value={currentFishProfile.Age}
-                          onChange={handleFishProfileChange('Age')}
-                          type="number"
-                          InputProps={{
-                            inputProps: { min: 0 }
-                          }}
+                          value={numberUtils.formatNumberValue(currentFishProfile.Age)}
+                          onChange={handleProfileChange('Age')}
+                          {...numberUtils.getNumberInputProps()}
                           fullWidth
                           variant="outlined"
                         />
                         <TextField
                           label="Màu sắc"
                           value={currentFishProfile.Color}
-                          onChange={handleFishProfileChange('Color')}
+                          onChange={handleProfileChange('Color')}
                           fullWidth
                           variant="outlined"
                         />
                         <TextField
                           label="Mô tả"
                           value={currentFishProfile.Description}
-                          onChange={handleFishProfileChange('Description')}
+                          onChange={handleProfileChange('Description')}
                           fullWidth
                           multiline
                           rows={1}
@@ -483,56 +441,42 @@ const BookingActions = ({
                         </div>
                       </div>
                     ) : (
-                      <div className="grid grid-cols-2 gap-4 mt-1 "
-
-                      >
+                      <div className="grid grid-cols-2 gap-4 mt-1">
                         <TextField
                           label="Tên hồ"
                           value={currentPoolProfile.Name}
-                          onChange={handlePoolProfileChange('Name')}
+                          onChange={handleProfileChange('Name', true)}
                           fullWidth
                           variant="outlined"
                         />
                         <TextField
                           label="Chiều rộng"
-                          value={currentPoolProfile.Width}
-                          onChange={handlePoolProfileChange('Width')}
-                          type="number"
-                          InputProps={{
-                            endAdornment: <span className="text-gray-500">m</span>,
-                            inputProps: { min: 0 }
-                          }}
+                          value={numberUtils.formatNumberValue(currentPoolProfile.Width)}
+                          onChange={handleProfileChange('Width', true)}
+                          {...numberUtils.getNumberInputProps('m')}
                           fullWidth
                           variant="outlined"
                         />
                         <TextField
                           label="Chiều cao"
-                          value={currentPoolProfile.Height}
-                          onChange={handlePoolProfileChange('Height')}
-                          type="number"
-                          InputProps={{
-                            endAdornment: <span className="text-gray-500">m</span>,
-                            inputProps: { min: 0 }
-                          }}
+                          value={numberUtils.formatNumberValue(currentPoolProfile.Height)}
+                          onChange={handleProfileChange('Height', true)}
+                          {...numberUtils.getNumberInputProps('m')}
                           fullWidth
                           variant="outlined"
                         />
                         <TextField
                           label="Độ sâu"
-                          value={currentPoolProfile.Depth}
-                          onChange={handlePoolProfileChange('Depth')}
-                          type="number"
-                          InputProps={{
-                            endAdornment: <span className="text-gray-500">m</span>,
-                            inputProps: { min: 0 }
-                          }}
+                          value={numberUtils.formatNumberValue(currentPoolProfile.Depth)}
+                          onChange={handleProfileChange('Depth', true)}
+                          {...numberUtils.getNumberInputProps('m')}
                           fullWidth
                           variant="outlined"
                         />
                         <TextField
                           label="Mô tả"
                           value={currentPoolProfile.Description}
-                          onChange={handlePoolProfileChange('Description')}
+                          onChange={handleProfileChange('Description', true)}
                           fullWidth
                           multiline
                           rows={1.25}
@@ -541,7 +485,7 @@ const BookingActions = ({
                         />
                       </div>
                     )}
-
+  
                     {/* Form Navigation Buttons */}
                     <div className="flex justify-end gap-4 mt-3">
                       <Button
@@ -564,7 +508,7 @@ const BookingActions = ({
                 )}
               </div>
             )}
-
+  
             {/* Services Step */}
             {currentStep === 'SelectServices' && (
               <div className="p-6">
@@ -573,7 +517,7 @@ const BookingActions = ({
                     <Typography variant="h6" className="mb-4 font-bold">
                       Chi tiết dịch vụ: {service.Name}
                     </Typography>
-
+  
                     {/* Animal Service Fields */}
                     {(service.ServiceDeliveryMethodID === 'SDM1' || service.ServiceDeliveryMethodID === 'SDM4') && (
                       <div className="space-y-4">
@@ -583,8 +527,6 @@ const BookingActions = ({
                           variant="outlined"
                           value={formData.ExaminationResult}
                           onChange={handleFormChange('ExaminationResult')}
-                          multiline
-                          rows={2}
                           error={!!formErrors.ExaminationResult}
                           helperText={formErrors.ExaminationResult}
                           required
@@ -610,7 +552,7 @@ const BookingActions = ({
                         />
                       </div>
                     )}
-
+  
                     {/* Pool Service Fields */}
                     {service.ServiceDeliveryMethodID === 'SDM2' && (
                       <div className="space-y-4">
@@ -652,11 +594,11 @@ const BookingActions = ({
               </div>
             )}
           </div>
-
+  
           {/* Footer */}
           {isProfileLimitReached() && (
             <div className="p-4 border-t bg-white">
-              {activeTab === 0 && isProfileLimitReached() && (
+              {activeTab === 0 && (
                 <Button
                   fullWidth
                   variant="contained"
@@ -672,7 +614,7 @@ const BookingActions = ({
                 <Button
                   fullWidth
                   variant="contained"
-                  onClick={handleShowConfirmation}
+                  onClick={handleSubmit}
                   sx={{
                     fontSize: '17px',
                     background: 'linear-gradient(90deg, #64B0E0 25%, rgba(25, 200, 254, 0.75) 75%)'
@@ -681,18 +623,10 @@ const BookingActions = ({
                   Gửi
                 </Button>
               )}
-            </div>)}
-
-          {/* Confirmation Dialog */}
-          <Confirm
-            open={showConfirmation}
-            onClose={() => setShowConfirmation(false)}
-            onConfirm={handleSubmit}
-          />
+            </div>
+          )}
         </div>
       </div>
     </>
-  );
-};
-
+  );};
 export default BookingActions;
