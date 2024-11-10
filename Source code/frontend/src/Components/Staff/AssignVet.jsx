@@ -31,11 +31,10 @@ function TimeToSlot({booking}){
     }
 }
 
-function getSDMName({Booking, bds, sdms}){
+function getSDMName({Booking, sdms}){
     let result;
-    result = bds.filter( bd => bd.BookingID == Booking.BookingID);
-    result = sdms.filter( sdm => sdm.ServiceDeliveryMethodID == result[0].ServiceDeliveryMethodID );
-    return result.Name;
+    result = sdms.filter( sdm => sdm.ServiceDeliveryMethodID == Booking.ServiceDeliveryMethodID );
+    return result[0].Name;
 }
 
 function filterBooking(bookings){
