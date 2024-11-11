@@ -38,10 +38,10 @@ public class ScheduleRepository : GenericRepository<Schedule>
                                                                             schedule.EmployeeID == empID);
         if (empID == "E0")
             return await _context.Schedules.FirstOrDefaultAsync(schedule => schedule.Date == date &&
-                                                                            schedule.Note == note);
+                                                                            note.Contains(schedule.Note));
         return await _context.Schedules.FirstOrDefaultAsync(schedule => schedule.Date == date &&
                                                                         schedule.EmployeeID == empID &&
-                                                                        schedule.Note == note);
+                                                                        note.Contains(schedule.Note));
     }
     public async Task<Schedule?> CheckValidScheduleAsync(DateOnly date)
     {
@@ -84,17 +84,20 @@ public class ScheduleRepository : GenericRepository<Schedule>
         return sch;
     }
 
+    //Reduct redundadncy
     public async Task<Schedule> AddNewScheduleAsync(Schedule info)
     {
-        Schedule schedule = new Schedule();
-        schedule.ScheduleID = GetNextID("SCH");
-        schedule.EmployeeID = info.EmployeeID;
-        schedule.Date = info.Date;
-        schedule.Note = info.Note;
-        schedule.Status = info.Status;
-        await base.CreateAsync(schedule);
-        await (new SlotTableRepository(_context).GenerateVetScheduleAsync(schedule.ScheduleID, info.Note));
-        return schedule;
+//        Schedule schedule = new Schedule();
+//        schedule.ScheduleID = GetNextID("SCH");
+//        schedule.EmployeeID = info.EmployeeID;
+//        schedule.Date = info.Date;
+//        schedule.Note = info.Note;
+//        schedule.Status = info.Status;
+
+        info.ScheduleID = GetNextID("SCH");
+        await base.CreateAsync(info);
+        await (new SlotTableRepository(_context).GenerateVetScheduleAsync(info.ScheduleID, info.Note));
+        return info;
     }
 
     public async Task<List<SlotTable>> GetSlotIn30Days( DateOnly date ){

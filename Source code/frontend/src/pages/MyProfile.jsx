@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { FetchAPI } from "../Helper/Utilities";
 
 const MyProfile = () => {
   const [userData, setUserData] = useState({
@@ -18,7 +19,7 @@ const MyProfile = () => {
   const [isEdit, setIsEdit] = useState(false);
   const navigate = useNavigate();
 
-  // Lấy dữ liệu từ sessionStorage khi component được render
+  // Fetch user data from sessionStorage on component mount
   useEffect(() => {
     const firstName = sessionStorage.getItem("firstname");
     const lastName = sessionStorage.getItem("lastname");
@@ -27,6 +28,7 @@ const MyProfile = () => {
     const address = sessionStorage.getItem("address");
     const gender = sessionStorage.getItem("gender");
     const dob = sessionStorage.getItem("dob");
+
     setUserData({
       name: `${firstName} ${lastName}`,
       email: email || "",
@@ -36,10 +38,41 @@ const MyProfile = () => {
         line2: "",
       },
       gender: gender || "Male",
-      
+      dob: dob || "",
     });
   }, []);
 
+  const handleSave = async () => {
+    // Get and format dob
+    const dob = sessionStorage.getItem("dob");
+    const [month, day, year] = dob.split("/");
+    const dobFormatted = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+
+    // Prepare the data to be sent
+    const updatedInfo = {
+        id: sessionStorage.getItem("id"),
+        address: sessionStorage.getItem("address"),
+        dob: dobFormatted, // Use the formatted date
+        gender: userData.gender, // Assuming gender is already set in userData
+    };
+
+    // Make the API call
+    const response = await FetchAPI({
+        endpoint: `/customer/updatecusinfo`,
+        method: "PUT",
+        body: updatedInfo,
+    });
+
+    if (response.ok) {
+        alert("Profile updated successfully");
+    } else {
+        alert("Failed to update profile");
+    }
+};
+
+
+
+  
   const handleGoHomePage = () => {
     navigate("/App");
   };
@@ -54,7 +87,7 @@ const MyProfile = () => {
         </div>
         <div className="flex flex-col items-center">
           <img
-            src="/img/profile_pic.png" // Bạn có thể thêm ảnh mặc định của người dùng
+            src="/img/profile_pic.png" // Default profile picture
             alt="Profile"
             className="w-24 h-24 rounded-full mb-4"
           />
@@ -75,24 +108,15 @@ const MyProfile = () => {
         <hr className="my-4" />
 
         <div>
-          <h2 className="text-gray-600 font-semibold mb-2">Contact Information</h2>
+          <h2 className="text-gray-600 font-semibold mb-2">
+            Contact Information
+          </h2>
           <div className="mb-4">
             <p>Email:</p>
             <p className="text-gray-700 mb-2">{userData.email}</p>
 
             <p>Phone:</p>
-            {isEdit ? (
-              <input
-                type="text"
-                value={userData.phone}
-                onChange={(e) =>
-                  setUserData((prev) => ({ ...prev, phone: e.target.value }))
-                }
-                className="p-2 border rounded w-full mb-2"
-              />
-            ) : (
-              <p className="text-gray-700">{userData.phone}</p>
-            )}
+            <p className="text-gray-700">{userData.phone}</p>
 
             <p>Address:</p>
             {isEdit ? (
@@ -110,15 +134,15 @@ const MyProfile = () => {
                 />
               </>
             ) : (
-              <p className="text-gray-700">
-                {userData.address.line1}
-              </p>
+              <p className="text-gray-700">{userData.address.line1}</p>
             )}
           </div>
         </div>
 
         <div>
-          <h2 className="text-gray-600 font-semibold mb-2">Basic Information</h2>
+          <h2 className="text-gray-600 font-semibold mb-2">
+            Basic Information
+          </h2>
           <div className="mb-4">
             <p>Gender:</p>
             {isEdit ? (
@@ -136,14 +160,26 @@ const MyProfile = () => {
               <p className="text-gray-700">{userData.gender}</p>
             )}
 
-           
-            
+            <p>Date of Birth:</p>
+            {isEdit ? (
+              <input
+                type="date"
+                value={userData.dob}
+                onChange={(e) =>
+                  setUserData((prev) => ({ ...prev, dob: e.target.value }))
+                }
+                className="p-2 border rounded w-full mb-2"
+              />
+            ) : (
+              <p className="text-gray-700">{userData.dob}</p>
+            )}
           </div>
         </div>
+
         <div>
           {isEdit ? (
             <button
-              onClick={() => setIsEdit(false)}
+              onClick={handleSave}
               className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 hover:scale-105 transition-transform duration-300"
             >
               Save information

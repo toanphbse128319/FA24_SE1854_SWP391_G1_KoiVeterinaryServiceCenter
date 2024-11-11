@@ -59,9 +59,9 @@ const ScheduleCalendar = ({ doctor, service, SlotSchedule , DocterSchedule, sdm 
   const [currentDate, setCurrentDate] = useState(new Date( (new Date()).toISOString().split('T')[0] ) );
   const [isWeekView, setIsWeekView] = useState(false);
   const [selectedDay, setSelectedDay] = useState(null);
-  const [fishCount, setFishCount] = useState('1');
+  const [fishCount, setFishCount] = useState(0);
+  const [poolCount, setPoolCount] = useState(0);
   const [selectedSlot, setSelectedSlot] = useState(null);
-    console.log(DocterSchedule);
   const transformScheduleData = (doctorSchedules, slotSchedules) => {
     const transformedData = [];
 
@@ -238,6 +238,23 @@ const ScheduleCalendar = ({ doctor, service, SlotSchedule , DocterSchedule, sdm 
     return scheduleMap.has(dateString);
   };
 
+  const IsSDMAvailable = (date) => {
+    if (!date) return false;
+    const dateString = date.toISOString().split('T')[0];
+    let schedules = DocterSchedule.filter( schedule => schedule.Date == dateString);
+    if( schedules == null ){
+      return false;
+    }
+
+    schedules.forEach(schedule => {
+        if( sdm.Name.toLowerCase().includes(schedule.Note.toLowerCase()) ){
+            //console.log( `IsSDMAvailable: true` );
+            return "Temp";
+        }
+    })
+      return false;
+  };
+
   // Định nghĩa các khung giờ
   const timeSlots = {
     morning: [
@@ -270,6 +287,10 @@ const ScheduleCalendar = ({ doctor, service, SlotSchedule , DocterSchedule, sdm 
     setSelectedDay(null);
   };
 
+  const handlePoolCountChange = (event) => {
+    setPoolCount(event.target.value);
+  };
+
   const handleFishCountChange = (event) => {
     setFishCount(event.target.value);
   };
@@ -280,6 +301,7 @@ const ScheduleCalendar = ({ doctor, service, SlotSchedule , DocterSchedule, sdm 
       const time = selectedSlot.time + ' ' + dateString;
       navigate('/Confirm', {
         state: {
+          poolCount,
           fishCount,
           service,
           doctor,
@@ -303,9 +325,10 @@ const ScheduleCalendar = ({ doctor, service, SlotSchedule , DocterSchedule, sdm 
       ...(isLastRowLastColumn ? styles.bottomRightCorner : {})
     };
 
+      let temp = IsSDMAvailable(date) ;
     return {
       ...styles.dayButton,
-      ...(isDateAvailable(date) && currentDate.getMonth() == date.getMonth() ? styles.available : styles.unavailable),
+      ...(isDateAvailable(date) ? styles.available : styles.unavailable),
       ...(selectedDate && date && currentDate.getMonth() == date.getMonth() && selectedDate.toDateString() === date.toDateString() ? styles.selected : {}),
       ...(isFirstColumn ? styles.firstColumnDay : {}),
       ...(isLastColumn ? styles.lastColumnDay : {}),
@@ -367,7 +390,7 @@ const ScheduleCalendar = ({ doctor, service, SlotSchedule , DocterSchedule, sdm 
 
               }}
               onClick={() => handleDateClick(date)}
-              disabled={!isDateAvailable(date) || currentDate.getMonth() != date.getMonth()}
+              disabled={!isDateAvailable(date) || currentDate.getMonth() != date.getMonth() }
             >
               <div style={styles.dayContent}>
                 <span style={date && selectedDay === date.getDate() ? styles.selectedDayText : {}}>
@@ -439,19 +462,34 @@ const ScheduleCalendar = ({ doctor, service, SlotSchedule , DocterSchedule, sdm 
               })}
             </div>
           </div>
-          <div style={styles.fishCountContainer}>
-            <label htmlFor="fishCount" style={styles.fishCountLabel}>
-              Hãy nhập số cá:
-            </label>
-            <input
-              type="number"
-              id="fishCount"
-              value={fishCount}
-              onChange={handleFishCountChange}
-              style={styles.fishCountInput}
 
-            />
-          </div>
+          { sdm.Name.toLowerCase().includes("hồ") ? (
+              <div style={styles.fishCountContainer}>
+                <label htmlFor="poolCount" style={styles.fishCountLabel}>
+                  Hãy nhập số hồ:
+                </label>
+                <input
+                  type="number"
+                  id="poolCount"
+                  value={poolCount}
+                  onChange={handlePoolCountChange}
+                  style={styles.fishCountInput}
+                />
+              </div>
+          ) : (
+              <div style={styles.fishCountContainer}>
+                <label htmlFor="fishCount" style={styles.fishCountLabel}>
+                  Hãy nhập số cá:
+                </label>
+                <input
+                  type="number"
+                  id="fishCount"
+                  value={fishCount}
+                  onChange={handleFishCountChange}
+                  style={styles.fishCountInput}
+                />
+              </div>
+          ) }
 
           <button
             style={styles.navigationButton}

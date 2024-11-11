@@ -59,6 +59,7 @@ const STEPS = {
 //  { SlotTableID: 'ST3', ScheduleID: 'SCH1', Slot: 3, SlotCapacity: 10, SlotOrdered: 7, SlotStatus: 1 },
 //  { SlotTableID: 'ST4', ScheduleID: 'SCH1', Slot: 4, SlotCapacity: 10, SlotOrdered: 8, SlotStatus: 1 },
 //];
+//
 
 const BookingPage = () => {
     const location = useLocation();
@@ -82,6 +83,7 @@ const BookingPage = () => {
     //This state is use to ensure the webpage get all the information it need to work, removing this will makr other part throw error
     const [loading, SetLoading] = useState(true);
     
+    console.log( DoctorSchedule );
     useEffect(() => {
         async function GetData(){
             try {
@@ -89,7 +91,9 @@ const BookingPage = () => {
                 let currentDate = new Date().toISOString().split("T")[0];
                 SetLoading(true);
                 FetchAPI({ endpoint: '/Employee/getbyrolename?info=Veterinarian' }).then( response => response.json().then( json => SetDoctors( json ) ) );
-                FetchAPI({ endpoint: '/Schedule/get30daysschedule?date=' + currentDate }).then( response => response.json().then( json => SetDoctorSchedule( json ) ) );
+                FetchAPI({ endpoint: '/Schedule/get30daysschedule?date=' + currentDate }).then( response => response.json().then( json => {
+                    SetDoctorSchedule( json.filter( schedule => sdm.Name.toLowerCase().includes(schedule.Note.toLowerCase()) ));
+                } ) );
                 FetchAPI({ endpoint: '/Schedule/getslotin30days?date=' + currentDate }).then( response => response.json().then( json => SetSlotSchedule( json ) ) );
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -99,6 +103,10 @@ const BookingPage = () => {
             }
         }
         GetData();
+    }, []);
+
+    useEffect(() => {
+        //SetDoctorSchedule();
     }, []);
 
   useEffect(() => {

@@ -32,34 +32,13 @@ public class PoolProfileController : ControllerBase {
         try {
             if ((await _unitOfWork.PoolProfileRepository.GetByIdAsync(poolprofile.PoolProfileID) != null))
                 return BadRequest("Pool profile is already existed!");
-            if (await _unitOfWork.PoolProfileRepository.AddPoolProfileAsync(poolprofile) != 0)
-                return Ok($"Added {poolprofile.Name} successfully!");
-            else
+            string result = await _unitOfWork.PoolProfileRepository.AddPoolProfileAsync(poolprofile);
+            if ( result.ToLower().Contains("invalid") )
                 return BadRequest($"Added {poolprofile.Name} failed");
+            return Ok($"Added {poolprofile.Name} successfully!");
         } catch (Exception ex) {
             return BadRequest("Unknown Error: " + ex.Message);
         }
     }
 
-    [HttpPost("addList")]
-    public async Task<ActionResult<PoolProfile>> AddPoolProfiles(IEnumerable<PoolProfile> pps)
-    {
-        try
-        {
-            foreach (var pp in pps)
-            {
-                if (await _unitOfWork.PoolProfileRepository.GetByIdAsync(pp.PoolProfileID) != null)
-                    return BadRequest("Pool profile is already existed!");
-            }
-            int rs = (await _unitOfWork.PoolProfileRepository.AddPoolProfilesAsync(pps));
-            if (rs == pps.Count())
-                return Ok($"Added " + rs);
-            else return BadRequest("Add failed");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex);
-            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-        }
-    }
 }

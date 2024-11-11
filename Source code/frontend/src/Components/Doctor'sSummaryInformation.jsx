@@ -45,7 +45,7 @@ const DoctorList = ({ onSelectDoctor  , doctors =[
           }} />
           <CardContent style={{ flexGrow: 1, padding: '16px' }}>
             <h3 style={{ fontWeight: '600', fontSize: '24px' }}>{doctor.FirstName + " " + doctor.LastName}</h3>
-            <p style={{ fontSize: '1.3vw' }}>Lịch khám: {doctor.Schedule}</p>
+          {/*<p style={{ fontSize: '1.3vw' }}>Lịch khám: {doctor.Schedule}</p> */}
           </CardContent>
           <Button 
             onClick={() => onSelectDoctor(doctor)} 

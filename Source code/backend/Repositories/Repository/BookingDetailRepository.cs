@@ -23,6 +23,11 @@ namespace Repositories.Repository
             return _context.BookingDetails.Where(bookingdetail => bookingdetail.ServiceID.ToLower() == id.ToLower()).ToListAsync()!;
         }
 
+        public async Task<List<BookingDetail>> GetBookingDetailsByBookingIDAsync(string id)
+        {
+            return await (_context.BookingDetails.Where(bookingdetail => bookingdetail.BookingID.ToLower() == id)).ToListAsync();
+        }
+
         public async Task<List<BookingDetail>> GetByProfileIDAsync( string id ){
             List<Booking> bookings = await (new BookingRepository(_context)).GetByProfileIDAsync(id);
             List<BookingDetail> bookingDetails = new List<BookingDetail>();
@@ -32,91 +37,29 @@ namespace Repositories.Repository
             return bookingDetails;
         }
 
-        public async Task<int> AddBookingDetailAsync(BookingDetail bd)
+        public async Task<string> AddBookingDetailAsync(BookingDetail bd)
         {
+            if( await base.GetByIdAsync(bd.BookingDetailID) != null )
+                return "Invalid: Booking detail already existed";
             if (await _context.BookingDetails.FindAsync(bd.BookingDetailID) != null)
-                return 0;
-            if (bd.BookingDetailID == null || bd.BookingDetailID == "")
-            {
-                bd.BookingDetailID = GetNextID("BD");
-            }
-            ServiceRepository servicerepo = new ServiceRepository(_context);
+                return "Invalid: Cannot detemined the booking order";
+            ServiceRepository servicerepo = new(_context);
             Service? service = await servicerepo.GetByIdAsync(bd.ServiceID);
             if (service == null)
-                return 0;
-            return await base.CreateAsync(bd);
+                return "Invalid: Cannot detemined the service used";
+            bd.BookingDetailID = GetNextID("BD");
+            await base.CreateAsync(bd);
+            return bd.BookingDetailID;
         }
 
-        public async Task<int> AddExaminationResultAsync(ExaminationResult exam)
-        {
-            var transaction = await _context.Database.BeginTransactionAsync();
-            bool rs = false;
-            int count = 0;
-            try
-            {
-                BookingRepository bookingrepo = new BookingRepository(_context);
-                Booking booking = await bookingrepo.GetByIdAsync(exam.BookingDetail[0].BookingID);
-                booking.IncidentalFish += exam.AnimalProfile.Count;
-                booking.IncidentalPool += exam.PoolProfile.Count;
-                if (await bookingrepo.UpdateAsync(booking) == 0)
-                    return 0;
-                foreach (var item in exam.BookingDetail)
-                {
-                    item.BookingDetailID = GetNextID("BD");
-                    if (await base.CreateAsync(item) != 0)
-                        count++;
-                }
-                foreach (var item in exam.AnimalProfile)
-                {
-                    AnimalProfileRepository ap = new AnimalProfileRepository(_context);
-                    item.AnimalProfileID = ap.GetNextID("AP");
-                    if (await ap.CreateAsync(item) != 0)
-                        count++;
-                }
-                foreach (var item in exam.PoolProfile)
-                {
-                    PoolProfileRepository pp = new PoolProfileRepository(_context);
-                    item.PoolProfileID = pp.GetNextID("PP");
-                    if (await pp.CreateAsync(item) != 0)
-                        count++;
-                }
-                if(count == (exam.AnimalProfile.Count + exam.BookingDetail.Count + exam.PoolProfile.Count))
-                    rs = true;
-
-                //List<BookingDetail?> oldbds = await GetByBookingID(exam.BookingDetail[0].BookingID);
-                //foreach (var bd in oldbds)
-                //{
-                //    ServiceUseRepository surepo = new ServiceUseRepository(_context);
-                //    List<ServiceUse> su = await surepo.FindSUByListBookingDetailIDAsync(bd.BookingDetailID);
-                //    foreach (var ap in su)
-                //    {
-                //        foreach (var item in exam.BookingDetail)
-                //        {
-                //            ServiceUse ser = new ServiceUse() { AnimalProfileID = ap.AnimalProfileID, BookingDetailID = item.BookingDetailID };
-                //            await surepo.CreateAsync(ser);
-                //        }
-                //    }
-                //}
-
-
-
-                //ServiceUseRepository surepo = new ServiceUseRepository(_context);
-                //foreach (var bd in exam.BookingDetail)
-                //{
-                //    foreach (var ap in exam.AnimalProfile)
-                //    {
-                //        ServiceUse su = new ServiceUse() { ServiceUseID = surepo.GetNextID("SU"), AnimalProfileID = ap.AnimalProfileID, BookingDetailID = bd.BookingDetailID };
-                //        await surepo.CreateAsync(su);
-                //    }
-                //}
-                await transaction.CommitAsync();
-                return rs ? 1 : 0;
-            }
-            finally
-            {
-                if(rs == false)
-                await transaction.RollbackAsync();
-            }
+        public void Copy(BookingDetail from, BookingDetail to){
+            to.ServiceID = from.ServiceID;
+            to.Formulary = from.Formulary;
+            to.NoteResult = from.NoteResult;
+            to.ExaminationResult = from.ExaminationResult;
+            to.IsIncidental = from.IsIncidental;
+            to.VetConsult = from.VetConsult;
         }
+        
     }
 }

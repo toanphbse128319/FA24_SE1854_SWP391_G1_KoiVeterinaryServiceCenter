@@ -2,43 +2,43 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { FetchAPI } from "../../Helper/Utilities";
+import zIndex from '@mui/material/styles/zIndex';
 
-const AddSchedule = () => {
+function isDoctorHasSchedule({doctor, schedules, date}){
+    let target = date.toISOString().split('T')[0];
+    if( schedules.filter( schedule => schedule.Date == target ).filter( schedule => schedule.EmployeeID == doctor.EmployeeID ).length > 0){
+        console.debug( schedules.filter( schedule => schedule.Date == target ));
+        return true;
+    }
+    return false;
+}
+
+const AddSchedule = ({DoctorSchedule, SlotSchedule, doctors, Update}) => {
   const navigate = useNavigate();
 
   const [selectedDate, setSelectedDate] = useState(null);
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [DoctorSchedule, SetDoctorSchedule] = useState([]);
-  const [SlotSchedule, SetSlotSchedule] = useState([]);
-  const [loading, SetLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState(null);
+  const [showStatusModal, setShowStatusModal] = useState(false);
+  const statusOption = [
+    "Tại nhà",
+      "Tại trung tâm",
+      "Trực tuyến",
+  ]
 
-  const DoctorDB = [
-    { DoctorID: 'D1', DoctorName: 'Dr. John Doe' },
-    { DoctorID: 'D2', DoctorName: 'Dr. Jane Smith' },
-    { DoctorID: 'D3', DoctorName: 'Dr. Emily Johnson' },
-    { DoctorID: 'D4', DoctorName: 'Dr. Michael Brown' },
-  ];
-
-  useEffect(() => {
-    async function GetData() {
-      try {
-        let currentDate = new Date().toISOString().split("T")[0];
-        SetLoading(true);
-        const doctorScheduleResponse = await FetchAPI({ endpoint: '/Schedule/get30daysschedule?date=' + currentDate });
-        const slotScheduleResponse = await FetchAPI({ endpoint: '/Schedule/getslotin30days?date=' + currentDate });
-        const doctorScheduleData = await doctorScheduleResponse.json();
-        const slotScheduleData = await slotScheduleResponse.json();
-        SetDoctorSchedule(doctorScheduleData);
-        SetSlotSchedule(slotScheduleData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        SetLoading(false);
-      }
-    }
-    GetData();
-  }, []);
+async function updateVetSchedule(){
+  let response = await  FetchAPI({ endpoint: `/Schedule`, method: 'POST', body: {
+                        "Date": selectedDate.toISOString().split('T')[0],
+                        "EmployeeID": selectedDoctor.EmployeeID,
+                        "Note": selectedStatus,
+                        "Status": "Active",
+                    } });
+  if ( !response.ok )
+      return false;
+  return true;
+}
 
   const transformScheduleData = (doctorSchedules = [], slotSchedules = []) => {
     const transformedData = [];
@@ -82,6 +82,10 @@ const AddSchedule = () => {
     createScheduleMap(DoctorSchedule, SlotSchedule),
     [DoctorSchedule, SlotSchedule]
   );
+
+  // const handleShowModel = () => {
+
+  // }
 
   const getDaysInMonth = (date) => {
     const year = date.getFullYear();
@@ -128,9 +132,48 @@ const AddSchedule = () => {
     setSelectedDate(null);
   };
 
+
+   const handleAddScheduleClick = (doctor) => {
+    setSelectedDoctor(doctor);
+    setShowModal(true);
+  };
+
+  const handleStatusClick = (doctor) => {
+    setSelectedDoctor(doctor);
+    setShowStatusModal(true);
+  };
+
+  const handleStatusOptionSelect = (option) => {
+    setSelectedStatus(option);
+    // Add logic to update the schedule with the selected status
+  };
+
+const handleShowModal = () => {
+    setSelectedDoctor(null);
+    setShowModal(false);
+  };
+
+  const handleShowStatusModal = () => {
+    setSelectedStatus(null);
+    setShowStatusModal(false);
+  };
+
+    function CheckMissingDoctorSchedule({ date }){
+        let doctorCount = doctors.length;
+        let scheduleCount = 0;
+        DoctorSchedule.forEach( schedule => {
+            if( schedule.Date == date )
+                ++scheduleCount;
+        })
+        if( doctorCount * 8 > scheduleCount )
+            return true;
+        return false;
+    }
+
   const isDateAvailable = (date) => {
-    const today = new Date();
-    return date >= today;
+    const dateString = date.toISOString().split('T')[0];
+    let has = scheduleMap.has(dateString);
+      return CheckMissingDoctorSchedule({ date: date }) && has;
   };
 
   const getDayStyles = (date, index) => {
@@ -154,10 +197,6 @@ const AddSchedule = () => {
       ...lastRowStyles,
     };
   };
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div style={styles.calendarContainer}>
@@ -216,14 +255,90 @@ const AddSchedule = () => {
           <div style={styles.modalContent}>
             <h3>Doctors Working on {selectedDate.toDateString()}</h3>
             <div style={styles.doctorList}>
-              {DoctorDB.map((doctor, index) => (
+              {doctors.map((doctor, index) => (
                 <div key={index} style={styles.doctorItem}>
-                  <p>{doctor.DoctorName}</p>
-                  <button style={styles.assign} onClick={() => alert(`Add new schedule for ${doctor.DoctorName}`)}>Add new schedule</button>
+                  <p>{doctor.FirstName + " " + doctor.LastName}</p>
+                  { isDoctorHasSchedule({date: selectedDate, doctor: doctor, schedules: DoctorSchedule}) ? (
+                      <button style={styles.assign} disabled="disabled">
+                      Scheduled
+                      </button>  
+                  ) : (
+                      <button style={styles.assign} onClick={() => {
+                          setSelectedDoctor( doctor );
+                      }}>
+
+                      Add new schedule
+                      </button>  
+                  ) }
                 </div>
               ))}
             </div>
-            <button style={styles.assign} onClick={() => setShowModal(false)}>Close</button>
+            <button style={styles.assign} onClick={() => handleShowModal()}>Close</button>
+          </div>
+        </div>
+      )}
+
+      { /*      {showModal && selectedDate && selectedDoctor && (
+        <div style={styles.modal}>
+          <div style={styles.modalContent}>
+            <h3>Doctor Information</h3>
+            <p><strong>Name:</strong> {selectedDoctor.DoctorName}</p>
+            <p><strong>Employee ID:</strong> {selectedDoctor.DoctorID}</p>
+            <p><strong>Specialization:</strong> {selectedDoctor.Specialization}</p>
+            <button style={styles.assign} onClick={() => handleShowModal()}>Close</button>
+          </div>
+        </div>
+      )}
+    </div>
+              */}
+
+{showModal && selectedDate && selectedDoctor && (
+        <div style={styles.modal}>
+          <div style={styles.modalContent}>
+            <h3>Doctor Information</h3>
+            <p><strong>Name:</strong> {selectedDoctor.FirstName + " " + selectedDoctor.LastName}</p>
+            <p><strong>Employee ID:</strong> {selectedDoctor.EmployeeID}</p>
+            <p><strong>Specialization:</strong> {selectedDoctor.Specialization}</p>
+            <button style={styles.assign} onClick={() => handleStatusClick(selectedDoctor)}>
+              Change Status
+            </button>
+            <button style={styles.assign} onClick={() => handleShowModal()}>
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {showStatusModal && selectedDoctor && (
+        <div style={styles.modal}>
+          <div style={styles.modalContent}>
+            <h3>Choose Status for {selectedDoctor.FirstName + " " + selectedDoctor.LastName}</h3>
+            <div style={styles.statusOptions}>
+              {statusOption.map((option, index) => (
+                <button
+                  key={index}
+                  style={selectedStatus === option ? styles.selectedStatus : styles.statusOption}
+                  onClick={() => handleStatusOptionSelect(option, selectedDoctor)}
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
+            <button style={styles.assign} onClick={() => {
+                handleShowStatusModal();
+                handleShowModal();
+                updateVetSchedule().then( result =>{
+                    if( result == true )
+                        Update();
+                });
+            }}>
+              Apply
+            </button>
+            <button style={styles.assign} onClick={() => {
+                handleShowStatusModal();
+            }}>
+              Cancel
+            </button>
           </div>
         </div>
       )}
@@ -386,6 +501,7 @@ const styles = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 3,
   },
   modalContent: {
     backgroundColor: 'white',
@@ -410,7 +526,6 @@ const styles = {
     borderBottom: '1px solid #e0e0e0',
     borderRight: '1px solid #e0e0e0',
     cursor: 'pointer',
-    transition: 'background-color 0.3s',
     color: 'black',
     backgroundColor: '#f0f0f0',
     padding: '5px 15px',
@@ -422,7 +537,30 @@ const styles = {
     cursor: 'pointer',
     boxShadow: '0px 2px 2px lightgray',
     transition: 'ease background-color 250ms',
-  }
+  },
+statusOptions: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '10px',
+    marginTop: '20px',
+  },
+  statusOption: {
+    backgroundColor: '#f0f0f0',
+    padding: '10px 20px',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    transition: 'background-color 0.3s',
+  },
+  selectedStatus: {
+    backgroundColor: '#64B0E0',
+    color: 'white',
+    padding: '10px 20px',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    transition: 'background-color 0.3s',
+  },
 };
 
 export default AddSchedule;

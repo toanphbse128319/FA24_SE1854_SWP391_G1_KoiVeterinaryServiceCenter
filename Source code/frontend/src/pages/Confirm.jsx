@@ -56,7 +56,7 @@ const Confirm = () => {
         }
     }, [location.state, navigate]); // Dependencies
 
-  const { service, doctor, time, scheduleId, fishCount, sdm } = location.state || {};
+  const { service, doctor, time, scheduleId, fishCount, sdm, poolCount } = location.state || {};
   
   const [customerInfo, SetCustomerInfo] = useState({
     name: null,
@@ -159,13 +159,18 @@ const Confirm = () => {
             return time;
         }
     }
+
     // Hàm điều hướng đến trang thanh toán
     const handlePayment = () => {
-        const calculateTotal = () => {
-            const servicePrice = (service?.Price * fishCount) || 0;
+          const calculateTotal = () => {
+              let count = fishCount;
+              if( count == 0 )
+                  count = poolCount;
+            const servicePrice = (service?.Price * count ) || 0;
             const moving = movingCost || 0;
             return servicePrice + moving;
-        };
+          };
+
         // Chuyển đến trang thanh toán
         let token = window.sessionStorage.getItem("token");
         if( token == null )
@@ -174,7 +179,6 @@ const Confirm = () => {
         let customerID = json.ID;
         if( customerID == null )
             navigate("/Login");
-
         let bookingDateTime = time.split(" ")[1] + "T";
         let slotTime = time.split(" ")[0].split("-")[0]+":00";
         if( slotTime.length == 7 )
@@ -188,6 +192,7 @@ const Confirm = () => {
                 serviceID: service.ServiceID,
                 BookingDate: bookingDateTime,
                 numberOfFish: fishCount,
+                numberOfPool: poolCount,
                 distance: currentDistance,
                 distanceCost: movingCost,
                 totalServiceCost: calculateTotal(),
@@ -205,7 +210,7 @@ const Confirm = () => {
         }
         console.log( `cid: ${customerID}, eid: ${doctor?.EmployeeID}, 
             sid: ${service.ServiceID}, bkaddr: ${window.sessionStorage.getItem("address")}, 
-            date: ${ bookingDateTime }, numberOfFish: ${fishCount}, distance: ${currentDistance},
+            date: ${ bookingDateTime }, numberOfFish: ${fishCount}, distance: ${currentDistance}, numberOfPool: ${poolCount}
             distanceCost: ${movingCost}, totalServiceCost: ${calculateTotal()}`)
         GetPaymentURL().then( result => console.log(result) );
   };
@@ -220,6 +225,7 @@ const Confirm = () => {
           time={time}
           scheduleId={scheduleId}
           fishCount={fishCount}
+          poolCount={poolCount}
           movingCost={movingCost}
         />
         

@@ -10,45 +10,50 @@ namespace Repositories.Repository
             _context = context;
         }
 
-        public async Task<int> AddPoolProfileAsync(PoolProfile poolprofile)
+    public bool IsDuplicate( PoolProfile target ){
+        PoolProfile? temp = _context.PoolProfiles.FirstOrDefault( profile => profile.Name == target.Name &&
+                                                                             profile.Note == target.Note &&
+                                                                             profile.Width == target.Width &&
+                                                                             profile.Description == target.Description &&
+                                                                             profile.Height == target.Height &&
+                                                                             profile.Depth == target.Depth &&
+                                                                             profile.Picture == target.Picture );
+
+        if( temp == null )
+            return false;
+        return true;
+    }
+
+
+        public async Task<string> AddPoolProfileAsync(PoolProfile poolprofile)
         {
             if (poolprofile == null)
-                return 0;
+                return "Invalid: ID cannot be null";
+            AnimalTypeRepository _repo = new(_context);
+            if( base.GetById( poolprofile.PoolProfileID ) != null )
+                return "Invalid: Profile already exist";
             if (poolprofile.PoolProfileID == "")
             {
                 poolprofile.PoolProfileID = GetNextID("PP");
             }
-
-            return await base.CreateAsync(poolprofile);;
+            await base.CreateAsync(poolprofile);;
+            return poolprofile.PoolProfileID;
         }
 
-        public async Task<int> AddPoolProfilesAsync(IEnumerable<PoolProfile> pps)
+        //Return 1 if successfully add all and 0 if failed even a single one
+        public async Task<string> AddPoolProfilesAsync(IEnumerable<PoolProfile> poolProfiles)
         {
-            if (pps == null || !pps.Any())
-                return 0;
-
-            int successfulSaves = 0;
-
-            foreach (var pp in pps)
+            if( poolProfiles == null || poolProfiles.Count() == 0 )
+                return "Invalid: pool profiles list cannot be empty";
+            foreach (PoolProfile animalProfile in poolProfiles)
             {
-                if (string.IsNullOrEmpty(pp.PoolProfileID))
-                {
-                    pp.PoolProfileID = GetNextID("PP");
-                }
-
-                try
-                {
-                    await base.CreateAsync(pp);
-                    successfulSaves++;
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex);
-                }
+                string result = await AddPoolProfileAsync( animalProfile );
+                if( result.ToLower().Contains("invalid") )
+                    return result;
             }
-
-            return successfulSaves;
+            return "Success";
         }
+
     }
 }
 

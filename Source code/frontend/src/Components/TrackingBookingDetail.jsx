@@ -8,7 +8,6 @@ const InfoCard = ({ serviceDeliveryMethod, service, employee }) => {
     const hasData = serviceDeliveryMethod || service || employee;
 
     if (!hasData) return null;
-    console.log(employee);
 
     return (
 

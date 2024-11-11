@@ -1,58 +1,63 @@
 import React, { useEffect, useState } from "react";
 import { FetchAPI } from "../../Helper/Utilities";
 
-const ManageCustomer = () => {
-  const [customers, setCustomers] = useState([]);
-
-  const handleUpdateStatus = async (customerID, status) => {
+const handleUpdateStatus = async (employee, status) => {
     const action = status === "0" ? "xóa" : "kích hoạt lại";
     const confirmed = window.confirm(`Bạn có chắc chắn muốn ${action} người dùng này?`);
-    
-    if (confirmed) {
-      try {
-        // Call the FetchAPI to send the PUT request to update the status
-        const response = await FetchAPI({
-          endpoint: "/Customer/updatestatus",
-          method: "PUT",
-          body: { id: customerID, Message: status }, // Status is either "0" or "1"
-        });
 
-        if (response.ok) {
-          alert(`Khách hàng với ID ${customerID} đã được cập nhật trạng thái thành công.`);
-          // Optionally, update the local customer data to reflect the status change
-          setCustomers((prevCustomers) =>
-            prevCustomers.map((customer) =>
-              customer.CustomerID === customerID
-                ? { ...customer, Status: status }
-                : customer
-            )
-          );
-        } else {
-          alert("Có lỗi xảy ra khi cập nhật trạng thái người dùng.");
+    if (confirmed) {
+        try {
+            // Call the FetchAPI to send the PUT request to update the status
+            employee.Status = status;
+            const response = await FetchAPI({
+                endpoint: "/employee",
+                method: "PUT",
+                body: { 
+                    accountID: employee.AccountID,
+                    address: employee.Address,
+                    birthDay: employee.BirthDay,
+                    employeeID: employee.EmployeeID,
+                    firstName: employee.FirstName,
+                    lastName: employee.LastName,
+                    roleID: employee.RoleID,
+                    sex: employee.Sex,
+                    status: employee.Status,
+                }, // Status is either "0" or "1"
+            });
+            if (response.ok) {
+                alert(`Nhân viên với ID ${employee.EmployeeID} đã được cập nhật trạng thái thành công.`);
+            } else {
+                alert("Có lỗi xảy ra khi cập nhật trạng thái nhân viên.");
+            }
+        } catch (error) {
+            console.error("Error updating customer status:", error);
+            alert("Không thể kết nối tới server.");
         }
-      } catch (error) {
-        console.error("Error updating customer status:", error);
-        alert("Không thể kết nối tới server.");
-      }
     }
-  };
+};
+
+async function FetchEmployee(){
+    const response = await FetchAPI({ endpoint: "/employee" });
+    if (!response.ok) throw new Error("Failed to fetch data");
+    let json = await response.json();
+    return json.filter( emp => emp.EmployeeID != "E0" );
+}
+
+const ManageEmployee = () => {
+  const [employees, setEmployees] = useState([]);
+    const [update, setUpdate] = useState([false])
+
+    function Update(){
+        setUpdate( !update );
+    }
 
   useEffect(() => {
-    async function getCustomers() {
-      try {
-        const response = await FetchAPI({ endpoint: "/Customer" });
-        if (!response.ok) throw new Error("Failed to fetch data");
+      FetchEmployee().then( result => {
+          setEmployees( result );
+      } );
+  }, [update]);
 
-        const json = await response.json();
-        setCustomers(json);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    }
-
-    getCustomers();
-  }, []);
-
+    
   return (
     <div className="rounded-lg border border-gray-300 bg-white px-5 py-6 shadow-lg dark:border-gray-700 dark:bg-gray-800">
       <div className="max-w-full overflow-x-auto">
@@ -68,38 +73,40 @@ const ManageCustomer = () => {
             </tr>
           </thead>
           <tbody>
-            {customers.map((customer) => (
-              <tr key={customer.CustomerID} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+            {employees.map((employee) => (
+              <tr key={employee.EmployeeID} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                 <td className="border-b border-gray-200 py-5 px-2 text-center font-semibold dark:border-gray-600">
-                  <h5 className="text-gray-800 dark:text-gray-200">{customer.CustomerID}</h5>
+                  <h5 className="text-gray-800 dark:text-gray-200">{employee.EmployeeID}</h5>
                 </td>
                 <td className="border-b border-gray-200 py-5 px-4 font-semibold dark:border-gray-600">
                   <p className="text-gray-800 dark:text-gray-200">
-                    {customer.FirstName} {customer.LastName}
+                    {employee.FirstName} {employee.LastName}
                   </p>
                 </td>
                 <td className="border-b border-gray-200 py-5 px-4 font-semibold dark:border-gray-600">
                   <p className="text-gray-800 dark:text-gray-200">
-                    {customer.Sex ? "Nam" : "Nữ"}
+                    {employee.Sex ? "Nam" : "Nữ"}
                   </p>
                 </td>
                 <td className="border-b border-gray-200 py-5 px-4 font-semibold dark:border-gray-600">
-                  <p className="text-gray-800 dark:text-gray-200">{customer.BirthDay}</p>
+                  <p className="text-gray-800 dark:text-gray-200">{employee.BirthDay}</p>
                 </td>
                 <td className="border-b border-gray-200 py-5 px-4 font-semibold dark:border-gray-600">
-                  <p className="text-gray-800 dark:text-gray-200">{customer.Address}</p>
+                  <p className="text-gray-800 dark:text-gray-200">{employee.Address}</p>
                 </td>
                 <td className="border-b border-gray-200 py-5 px-4 text-center dark:border-gray-600">
-                  {customer.Status === "1" ? (
+                  {employee.Status === "1" ? (
                     <button
-                      onClick={() => handleUpdateStatus(customer.CustomerID, "0")}
+                      onClick={() => {
+                          handleUpdateStatus(employee, "0").then( Update() );
+                      }}
                       className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md border border-red-600 transition duration-300"
                     >
                       Xóa
                     </button>
                   ) : (
                     <button
-                      onClick={() => handleUpdateStatus(customer.CustomerID, "1")}
+                      onClick={() => handleUpdateStatus(employee, "1").then( Update() )}
                       className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md border border-green-600 transition duration-300"
                     >
                       Kích hoạt lại
@@ -115,4 +122,4 @@ const ManageCustomer = () => {
   );
 };
 
-export default ManageCustomer;
+export default ManageEmployee;
