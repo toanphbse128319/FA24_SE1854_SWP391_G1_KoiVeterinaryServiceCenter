@@ -591,7 +591,7 @@ const BookingList = ({
                           services={services}
                           isOpen={showServiceSelection}
                           onClose={handleCloseServiceSelection}
-                          deliveryMethodId={booking.ServiceDeliveryMethodID}
+                          deliveryMethod={booking.ServiceDeliveryMethodID}
                           servicesSelected={bookingDetail.filter(detail => 
                             detail.BookingID === booking.BookingID && 
                             detail.IsIncidental === false
