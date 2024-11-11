@@ -31,14 +31,27 @@ public class ScheduleRepository : GenericRepository<Schedule>
     //                                                                    schedule.Note == note);
     //}
 
+    //public async Task<string> ReturnEmpScheduleAvailableAsync(DateOnly date, string note)
+    //{
+    //    List<Schedule> sch = await _context.Schedules.Where(schedule => schedule.Date == date &&                     
+    //                                                                    note.Contains(schedule.Note)).ToListAsync();
+
+    //    SlotTable? st = await new SlotTableRepository(_context).SearchSpecificSlotAsync(note, 1);
+    //}
+  
+
+
     public async Task<Schedule?> CheckValidDateAsync(DateOnly date, string empID, string note)
     {
         if (note == "")
-            return await _context.Schedules.FirstOrDefaultAsync(schedule => schedule.Date == date &&
-                                                                            schedule.EmployeeID == empID);
+            return null;
         if (empID == "E0")
+        {
+            List<Schedule> sch = new();
+
             return await _context.Schedules.FirstOrDefaultAsync(schedule => schedule.Date == date &&
                                                                             note.Contains(schedule.Note));
+        }
         return await _context.Schedules.FirstOrDefaultAsync(schedule => schedule.Date == date &&
                                                                         schedule.EmployeeID == empID &&
                                                                         note.Contains(schedule.Note));
@@ -87,13 +100,6 @@ public class ScheduleRepository : GenericRepository<Schedule>
     //Reduct redundadncy
     public async Task<Schedule> AddNewScheduleAsync(Schedule info)
     {
-//        Schedule schedule = new Schedule();
-//        schedule.ScheduleID = GetNextID("SCH");
-//        schedule.EmployeeID = info.EmployeeID;
-//        schedule.Date = info.Date;
-//        schedule.Note = info.Note;
-//        schedule.Status = info.Status;
-
         info.ScheduleID = GetNextID("SCH");
         await base.CreateAsync(info);
         await (new SlotTableRepository(_context).GenerateVetScheduleAsync(info.ScheduleID, info.Note));

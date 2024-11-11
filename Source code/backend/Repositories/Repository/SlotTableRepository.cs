@@ -62,9 +62,16 @@ public class SlotTableRepository : GenericRepository<SlotTable>
         Console.WriteLine( scheduleID + ", " + note + ", " + slot.Note);
         if (note.ToLower().Contains(slot.Note.ToLower()) == false)
             return null!;
+        if (note == "Tại nhà")
+        {
+            slot.SlotOrdered = slot.SlotCapacity;
+            slot.SlotStatus = false;
+            return slot;
+        }
+            
         if (slot.SlotStatus == true)
         {
-            if (slot.SlotOrdered == slot.SlotCapacity)
+            if (slot.SlotOrdered == slot.SlotCapacity - 1)
             {
                 slot.SlotStatus = false;
                 return slot;

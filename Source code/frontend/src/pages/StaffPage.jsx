@@ -14,9 +14,7 @@ return (
     <div className="staff-page">
         <div className="Avatar">
           <h1>Avatar</h1>
-          
         </div>
-        
         <div className="task-bar">
             <TaskBar />
           
