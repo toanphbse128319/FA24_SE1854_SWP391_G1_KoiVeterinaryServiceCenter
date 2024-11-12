@@ -12,7 +12,9 @@ function filterServices({ allServices, sdm }) {
       let service = { ...temp };
       
       // Kiểm tra nếu Status của dịch vụ là "isSelected"
-      if (service.Status === "isSelected") {
+      let flag = import.meta.env.VITE_PRIORITIZED_FLAG;
+
+      if (service.Status.includes( flag ) ) {
           // Xử lý logic bổ sung nếu cần cho các tên đặc biệt
           if (service.Name === "Điều trị cá koi") {
               service.Name += atHomeID != null && service.ServiceDeliveryMethodID === atHomeID ? " tại nhà" : " tại trung tâm";

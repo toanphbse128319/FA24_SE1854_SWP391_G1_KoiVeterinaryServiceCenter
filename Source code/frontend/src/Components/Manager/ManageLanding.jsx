@@ -47,7 +47,8 @@ function ManageLanding() {
   const handleSave = async () => {
     try {
       const updatePromises = services.map((service) => {
-        service.Status = selectedServices.includes(service) ? "isSelected" : "1";
+          let flag = import.meta.env.VITE_PRIORITIZED_FLAG;
+        service.Status = selectedServices.includes(service) ? flag : "1";
 
         return FetchAPI({
           endpoint: `/service`,

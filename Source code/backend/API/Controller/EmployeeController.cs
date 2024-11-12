@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Model;
 using Repositories;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers;
 
@@ -30,6 +31,7 @@ public class EmployeeController : ControllerBase {
     }
 
     [HttpPut]
+    [Authorize(Policy = "manager_policy")]
     public async Task<ActionResult> AddOrUpdate( Employee info ){
         try{
             string result = await _unitOfWork.EmployeeRepository.UpdateOrAddAsync( info );
@@ -43,6 +45,7 @@ public class EmployeeController : ControllerBase {
     }
 
     [HttpGet]
+    [Authorize(Policy = "manager_policy")]
     public async Task<ActionResult> GetAll(){
         try{
             return Ok(await _unitOfWork.EmployeeRepository.GetAllAsync() );
