@@ -1,7 +1,7 @@
 // StaffManage.jsx
 import React, { useState } from "react";
 import ManageLanding from "./ManageLanding";
-import ManageAccount from "./ManageAccount";
+import ManageAccountEmp from "./ManageAccountEmp";
 import AssignVet from "../Staff/AssignVet";
 import App from "../../App";
 import DashBoard from "./DashBoard"
@@ -23,8 +23,8 @@ const StaffManage = () => {
     switch (activePage) {
       case "ManageLanding":
         return <ManageLanding />;
-      case "ManageAccount":
-        return <ManageAccount />;
+      case "ManageAccountEmp":
+        return <ManageAccountEmp />;
       case "DashBoard":
         return <DashBoard/>;
       case "Logout":
@@ -52,13 +52,13 @@ const StaffManage = () => {
           </button>
           <button
             className={`w-full text-left p-3 rounded-lg transition-colors font-medium ${
-              activePage === "ManageAccount"
+              activePage === "ManageAccountEmp"
                 ? "bg-blue-600"
                 : "bg-gray-700 hover:bg-blue-500"
             }`}
-            onClick={() => setActivePage("ManageAccount")}
+            onClick={() => setActivePage("ManageAccountEmp")}
           >
-            Manage Account
+            Manage Account Employee
           </button>
           <button
             className={`w-full text-left p-3 rounded-lg transition-colors font-medium ${
