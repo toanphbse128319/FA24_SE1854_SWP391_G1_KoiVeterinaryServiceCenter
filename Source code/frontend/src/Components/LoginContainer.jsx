@@ -135,7 +135,7 @@ function Login({onLoginSuccess, onShowOTP}) {
             navigate("/staffpage");
           } else if (role === "Manager") {
             navigate("/Manager");  
-          } else if( role === "Veterinarina" ){
+          } else if( role === "Veterinarian" ){
             navigate("/BookingList");
           }else {
             navigate("/");
