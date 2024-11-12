@@ -17,20 +17,6 @@ public class ServiceUse : ControllerBase
         _unitOfWork = unitOfWork;
     }
 
-    [HttpGet("all")]
-    public async Task<ActionResult<List<ServiceUse>>> GetAll()
-    {
-        try
-        {
-            return Ok(await _unitOfWork.ServiceUseRepository.GetAllAsync());
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex);
-            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-        }
-    }
-
     [HttpPost("LogBooked")]
     public async Task<ActionResult<Profiles>> AddProfiles(Profiles profile)
     {
