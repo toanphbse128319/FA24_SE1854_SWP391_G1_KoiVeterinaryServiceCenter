@@ -29,20 +29,8 @@ public class ServiceUse : ControllerBase
                 result = "BookingDetail does not existed!";
                 return NotFound();
             }
-            if ( string.IsNullOrEmpty(profile.BookingDetail.ExaminationResult) == false )
-                bd.ExaminationResult = profile.BookingDetail.ExaminationResult;
-            if (string.IsNullOrEmpty(profile.BookingDetail.VetConsult) == false )
-                bd.VetConsult = profile.BookingDetail.VetConsult;
-            if (string.IsNullOrEmpty(profile.BookingDetail.Formulary) == false )
-                bd.Formulary = profile.BookingDetail.Formulary;
-            if (profile.BookingDetail.IsIncidental != bd.IsIncidental)
-               bd.IsIncidental = profile.BookingDetail.IsIncidental;
-            if (string.IsNullOrEmpty(profile.BookingDetail.NoteResult) == false )
-                bd.NoteResult = profile.BookingDetail.NoteResult;
-
             result = await _unitOfWork.ServiceUseRepository.LogBooked( profile );
-            if ( result.ToLower().Contains("success") && 
-                    await _unitOfWork.BookingDetailRepository.UpdateAsync(bd) != 0){
+            if ( result.ToLower().Contains("success")){
                 _unitOfWork.CommitTransactionAsync();
                 return Ok(result);
             } else {
