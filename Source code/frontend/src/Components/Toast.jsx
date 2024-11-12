@@ -1,35 +1,53 @@
 import React, { useState, useEffect } from 'react';
+
 const toastAnimation = `
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 `;
 
-const Toast = ({ message, isVisible, onHide }) => {
+const Toast = ({ time = 2000 }) => {
+  const [toastData, setToastData] = useState({
+    show: false,
+    message: ''
+  });
+
   useEffect(() => {
-    if (isVisible) {
+    if (toastData.show) {
       const timer = setTimeout(() => {
-        onHide();
-      }, 2000);
+        setToastData(prev => ({ ...prev, show: false }));
+      }, time);
 
       return () => clearTimeout(timer);
     }
-  }, [isVisible, onHide]);
+  }, [toastData.show, time]);
 
-  if (!isVisible) return null;
+  useEffect(() => {
+    window.showToast = (message) => {
+      setToastData({ show: true, message });
+    };
+
+    return () => {
+      delete window.showToast;
+    };
+  }, []);
+
+  if (!toastData.show) return null;
 
   return (
-    <>
-      <style>{toastAnimation}</style>
+    <div className="fixed inset-0 pointer-events-none flex items-start justify-center" style={{ zIndex: 9999 }}>
       <div
+        className="mt-5 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg pointer-events-auto"
         style={{
+          animation: 'fadeIn 0.3s ease-in-out',     
+          zIndex: 9999,
           position: 'fixed',
           top: '20px',
           right: '20px',
@@ -42,9 +60,10 @@ const Toast = ({ message, isVisible, onHide }) => {
           animation: 'fadeIn 0.3s ease-in-out',
         }}
       >
-        {message}
+        <style>{toastAnimation}</style>
+        {toastData.message}
       </div>
-    </>
+    </div>
   );
 };
 

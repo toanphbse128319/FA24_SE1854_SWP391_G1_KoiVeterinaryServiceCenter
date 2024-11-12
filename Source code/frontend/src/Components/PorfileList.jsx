@@ -22,6 +22,69 @@ const ProfileListModal = ({ fishProfiles, poolProfiles, onUpdateFishProfile, onU
     });
   };
 
+  const numberUtils = {
+    // Format giá trị số
+    formatNumberValue: (value) => {
+      if (value === '' || value === null || value === undefined) return '';
+      return String(parseFloat(value) || 0);
+    },
+
+    // Xử lý keydown cho input số
+    handleNumberKeyDown: (e) => {
+      // Danh sách các phím được phép
+      const allowedKeys = [
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+        'Backspace', 'Delete', 'Tab', 'Enter', '.', 'a',
+        'ArrowLeft', 'ArrowRight'
+      ];
+
+      // Chặn các ký tự không được phép
+      if (!allowedKeys.includes(e.key)) {
+        e.preventDefault();
+        return;
+      }
+
+      const value = e.target.value;
+
+      // Xử lý dấu thập phân
+      if (e.key === '.') {
+        // Nếu đã có dấu chấm, không cho nhập thêm
+        if (value.includes('.')) {
+          e.preventDefault();
+          return;
+        }
+
+        // Nếu là ký tự đầu tiên, không cho nhập
+        if (value.length === 0) {
+          e.preventDefault();
+          return;
+        }
+
+        // Kiểm tra xem ký tự cuối cùng có phải là số không
+        const lastChar = value[value.length - 1];
+        if (!/\d/.test(lastChar)) {
+          e.preventDefault();
+          return;
+        }
+      }
+    },
+
+    // Tạo props cho input số
+    getNumberInputProps: (unit = '') => ({
+      type: "text",
+      onKeyDown: numberUtils.handleNumberKeyDown,
+      InputProps: unit ? {
+        endAdornment: <span className="text-gray-500">{unit}</span>
+      } : undefined,
+      inputProps: {
+        min: 0,
+        step: "any",
+        inputMode: "decimal",
+        pattern: "[0-9]*\\.?[0-9]*"
+      }
+    })
+  };
+
   const handleEditPool = (index, profile) => {
     setEditingItem({
       type: 'pool',
@@ -87,24 +150,19 @@ const ProfileListModal = ({ fishProfiles, poolProfiles, onUpdateFishProfile, onU
                   />
                   <TextField
                     label="Kích thước"
-                    value={editingItem.data.Size || ''}
-                     type="number"
-                    onChange={(e) => setEditingItem({
-                      ...editingItem,
-                      data: { ...editingItem.data, Size: e.target.value }
-                    })}
-                    InputProps={{
-                      endAdornment: <span className="text-gray-500">cm</span>
-                    }}
+                    value={numberUtils.formatNumberValue(currentFishProfile.Size)}
+                    onChange={handleFishProfileChange('Size')}
+                    {...numberUtils.getNumberInputProps('cm')}
+                    fullWidth
+                    variant="outlined"
                   />
                   <TextField
                     label="Tuổi"
-                    value={editingItem.data.Age || ''}
-                     type="number"
-                    onChange={(e) => setEditingItem({
-                      ...editingItem,
-                      data: { ...editingItem.data, Age: e.target.value }
-                    })}
+                    value={numberUtils.formatNumberValue(currentFishProfile.Age)}
+                    onChange={handleFishProfileChange('Age')}
+                    {...numberUtils.getNumberInputProps()}
+                    fullWidth
+                    variant="outlined"
                   />
                   <TextField
                     label="Màu sắc"
@@ -122,14 +180,22 @@ const ProfileListModal = ({ fishProfiles, poolProfiles, onUpdateFishProfile, onU
                       data: { ...editingItem.data, Description: e.target.value }
                     })}
                   />
-                  <TextField
-                    label="Giới tính"
-                    value={editingItem.data.Sex || ''}
-                    onChange={(e) => setEditingItem({
-                      ...editingItem,
-                      data: { ...editingItem.data, Sex: e.target.value }
-                    })}
-                  />
+                  <div className="flex items-center">
+                    <Typography component="legend">Giới tính:</Typography>
+                    <Button
+                      variant={currentFishProfile.Sex ? "contained" : "outlined"}
+                      onClick={() => setCurrentFishProfile({ ...currentFishProfile, Sex: true })}
+                      sx={{ mx: 1 }}
+                    >
+                      Đực
+                    </Button>
+                    <Button
+                      variant={!currentFishProfile.Sex ? "contained" : "outlined"}
+                      onClick={() => setCurrentFishProfile({ ...currentFishProfile, Sex: false })}
+                    >
+                      Cái
+                    </Button>
+                  </div>
                 </div>
               ) : (
                 <div className="grid grid-cols-2 gap-4">
@@ -143,39 +209,27 @@ const ProfileListModal = ({ fishProfiles, poolProfiles, onUpdateFishProfile, onU
                   />
                   <TextField
                     label="Chiều rộng"
-                    value={editingItem.data.Width || ''}
-                     type="number"
-                    onChange={(e) => setEditingItem({
-                      ...editingItem,
-                      data: { ...editingItem.data, Width: e.target.value }
-                    })}
-                    InputProps={{
-                      endAdornment: <span className="text-gray-500">m</span>
-                    }}
+                    value={numberUtils.formatNumberValue(currentPoolProfile.Width)}
+                    onChange={handlePoolProfileChange('Width')}
+                    {...numberUtils.getNumberInputProps('m')}
+                    fullWidth
+                    variant="outlined"
                   />
                   <TextField
                     label="Chiều cao"
-                    value={editingItem.data.Height || ''}
-                     type="number"
-                    onChange={(e) => setEditingItem({
-                      ...editingItem,
-                      data: { ...editingItem.data, Height: e.target.value }
-                    })}
-                    InputProps={{
-                      endAdornment: <span className="text-gray-500">m</span>
-                    }}
+                    value={numberUtils.formatNumberValue(currentPoolProfile.Height)}
+                    onChange={handlePoolProfileChange('Height')}
+                    {...numberUtils.getNumberInputProps('m')}
+                    fullWidth
+                    variant="outlined"
                   />
                   <TextField
                     label="Độ sâu"
-                    value={editingItem.data.Depth || ''}
-                     type="number"
-                    onChange={(e) => setEditingItem({
-                      ...editingItem,
-                      data: { ...editingItem.data, Depth: e.target.value }
-                    })}
-                    InputProps={{
-                      endAdornment: <span className="text-gray-500">m</span>
-                    }}
+                    value={numberUtils.formatNumberValue(currentPoolProfile.Depth)}
+                    onChange={handlePoolProfileChange('Depth')}
+                    {...numberUtils.getNumberInputProps('m')}
+                    fullWidth
+                    variant="outlined"
                   />
                   <TextField
                     label="Mô tả"

@@ -3,67 +3,6 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { FetchAPI } from "../../Helper/Utilities";
 
-async function fetchBooking(){
-    let currentDate = new Date().toISOString().split("T")[0];
-    let target = (new Date());
-    target.setDate( target.getDate() + 30 );
-    let targetDate = target.toISOString().split("T")[0];
-    let response = await FetchAPI({ endpoint: `/Booking/getbookingfromto?from=${currentDate}&to=${targetDate}` })
-    if ( !response.ok )
-        return null;
-    return await response.json();
-}
-
-async function fetchVet(){
-    let response = await FetchAPI({ endpoint: '/Employee/getbyrolename?info=Veterinarian' });
-    if ( !response.ok )
-        return null;
-    return await response.json();
-}
-
-async function fetchSchedule(){
-    let currentDate = new Date().toISOString().split("T")[0];
-    let response = await FetchAPI({ endpoint: '/Schedule/get30daysschedule?date=' + currentDate });
-    if ( !response.ok )
-        return null;
-    return await response.json();
-}
-
-async function fetchSlot(){
-    let currentDate = new Date().toISOString().split("T")[0];
-    let response = await FetchAPI({ endpoint: '/Schedule/getslotin30days?date=' + currentDate });
-    if ( !response.ok )
-        return null;
-    return await response.json();
-}
-
-async function fetchSDM(){
-    let response = await FetchAPI({ endpoint: '/ServiceDeliveryMethod' });
-    if ( !response.ok )
-        return null;
-    return await response.json();
-}
-
-async function fetchCustomer({bookings}){
-    let temp = [];
-    bookings.map( booking => {
-        FetchAPI({ endpoint: `/Customer/${booking.CustomerID}`}).then( response => response.json().then( json => {
-            temp.push(json);
-        } ) );
-    });
-    return temp;
-}
-
-async function fetchBookingDetails({bookings}){
-    let temp = [];
-    bookings.map( booking => {
-        FetchAPI({ endpoint: `/bookingdetail/bybookingid?id=${booking.BookingID}`}).then( response => response.json().then( json => {
-            temp.push(json);
-        } ) );
-    });
-    return temp;
-}
-
 function CustomerNameOfTHeBooking({booking, customers}){
     let result = "Nguyen Van A"
     customers.map( customer => {
@@ -92,30 +31,37 @@ function TimeToSlot({booking}){
     }
 }
 
-function getSDMName({Booking, bds, sdms}){
+function getSDMName({Booking, sdms}){
     let result;
-    result = bds.filter( bd => bd.BookingID == Booking.BookingID);
-    result = sdms.filter( sdm => sdm.ServiceDeliveryMethodID == result[0].ServiceDeliveryMethodID );
-    return result.Name;
+    result = sdms.filter( sdm => sdm.ServiceDeliveryMethodID == Booking.ServiceDeliveryMethodID );
+    return result[0].Name;
 }
 
-const AssignVet = () => {
+function filterBooking(bookings){
+    let filtered = [];
+    bookings.forEach( booking => {
+        if( bookings.EmployeeID == "E0" )
+            filtered.push( bookings );
+    })
+    return filtered;
+}
+
+async function SetVet({bookingID, employeeID }){
+     let response = await FetchAPI({ endpoint: `/Booking/updateempid?id=${bookingID}&empID=${employeeID}`, method: 'PUT', body: {} });
+    if( !response.ok ){
+        alert("Unable to set this veterinarian");
+        return false;
+    }
+    return true;
+}
+const AssignVet = ({DoctorSchedule, SlotSchedule, BookingDetails, bookings, doctors, customers, sdm, SetBookingDetails}) => {
   const navigate = useNavigate();
 
   const [selectedDate, setSelectedDate] = useState(null);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedSlots, setSelectedSlots] = useState([]);
-  const [DoctorSchedule, SetDoctorSchedule] = useState([]);
-  const [SlotSchedule, SetSlotSchedule] = useState([]);
-  const [BookingDetails, SetBookingDetails] = useState([]);
-  const [loading, SetLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
-  const [bookings, setBookings] = useState([]);
-  const [doctors, setDoctors] = useState([]);
-  const [customers, setCustomer] = useState([]);
-  const [sdm, SetSDM] = useState([]);
-
 //  const bookings = [
 //    { BookingID: 'B1', CustomerName: 'Nguyen Van A', Date: '2024-10-31 08:00:00.000', SlotNo: 1, ServiceDeliveryMethod: 'Tại nhà', DoctorName: 'Dr. John Doe' },
 //    { BookingID: 'B2', CustomerName: 'Tran Thi B', Date: '2024-10-31 09:00:00.000', SlotNo: 2, ServiceDeliveryMethod: 'Tại trung tâm', DoctorName: '' },
@@ -130,24 +76,19 @@ const AssignVet = () => {
 //    { DoctorID: 'E4', DoctorName: 'Dr. Michael Brown' },
 //  ];
 //
+        console.log( bookings );
+    console.log( doctors );
 
-    useEffect(() => {
-        // Set loading to true before fetching
-        SetLoading(true);
-        fetchBooking().then( result => { 
-            setBookings(result);
-            fetchCustomer( {bookings: result }).then( customer => {
-                setCustomer( customer ); SetLoading( false );
-            });
-            fetchBookingDetails( {bookings: result} ).then( bd => {
-                SetBookingDetails( bd );
-            });
-        } );
-        fetchVet().then( result => setDoctors(result) );
-        fetchSchedule().then( result => SetDoctorSchedule( result ) );
-        fetchSDM().then( result => SetSDM( result ) );
-        fetchSlot().then( result => SetSlotSchedule( result ) );
-    }, []);
+    function getDoctorNameFromBookingID({booking}){
+        let result = "N/A";
+        doctors.forEach( doctor => {
+            if( doctor.EmployeeID == booking.EmployeeID ){
+                result = doctor.FirstName + " " + doctor.LastName;
+                console.log( doctor.FirstName + " " + doctor.LastName );
+            }
+        })
+        return result;
+    }
 
   const transformScheduleData = (doctorSchedules = [], slotSchedules = []) => {
     const transformedData = [];
@@ -172,6 +113,14 @@ const AssignVet = () => {
     return transformedData;
   };
 
+    function checkbookingDate(bookings, date){
+        bookings.forEach( booking => {
+            let bookingDate = booking.BookingDate.split("T")[0];
+            if( bookingDate == date )
+                return true;
+        })
+        return false;
+    }
   const createScheduleMap = (doctorSchedules = [], slotSchedules = []) => {
     const map = new Map();
     const transformedData = transformScheduleData(doctorSchedules, slotSchedules);
@@ -220,11 +169,11 @@ const AssignVet = () => {
   const daysToShow = getDaysInMonth(currentDate);
 
   const handleDateClick = async (date) => {
-    if (!date) return;
+    if (!date)
+      return;
     const dateString = date.toISOString().split('T')[0];
     setSelectedDate(date);
     setSelectedSlots(scheduleMap.get(dateString) || []);
-
     const bookingDetailsForDate = bookings.filter(booking => booking.BookingDate.startsWith(dateString));
     SetBookingDetails(bookingDetailsForDate);
   };
@@ -247,8 +196,15 @@ const AssignVet = () => {
 
   const isDateAvailable = (date) => {
     if (!date) return false;
+      let result = false;
     const dateString = date.toISOString().split('T')[0];
-    return scheduleMap.has(dateString);
+    let has = scheduleMap.has(dateString);
+    bookings.forEach( booking => {
+        if( booking.BookingDate.split('T')[0] === dateString && has ){
+            result = true;
+        }
+    });
+      return result;
   };
 
   const getDayStyles = (date, index) => {
@@ -280,10 +236,6 @@ const AssignVet = () => {
     SetBookingDetails(updatedBookings);
     setShowModal(false);
   };
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div style={styles.calendarContainer}>
@@ -347,7 +299,7 @@ const AssignVet = () => {
                 <p><strong>Slot No:</strong> {TimeToSlot({booking: booking})}</p>
                 <p><strong>Service Delivery Method:</strong> {getSDMName({Booking: booking, bds: BookingDetails, sdms: sdm })}</p>
                 <p>
-                  <strong>Doctor Name:</strong> {booking.DoctorName || 'N/A'}
+                  <strong>Doctor Name:</strong> {getDoctorNameFromBookingID({booking: booking})}
                   <button style={styles.assign} onClick={() => { setSelectedBooking(booking); setShowModal(true); }}>Assign</button>
                 </p>
               </div>
@@ -365,11 +317,16 @@ const AssignVet = () => {
                 <div key={index} style={styles.doctorItem}>
                   <p>{doctor.FirstName + " " + doctor.LastName}</p>
                   <button style={styles.assign} onClick={() =>{ 
-                    handleAssignDoctor(selectedBooking, doctor.FirstName + " " + doctor.LastName);
                     let temp = selectedBooking;
                     temp.EmployeeID = doctor.EmployeeID;
                     setSelectedBooking( temp );
-                    FetchAPI({ endpoint: `/Booking/updateempid?id=${selectedBooking.BookingID}&empID=${temp.EmployeeID}`, method: 'PUT', body: {} });
+                    SetVet({bookingID: selectedBooking.BookingID, employeeID: temp.EmployeeID}).then(result => {
+                        if( result == true ){
+                            let oldBook = selectedBooking;
+                            oldBook = temp.EmployeeID;
+                        }
+                    });
+                    handleAssignDoctor(selectedBooking, doctor.FirstName + " " + doctor.LastName);
                     }}>Assign</button>
                 </div>
               ))}
@@ -547,6 +504,13 @@ const styles = {
   },
   bookingDetails: {
     padding: '16px'
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: '20px',
+    borderRadius: '10px',
+    width: '400px',
+    textAlign: 'center',
   },
   bookingList: {
     display: 'flex',

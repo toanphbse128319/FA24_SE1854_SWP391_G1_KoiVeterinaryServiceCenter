@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Toast from './Toast';
+import { FetchAPI } from '../Helper/Utilities';
 
 const styles = {
   overlay: {
@@ -90,6 +91,7 @@ const styles = {
     transition: 'opacity 0.2s ease',
   },
   submitButtonDisabled: {
+    background: '#9E9E9E',
     opacity: 0.6,
     cursor: 'not-allowed',
   },
@@ -137,7 +139,7 @@ const styles = {
 
 };
 
-const FeedbackModal = ({ bookingId, onClose }) => {
+const FeedbackModal = ({ bookingId, onClose,onFeedbackSubmitted }) => {
     const [serviceRating, setServiceRating] = useState(0);
     const [vetRating, setVetRating] = useState(0);
     const [description, setDescription] = useState('');
@@ -145,7 +147,7 @@ const FeedbackModal = ({ bookingId, onClose }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [showToast, setShowToast] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
-  
+    const [isFeedback, setIsFeedback] = useState(false);
 
     useEffect(() => {
       const handleEscape = (e) => {
@@ -176,27 +178,27 @@ const FeedbackModal = ({ bookingId, onClose }) => {
         setIsLoading(true);
         setError('');
   
-        const response = await fetch('http://localhost:5145/api/Feedback', {
+      
+        const response = await FetchAPI({
+          endpoint: '/Feedback?bookingID='+bookingId,
           method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json'
-          },body: JSON.stringify({
-            ServiceRating: serviceRating,
+          body:{
+             ServiceRating: serviceRating,
             VetRating: vetRating,
             Description: description,
-            Status: 'Active'
-          }),
-        });
+            Status: 'Active',}
+        })
 
         if (!response.ok) {
           throw new Error('Failed to change booking status');
         }
-        const data = await response.text();  
         
+        setIsFeedback(true);
         setToastMessage('Đánh giá đã được gửi thành công!');
         setShowToast(true);
-        
-        // Delay closing the modal until after the toast appears
+        if (onFeedbackSubmitted) {
+          onFeedbackSubmitted();
+        }
         setTimeout(() => {
           onClose();
         }, 2000);
@@ -278,10 +280,11 @@ const FeedbackModal = ({ bookingId, onClose }) => {
             <button
               style={{
                 ...styles.submitButton,
-                ...(serviceRating === 0 || vetRating === 0 ? styles.submitButtonDisabled : {})
+                ...(serviceRating === 0 || vetRating === 0 ? styles.submitButtonDisabled : {}),
+                ...(isFeedback===true ? styles.submitButtonDisabled : {})
               }}
               onClick={handleSubmit}
-              disabled={isLoading}
+              disabled={isLoading||isFeedback==true}
             >
               {isLoading ? 'Đang gửi...' : 'Gửi'}
             </button>

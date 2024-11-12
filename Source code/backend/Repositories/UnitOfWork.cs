@@ -29,6 +29,18 @@ public class UnitOfWork
         _context ??= new Context();
     }
 
+    public async void CommitTransactionAsync(){
+        await _context.Database.CommitTransactionAsync();
+    }
+
+    public async void RollbackTransactionAsync(){
+        await _context.Database.RollbackTransactionAsync();
+    }
+
+    public async void BeginTransactionAsync(){
+        await _context.Database.BeginTransactionAsync();
+    }
+
     public AccountRepository AccountRepository
     {
         get { return _accountRepository ??= new AccountRepository(_context); }

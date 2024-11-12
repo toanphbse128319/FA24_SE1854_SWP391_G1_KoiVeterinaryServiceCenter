@@ -8,6 +8,10 @@ import DashBoard from "./DashBoard"
 import { Navigate, useNavigate } from "react-router-dom";
 import { LogOut } from "../../Helper/Utilities";
 
+async function getCustomers() {
+    return await FetchAPI({ endpoint: "/Customer" });
+}
+
 const StaffManage = () => {
   const [activePage, setActivePage] = useState("ManageLanding");
   const navigate = useNavigate();

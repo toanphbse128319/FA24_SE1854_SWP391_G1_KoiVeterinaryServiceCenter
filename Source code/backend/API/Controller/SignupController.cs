@@ -64,6 +64,8 @@ namespace API.Controllers
                         return StatusCode(StatusCodes.Status406NotAcceptable, result);
                     case "OTP verify successfully":
                         return StatusCode(StatusCodes.Status200OK, result);
+                    case "There's no OTP code sent to this email":
+                        return StatusCode(StatusCodes.Status406NotAcceptable, result);
                     default:
                         return StatusCode(StatusCodes.Status501NotImplemented, "This should not show up!");
                 }

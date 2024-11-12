@@ -274,39 +274,39 @@ const InfoRow = ({ label, value }) => (
   </div>
 );
 
-async function FetchBookingList(){
-    let id = window.sessionStorage.getItem("id");
-    let response = await FetchAPI( { endpoint: "/booking/getbyprofile?id=" + id } );
-    if( !response.ok )
-        return null;
-    return await response.json();
+async function FetchBookingList() {
+  let id = window.sessionStorage.getItem("id");
+  let response = await FetchAPI({ endpoint: "/booking/getbyprofile?id=" + id });
+  if (!response.ok)
+    return null;
+  return await response.json();
 }
 
-async function FetchSDM(){
-    let response = await FetchAPI( { endpoint: "/servicedeliverymethod" } );
-    if( !response.ok )
-        return null;
-    return await response.json();
+async function FetchSDM() {
+  let response = await FetchAPI({ endpoint: "/servicedeliverymethod" });
+  if (!response.ok)
+    return null;
+  return await response.json();
 }
 
-async function FetchServices(){
-    let response = await FetchAPI( { endpoint: "/service" } );
-    if( !response.ok )
-        return null;
-    return await response.json();
+async function FetchServices() {
+  let response = await FetchAPI({ endpoint: "/service" });
+  if (!response.ok)
+    return null;
+  return await response.json();
 }
 
-async function FetchBookingDetail(){
-    let id = window.sessionStorage.getItem("id");
-    console.log('day la id '+id);
-    let response = await FetchAPI( { endpoint: "/bookingdetail/getbyprofile?id=" + id } );
-    if( !response.ok )
-        return null;
-    return await response.json();
+async function FetchBookingDetail() {
+  let id = window.sessionStorage.getItem("id");
+  console.log('day la id ' + id);
+  let response = await FetchAPI({ endpoint: "/bookingdetail/getbyprofile?id=" + id });
+  if (!response.ok)
+    return null;
+  return await response.json();
 }
 
 const BookingList = ({
-  //userRole = 'customer',
+  //userRole = 'Customer',
   userRole = 'Veterinarian',
   onFeedback = () => { },
   onEditBooking = () => { },
@@ -320,63 +320,70 @@ const BookingList = ({
   const [selectedDeliveryMethodId, setSelectedDeliveryMethodId] = useState(null);
   const [cartItems, setCartItems] = useState([]); // Persist cart items
   const [showBookingActions, setShowBookingActions] = useState(false);
-  const [isIncidental, setIsIncidental] = useState(false);
-    const [sdm, setSDM] = useState([]);
-    const [services, setServices] = useState([]);
-    const [loading, setLoading] = useState(0);
-    const [bookingDetail, setBookingDetail] = useState([]);
+  const [isIncidental, setIsIncidental] = useState(true);
+  const [sdm, setSDM] = useState([]);
+  const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(0);
+  const [bookingDetail, setBookingDetail] = useState([]);
 
-    useEffect( () => {
-        // if( window.sessionStorage.getItem("token") == null )
-        //     navigate("/Login");
-        FetchServices().then(results => { setServices( results ); setLoading( loading + 1 )} );
-FetchSDM().then(results => { setSDM( results ); setLoading( loading + 1 ) } );
-        FetchBookingList().then(results => { 
-            setBookings( results ); setLoading( loading + 1 );
-        } );
-        FetchBookingDetail().then( results => {
-            setBookingDetail( results ); setLoading( loading + 1 );
-        } );
-    }, [] );
-    if( loading == 0  ){
-        return <div> Loading </div>;
-    }
+  useEffect(() => {
+    // if( window.sessionStorage.getItem("token") == null )
+    //     navigate("/Login");
+    FetchServices().then(results => { setServices(results); setLoading(loading + 1) });
+    FetchSDM().then(results => { setSDM(results); setLoading(loading + 1) });
+
+    FetchBookingList().then(results => {
+      setBookings(results); setLoading(loading + 1);
+    });
+    FetchBookingDetail().then(results => {
+      setBookingDetail(results); setLoading(loading + 1);
+    });
+  }, []);
+  if (loading == 0) {
+    return <div> Loading </div>;
+  }
 
   const handleCloseBookingActions = () => {
     setShowBookingActions(false);
   };
+
+  const handleFeedbackSubmitted = async () => {
+    // Gọi lại API để lấy dữ liệu mới
+    const updatedBookings = await FetchBookingList();
+    if (updatedBookings) {
+      setBookings(updatedBookings);
+    }
+  };
+
+
   const handleChangeStatus = async (bookingId) => {
     try {
-        const response = await fetch('http://localhost:5145/api/Booking/updatestatus', {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ 
-              Id: bookingId,
-            Message: 'Completed'
-          })
-        });
+      const response = await fetch('http://localhost:5145/api/Booking/updatestatus', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          Id: bookingId,
+          Message: 'Completed'
+        })
+      });
 
-        if (!response.ok) {
-            throw new Error('Failed to change booking status');
-        }
+      if (!response.ok) {
+        throw new Error('Failed to change booking status');
+      }
 
-        const data = await response.text();
-        console.log('Status changed successfully:', data);
-        
+      const data = await response.text();
+      console.log('Status changed successfully:', data);
+
     } catch (error) {
-        console.error('Error changing status:', error);
+      console.error('Error changing status:', error);
     }
-};
-  
+  };
+
 
   // Handlers
-  const handleStartExamination = (bookingId, deliveryMethodId) => {
-    setSelectedBookingId(bookingId);
-    setSelectedDeliveryMethodId(deliveryMethodId);
-    setShowServiceSelection(true);
-  };
+
 
   const handleCloseServiceSelection = () => {
     setShowServiceSelection(false);
@@ -394,9 +401,9 @@ FetchSDM().then(results => { setSDM( results ); setLoading( loading + 1 ) } );
     setShowFeedbackModal(true);
   };
 
-  const handleConsoleLog = (temp) =>{
+  const handleConsoleLog = (temp) => {
 
-    console.log('day la service ' +temp)
+    console.log('day la service ' + temp)
   }
 
   const handleCloseFeedback = () => {
@@ -409,14 +416,14 @@ FetchSDM().then(results => { setSDM( results ); setLoading( loading + 1 ) } );
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
-      
+
     });
   };
-  
+
   const formatDateTime = (dateString) => {
     return new Date(dateString).toLocaleString('vi-VN', {
-      hour:'2-digit',
-      minute:'2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
     });
   };
   const formatCurrency = (amount) => {
@@ -426,36 +433,36 @@ FetchSDM().then(results => { setSDM( results ); setLoading( loading + 1 ) } );
     }).format(amount);
   };
 
-  
+
   const renderBookingContent = (booking) => {
     const isCustomerOrVet = userRole === 'Customer' || userRole === 'Veterinarian';
     const sdm = [
       {
-          ServiceDeliveryMethodID: 'SDM1',
-          Name: 'Khám cá tại nhà',
-          Status: 1
+        ServiceDeliveryMethodID: 'SDM1',
+        Name: 'Khám cá tại nhà',
+        Status: 1
       },
       {
-          ServiceDeliveryMethodID: 'SDM2',
-          Name: 'Khám hồ tại nhà',
-          Status: 1
+        ServiceDeliveryMethodID: 'SDM2',
+        Name: 'Khám hồ tại nhà',
+        Status: 1
       },
       {
-          ServiceDeliveryMethodID: 'SDM3',
-          Name: 'Trực tuyến',
-          Status: 1
+        ServiceDeliveryMethodID: 'SDM3',
+        Name: 'Trực tuyến',
+        Status: 1
       },
       {
-          ServiceDeliveryMethodID: 'SDM4',
-          Name: 'Tại cơ sở',
-          Status: 1
+        ServiceDeliveryMethodID: 'SDM4',
+        Name: 'Tại cơ sở',
+        Status: 1
       }
-  ];
+    ];
 
-const getServiceDeliveryMethodName = (methodId) => {
-  const method = sdm.find(item => item.ServiceDeliveryMethodID === methodId);
-  return method ? method.Name : methodId;
-};
+    const getServiceDeliveryMethodName = (methodId) => {
+      const method = sdm.find(item => item.ServiceDeliveryMethodID === methodId);
+      return method ? method.Name : methodId;
+    };
     return (
       <div>
         <InfoRow label="Mã đơn" value={booking.BookingID} />
@@ -471,7 +478,7 @@ const getServiceDeliveryMethodName = (methodId) => {
 
         <InfoRow
           label="Hình thức"
-           value={getServiceDeliveryMethodName(booking.ServiceDeliveryMethodID)} />
+          value={getServiceDeliveryMethodName(booking.ServiceDeliveryMethodID)} />
         <InfoRow label="Tổng tiền " value={formatCurrency(booking.TotalServiceCost)} />
 
         {!isCustomerOrVet && (
@@ -517,7 +524,7 @@ const getServiceDeliveryMethodName = (methodId) => {
                 {renderBookingContent(booking)}
 
                 <div style={styles.actionButtonContainer}>
-                  {userRole === 'Customer' && booking.status === 'Completed' && booking.feedbackID === 'FB0' && (
+                  {userRole === 'Customer' && booking.Status === 'Completed' && booking.FeedbackID === 'FB0' && (
                     <button
                       style={{ ...styles.actionButton, ...styles.primaryActionButton }}
                       onClick={() => handleFeedbackClick(booking.BookingID)}
@@ -526,7 +533,7 @@ const getServiceDeliveryMethodName = (methodId) => {
                     </button>
                   )}
 
-                  {userRole === 'Staff' && booking.status === 'Pending' && (
+                  {userRole === 'Staff' && booking.Status === 'Pending' && (
                     <>
                       <button
                         style={{ ...styles.actionButton, ...styles.primaryActionButton }}
@@ -542,7 +549,7 @@ const getServiceDeliveryMethodName = (methodId) => {
                       </button>
                     </>
                   )}
-
+                  {/* Preed */}
                   {userRole === 'Veterinarian' && booking.Status === 'Confirmed' && isIncidental == false && (
 
 
@@ -558,29 +565,45 @@ const getServiceDeliveryMethodName = (methodId) => {
                         bookingId={booking.BookingID}
                         isOpen={showBookingActions}
                         onClose={handleCloseBookingActions}
-                        bookingDetail= {bookingDetail.find(detail => detail.BookingID === booking.BookingID)}
-                       
+                        bookingDetail={bookingDetail.find(detail => detail.BookingID === booking.BookingID)}
+
                         service={services.find(service => service.ServiceID === bookingDetail?.find(detail => detail.BookingID === booking.BookingID)?.ServiceID)}
-                        //  initialFishCount = {booking.NumberOfFish}
-                      //  initialPoolCount ={booking.NumberOfPool}
-                       setIsIncidental={setIsIncidental} 
+                        initialFishCount={booking.NumberOfFish}
+                        initialPoolCount={booking.NumberOfPool}
+                        setIsIncidental={setIsIncidental}
                       />
                     </>
 
                   )}
-                  {userRole === 'Veterinarian' && booking.Status === 'Confirmed' && isIncidental != false && (
+                  {userRole === 'Veterinarian' && booking.Status === 'Confirmed' && isIncidental === true && (
                     <div>
                       <button
                         style={{ ...styles.actionButton, ...styles.primaryActionButton }}
-                        onClick={() => handleStartExamination(booking.BookingID, booking.ServiceDeliveryMethodID)}
+                        onClick={() => setShowServiceSelection(true)}
                       >
                         Dịch vụ phát sinh
                       </button>
+
+                      {/* ServiceSelection sẽ chỉ render khi showServiceSelection là true */}
+                      {showServiceSelection && (
+                        <ServiceSelection
+                          bookingId={booking.BookingID}
+                          services={services}
+                          isOpen={showServiceSelection}
+                          onClose={handleCloseServiceSelection}
+                          deliveryMethod={booking.ServiceDeliveryMethodID}
+                          servicesSelected={bookingDetail.filter(detail => 
+                            detail.BookingID === booking.BookingID && 
+                            detail.IsIncidental === false
+                          )}
+                        />
+                      )}
+
                       <button
                         style={{ ...styles.actionButton, ...styles.primaryActionButton }}
                         onClick={() => handleChangeStatus(booking.BookingID)}
                       >
-                       Xác nhận đã khám xong
+                        Xác nhận đã khám xong
                       </button>
                     </div>
                   )}
@@ -591,21 +614,14 @@ const getServiceDeliveryMethodName = (methodId) => {
         </div>
 
         {/* Service Selection Dialog */}
-        {showServiceSelection && (
-          <ServiceSelection
-            bookingId={selectedBookingId}
-            services={services}
-            isOpen={showServiceSelection}
-            onClose={handleCloseServiceSelection}
-            deliveryMethodId={selectedDeliveryMethodId}
-          />
-        )}
+
 
         {/* Feedback Modal */}
         {showFeedbackModal && (
           <FeedbackModal
             bookingId={selectedBookingId}
             onClose={handleCloseFeedback}
+            onFeedbackSubmitted={handleFeedbackSubmitted}
           />
         )}
       </div>

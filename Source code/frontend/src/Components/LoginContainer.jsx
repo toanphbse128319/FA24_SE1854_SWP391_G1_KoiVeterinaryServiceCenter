@@ -14,7 +14,7 @@ import {
 import { Navigate } from "react-router-dom";
 import { FetchAPI } from "../Helper/Utilities";
 
-async function CheckLogin({ info, password, setErrors }) {
+async function CheckLogin({ info, password, setErrors, onShowOTP }) {
   try {
     const response = await FetchAPI({
       endpoint: "/login",
@@ -34,6 +34,9 @@ async function CheckLogin({ info, password, setErrors }) {
             general: "Thông tin đăng nhập hoặc mật khẩu không chính xác",
           }));
           break;
+        case 406:
+              onShowOTP({email: info});
+              return;
         default:
           setErrors((prev) => ({
             ...prev,
@@ -60,7 +63,7 @@ async function CheckLogin({ info, password, setErrors }) {
   }
 }
 
-function Login() {
+function Login({onLoginSuccess, onShowOTP}) {
   let navigate = useNavigate();
   // Form states
   const [info, setInfo] = useState("");
@@ -122,16 +125,15 @@ function Login() {
     if (hasError) return;
 
     setIsLoading(true);
-    CheckLogin({ info: info, password: password, setErrors: setErrors }).then(
+    CheckLogin({ info: info, password: password, setErrors: setErrors, onShowOTP: onShowOTP }).then(
       (result) => {
         if (result == "success") {
           const role = window.sessionStorage.getItem("role");
           console.log(role);
           
-          if (role === "Staff") {
-            navigate("/StaffPage");
-          }
-          if (role === "Manager") {
+          if (role == "Staff") {
+            navigate("/staffpage");
+          } else if (role === "Manager") {
             navigate("/Manager");  
           } else {
             navigate("/");

@@ -31,7 +31,7 @@ public class BookingDetailController : ControllerBase {
     [HttpGet("ByBookingID")]
     public async Task<ActionResult<IEnumerable<BookingDetail?>>> GetBookingDetailsByBookingID(string id) {
         try{
-            List<BookingDetail?> list = await _unitOfWork.BookingDetailRepository.GetByBookingID(id);
+            List<BookingDetail> list = await _unitOfWork.BookingDetailRepository.GetByBookingID(id);
             if (list.Count == 0)
                 return NotFound("Booking Detail not found!");
             else return Ok(list);
@@ -44,7 +44,7 @@ public class BookingDetailController : ControllerBase {
     [HttpGet("ByServiceID")]
     public async Task<ActionResult<IEnumerable<BookingDetail?>>> GetBookingDetailsByServiceID(string id) {
         try{
-            List<BookingDetail?> list = await _unitOfWork.BookingDetailRepository.GetByServiceID(id);
+            List<BookingDetail> list = await _unitOfWork.BookingDetailRepository.GetByServiceID(id);
             if (list.Count == 0)
                 return NotFound("Booking Detail not found!");
             else return Ok(list);
@@ -96,62 +96,13 @@ public class BookingDetailController : ControllerBase {
     [HttpPost("add")]
     public async Task<ActionResult<BookingDetail?>> AddBookingDetail(BookingDetail info) {
         try{
-            if (await _unitOfWork.BookingDetailRepository.GetByIdAsync(info.BookingDetailID) != null)
-                return NotFound("Booking Detail is existed!");
-            if (await _unitOfWork.BookingRepository.GetByIdAsync(info.BookingID) == null)
-                return NotFound("BookingID not found!");
-            if (await _unitOfWork.ServiceRepository.GetByIdAsync(info.ServiceID) == null)
-                return NotFound("ServiceID not found!");
-            if (await _unitOfWork.BookingDetailRepository.AddBookingDetailAsync(info) == 0)
-                return BadRequest("Added fail!");
-            else return Ok($"Added {info.BookingDetailID} successfully");
+            string result = await _unitOfWork.BookingDetailRepository.AddBookingDetailAsync(info);
+            if ( result.ToLower().Contains("invalid") )
+                return BadRequest( result );
+            else return Ok($"Added {result} successfully");
         } catch ( Exception ex ){
             Console.WriteLine( ex );
             return StatusCode( StatusCodes.Status500InternalServerError, ex.Message );
-        }
-    }
-
-    [HttpPost("addExaminationResult")]
-    public async Task<ActionResult<ExaminationResult>> AddExaminationResult( ExaminationResult exam )
-    {
-        try
-        {
-            bool allSameBookingId = exam.BookingDetail.All(x => x.BookingID == exam.BookingDetail[0].BookingID);
-            if (allSameBookingId != true)
-                return BadRequest("Booking ID is inconsistent!!");
-            foreach (var item in exam.BookingDetail)
-            {
-                if (await _unitOfWork.BookingDetailRepository.GetByIdAsync(item.BookingDetailID) != null)
-                    return BadRequest("Booking Detail is already existed!");
-                if (await _unitOfWork.BookingRepository.GetByIdAsync(item.BookingID) == null)
-                    return BadRequest("Booking not found!");
-                Service s;
-                if ((s = await _unitOfWork.ServiceRepository.GetByIdAsync(item.ServiceID)) == null)
-                    return BadRequest("Service not found!");
-            }
-
-            foreach (var item in exam.AnimalProfile)
-            {
-                if (await _unitOfWork.BookingDetailRepository.GetByIdAsync(item.AnimalProfileID) != null)
-                    return BadRequest("Animal profile is already existed!");
-                if (await _unitOfWork.AnimalTypeRepository.GetByIdAsync(item.TypeID) == null)
-                    return BadRequest("Animal type not found!");
-            }
-            
-            foreach (var item in exam.PoolProfile)
-            {
-                if (await _unitOfWork.BookingDetailRepository.GetByIdAsync(item.PoolProfileID) != null)
-                    return BadRequest("Pool profile is already existed!");
-            }
-
-            if (await _unitOfWork.BookingDetailRepository.AddExaminationResultAsync(exam) == 1)
-                return Ok("Added successfully!");
-            else return BadRequest("Added failed!");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex);
-            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
 

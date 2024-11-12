@@ -6,7 +6,7 @@ namespace Repositories.Objects;
 public class Profiles
 {
 
-    public List<AnimalProfile> AnimalProfile { get; set; }
-    public List<PoolProfile> PoolProfile { get; set; }
+    public List<AnimalProfile> AnimalProfiles { get; set; }
+    public List<PoolProfile> PoolProfiles { get; set; }
     public BookingDetail BookingDetail { get; set; }
 }

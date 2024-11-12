@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, TextField, Card, CardContent, CardActions, Typography, RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import { FetchAPI } from '../Helper/Utilities';
 
-function SignUp() {
+function SignUp({onShowOTP, onSendOTP}) {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -46,7 +46,14 @@ function SignUp() {
       }
 
       if (response.ok) {
+          onSendOTP({email: email}).then(result => {
+            if( result != "success" )
+              alert("Không thể gửi mail chứa mã OTP");
+            else 
+              onShowOTP({email: email});
+          });
         alert("Đăng ký thành công!");
+          
         console.log('Signup response:', data);
       } else {
         alert("Đăng ký thất bại.");

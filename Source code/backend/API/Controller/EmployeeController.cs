@@ -29,5 +29,29 @@ public class EmployeeController : ControllerBase {
         }
     }
 
+    [HttpPut]
+    public async Task<ActionResult> AddOrUpdate( Employee info ){
+        try{
+            string result = await _unitOfWork.EmployeeRepository.UpdateOrAddAsync( info );
+            if( result != "Ok" )
+                return StatusCode(StatusCodes.Status400BadRequest, result );
+            return Ok();
+        } catch ( Exception ex ) {
+            Console.WriteLine(ex);
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+
+    [HttpGet]
+    public async Task<ActionResult> GetAll(){
+        try{
+            return Ok(await _unitOfWork.EmployeeRepository.GetAllAsync() );
+        } catch ( Exception ex ) {
+            Console.WriteLine(ex);
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+
+
 }
 
