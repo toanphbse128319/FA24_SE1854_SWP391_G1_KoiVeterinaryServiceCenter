@@ -31,7 +31,7 @@ public class ScheduleController : ControllerBase
                 return BadRequest("Missing id parameter!");
             if (info.Date == new DateOnly() || info.EmployeeID.Trim().Length == 0)
                 return BadRequest("Parameter(s) cannot be empty!");
-            if (await _unitOfWork.ScheduleRepository.CheckValidDateAsync(info.Date, info.EmployeeID, "") != null)
+            if (await _unitOfWork.ScheduleRepository.CheckValidDateAsync(info.Date, info.EmployeeID, "", 0) != null)
                 return BadRequest("Working day for that vet is already existed!");
             for (int i = 0; i < 4; i++)
             {
