@@ -14,7 +14,6 @@ const PRICE_PER_KM = 5000; // 5000 VND per km
 function IsAtHome( {sdm} ){
     if( sdm == null )
         return null;
-     console.log(' sdm.Name.toLowerCase().includes("tại nhà")' + sdm.Name.toLowerCase().includes("tại nhà"))
     if ( sdm.Name.toLowerCase().includes("tại nhà")) 
         return true;
     return false;
@@ -26,7 +25,6 @@ async function GetDistanceFromAddress( { address } ){
         return 0;
     } 
     const coordinate = await GetGeoLocation( { address } );
-    console.log( coordinate );
 
     if( coordinate == [0.0, 0.0] || coordinate[0] == 0 || coordinate[1] == 0 )
         return 0;
@@ -59,11 +57,10 @@ const Confirm = () => {
   const { service, doctor, time, scheduleId, fishCount, sdm, poolCount } = location.state || {};
   
   const [customerInfo, SetCustomerInfo] = useState({
-    name: null,
-    phone: null,
-    address: null
+    name: window.sessionStorage.getItem("firstname") + window.sessionStorage.getItem("lastname"),
+    phone: window.sessionStorage.getItem("phonenumber"),
+    address: window.sessionStorage.getItem("address")
   });
-    SetCustomer( { setCustomer: SetCustomerInfo } );
   
   const [movingCost, SetMovingCost] = useState(0);
   const [isRead, SetIsRead] = useState(false); // State để theo dõi trạng thái đã đọc thông tin
@@ -214,6 +211,7 @@ const Confirm = () => {
             distanceCost: ${movingCost}, totalServiceCost: ${calculateTotal()}`)
         GetPaymentURL().then( result => console.log(result) );
   };
+
 
   return (
     <div className="mt-8 mx-auto max-w-7xl px-4">
