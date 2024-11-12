@@ -4,6 +4,7 @@ using Repositories.Model;
 using Repositories;
 using System.Text.RegularExpressions;
 using Helper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers;
 
@@ -19,6 +20,7 @@ public class CustomerController : ControllerBase {
     }
 
     [HttpGet]
+    [Authorize(Policy = "staff_policy")]
     public async Task<ActionResult<IEnumerable<Customer>>> GetAll()
     {
         try{
@@ -77,6 +79,7 @@ public class CustomerController : ControllerBase {
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
+
     [HttpPut("updatestatus")]
     public async Task<ActionResult<Customer>> UpdateStatusAsync(UpdateStatusInformation info)
     {

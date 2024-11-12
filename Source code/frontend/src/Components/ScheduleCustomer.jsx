@@ -32,6 +32,14 @@ useEffect(() => {
 }, []);
 */
 
+function AmountLimiter(amount){
+    if( amount < 0 )
+        return 1;
+    if( amount > 3 )
+        return 3;
+    return amount;
+}
+
 const ScheduleCalendar = ({ doctor, service, SlotSchedule , DocterSchedule, sdm }) => {
   const navigate = useNavigate();
 
@@ -134,6 +142,7 @@ const ScheduleCalendar = ({ doctor, service, SlotSchedule , DocterSchedule, sdm 
 
     const slotSchedules = daySchedules.get(slot) || [];
 
+      console.log( slotSchedules );
     const availableSchedule = slotSchedules.find(schedule =>
       schedule.SlotStatus && schedule.ordered < schedule.SlotCapacity
     );
@@ -288,14 +297,18 @@ const ScheduleCalendar = ({ doctor, service, SlotSchedule , DocterSchedule, sdm 
   };
 
   const handlePoolCountChange = (event) => {
-    setPoolCount(event.target.value);
+    setPoolCount( AmountLimiter( event.target.value ));
   };
 
   const handleFishCountChange = (event) => {
-    setFishCount(event.target.value);
+    setFishCount( AmountLimiter( event.target.value ));
   };
 
   const handleNavigate = () => {
+      if( fishCount < 1 && poolCount < 1 ){
+        alert("Hãy nhập số lượng");
+        return;
+      }
     if (selectedSlot && selectedDate) {
       const dateString = selectedDate.toISOString().split('T')[0];
       const time = selectedSlot.time + ' ' + dateString;

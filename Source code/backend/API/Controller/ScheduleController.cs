@@ -1,5 +1,6 @@
 #nullable disable
 using Helper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repositories;
 using Repositories.Model;
@@ -19,6 +20,7 @@ public class ScheduleController : ControllerBase
 
     //Change AddSchedule from receive UpdateSchedule to Schedule for easier validation
     [HttpPost]
+    [Authorize(Policy = "staff_policy")]
     public async Task<ActionResult<Schedule>> AddScheduleAsync(Schedule info)
     {
         _unitOfWork.BeginTransactionAsync();
@@ -62,6 +64,7 @@ public class ScheduleController : ControllerBase
 
     [Route("AssignSchedule")]
     [HttpPut]
+    [Authorize(Policy = "staff_policy")]
     public async Task<ActionResult<SlotTable>> AssignVet(string EmpID, DateOnly date, int slot, string smd)
     {
         try

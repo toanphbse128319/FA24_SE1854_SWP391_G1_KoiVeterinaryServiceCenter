@@ -46,6 +46,7 @@ public class ServiceController : ControllerBase
     //This will automatically create or update new service depend on the data, if there's ServiceID available,
     //Then this will update, and add if there's none.
     [HttpPut]
+    [Authorize(Policy = "staff_policy")]
     public async Task<ActionResult<Service>> AddOrUpdateService(Service service){
         try{
             string result = await _unitOfWork.ServiceRepository.AddOrUpdateService( service );

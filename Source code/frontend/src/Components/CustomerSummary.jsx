@@ -19,9 +19,32 @@ const CustomerEditDialog = ({ open, onClose, onSave, initialData }) => {
     phone: initialData.phone || '',
     address: initialData.address || ''
   });
-
   const [errors, setErrors] = useState({});
-  const [adddress, setAdddress] = useState(formData.address);
+  const [address, setAdddress] = useState(formData.address);
+
+    const handlePhoneNumberKeyDown = (event) => {
+        if (event.key === 'Enter'){
+            event.preventDefault();
+        } else handlePhoneNumberBlur( event );
+    };
+
+    const handlePhoneNumberBlur = (e) => {
+        let target = e.target.value;
+        console.log( target.length  );
+        if( target.length > 10 )
+            return;
+        setFormData({ ...formData, phone: target });
+    };
+
+    const handleAddressKeyDown = (event) => {
+        if (event.key === 'Enter'){
+            event.preventDefault();
+        } else handleAddressBlur( event );
+    };
+
+    const handleAddressBlur = (e) => {
+        setFormData({ ...formData, address: e.target.value });
+    };
 
   const validateForm = () => {
     const newErrors = {};
@@ -65,7 +88,7 @@ const CustomerEditDialog = ({ open, onClose, onSave, initialData }) => {
             label="Số điện thoại"
             value={formData.phone}
             text='number'
-            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+            onChange={(e) => handlePhoneNumberKeyDown( e )}
             error={!!errors.phone}
             helperText={errors.phone}
             variant="outlined"
@@ -74,10 +97,9 @@ const CustomerEditDialog = ({ open, onClose, onSave, initialData }) => {
             fullWidth
             label="Địa chỉ"
             value={formData.address}
-            onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+            onChange={(e) => handleAddressKeyDown( e )}
             error={!!errors.address}
             helperText={errors.address}
-            multiline
             rows={1}
             variant="outlined"
           />
