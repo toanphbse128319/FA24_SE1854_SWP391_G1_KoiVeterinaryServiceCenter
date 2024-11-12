@@ -31,14 +31,33 @@ public class ScheduleRepository : GenericRepository<Schedule>
     //                                                                    schedule.Note == note);
     //}
 
-    public async Task<Schedule?> CheckValidDateAsync(DateOnly date, string empID, string note)
+    //public async Task<string> ReturnEmpScheduleAvailableAsync(DateOnly date, string note)
+    //{
+    //    List<Schedule> sch = await _context.Schedules.Where(schedule => schedule.Date == date &&                     
+    //                                                                    note.Contains(schedule.Note)).ToListAsync();
+
+    //    SlotTable? st = await new SlotTableRepository(_context).SearchSpecificSlotAsync(note, 1);
+    //}
+  
+
+
+    public async Task<Schedule?> CheckValidDateAsync(DateOnly date, string empID, string note, int slotNo)
     {
-        if (note == "")
-            return await _context.Schedules.FirstOrDefaultAsync(schedule => schedule.Date == date &&
-                                                                            schedule.EmployeeID == empID);
-        if (empID == "E0")
-            return await _context.Schedules.FirstOrDefaultAsync(schedule => schedule.Date == date &&
-                                                                            note.Contains(schedule.Note));
+        if (note == "" || slotNo == 0)
+            return null;
+            if (empID == "E0")
+        {
+            List<Schedule> sch = await _context.Schedules.Where(schedule => schedule.Date == date &&
+                                                                            note.Contains(schedule.Note)).ToListAsync();
+            foreach (Schedule s in sch)
+            {
+                SlotTable? slot = await new SlotTableRepository(_context).SearchSpecificSlotAsync(s.ScheduleID, slotNo);
+                if (slot == null)
+                    return null;
+                if (slot.SlotStatus == true)
+                    return s;
+            }
+        }
         return await _context.Schedules.FirstOrDefaultAsync(schedule => schedule.Date == date &&
                                                                         schedule.EmployeeID == empID &&
                                                                         note.Contains(schedule.Note));

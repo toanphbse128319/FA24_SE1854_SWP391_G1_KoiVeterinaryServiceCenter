@@ -40,7 +40,7 @@ async function FetchEmployee(){
     const response = await FetchAPI({ endpoint: "/employee" });
     if (!response.ok) throw new Error("Failed to fetch data");
     let json = await response.json();
-    return json.filter( emp => emp.EmployeeID != "E0" );
+    return json.filter( emp => emp.EmployeeID != "E0" && emp.RoleID != "R1");
 }
 
 const ManageEmployee = () => {
@@ -60,6 +60,7 @@ const ManageEmployee = () => {
     
   return (
     <div className="rounded-lg border border-gray-300 bg-white px-5 py-6 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+      <h1 className="">Employees List</h1>
       <div className="max-w-full overflow-x-auto">
         <table className="w-full table-auto text-lg">
           <thead>
@@ -69,6 +70,7 @@ const ManageEmployee = () => {
               <th className="min-w-[100px] py-4 px-4 font-semibold">Giới tính</th>
               <th className="py-4 px-4 font-semibold">Ngày sinh</th>
               <th className="py-4 px-4 font-semibold">Địa chỉ</th>
+              <th className="py-4 px-4 font-semibold">Vai trò</th>
               <th className="py-4 px-4 font-semibold text-center">Hành động</th>
             </tr>
           </thead>
@@ -93,6 +95,9 @@ const ManageEmployee = () => {
                 </td>
                 <td className="border-b border-gray-200 py-5 px-4 font-semibold dark:border-gray-600">
                   <p className="text-gray-800 dark:text-gray-200">{employee.Address}</p>
+                </td>
+                <td className="border-b border-gray-200 py-5 px-4 font-semibold dark:border-gray-600">
+                  <p className="text-gray-800 dark:text-gray-200">{employee.RoleID === "R2" ? "Nhân Viên" : employee.RoleID === "R3" ? "Bác Sĩ" : ""}</p>
                 </td>
                 <td className="border-b border-gray-200 py-5 px-4 text-center dark:border-gray-600">
                   {employee.Status === "1" ? (

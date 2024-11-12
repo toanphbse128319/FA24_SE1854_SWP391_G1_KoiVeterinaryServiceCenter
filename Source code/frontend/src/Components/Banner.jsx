@@ -44,6 +44,7 @@ function Banner( { allServices, sdm }) {
 
   return (
     <div
+      id="banner"
       className="relative w-full h-screen bg-cover bg-center"
       style={{ backgroundImage: "url('img/Slice 2.png')" }}
     >
@@ -57,7 +58,7 @@ function Banner( { allServices, sdm }) {
         </p>
         
         {/* Dynamic Buttons */}
-        <div className="flex gap-16">
+        <div  className="flex gap-16">
           {services.map((service, index) => (
             <button
               key={service.ServiceID}
