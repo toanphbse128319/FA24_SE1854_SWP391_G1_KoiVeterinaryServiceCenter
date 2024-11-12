@@ -41,16 +41,22 @@ public class ScheduleRepository : GenericRepository<Schedule>
   
 
 
-    public async Task<Schedule?> CheckValidDateAsync(DateOnly date, string empID, string note)
+    public async Task<Schedule?> CheckValidDateAsync(DateOnly date, string empID, string note, int slotNo)
     {
-        if (note == "")
+        if (note == "" || slotNo == 0)
             return null;
-        if (empID == "E0")
+            if (empID == "E0")
         {
-            List<Schedule> sch = new();
-
-            return await _context.Schedules.FirstOrDefaultAsync(schedule => schedule.Date == date &&
-                                                                            note.Contains(schedule.Note));
+            List<Schedule> sch = await _context.Schedules.Where(schedule => schedule.Date == date &&
+                                                                            note.Contains(schedule.Note)).ToListAsync();
+            foreach (Schedule s in sch)
+            {
+                SlotTable? slot = await new SlotTableRepository(_context).SearchSpecificSlotAsync(s.ScheduleID, slotNo);
+                if (slot == null)
+                    return null;
+                if (slot.SlotStatus == true)
+                    return s;
+            }
         }
         return await _context.Schedules.FirstOrDefaultAsync(schedule => schedule.Date == date &&
                                                                         schedule.EmployeeID == empID &&
