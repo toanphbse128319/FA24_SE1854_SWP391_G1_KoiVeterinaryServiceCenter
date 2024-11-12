@@ -56,12 +56,12 @@ public class BookingRepository : GenericRepository<Booking>
     public async Task<string> SetScheduleAsync(DateTime bookingDate, string employeeID, string note){
         ScheduleRepository schrepo = new ScheduleRepository(_context);
         DateOnly date = DateOnly.Parse(bookingDate.ToString("yyyy-MM-dd"));
-        Schedule? schedule = await schrepo.CheckValidDateAsync(date, employeeID, note);
+        SlotTableRepository slotManager = new SlotTableRepository(_context);
+        int slotNo = slotManager.SlotByTime(bookingDate.Hour);
+        Schedule? schedule = await schrepo.CheckValidDateAsync(date, employeeID, note, slotNo);
         if ( schedule == null )
             return "Cannot get the schedule";
-        SlotTableRepository slotManager = new SlotTableRepository(_context);
         SlotTable? slot = new SlotTable();
-        int slotNo = slotManager.SlotByTime(bookingDate.Hour);
         if( slotNo == 0 )
             return "Outside working hour";
         slot = await slotManager.SearchSpecificSlotAsync(schedule.ScheduleID, slotNo);

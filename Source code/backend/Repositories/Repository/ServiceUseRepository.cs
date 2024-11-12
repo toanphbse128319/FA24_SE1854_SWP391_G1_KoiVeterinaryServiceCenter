@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Objects;
 using Helper;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Repositories.Repository;
 
@@ -68,20 +69,35 @@ public class ServiceUseRepository : GenericRepository<ServiceUse>
         BookingDetail bd = await bdRepo.GetByIdAsync( profiles.BookingDetail.BookingDetailID );
         BookingRepository bookRepo = new(_context);
         Booking bookingOrder = await bookRepo.GetByIdAsync( profiles.BookingDetail.BookingID );
+
         if( bookingOrder == null )
             return "Invalid: Cannot find the booking order";
         if( bd == null )
             return "Invalid: Cannot determined the booking detail info";
-        Service service = await serviceRepo.GetByIdAsync( bd.ServiceID );
+        Service service = await serviceRepo.GetByIdAsync(profiles.BookingDetail.ServiceID );
         if( service == null )
             return "Invalid: Cannot determined the service";
         string type = await sdmRepo.GetServicedType( service.ServiceDeliveryMethodID );
-        bdRepo.Copy(profiles.BookingDetail, bd);
+
         bookingOrder.Status += " " + Configuration.GetConfiguration()["Other:PreOrderedWorkConfirmation"];
         if( await bookRepo.UpdateAsync( bookingOrder ) < 1 )
             return "Invalid: Failed to update booking status";
-        if( await bdRepo.UpdateAsync( bd ) < 1 ) 
+
+        if (string.IsNullOrEmpty(profiles.BookingDetail.ExaminationResult) == false)
+            bd.ExaminationResult = profiles.BookingDetail.ExaminationResult;
+        if (string.IsNullOrEmpty(profiles.BookingDetail.VetConsult) == false)
+            bd.VetConsult = profiles.BookingDetail.VetConsult;
+        if (string.IsNullOrEmpty(profiles.BookingDetail.Formulary) == false)
+            bd.Formulary = profiles.BookingDetail.Formulary;
+        if (profiles.BookingDetail.IsIncidental != bd.IsIncidental)
+            bd.IsIncidental = profiles.BookingDetail.IsIncidental;
+        if (string.IsNullOrEmpty(profiles.BookingDetail.NoteResult) == false)
+            bd.NoteResult = profiles.BookingDetail.NoteResult;
+        Console.WriteLine(bd.ExaminationResult + bd.VetConsult +bd.Formulary +bd.NoteResult);
+
+        if ( await bdRepo.UpdateAsync( bd ) < 1 ) 
             return "Invalid: Failed to update booking detail info";
+
         if( type == "fish" ){
             foreach( var profile in profiles.AnimalProfiles ){
                 profile.AnimalProfileID = await animalRepo.AddAnimalProfileAsync( profile );
