@@ -584,9 +584,10 @@ const BookingList = ({
                         Dịch vụ phát sinh
                       </button>
 
-                      {/* ServiceSelection sẽ chỉ render khi showServiceSelection là true */}
+                  
                       {showServiceSelection && (
                         <ServiceSelection
+                        booking={booking}
                           bookingId={booking.BookingID}
                           services={services}
                           isOpen={showServiceSelection}
@@ -596,6 +597,10 @@ const BookingList = ({
                             detail.BookingID === booking.BookingID && 
                             detail.IsIncidental === false
                           )}
+                          IncidentalFish = {booking.IncidentalFish}
+                          IncidentalPool ={booking.IncidentalPool}
+                          bookingDetail={bookingDetail.find(detail => detail.BookingID === booking.BookingID)}
+
                         />
                       )}
 

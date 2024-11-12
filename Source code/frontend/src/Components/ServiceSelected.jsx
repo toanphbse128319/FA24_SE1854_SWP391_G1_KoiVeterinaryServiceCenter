@@ -517,13 +517,22 @@ const validateForm = () => {
                     <Typography variant="h6" className="mb-4 font-bold">
                       Chi tiết dịch vụ: {service.Name}
                     </Typography>
-  
+                    <TextField
+                        fullWidth
+                        label="Tình trạng trước tra"
+                        variant="outlined"
+                        className="mb-4"
+                        value={formData.NoteResult}
+                        onChange={handleFormChange('NoteResult')}
+                        multiline
+                        rows={4}
+                      />
                     {/* Animal Service Fields */}
                     {(service.ServiceDeliveryMethodID === 'SDM1' || service.ServiceDeliveryMethodID === 'SDM4') && (
                       <div className="space-y-4">
                         <TextField
                           fullWidth
-                          label="Tình trạng động vật"
+                          label="Tình trạng cá sau khi khám"
                           variant="outlined"
                           value={formData.ExaminationResult}
                           onChange={handleFormChange('ExaminationResult')}
@@ -558,7 +567,7 @@ const validateForm = () => {
                       <div className="space-y-4">
                         <TextField
                           fullWidth
-                          label="Tình trạng hồ"
+                          label="Tình trạng hồ sau khi khám"
                           variant="outlined"
                           value={formData.ExaminationResult}
                           onChange={handleFormChange('ExaminationResult')}

@@ -77,9 +77,10 @@ public class ServiceUse : ControllerBase
     public async Task<ActionResult<ExaminationResult>> AddExaminationResult( ExaminationResult exam )
     {
         _unitOfWork.BeginTransactionAsync();
+        string result = "";
         try
         {
-            string result = await _unitOfWork.ServiceUseRepository.LogIncidental(exam);
+            result = await _unitOfWork.ServiceUseRepository.LogIncidental(exam);
             if ( result.ToLower().Contains("invalid") ){
                 _unitOfWork.RollbackTransactionAsync();
                 return BadRequest( result );

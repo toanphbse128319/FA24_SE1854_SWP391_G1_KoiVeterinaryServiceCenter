@@ -165,6 +165,9 @@ public class ServiceUseRepository : GenericRepository<ServiceUse>
             return "Invalid: Booking ID is inconsistent!!";
 
         List<string> temp = await GetProfiles(exam.BookingDetails[0].BookingID);
+        if (temp == null)
+            return exam.BookingDetails[0].BookingID;
+
         List<string> animalProfiles = FilterAnimalProfile( temp );
         List<string> poolProfiles = FilterPoolProfile( temp );
 
@@ -184,7 +187,10 @@ public class ServiceUseRepository : GenericRepository<ServiceUse>
             }
         }
 
-        if( exam.PoolProfiles != null && exam.PoolProfiles.Count() > 0 ){
+
+    
+
+        if ( exam.PoolProfiles != null && exam.PoolProfiles.Count() > 0 ){
             PoolProfileRepository poolRepo = new(_context);
             foreach( PoolProfile profile in exam.PoolProfiles ){
                 if( poolRepo.IsDuplicate( profile ) ) 
@@ -200,6 +206,7 @@ public class ServiceUseRepository : GenericRepository<ServiceUse>
             bd.BookingDetailID = await bdRepo.AddBookingDetailAsync( bd );
             if( bd.BookingDetailID.ToLower().Contains( "invalid" ) )
                 return bd.BookingDetailID;
+            Console.WriteLine( bd.BookingDetailID );
             temp.Add( bd.BookingDetailID );
         }
 
@@ -217,6 +224,11 @@ public class ServiceUseRepository : GenericRepository<ServiceUse>
                 await AddRangeServiceUse( bd.BookingDetailID, animalProfiles );
             }
         }
+        BookingRepository bookingRepository = new(_context);
+        Booking booking = bookingRepository.GetById(exam.BookingDetails[0].BookingID);
+        booking.IncidentalFish = booking.IncidentalFish + exam.IncidentalFish;
+        booking.IncidentalPool = booking.IncidentalPool + exam.IncidentalPool;
+        bookingRepository.Update(booking);
         return "Success";
     }
 

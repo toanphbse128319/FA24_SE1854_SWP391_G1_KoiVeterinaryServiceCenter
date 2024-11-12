@@ -1,8 +1,8 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import {
   Dialog,
-  DialogContent,
+  DialogContent, 
   DialogActions,
   Typography,
   Button
@@ -13,36 +13,30 @@ const ConfirmDialog = ({ message, onClose, onConfirm }) => {
     <Dialog 
       open={true}
       onClose={onClose}
-      maxWidth="sm"
+      maxWidth="xs"
       fullWidth
     >
-      <DialogContent className="py-6">
-        <Typography className="text-center text-lg">
-          {message}
-        </Typography>
+      <DialogContent>
+        <Typography>{message}</Typography>
       </DialogContent>
-      <DialogActions className="bg-gray-50 p-4">
-        <Button
+      
+      <DialogActions>
+        <Button 
           onClick={onClose}
           variant="outlined"
-          sx={{
-            fontSize:'15px',
-           
-          }}
         >
           Hủy
         </Button>
+        
         <Button
           onClick={() => {
             if (onConfirm) {
               onConfirm();
             }
-            onClose();
           }}
-          variant="contained" 
-         
+          variant="contained"
           sx={{
-            fontSize:'15px',
+            fontSize: '15px',
             background: 'linear-gradient(90deg, #64B0E0 25%, rgba(35, 200, 254, 0.75) 75%)',
             '&:hover': {
               background: 'linear-gradient(90deg, #5299c7 25%, rgba(28, 180, 229, 0.75) 75%)'
@@ -56,39 +50,46 @@ const ConfirmDialog = ({ message, onClose, onConfirm }) => {
   );
 };
 
-// Khởi tạo function để show confirm dialog
 const showConfirm = (message, onConfirm = null) => {
   return new Promise((resolve) => {
-    const containerElement = document.createElement('div');
-    document.body.appendChild(containerElement);
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    const root = createRoot(container);
+
+    const cleanup = () => {
+      try {
+        root.unmount();
+        if (document.body.contains(container)) {
+          document.body.removeChild(container);
+        }
+      } catch (error) {
+        console.error('Cleanup error:', error);
+      }
+    };
 
     const handleClose = () => {
-      ReactDOM.unmountComponentAtNode(containerElement);
-      document.body.removeChild(containerElement);
+      cleanup();
       resolve(false);
     };
 
     const handleConfirm = () => {
+      cleanup();
       if (onConfirm) {
         onConfirm();
       }
-      ReactDOM.unmountComponentAtNode(containerElement);
-      document.body.removeChild(containerElement);
       resolve(true);
     };
 
-    ReactDOM.render(
+    root.render(
       <ConfirmDialog
         message={message}
         onClose={handleClose}
         onConfirm={handleConfirm}
-      />,
-      containerElement
+      />
     );
   });
 };
 
-// Gắn function vào window object
 window.showConfirm = showConfirm;
 
 export default ConfirmDialog;
