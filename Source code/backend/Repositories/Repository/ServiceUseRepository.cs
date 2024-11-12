@@ -189,7 +189,11 @@ public class ServiceUseRepository : GenericRepository<ServiceUse>
 
         BookingDetailRepository bdRepo = new(_context);
         List<BookingDetail> bds = await bdRepo.GetByBookingID( exam.BookingDetails[0].BookingID );
-        bds.AddRange(exam.BookingDetails);
+        foreach( BookingDetail bd in exam.BookingDetails ){
+            if( await bdRepo.isDuplicateServiceOfBooking( bd.BookingID, bd.ServiceID ) )
+                continue;
+            bds.Add( bd );
+        }
 
         if( exam.AnimalProfiles != null && exam.AnimalProfiles.Count() > 0 ){
             AnimalProfileRepository animalRepo = new(_context);

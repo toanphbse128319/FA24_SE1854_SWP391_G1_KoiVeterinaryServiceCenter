@@ -16,21 +16,27 @@ import {
 
 const CustomerEditDialog = ({ open, onClose, onSave, initialData }) => {
   const [formData, setFormData] = useState({
-    phone: initialData.phone || '',
-    address: initialData.address || ''
+    phone: initialData.phone,
+    address: initialData.address
   });
+    
+    function onChangeAddress( address ){
+        setFormData({ ...formData, address: address });
+    }
+
+    const [changeComplete, setChangeComplete] = useState( false );
   const [errors, setErrors] = useState({});
-  const [address, setAdddress] = useState(formData.address);
+    console.log( formData );
 
     const handlePhoneNumberKeyDown = (event) => {
         if (event.key === 'Enter'){
             event.preventDefault();
+            event.target.blur();
         } else handlePhoneNumberBlur( event );
     };
 
     const handlePhoneNumberBlur = (e) => {
         let target = e.target.value;
-        console.log( target.length  );
         if( target.length > 10 )
             return;
         setFormData({ ...formData, phone: target });
@@ -38,12 +44,13 @@ const CustomerEditDialog = ({ open, onClose, onSave, initialData }) => {
 
     const handleAddressKeyDown = (event) => {
         if (event.key === 'Enter'){
-            event.preventDefault();
-        } else handleAddressBlur( event );
+            setChangeComplete( !changeComplete );
+            event.target.blur();
+        } else setFormData({ ...formData, address: event.target.value }) ;
     };
 
-    const handleAddressBlur = (e) => {
-        setFormData({ ...formData, address: e.target.value });
+    const handleAddressBlur = () => {
+        setChangeComplete( !changeComplete );
     };
 
   const validateForm = () => {
@@ -88,7 +95,8 @@ const CustomerEditDialog = ({ open, onClose, onSave, initialData }) => {
             label="Số điện thoại"
             value={formData.phone}
             text='number'
-            onChange={(e) => handlePhoneNumberKeyDown( e )}
+            onKeyDown={(e) => handlePhoneNumberKeyDown( e )}
+              onChange={ (e) => handlePhoneNumberKeyDown( e )}
             error={!!errors.phone}
             helperText={errors.phone}
             variant="outlined"
@@ -97,7 +105,9 @@ const CustomerEditDialog = ({ open, onClose, onSave, initialData }) => {
             fullWidth
             label="Địa chỉ"
             value={formData.address}
+            onKeyDown={(e) => handleAddressKeyDown( e )}
             onChange={(e) => handleAddressKeyDown( e )}
+            onBlur={handleAddressBlur}
             error={!!errors.address}
             helperText={errors.address}
             rows={1}
@@ -105,10 +115,13 @@ const CustomerEditDialog = ({ open, onClose, onSave, initialData }) => {
           />
           <div style={{
             width:'100%',
-            height:'35vh',
+            height:'40vh',
           }}>
           <Map
-          address={formData.address}
+              address={formData.address}
+              onChangeAddress={onChangeAddress}
+              changed={changeComplete}
+
           />
           </div>
         
@@ -223,7 +236,7 @@ const CustomerSummary = ({ name, phone, address, onUpdateInfo }) => {
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
         onSave={onUpdateInfo}
-        initialData={{ phone, address }}
+        initialData={{ phone: phone, address: address }}
       />
     </Box>
   );

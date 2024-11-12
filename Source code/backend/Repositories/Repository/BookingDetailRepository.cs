@@ -51,6 +51,12 @@ namespace Repositories.Repository
             await base.CreateAsync(bd);
             return bd.BookingDetailID;
         }
+
+        public async Task<bool> isDuplicateServiceOfBooking( string bookingID, string serviceID ){
+            if( await _context.BookingDetails.FirstOrDefaultAsync( bd => bd.BookingID == bookingID && bd.ServiceID == serviceID) == null )
+                return false;
+            return true;
+        }
         
     }
 }
