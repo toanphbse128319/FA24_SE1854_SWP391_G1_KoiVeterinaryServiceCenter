@@ -24,6 +24,8 @@ import PageTransition from "./Components/PageTransition.tsx";
 import PaymentNotice from "./Components/PaymentNotice.jsx";
 import ManageAccount from "./Components/Manager/ManageAccount.jsx";
 import Map from "./Components/MapPicker.jsx";
+import OnlineService from "./pages/OnlineService.jsx";
+import SchduleCustomer from "./Components/ScheduleCustomer.jsx"
 
 
 import {
@@ -79,7 +81,8 @@ createRoot(document.getElementById("root")).render(
         <Route path="/bookinglist" element={<BookingList />} />
         <Route path="/ManageLanding" element={<ManageLanding />} />
         <Route path="/Manager" element={<Manager />} />
-       
+        <Route path="/ScheduleCustomer" element={<SchduleCustomer />} />
+        <Route path="/OnlineService" element={<OnlineService />} />
 
       </Routes>
     </BrowserRouter>

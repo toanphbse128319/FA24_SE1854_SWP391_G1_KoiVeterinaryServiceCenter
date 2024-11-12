@@ -2,7 +2,7 @@ import React from "react";
 
 function Footer() {
   return (
-    <div className="flex flex-col lg:flex-row items-center justify-between gap-5 lg:gap-10 relative bg-white w-full px-4 py-6 lg:py-10">
+    <div id="footer" className="flex flex-col lg:flex-row items-center justify-between gap-5 lg:gap-10 relative bg-white w-full px-4 py-6 lg:py-10">
       {/* Logo and hotline section */}
       <div className="flex flex-col items-center w-full max-w-md lg:max-w-lg">
         <img

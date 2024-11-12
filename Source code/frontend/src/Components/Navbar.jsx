@@ -22,25 +22,26 @@ import {
 } from "@heroicons/react/20/solid";
 import LogOut from "../Helper/Utilities";
 
-function filterServices( {allServices, sdm} ){
-    let services = [];
-    let atHome = sdm.filter(method => method.Name == "Tại nhà");
-    let atHomeID = null;
-    if( atHome != null && atHome.length > 0 )
-        atHomeID = atHome[0].ServiceDeliveryMethodID;
-    allServices.forEach( temp => {
-        // ... ở đây được coi là shallow copy, là kiểu chỉ đưa giá trị nhưng không tham chiếu
-        let service = { ... temp };
-        if( atHomeID != null && service.ServiceDeliveryMethodID == atHomeID )
-            service.Name = service.Name + " tại nhà";
-        else if( atHomeID != null ) service.Name = service.Name + " tại trung tâm";
-        services.push( service );
-        //service.Name = service.Name + " trực tuyến";
-    })
-    return services;
+function filterServices({ allServices, sdm }) {
+  let services = [];
+  let atHome = sdm.filter((method) => method.Name == "Tại nhà");
+  let atHomeID = null;
+  if (atHome != null && atHome.length > 0)
+    atHomeID = atHome[0].ServiceDeliveryMethodID;
+  allServices.forEach((temp) => {
+    // ... ở đây được coi là shallow copy, là kiểu chỉ đưa giá trị nhưng không tham chiếu
+    let service = { ...temp };
+    if (atHomeID != null && service.ServiceDeliveryMethodID == atHomeID)
+      service.Name = service.Name + " tại nhà";
+    else if (atHomeID != null) service.Name = service.Name + " tại trung tâm";
+    services.push(service);
+    //service.Name = service.Name + " trực tuyến";
+  });
+
+  return services;
 }
 
-export default function Example( {allServices, sdm} ) {
+export default function Example({ allServices, sdm }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   let navigate = useNavigate();
   const handleGoLogin = () => {
@@ -50,25 +51,34 @@ export default function Example( {allServices, sdm} ) {
     navigate("/AboutUs");
   };
 
-    const services = filterServices({allServices: allServices, sdm: sdm});
+  const services = filterServices({ allServices: allServices, sdm: sdm });
 
-    const handleGoBooking = ( service, sdm ) => {
-        navigate("/Booking", { state: { service, sdm } });
-    }
+  const handleGoBooking = (service, sdm) => {
+    if (sdm.ServiceDeliveryMethodID === "SDM3") {
+      navigate("/OnlineService", { state: { service, sdm } });
+      console.log(service);
+    } else navigate("/AboutUs");
+  };
 
   const [showMenu, setShowMenu] = useState(false);
-  const [token, setToken] =  useState(window.sessionStorage.getItem("token") || null);
+  const [token, setToken] = useState(
+    window.sessionStorage.getItem("token") || null
+  );
   return (
-    <header className="bg-white fixed top-0 w-full z-50 ">
+    <header id="navbar" className="bg-white fixed top-0 w-full z-50 ">
       <nav
         aria-label="Global"
         className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
       >
         <div className="flex lg:flex-1">
-          <a href="/" className="-m-1.5 p-1.5">
-            <span className="sr-only">Your Company</span>
+          <Link
+            to="banner"
+            smooth={true}
+            duration={500}
+            className="-m-1.5 p-1.5"
+          >
             <img alt="" src="img/logo-c-s-2.png" className="h-14 w-auto" />
-          </a>
+          </Link>
         </div>
         <div className="flex lg:hidden">
           <button
@@ -89,15 +99,26 @@ export default function Example( {allServices, sdm} ) {
                 className="h-5 w-5 flex-none text-gray-400"
               />
             </PopoverButton>
-            <PopoverPanel anchor="bottom" className="absolute left-0 z-10 mt-3 w-60 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+            <PopoverPanel
+              anchor="bottom"
+              className="absolute left-0 z-50 mt-3 w-60 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5"
+            >
               <div className="py-1">
-                {services.map((service) => (
+                {sdm.map((method) => (
                   <a
-                    key={service.ServiceID}
-                    onClick={() => handleGoBooking( service, sdm.filter(method => method.ServiceDeliveryMethodID == service.ServiceDeliveryMethodID )[0] )}
+                    key={method.ServiceDeliveryMethodID}
+                    onClick={() =>
+                      handleGoBooking(
+                        {
+                          ServiceDeliveryMethodID:
+                            method.ServiceDeliveryMethodID,
+                        },
+                        method
+                      )
+                    }
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
-                    {service.Name}
+                    {method.Name}
                   </a>
                 ))}
               </div>
@@ -112,9 +133,14 @@ export default function Example( {allServices, sdm} ) {
           >
             News
           </Link>
-          <a href="/" className="text-sm font-semibold leading-6 text-gray-900">
+          <Link
+            to="footer"
+            smooth={true}
+            duration={500}
+            className="text-sm font-semibold leading-6 text-gray-900 cursor-pointer"
+          >
             Contact
-          </a>
+          </Link>
           <button
             onClick={handleGoAboutUs}
             className="text-sm font-semibold leading-6 text-gray-900"
@@ -124,14 +150,37 @@ export default function Example( {allServices, sdm} ) {
         </PopoverGroup>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           {token ? (
-            <div className='flex items-center gap-2 cursor-pointer group relative'>
-              <img className='w-8 rounded-full' src="img/profile_pic.png" alt="" />
-              <img className='w-2.5' src="img/dropdown_icon.svg" alt="" />
-              <div className='absolute top-0 right-0 pt-14 text-base font-medium text-gray-600 z-20 hidden group-hover:block'>
-                <div className='min-w-48 bg-stone-100 round flex flex-col gap-4 p-4'>
-                  <p onClick={()=>navigate('/MyProfile')} className='hover:text-black '>My Profile</p>
-                  <p onClick={()=>navigate('/bookinglist')} className='hover:text-black '>My Appointment</p>
-                  <p onClick={()=> { window.sessionStorage.clear(); setToken( null ); console.log("clicked") }} className='hover:text-black '>Logout</p>
+            <div className="flex items-center gap-2 cursor-pointer group relative">
+              <img
+                className="w-8 rounded-full"
+                src="img/profile_pic.png"
+                alt=""
+              />
+              <img className="w-2.5" src="img/dropdown_icon.svg" alt="" />
+              <div className="absolute top-0 right-0 pt-14 text-base font-medium text-gray-600 z-20 hidden group-hover:block">
+                <div className="min-w-48 bg-stone-100 round flex flex-col gap-4 p-4">
+                  <p
+                    onClick={() => navigate("/MyProfile")}
+                    className="hover:text-black "
+                  >
+                    My Profile
+                  </p>
+                  <p
+                    onClick={() => navigate("/bookinglist")}
+                    className="hover:text-black "
+                  >
+                    My Appointment
+                  </p>
+                  <p
+                    onClick={() => {
+                      window.sessionStorage.clear();
+                      setToken(null);
+                      console.log("clicked");
+                    }}
+                    className="hover:text-black "
+                  >
+                    Logout
+                  </p>
                 </div>
               </div>
             </div>
@@ -139,7 +188,6 @@ export default function Example( {allServices, sdm} ) {
             <button
               onClick={handleGoLogin}
               className="bg-blue-300 text-gray-800 px-8 py-3 rounded-full font-semibold hidden md:block"
-              
             >
               Log in <span aria-hidden="true">&rarr;</span>
             </button>
