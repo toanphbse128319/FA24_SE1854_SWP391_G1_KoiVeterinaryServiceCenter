@@ -27,7 +27,9 @@ export async function FetchAPI({ endpoint, method = 'GET', body = '' }) {
         }).catch((error) => console.error(error));
     }
 
-    if( result.status == 403 || result.status == 401 ){
+    if( result.status == 401 ){
+        if( await result.text() == "Invalid username or password!" )
+            return result;
         alert("Session expired");
         window.location.href = window.location.origin;
     }
