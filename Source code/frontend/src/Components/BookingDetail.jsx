@@ -33,53 +33,32 @@ import {
 
 import ProfileListModal from './PorfileList';
 const numberUtils = {
-  // Format giá trị số
   formatNumberValue: (value) => {
-    if (value === '' || value === null || value === undefined) return '';
+    if (!value) return '';
     return String(parseFloat(value) || 0);
   },
 
-  // Xử lý keydown cho input số
   handleNumberKeyDown: (e) => {
-    // Danh sách các phím được phép
     const allowedKeys = [
       '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
       'Backspace', 'Delete', 'Tab', 'Enter', '.', 'a',
       'ArrowLeft', 'ArrowRight'
     ];
 
-    // Chặn các ký tự không được phép
     if (!allowedKeys.includes(e.key)) {
       e.preventDefault();
       return;
     }
 
-    const value = e.target.value;
-
-    // Xử lý dấu thập phân
+    // Xử lý nhập dấu thập phân
     if (e.key === '.') {
-      // Nếu đã có dấu chấm, không cho nhập thêm
-      if (value.includes('.')) {
+      const value = e.target.value;
+      if (value.includes('.') || !value.length || !/\d/.test(value[value.length - 1])) {
         e.preventDefault();
-        return;
-      }
-
-      // Nếu là ký tự đầu tiên, không cho nhập
-      if (value.length === 0) {
-        e.preventDefault();
-        return;
-      }
-
-      // Kiểm tra xem ký tự cuối cùng có phải là số không
-      const lastChar = value[value.length - 1];
-      if (!/\d/.test(lastChar)) {
-        e.preventDefault();
-        return;
       }
     }
   },
 
-  // Tạo props cho input số
   getNumberInputProps: (unit = '') => ({
     type: "text",
     onKeyDown: numberUtils.handleNumberKeyDown,
@@ -136,8 +115,8 @@ const FishPoolServiceSelection = ({
   bookingDetail,
 }) => {
 
-console.log('booking'+booking)
-console.log('bookingDetail'+bookingDetail.BookingDetailID)
+  console.log('booking' + booking)
+  console.log('bookingDetail' + bookingDetail.BookingDetailID)
 
   // Tab and Step Management
   const [activeTab, setActiveTab] = useState(0);
@@ -154,7 +133,7 @@ console.log('bookingDetail'+bookingDetail.BookingDetailID)
   const [poolProfiles, setPoolProfiles] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  
+
   const [currentFishProfile, setCurrentFishProfile] = useState(INITIAL_STATES.FISH_PROFILE);
   const [currentPoolProfile, setCurrentPoolProfile] = useState(INITIAL_STATES.POOL_PROFILE);
   const [incidental, setIncidental] = useState(true);
@@ -191,15 +170,15 @@ console.log('bookingDetail'+bookingDetail.BookingDetailID)
   }, [cartItems]);
 
   useEffect(() => {
-    if(additionalFishCount>0||additionalPoolCount>0){
-       setHasAnyAdditionalItems(true);
-    }
-    if(cartItems.length>0){
+    if (additionalFishCount > 0 || additionalPoolCount > 0) {
       setHasAnyAdditionalItems(true);
-   }
-   
-   
-  }, [additionalFishCount, additionalPoolCount,cartItems]);
+    }
+    if (cartItems.length > 0) {
+      setHasAnyAdditionalItems(true);
+    }
+
+
+  }, [additionalFishCount, additionalPoolCount, cartItems]);
 
   useEffect(() => {
     const filtered = services.filter(service => {
@@ -210,7 +189,7 @@ console.log('bookingDetail'+bookingDetail.BookingDetailID)
       if (isInCart) {
         return false;
       }
-  
+
       // Then check if service was previously selected
       const isAlreadySelected = servicesSelected?.some(
         selectedService => selectedService.ServiceID === service.ServiceID
@@ -218,14 +197,14 @@ console.log('bookingDetail'+bookingDetail.BookingDetailID)
       if (isAlreadySelected) {
         return false;
       }
-  
+
       // Skip services with ServiceDeliveryMethodID === 'SDM3'
       if (service.ServiceDeliveryMethodID === 'SDM3') {
         return false;
       }
-  
+
       const matchesSearch = service.Name.toLowerCase().includes(searchTerm.toLowerCase());
-  
+
       // Handle delivery method filtering
       switch (booking.ServiceDeliveryMethodID) {
         case 'SDM1':
@@ -239,7 +218,7 @@ console.log('bookingDetail'+bookingDetail.BookingDetailID)
             // If no additional pools, only show SDM1
             return service.ServiceDeliveryMethodID === 'SDM1' && matchesSearch;
           }
-  
+
         case 'SDM2':
           // If preset is SDM2
           if (totalFishCount > 0) {
@@ -251,11 +230,11 @@ console.log('bookingDetail'+bookingDetail.BookingDetailID)
             // If no additional fish, only show SDM2
             return service.ServiceDeliveryMethodID === 'SDM2' && matchesSearch;
           }
-  
+
         case 'SDM4':
           // If preset is SDM4, only show SDM4
           return service.ServiceDeliveryMethodID === 'SDM4' && matchesSearch;
-  
+
         default:
           // Default handling (if no deliveryMethod)
           if (totalPoolCount === 0) {
@@ -282,7 +261,7 @@ console.log('bookingDetail'+bookingDetail.BookingDetailID)
 
   const validateForm = () => {
     const errors = {};
-    
+
     // Required field validation
     if (!formData.NoteResult.trim()) {
       errors.NoteResult = 'Vui lòng nhập kết quả khám';
@@ -301,94 +280,94 @@ console.log('bookingDetail'+bookingDetail.BookingDetailID)
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
-  
 
-// Xử lý dữ liệu trước khi gửi API
-const processData = () => {
-  const processField = (value, isNumeric = false) => {
-    if (!value || value === 'Chưa có dữ liệu') return isNumeric ? 0.0 : 'N/A';
-    return isNumeric ? Number(value) : String(value);
-  };
 
-  const processedFishProfiles = fishProfiles.map(profile => ({
-    AnimalProfileID: profile.AnimalProfileID || "",
-    Name: processField(profile.Name) ||`cá ${booking.NumberOfFish + index + 1}`,
-    TypeID: profile.TypeID || "AT1", 
-    Age: processField(profile.Age, true),
-    Color: processField(profile.Color),
-    Description: processField(profile.Description),
-    Sex: profile.Sex ?? true,
-    Picture: processField(profile.Picture)
-  }));
+  // Xử lý dữ liệu trước khi gửi API
+  const processData = () => {
+    const processField = (value, isNumeric = false) => {
+      if (!value || value === 'Chưa có dữ liệu') return isNumeric ? 0.0 : 'N/A';
+      return isNumeric ? Number(value) : String(value);
+    };
 
-  const processedPoolProfiles = poolProfiles.map(profile => ({
-    PoolProfileID: profile.PoolProfileID || "",
-    Name: processField(profile.Name),
-    Note: processField(profile.Note),
-    Width: processField(profile.Width, true),
-    Height: processField(profile.Height, true),
-    Depth: processField(profile.Depth, true),
-    Description: processField(profile.Description),
-    Picture: processField(profile.Picture)
-  }));
-
-  
-  let bookingDetails = [];
-
-  if (cartItems.length > 0) {
-    bookingDetails = cartItems.map(item => ({
-      BookingDetailID: "", 
-      BookingID: bookingId,
-      ServiceID: item.ServiceID,
-      IsIncidental: true,
-      NoteResult: item.NoteResult || "string",
-      ExaminationResult: item.ExaminationResult || "string",
-      VetConsult: item.VetConsult || "string",
-      Formulary: item.Formulary || "string"
+    const processedFishProfiles = fishProfiles.map(profile => ({
+      AnimalProfileID: profile.AnimalProfileID || "",
+      Name: processField(profile.Name) || `cá ${booking.NumberOfFish + index + 1}`,
+      TypeID: profile.TypeID || "AT1",
+      Age: processField(profile.Age, true),
+      Color: processField(profile.Color),
+      Description: processField(profile.Description),
+      Sex: profile.Sex ?? true,
+      Picture: processField(profile.Picture)
     }));
-  } else {
-    bookingDetails = [{
-      BookingDetailID: '',
-      BookingID: bookingDetail.BookingID,
-      ServiceID: bookingDetail.ServiceID,
-      IsIncidental: true,
-      NoteResult: bookingDetail.NoteResult,
-      ExaminationResult: bookingDetail.ExaminationResult,
-      VetConsult: bookingDetail.VetConsult,
-      Formulary: bookingDetail.Formulary
-    }];
-  }
 
-  return {
-    IncidentalFish: Number(additionalFishCount),
-    IncidentalPool: Number(additionalPoolCount),
-    BookingDetails: bookingDetails,
-    AnimalProfiles: processedFishProfiles,
-    PoolProfiles: processedPoolProfiles
-    
+    const processedPoolProfiles = poolProfiles.map(profile => ({
+      PoolProfileID: profile.PoolProfileID || "",
+      Name: processField(profile.Name),
+      Note: processField(profile.Note),
+      Width: processField(profile.Width, true),
+      Height: processField(profile.Height, true),
+      Depth: processField(profile.Depth, true),
+      Description: processField(profile.Description),
+      Picture: processField(profile.Picture)
+    }));
+
+
+    let bookingDetails = [];
+
+    if (cartItems.length > 0) {
+      bookingDetails = cartItems.map(item => ({
+        BookingDetailID: "",
+        BookingID: bookingId,
+        ServiceID: item.ServiceID,
+        IsIncidental: true,
+        NoteResult: item.NoteResult || "string",
+        ExaminationResult: item.ExaminationResult || "string",
+        VetConsult: item.VetConsult || "string",
+        Formulary: item.Formulary || "string"
+      }));
+    } else {
+      bookingDetails = [{
+        BookingDetailID: '',
+        BookingID: bookingDetail.BookingID,
+        ServiceID: bookingDetail.ServiceID,
+        IsIncidental: true,
+        NoteResult: bookingDetail.NoteResult,
+        ExaminationResult: bookingDetail.ExaminationResult,
+        VetConsult: bookingDetail.VetConsult,
+        Formulary: bookingDetail.Formulary
+      }];
+    }
+
+    return {
+      IncidentalFish: Number(additionalFishCount),
+      IncidentalPool: Number(additionalPoolCount),
+      BookingDetails: bookingDetails,
+      AnimalProfiles: processedFishProfiles,
+      PoolProfiles: processedPoolProfiles
+
+    };
   };
-};
 
 
 
 
-const handleSubmitAPI = async () => {
-  try {
-    console.log(processData())
-    const response = await fetch('http://localhost:5145/api/ServiceUse/addExaminationResult', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(processData())
-    });
+  const handleSubmitAPI = async () => {
+    try {
+      console.log(processData())
+      const response = await fetch('http://localhost:5145/api/ServiceUse/addExaminationResult', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(processData())
+      });
 
-    if (!response.ok) throw new Error('Failed to submit data');
-    
-    window.showToast("Kết quả đã ghi nhận thành công");
-  } catch (error) {
-    console.error('Error submitting data:', error);
-    window.showToast("Có lỗi xảy ra khi gửi dữ liệu");
-  }
-};
+      if (!response.ok) throw new Error('Failed to submit data');
+
+      window.showToast("Kết quả đã ghi nhận thành công");
+    } catch (error) {
+      console.error('Error submitting data:', error);
+      window.showToast("Có lỗi xảy ra khi gửi dữ liệu");
+    }
+  };
   const handleInitialCheck = () => {
     window.showConfirm("Xác nhận số lượng cá phát sinh là " + additionalFishCount + " con và số lượng hồ phát sinh là " + additionalPoolCount + " hồ", () => {
       setHasConfirmedCount(true);
@@ -397,7 +376,7 @@ const handleSubmitAPI = async () => {
 
   };
 
-  
+
   // Profile Management Functions
   const isProfileLimitReached = () => {
     if (additionalFishCount === 0 && additionalPoolCount === 0) {
@@ -416,26 +395,26 @@ const handleSubmitAPI = async () => {
     const isPoolProfile = currentIndex >= totalFishCount;
 
     if (skip) {
-        if (isPoolProfile) {
-          const newPoolName = `Hồ ${booking.NumberOfFish + poolProfiles.length + 1}`; 
-          setPoolProfiles([...poolProfiles, { ...INITIAL_STATES.POOL_PROFILE, Name: newPoolName }]);
-        } else {
-          const newFishName = `Cá ${booking.NumberOfFish + fishProfiles.length + 1}`; // Tính toán tên cá
-          setFishProfiles([...fishProfiles, { ...INITIAL_STATES.FISH_PROFILE, Name: newFishName }]);
+      if (isPoolProfile) {
+        const newPoolName = `Hồ ${booking.NumberOfFish + poolProfiles.length + 1}`;
+        setPoolProfiles([...poolProfiles, { ...INITIAL_STATES.POOL_PROFILE, Name: newPoolName }]);
+      } else {
+        const newFishName = `Cá ${booking.NumberOfFish + fishProfiles.length + 1}`; // Tính toán tên cá
+        setFishProfiles([...fishProfiles, { ...INITIAL_STATES.FISH_PROFILE, Name: newFishName }]);
 
-        }
+      }
     } else {
-        if (isPoolProfile) {
-            setPoolProfiles([...poolProfiles, { ...currentPoolProfile }]);
-            setCurrentPoolProfile(INITIAL_STATES.POOL_PROFILE);
-        } else {
-            setFishProfiles([...fishProfiles, { ...currentFishProfile }]);
-            setCurrentFishProfile(INITIAL_STATES.FISH_PROFILE);
-        }
+      if (isPoolProfile) {
+        setPoolProfiles([...poolProfiles, { ...currentPoolProfile }]);
+        setCurrentPoolProfile(INITIAL_STATES.POOL_PROFILE);
+      } else {
+        setFishProfiles([...fishProfiles, { ...currentFishProfile }]);
+        setCurrentFishProfile(INITIAL_STATES.FISH_PROFILE);
+      }
     }
 
     setCurrentIndex(prev => prev + 1);
-};
+  };
 
   const handleUpdateFishProfile = (index, updatedProfile) => {
     const newFishProfiles = [...fishProfiles];
@@ -453,23 +432,23 @@ const handleSubmitAPI = async () => {
   const handleServiceSelect = (service) => {
     // Reset editing state
     setIsEditing(false);
-    
+
     // Clear form data and errors
     setFormErrors({});
-    
+
     // Check for existing service in cart
     const existingService = cartItems.find(item => item.ServiceID === service.ServiceID);
     if (existingService && !isEditing) {
       window.showToast('Dịch vụ này đã có trong giỏ hàng!');
       return;
     }
-    
+
     // Set the selected service
     setSelectedService(service);
-    
+
     // Reset any previous messages
     setMessage('');
-    
+
     // Initialize form data with just the service ID
     setFormData({
       NoteResult: '',
@@ -490,7 +469,7 @@ const handleSubmitAPI = async () => {
     if (!validateForm()) {
       return;
     }
-  
+
     if (isEditing) {
       const updatedCartItems = cartItems.map(item =>
         item.serviceID === formData.serviceID ? { ...selectedService, ...formData } : item
@@ -501,7 +480,7 @@ const handleSubmitAPI = async () => {
       setCartItems([...cartItems, { ...selectedService, ...formData }]);
       window.showToast('Đã ghi nhận dịch vụ');
     }
-  
+
     // Reset all form data and states
     setFormData({
       NoteResult: '',
@@ -513,7 +492,7 @@ const handleSubmitAPI = async () => {
     setIsEditing(false);
     setFormErrors({}); // Also clear any form errors
   };
-  
+
   const handleRemoveFromCart = (serviceID) => {
     setCartItems(cartItems.filter(item => item.serviceID !== serviceID));
     if (formData.serviceID === serviceID) {
@@ -647,7 +626,7 @@ const handleSubmitAPI = async () => {
                 </IconButton>
               </Badge>
               <IconButton onClick={onClose}>
-                <CloseIcon sx={{ color: "white"}} />
+                <CloseIcon sx={{ color: "white" }} />
               </IconButton>
             </div>
           </div>
@@ -893,35 +872,35 @@ const handleSubmitAPI = async () => {
                         {isEditing ? 'Chỉnh sửa dịch vụ: ' : 'Chi tiết dịch vụ: '}
                         {selectedService.Name}
                       </Typography>
-                      
+
 
                       <TextField
-          fullWidth
-          label="Tình trạng trước kiểm tra"
-          variant="outlined"
-          className="mb-4"
-          value={formData.NoteResult}
-          onChange={handleFormChange('NoteResult')}
-          multiline
-          rows={4}
-          error={!!formErrors.NoteResult}
-          helperText={formErrors.NoteResult}
-          required
-        />
+                        fullWidth
+                        label="Tình trạng trước kiểm tra"
+                        variant="outlined"
+                        className="mb-4"
+                        value={formData.NoteResult}
+                        onChange={handleFormChange('NoteResult')}
+                        multiline
+                        rows={4}
+                        error={!!formErrors.NoteResult}
+                        helperText={formErrors.NoteResult}
+                        required
+                      />
                       {(selectedService.ServiceDeliveryMethodID === 'SDM1' || selectedService.ServiceDeliveryMethodID === 'SDM4') && (
-                                    
+
                         <div className="space-y-4">
-                           
+
                           <TextField
-                          fullWidth
-                          label="Tình trạng cá sau khi khám"
-                          variant="outlined"
-              value={formData.ExaminationResult}
-              onChange={handleFormChange('ExaminationResult')}
-              error={!!formErrors.ExaminationResult}
-              helperText={formErrors.ExaminationResult}
-              required
-                        />
+                            fullWidth
+                            label="Tình trạng cá sau khi khám"
+                            variant="outlined"
+                            value={formData.ExaminationResult}
+                            onChange={handleFormChange('ExaminationResult')}
+                            error={!!formErrors.ExaminationResult}
+                            helperText={formErrors.ExaminationResult}
+                            required
+                          />
                           <TextField
                             fullWidth
                             label="Bác sĩ tư vấn"
@@ -932,51 +911,51 @@ const handleSubmitAPI = async () => {
                             helperText={formErrors.VetConsult}
                             required
                           />
-                           <TextField
-                          fullWidth
-                          label="Danh sách thuốc"
-                          variant="outlined"
-                          value={formData.Formulary}
-                          onChange={handleFormChange('Formulary')}
-                          multiline
-                          rows={2}
-                        />
+                          <TextField
+                            fullWidth
+                            label="Danh sách thuốc"
+                            variant="outlined"
+                            value={formData.Formulary}
+                            onChange={handleFormChange('Formulary')}
+                            multiline
+                            rows={2}
+                          />
                         </div>
                       )}
 
                       {selectedService.ServiceDeliveryMethodID === 'SDM2' && (
                         <div className="space-y-4">
-                         <TextField
-                          fullWidth
-                          label="Tình trạng hồ sau khi khám"
-                          variant="outlined"
-                          value={formData.ExaminationResult}
-                          onChange={handleFormChange('ExaminationResult')}
-                          multiline
-                          rows={2}
-                          error={!!formErrors.ExaminationResult}
-                          helperText={formErrors.ExaminationResult}
-                          required
-                        />
                           <TextField
-                          fullWidth
-                          label="Kỹ thuật viên tư vấn"
-                          variant="outlined"
-                          value={formData.VetConsult}
-                          onChange={handleFormChange('VetConsult')}
-                          error={!!formErrors.VetConsult}
-                          helperText={formErrors.VetConsult}
-                          required
-                        />
+                            fullWidth
+                            label="Tình trạng hồ sau khi khám"
+                            variant="outlined"
+                            value={formData.ExaminationResult}
+                            onChange={handleFormChange('ExaminationResult')}
+                            multiline
+                            rows={2}
+                            error={!!formErrors.ExaminationResult}
+                            helperText={formErrors.ExaminationResult}
+                            required
+                          />
                           <TextField
-                          fullWidth
-                          label="Danh sách vật tư"
-                          variant="outlined"
-                          value={formData.Formulary}
-                          onChange={handleFormChange('Formulary')}
-                          multiline
-                          rows={2}
-                        />
+                            fullWidth
+                            label="Kỹ thuật viên tư vấn"
+                            variant="outlined"
+                            value={formData.VetConsult}
+                            onChange={handleFormChange('VetConsult')}
+                            error={!!formErrors.VetConsult}
+                            helperText={formErrors.VetConsult}
+                            required
+                          />
+                          <TextField
+                            fullWidth
+                            label="Danh sách vật tư"
+                            variant="outlined"
+                            value={formData.Formulary}
+                            onChange={handleFormChange('Formulary')}
+                            multiline
+                            rows={2}
+                          />
                         </div>
                       )}
 
@@ -1032,9 +1011,10 @@ const handleSubmitAPI = async () => {
                 disabled={!hasAnyAdditionalItems}
                 sx={{
                   background: hasAnyAdditionalItems
-                  ? 'linear-gradient(90deg, #64B0E0 25%, rgba(25, 200, 254, 0.75) 75%)'
-                  : '#ddd',
-                pointerEvents: hasAnyAdditionalItems ? 'auto' : 'none'                }}
+                    ? 'linear-gradient(90deg, #64B0E0 25%, rgba(25, 200, 254, 0.75) 75%)'
+                    : '#ddd',
+                  pointerEvents: hasAnyAdditionalItems ? 'auto' : 'none'
+                }}
               >
                 Gửi
               </Button>
@@ -1047,92 +1027,96 @@ const handleSubmitAPI = async () => {
 
 
       <Dialog
-  open={showCart}
-  onClose={() => setShowCart(false)}
-  maxWidth="md"
-  fullWidth
->
-  <DialogTitle sx={{ color: '#64B0E0' }}>
-    <div className="absolute top-3.5 right-10">
-      <IconButton 
-        onClick={() => setShowCart(false)}
-        sx={{ color: '#64B0E0' }}
+        open={showCart}
+        onClose={() => setShowCart(false)}
+        maxWidth="md"
+        fullWidth
       >
-        <CloseIcon />
-      </IconButton>
-    </div>
-    <div className="flex justify-between items-center">
-      <span>Giỏ dịch vụ đã chọn</span>
-    </div>
-  </DialogTitle>
-  <DialogContent 
-    dividers
-    className="overflow-y-auto bg-gray-100"
-    sx={{ padding:'8px' }}
-  >
-    {cartItems.length === 0 ? (
-      <Box className="p-4 text-center text-gray-500">
-        Hiện tại không có dịch vụ nào được chọn
-      </Box>
-    ) : (
-      cartItems.map((item) => (
-        <Box
-          key={item.serviceID}
-          className="p-4 mt-0 mb-2 relative hover:bg-gray-100 rounded bg-white rounded-[10px]"
-        >
-          <Tooltip
-            title={
-              <div>
-                {item.NoteResult && <p>Kết quả: {item.NoteResult}</p>}
-                {item.AnimalStatusDescription && <p>Tình trạng động vật: {item.AnimalStatusDescription}</p>}
-                {item.ConsultDoctor && <p>Lời dặn: {item.ConsultDoctor}</p>}
-                {item.DrugList && <p>Thuốc: {item.DrugList}</p>}
-                {item.PoolStatusDescription && <p>Tình trạng hồ: {item.PoolStatusDescription}</p>}
-                {item.ConsultTechnician && <p>Lời dặn: {item.ConsultTechnician}</p>}
-                {item.MaterialList && <p>Vật tư: {item.MaterialList}</p>}
-              </div>
-            }
-          >
-            <div>
-              <Typography variant="subtitle1">{item.Name}</Typography>
-              <Typography variant="body2">
-                {formatCurrency(item.Price)}
-              </Typography>
-            </div>
-          </Tooltip>
-          <div className="absolute top-6 right-4 flex gap-2">
-            <Button
-              size="small"
-              onClick={() => handleUpdateService(item)}
-              sx={{
-                color: '#64B0E0',
-                border: '1px solid rgba(100, 176, 224, 0.5)',
-                '&:hover': {
-                  backgroundColor: 'rgba(100, 176, 224, 0.04)'
-                }
-              }}
+        <DialogTitle sx={{ color: '#64B0E0' }}>
+          <div className="absolute top-3.5 right-10">
+            <IconButton
+              onClick={() => setShowCart(false)}
+              sx={{ color: '#64B0E0' }}
             >
-              Chỉnh sửa
-            </Button>
-            <Button
-              size="small"
-              onClick={() => handleRemoveFromCart(item.serviceID)}
-              sx={{ 
-                border: '1px solid #8E999E',
-                color: '#8E999E',
-                '&:hover': {
-                  backgroundColor: 'rgba(100, 176, 224, 0.04)'
-                }
-              }}
-            >
-              Gỡ
-            </Button>
+              <CloseIcon />
+            </IconButton>
           </div>
-        </Box>
-      ))
-    )}
-  </DialogContent>
-</Dialog>
+          <div className="flex justify-between items-center">
+            <span>Giỏ dịch vụ đã chọn</span>
+          </div>
+        </DialogTitle>
+        <DialogContent
+          dividers
+          className="overflow-y-auto bg-gray-100"
+          sx={{ padding: '8px' }}
+        >
+          {cartItems.length === 0 ? (
+            <Box className="p-4 text-center text-gray-500">
+              Hiện tại không có dịch vụ nào được chọn
+            </Box>
+          ) : (
+            cartItems.map((item) => (
+              <Box
+                key={item.serviceID}
+                className="p-4 mt-0 mb-2 relative hover:bg-red-50 rounded bg-white rounded-[10px]"
+              >
+                <Tooltip>
+                  <div>
+                    <Typography variant="subtitle1">{item.Name}</Typography>
+                    <Typography variant="body2">
+                      {formatCurrency(item.Price)}
+                    </Typography>
+                    <Typography variant="body2">
+                      Tình trạng trước khi kiểm tra: {item.NoteResult}
+                      <br />
+                      Tình trạng cá sau khi khám: {item.ExaminationResult}
+                      <br />
+                      Bác sĩ tư vấn: {item.VetConsult}
+                      <br />
+                      Đơn thuốc: {item.Formulary || "không"}
+                    </Typography>
+
+
+
+                  </div>
+                </Tooltip>
+                <div className="absolute top-6 right-4 flex gap-2">
+                  <Button
+                    size="small"
+                    onClick={() => handleUpdateService(item)}
+                    sx={{
+                      color: '#64B0E0',
+                      border: '1px solid rgba(100, 176, 224, 0.5)',
+                      '&:hover': {
+                        backgroundColor: '#64B0E0',
+
+                        color: 'white'
+                      }
+                    }}
+                  >
+                    Chỉnh sửa
+                  </Button>
+                  <Button
+                    size="small"
+                    onClick={() => handleRemoveFromCart(item.serviceID)}
+                    sx={{
+                      border: '1px solid #8E999E',
+                      color: '#8E999E',
+                      '&:hover': {
+                        backgroundColor: 'red',
+                        color: 'white'
+
+                      }
+                    }}
+                  >
+                    Gỡ
+                  </Button>
+                </div>
+              </Box>
+            ))
+          )}
+        </DialogContent>
+      </Dialog>
 
 
     </>

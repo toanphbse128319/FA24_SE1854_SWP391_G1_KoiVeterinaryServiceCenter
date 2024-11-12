@@ -97,6 +97,7 @@ const BookingActions = ({
   bookingDetail,
   setIsIncidental,
   service,
+  booking,
 }) => {
     // States cần thiết cho component
     const [activeTab, setActiveTab] = useState(0);
@@ -125,22 +126,32 @@ const BookingActions = ({
   const isProfilesComplete = () => fishProfiles.length === totalFishCount && poolProfiles.length === totalPoolCount;
 
      // Xử lý việc submit profile cá/hồ
-  const handleProfileSubmit = (skip = false) => {
-    const isPoolProfile = currentIndex >= totalFishCount;
-    const newProfile = skip ? 
-      (isPoolProfile ? INITIAL_STATES.POOL_PROFILE : INITIAL_STATES.FISH_PROFILE) :
-      (isPoolProfile ? currentPoolProfile : currentFishProfile);
-
-    if (isPoolProfile) {
-      setPoolProfiles([...poolProfiles, { ...newProfile }]);
-      setCurrentPoolProfile(INITIAL_STATES.POOL_PROFILE);
-    } else {
-      setFishProfiles([...fishProfiles, { ...newProfile }]);
-      setCurrentFishProfile(INITIAL_STATES.FISH_PROFILE);
-    }
-
-    setCurrentIndex(prev => prev + 1);
-  };
+     const handleProfileSubmit = (skip = false) => {
+      
+  
+      const isPoolProfile = currentIndex >= totalFishCount;
+  
+      if (skip) {
+        if (isPoolProfile) {
+          const newPoolName = `Hồ ${booking.NumberOfFish + poolProfiles.length + 1}`;
+          setPoolProfiles([...poolProfiles, { ...INITIAL_STATES.POOL_PROFILE, Name: newPoolName }]);
+        } else {
+          const newFishName = `Cá ${booking.NumberOfFish + fishProfiles.length + 1}`; // Tính toán tên cá
+          setFishProfiles([...fishProfiles, { ...INITIAL_STATES.FISH_PROFILE, Name: newFishName }]);
+  
+        }
+      } else {
+        if (isPoolProfile) {
+          setPoolProfiles([...poolProfiles, { ...currentPoolProfile }]);
+          setCurrentPoolProfile(INITIAL_STATES.POOL_PROFILE);
+        } else {
+          setFishProfiles([...fishProfiles, { ...currentFishProfile }]);
+          setCurrentFishProfile(INITIAL_STATES.FISH_PROFILE);
+        }
+      }
+  
+      setCurrentIndex(prev => prev + 1);
+    };
 
 // Xử lý cập nhật thông tin profile
 const handleUpdateFishProfile = (index, updatedProfile) => {
@@ -355,11 +366,6 @@ const validateForm = () => {
           <div className="flex-1 overflow-y-auto">
             {currentStep === 'CheckInFish' && (
               <div className="p-6">
-                {isProfileLimitReached() && (
-                  <Alert severity="warning">
-                    Đã ghi nhận đầy đủ thông tin!
-                  </Alert>
-                )}
   
                 {/* Initial Count Card */}
                 {(initialFishCount > 0 || initialPoolCount > 0) && (
@@ -519,14 +525,18 @@ const validateForm = () => {
                     </Typography>
                     <TextField
                         fullWidth
-                        label="Tình trạng trước tra"
+                        label="Tình trạng trước kiểm tra"
                         variant="outlined"
                         className="mb-4"
                         value={formData.NoteResult}
                         onChange={handleFormChange('NoteResult')}
                         multiline
                         rows={4}
+                        error={!!formErrors.NoteResult}
+                        helperText={formErrors.NoteResult}
+                        required
                       />
+                  
                     {/* Animal Service Fields */}
                     {(service.ServiceDeliveryMethodID === 'SDM1' || service.ServiceDeliveryMethodID === 'SDM4') && (
                       <div className="space-y-4">

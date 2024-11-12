@@ -3,11 +3,42 @@ import { IconButton, Dialog, DialogTitle, DialogContent, Typography, Box, Tabs, 
 import CloseIcon from '@mui/icons-material/Close';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import EditIcon from '@mui/icons-material/Edit';
+const INITIAL_STATES = {
+  FISH_PROFILE: {
+    AnimalProfileID: '',
+    Name: '',
+    TypeID: 'AT1',
+    Size: 0,
+    Age: 0,
+    Color: '',
+    Description: '',
+    Sex: true,
+    Picture: ''
+  },
+  POOL_PROFILE: {
+    PoolProfileID: '',
+    Name: '',
+    Note: '',
+    Width: '',
+    Description: '',
+    Height: '',
+    Depth: '',
+    Picture: '',
+  },
+  FORM: {
+    NoteResult: '',
+    ExaminationResult: '',
+    VetConsult: '',
+    Formulary: ''
+  }
+};
 
 const ProfileListModal = ({ fishProfiles, poolProfiles, onUpdateFishProfile, onUpdatePoolProfile }) => {
   const [open, setOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
   const [editingItem, setEditingItem] = useState(null);
+  const [currentFishProfile, setCurrentFishProfile] = useState(INITIAL_STATES.FISH_PROFILE);
+  const [currentPoolProfile, setCurrentPoolProfile] = useState(INITIAL_STATES.POOL_PROFILE);
 
   const handleClose = () => {
     setOpen(false);
@@ -109,7 +140,12 @@ const ProfileListModal = ({ fishProfiles, poolProfiles, onUpdateFishProfile, onU
       </Typography>
     </Box>
   );
-
+  const handleFishProfileChange = (field) => (event) => {
+    setCurrentFishProfile({
+      ...currentFishProfile,
+      [field]: event.target.value
+    });
+  };
   return (
     <div className="relative" title="Danh sách cá và hồ">
       <IconButton
@@ -127,15 +163,15 @@ const ProfileListModal = ({ fishProfiles, poolProfiles, onUpdateFishProfile, onU
       >
         <DialogTitle className="flex justify-between items-center">
           <Tabs value={activeTab} onChange={(e, newValue) => setActiveTab(newValue)}>
-            <Tab label={`Cá (${fishProfiles.length})`} />
-            <Tab label={`Hồ (${poolProfiles.length})`} />
+          <Tab label={`Cá (${fishProfiles.length})`} disabled={!!editingItem} />
+          <Tab label={`Hồ (${poolProfiles.length})`} disabled={!!editingItem} />
           </Tabs>
           <IconButton onClick={handleClose}>
             <CloseIcon sx={{ color: '#64B0E0', fontSize: '25px' }} />
           </IconButton>
         </DialogTitle>
 
-        <DialogContent dividers>
+        <DialogContent dividers className="bg-gray-100">
           {editingItem ? (
             <Box className="p-4">
               {editingItem.type === 'fish' ? (
@@ -257,24 +293,23 @@ const ProfileListModal = ({ fishProfiles, poolProfiles, onUpdateFishProfile, onU
               </div>
             </Box>
           ) : (
-            <div>
+            <div className="bg-gray-100 ">
               {activeTab === 0 ? (
                 fishProfiles.length > 0 ? (
                   fishProfiles.map((profile, index) => (
                     <Box
                       key={index}
-                      className="p-3 mb-2 border rounded hover:bg-gray-50 flex justify-between items-start"
+                      className="  flex justify-between items-start p-4 mt-0 mb-2 relative hover:bg-red-50 rounded bg-white rounded-[10px]"
                     >
                       <div>
                         <Typography variant="subtitle1" className="font-medium">
-                          {profile.Name || 'Chưa đặt tên'}
+                         Tên: {profile.Name || 'Chưa đặt tên'}
                         </Typography>
                         <div className="text-sm text-gray-600 mt-1">
                           <div>Kích thước: {profile.Size ? `${profile.Size} cm` : 'Chưa có dữ liệu'}</div>
                           <div>Tuổi: {profile.Age || 'Chưa có dữ liệu'}</div>
                           <div>Màu sắc: {profile.Color || 'Chưa có dữ liệu'}</div>
                           <div>Mô tả: {profile.Description || 'Chưa có dữ liệu'}</div>
-                          <div>Giới tính: {profile.Sex || 'Chưa có dữ liệu'}</div>
                         </div>
                       </div>
                       <IconButton onClick={() => handleEditFish(index, profile)}>
