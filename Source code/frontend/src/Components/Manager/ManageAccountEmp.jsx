@@ -1,30 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { FetchAPI } from "../../Helper/Utilities";
 
-const handleUpdateStatus = async (employee, status) => {
-    const action = status === "0" ? "xóa" : "kích hoạt lại";
+const handleUpdateStatus = async (account, isActive) => {
+    const action = isActive === "false" ? "xóa" : "kích hoạt lại";
     const confirmed = window.confirm(`Bạn có chắc chắn muốn ${action} người dùng này?`);
 
     if (confirmed) {
         try {
-            employee.Status = status;
+            account.isActive = isActive;
             const response = await FetchAPI({
-                endpoint: "/employee",
+                endpoint: "/Account",
                 method: "PUT",
                 body: { 
-                    accountID: employee.AccountID,
-                    address: employee.Address,
-                    birthDay: employee.BirthDay,
-                    employeeID: employee.EmployeeID,
-                    firstName: employee.FirstName,
-                    lastName: employee.LastName,
-                    roleID: employee.RoleID,
-                    sex: employee.Sex,
-                    status: employee.Status,
+                    accountID: account.AccountID,
+                    email: account.Email,
+                    phoneNum: account.PhoneNumber,
+                    roleID: account.RoleID,
+                    avatar: account.Avatar,
+                    password: account.Password,
+                    status: account.Status,
+                    isActive: account.IsActive
                 },
             });
             if (response.ok) {
-                alert(`Nhân viên với ID ${employee.EmployeeID} đã được cập nhật trạng thái thành công.`);
+                alert(`Nhân viên với account ID ${account.AccountID} đã được cập nhật trạng thái thành công.`);
             } else { 
                 alert("Có lỗi xảy ra khi cập nhật trạng thái nhân viên.");
             }
@@ -120,7 +119,7 @@ const ManageEmployee = () => {
                                     {employee.Status === "1" ? (
                                         <button
                                             onClick={() => {
-                                                handleUpdateStatus(employee, "0").then(Update());
+                                                handleUpdateStatus(employee, "false").then(Update());
                                             }}
                                             className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md border border-red-600 transition duration-300"
                                         >
@@ -128,7 +127,7 @@ const ManageEmployee = () => {
                                         </button>
                                     ) : (
                                         <button
-                                            onClick={() => handleUpdateStatus(employee, "1").then(Update())}
+                                            onClick={() => handleUpdateStatus(employee, "true").then(Update())}
                                             className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md border border-green-600 transition duration-300"
                                         >
                                             Kích hoạt lại
