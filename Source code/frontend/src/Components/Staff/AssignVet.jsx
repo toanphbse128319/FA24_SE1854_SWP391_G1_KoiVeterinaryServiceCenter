@@ -290,7 +290,8 @@ const AssignVet = ({DoctorSchedule, SlotSchedule, BookingDetails, bookings, doct
       </div>
 
       {selectedDate && BookingDetails.length > 0 && (
-        <div style={styles.bookingDetails}>
+        <div style={styles.modal}>
+          <div style={styles.modalContent}>
           <h3>Booking Details for {selectedDate.toDateString()}</h3>
           <div style={styles.bookingList}>
             {BookingDetails.map( (booking, index) => (
@@ -304,6 +305,10 @@ const AssignVet = ({DoctorSchedule, SlotSchedule, BookingDetails, bookings, doct
                 </p>
               </div>
             ))}
+          <button style={styles.assign} onClick={() => handleShowModal()}>
+              Close
+            </button>
+          </div>
           </div>
         </div>
       )}
@@ -504,6 +509,18 @@ const styles = {
   },
   bookingDetails: {
     padding: '16px'
+  },
+  modal: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 3,
   },
   modalContent: {
     backgroundColor: 'white',
