@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import FeedbackModal from './Feedback.jsx';
 import Toast from './Toast';
+import Navbar from './Navbar.jsx'
 
 import {
   Box,
@@ -16,7 +17,128 @@ import CloseIcon from '@mui/icons-material/Close';
 import ServiceSelection from './BookingDetail.jsx';
 import BookingActions from './ServiceSelected.jsx';
 import { FetchAPI } from "../Helper/Utilities.jsx";
+import { Height } from '@mui/icons-material';
 
+
+
+
+
+
+
+
+const DetailView = ({ selectedBooking, bookingDetail, services }) => {
+  if (!selectedBooking) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <Typography variant="h6" className="text-gray-400">
+          Chọn một đơn đặt để xem chi tiết
+        </Typography>
+      </div>
+    );
+  }
+
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND'
+    }).format(amount);
+  };
+
+  return (
+    <div className="p-4">
+      <Typography variant="h6" className="mb-4">
+        Chi tiết đơn đặt #{selectedBooking.BookingID}
+      </Typography>
+
+      {/* First div: General Booking Information */}
+      <Card className="p-4 mb-4"
+       style={{ borderRadius: '6px' }}
+      >
+        <Typography variant="subtitle1" className="font-bold mb-2">
+          Thông tin chung
+        </Typography>
+        <div className="space-y-2">
+          <div>
+            <Typography>Số cá ban đầu: {selectedBooking.NumberOfFish}</Typography>
+            <Typography>Số hồ ban đầu: {selectedBooking.NumberOfPool}</Typography>
+            <Typography>Số cá phát sinh: {selectedBooking.IncidentalFish || 0}</Typography>
+            <Typography>Số hồ phát sinh: {selectedBooking.IncidentalPool || 0}</Typography>
+            {(selectedBooking.ServiceDeliveryMethodID === 'SDM1' ||
+              selectedBooking.ServiceDeliveryMethodID === 'SDM2') && (
+                <>
+                  <Typography>Khoảng cách: {selectedBooking.Distance} km</Typography>
+                  <Typography>Phí di chuyển: {formatCurrency(selectedBooking.DistanceCost)}</Typography>
+                </>
+              )}
+          </div>
+        </div>
+      </Card>
+
+      {/* Second div: Service Details */}
+      <div className="space-y-4">
+        {bookingDetail
+          .filter(detail => detail.BookingID === selectedBooking.BookingID)
+          .map((detail, index) => {
+            const service = services.find(s => s.ServiceID === detail.ServiceID);
+
+            return (
+              <Card key={index} className="p-4">
+                <Typography variant="subtitle1" className="font-bold mb-2">
+                  {service?.Name || 'Không tìm thấy dịch vụ'}
+                </Typography>
+                <div className="space-y-2">
+                  <Typography>
+                    Phát sinh: {detail.IsIncidental ? 'Có' : 'Không'}
+                  </Typography>
+                  <Typography>
+                    Tình trạng trước kiểm tra: {detail.NoteResult || 'Chưa có'}
+                  </Typography>
+
+                  {/* SDM1 and SDM4 specific fields */}
+                  {(selectedBooking.ServiceDeliveryMethodID === 'SDM1' ||
+                    selectedBooking.ServiceDeliveryMethodID === 'SDM4') && (
+                      <>
+                        <Typography>
+                          Tình trạng cá sau khi khám: {detail.ExaminationResult || 'Chưa có'}
+                        </Typography>
+                        <Typography>
+                          Lời dặn của bác sĩ: {detail.VetConsult || 'Chưa có'}
+                        </Typography>
+                        <Typography>
+                          Đơn thuốc: {detail.Formulary || 'Chưa có'}
+                        </Typography>
+                      </>
+                    )}
+
+                  {/* SDM2 specific fields */}
+                  {selectedBooking.ServiceDeliveryMethodID === 'SDM2' && (
+                    <>
+                      <Typography>
+                        Tình trạng hồ sau khi khám: {detail.ExaminationResult || 'Chưa có'}
+                      </Typography>
+                      <Typography>
+                        Kỹ thuật viên tư vấn: {detail.VetConsult || 'Chưa có'}
+                      </Typography>
+                      <Typography>
+                        Danh sách vật tư: {detail.Formulary || 'Chưa có'}
+                      </Typography>
+                    </>
+                  )}
+
+                  {/* SDM3 specific fields */}
+                  {selectedBooking.ServiceDeliveryMethodID === 'SDM3' && (
+                    <Typography>
+                      Bác sĩ tư vấn: {detail.VetConsult || 'Chưa có'}
+                    </Typography>
+                  )}
+                </div>
+              </Card>
+            );
+          })}
+      </div>
+    </div>
+  );
+};
 
 const ROLE_STATUS_CONFIG = {
   Customer: [
@@ -36,6 +158,9 @@ const ROLE_STATUS_CONFIG = {
     { label: 'đã hủy', value: 'Cancelled', isActive: false }
   ]
 };
+
+
+
 
 const InfoRow = ({ label, value }) => (
   <div style={styles.infoRow}>
@@ -95,6 +220,8 @@ const BookingList = ({
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(0);
   const [completed, setCompleted] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState(null);
+
 
   const [bookingDetail, setBookingDetail] = useState([]);
 
@@ -128,7 +255,9 @@ const BookingList = ({
     }
   };
 
-
+  const handleBookingClick = (booking) => {
+    setSelectedBooking(booking);
+  };
   const handleChangeStatus = async (bookingId) => {
     try {
       const response = await fetch('http://localhost:5145/api/Booking/updatestatus', {
@@ -188,6 +317,8 @@ const BookingList = ({
     setShowFeedbackModal(false);
     setSelectedBookingId(null);
   };
+
+  console.log(bookings)
   // Utility functions
   const formatDateDay = (dateString) => {
     return new Date(dateString).toLocaleString('vi-VN', {
@@ -213,6 +344,7 @@ const BookingList = ({
 
 
   const renderBookingContent = (booking) => {
+    console.log(booking)
     const isCustomerOrVet = userRole === 'Customer' || userRole === 'Veterinarian';
     const sdm = [
       {
@@ -242,8 +374,8 @@ const BookingList = ({
       return method ? method.Name : methodId;
     };
     return (
-      <div>
-       <Toast time={2000} />
+      <div style={{}}>
+        <Toast time={2000} />
 
         <InfoRow label="Mã đơn" value={booking.BookingID} />
 
@@ -259,7 +391,13 @@ const BookingList = ({
         <InfoRow
           label="Hình thức"
           value={getServiceDeliveryMethodName(booking.ServiceDeliveryMethodID)} />
+        {(booking.ServiceDeliveryMethodID === "SDM1" || booking.ServiceDeliveryMethodID === "SDM2") &&
+          <InfoRow label="Địa chỉ " value={booking.BookingAddress} />
+
+        }
         <InfoRow label="Tổng tiền " value={formatCurrency(booking.TotalServiceCost)} />
+
+
 
         {!isCustomerOrVet && (
           <>
@@ -271,152 +409,225 @@ const BookingList = ({
     );
   };
 
+  const handleChangeActiveStatus = (status) => {
+    setActiveStatus(status);
+    setSelectedBooking(null);
+  };
   const filteredBookings = activeStatus
     ? bookings.filter(booking => booking.Status === activeStatus)
     : bookings;
 
   return (
-    <Box sx={{ position: 'relative' }}>
-      <div style={styles.container}>
-        <Typography variant="h4" style={styles.title}>
-          Danh sách đơn đặt
-        </Typography>
+    <div style={{ 
+      backgroundColor: '#f0f7ff',
+      minHeight: '100vh', 
+      padding: '20px' 
+    }}>
 
-        <div style={styles.statusButtonContainer}>
-          {ROLE_STATUS_CONFIG[userRole]?.map((status, index) => (
-            <button
-              key={index}
-              style={{
-                ...styles.statusButton,
-                ...(activeStatus === status.value ? styles.statusButtonActive : styles.statusButtonInactive)
-              }}
-              onClick={() => setActiveStatus(status.value)}
-            >
-              {status.label}
-            </button>
-          ))}
-        </div>
+      <Box sx={{}}>
+        <div style={styles.container}>
+          <Typography variant="h4" style={styles.title}>
+            Danh sách đơn đặt
+          </Typography>
 
-        <div>
-          {filteredBookings.map(booking => (
-            <Card key={booking.BookingID} style={styles.bookingCard}>
-              <CardContent style={styles.cardContent}>
-                {renderBookingContent(booking)}
+          <div style={styles.statusButtonContainer}>
+            {ROLE_STATUS_CONFIG[userRole]?.map((status, index) => (
+              <button
+                key={index}
+                style={{
+                  ...styles.statusButton,
+                  ...(activeStatus === status.value ? styles.statusButtonActive : styles.statusButtonInactive)
+                }}
+                onClick={() => handleChangeActiveStatus(status.value)}
+              >
+                {status.label}
+              </button>
+            ))}
+          </div>
 
-                <div style={styles.actionButtonContainer}>
-                  {userRole === 'Customer' && booking.Status === 'Completed' && booking.FeedbackID === 'FB0' && (
-                    <button
-                      style={{ ...styles.actionButton, ...styles.primaryActionButton }}
-                      onClick={() => handleFeedbackClick(booking.BookingID)}
-                    >
-                      Đánh giá
-                    </button>
-                  )}
+          <div className="flex ">
+            <div className=" p-6 overflow-y-auto "
+              style={{}}>
+              {filteredBookings.map(booking => (
+                <Card
+                  key={booking.BookingID}
+                  style={{
+                    ...styles.bookingCard,
+                    height: 'auto',
+                    cursor: 'pointer',
+                    backgroundColor: selectedBooking?.BookingID === booking.BookingID ? '#E8E2E2' : 'white',
+                    transition: 'background-color 0.3s ease'
 
-                  {userRole === 'Staff' && booking.Status === 'Pending' && (
-                    <>
-                      <button
-                        style={{ ...styles.actionButton, ...styles.primaryActionButton }}
-                        onClick={() => onEditBooking(booking.BookingID)}
-                        disabled={completed}
-                      >
-                        Thay đổi thông tin
-                      </button>
-                      <button
-                        style={{ ...styles.actionButton, ...styles.secondaryActionButton }}
-                        onClick={() => handleConfirmBooking(booking.BookingID)}
-                        disabled={completed}
-                      >
-                        Xác nhận đơn
-                      </button>
-                    </>
-                  )}
-                  {/* Preed */}
-                  {userRole === 'Veterinarian' && booking.Status === 'Confirmed' && isIncidental == false && (
-
-
-                    <>
-                      <button onClick={() => {
-                        setShowBookingActions(true)
-                      }}
-                        style={{ ...styles.actionButton, ...styles.primaryActionButton }}>
-                        Khám
-                      </button>
-
-                      <BookingActions
-                       booking={booking}
-                        bookingId={booking.BookingID}
-                        isOpen={showBookingActions}
-                        onClose={handleCloseBookingActions}
-                        bookingDetail={bookingDetail.find(detail => detail.BookingID === booking.BookingID)}
-
-                        service={services.find(service => service.ServiceID === bookingDetail?.find(detail => detail.BookingID === booking.BookingID)?.ServiceID)}
-                        initialFishCount={booking.NumberOfFish}
-                        initialPoolCount={booking.NumberOfPool}
-                        setIsIncidental={setIsIncidental}
-                      />
-                    </>
-
-                  )}
-                  {userRole === 'Veterinarian' && booking.Status === 'Confirmed' && isIncidental === true && (
-                    <div>
-                      <button
-                        style={{ ...styles.actionButton, ...styles.primaryActionButton }}
-                        onClick={() => setShowServiceSelection(true)}
-                      >
-                        Dịch vụ phát sinh
-                      </button>
-
-                  
-                      {showServiceSelection && (
-                        <ServiceSelection
-                        booking={booking}
-                          bookingId={booking.BookingID}
-                          services={services}
-                          isOpen={showServiceSelection}
-                          onClose={handleCloseServiceSelection}
-                          deliveryMethod={booking.ServiceDeliveryMethodID}
-                          servicesSelected={bookingDetail.filter(detail => 
-                            detail.BookingID === booking.BookingID && 
-                            detail.IsIncidental === false
-                          )}
-                          IncidentalFish = {booking.IncidentalFish}
-                          IncidentalPool ={booking.IncidentalPool}
-                          bookingDetail={bookingDetail.find(detail => detail.BookingID === booking.BookingID)}
-
-                        />
+                  }}
+                  onClick={() => handleBookingClick(booking)} // Add click handler
+                >
+                  <CardContent style={styles.cardContent}>
+                    <div style={{ flex: 1 }}> {/* Wrapper for content */}
+                      {renderBookingContent(booking)}
+                    </div>
+                    <div style={styles.actionButtonContainer}>
+                      {userRole === 'Customer' && booking.Status === 'Completed' && booking.FeedbackID === 'FB0' && (
+                        <button
+                          style={{ ...styles.actionButton, ...styles.primaryActionButton }}
+                          onClick={() => handleFeedbackClick(booking.BookingID)}
+                        >
+                          Đánh giá
+                        </button>
                       )}
 
-                      <button
-                        style={{ ...styles.actionButton, ...styles.primaryActionButton }}
-                        onClick={() => handleChangeStatus(booking.BookingID)}
-                      >
-                        Xác nhận đã khám xong
-                      </button>
+                      {userRole === 'Staff' && booking.Status === 'Pending' && (
+                        <>
+                          <button
+                            style={{ ...styles.actionButton, ...styles.primaryActionButton }}
+                            onClick={() => onEditBooking(booking.BookingID)}
+                            disabled={completed}
+                          >
+                            Thay đổi thông tin
+                          </button>
+                          <button
+                            style={{ ...styles.actionButton, ...styles.secondaryActionButton }}
+                            onClick={() => handleConfirmBooking(booking.BookingID)}
+                            disabled={completed}
+                          >
+                            Xác nhận đơn
+                          </button>
+                        </>
+                      )}
+                      {/* Preed */}
+                      {userRole === 'Veterinarian' && booking.Status === 'Confirmed' && isIncidental == false && (
+
+
+                        <>
+                          <button onClick={() => {
+                            setShowBookingActions(true)
+                          }}
+                            style={{ ...styles.actionButton, ...styles.primaryActionButton }}>
+                            Khám
+                          </button>
+
+                          <BookingActions
+                            booking={booking}
+                            bookingId={booking.BookingID}
+                            isOpen={showBookingActions}
+                            onClose={handleCloseBookingActions}
+                            bookingDetail={bookingDetail.find(detail => detail.BookingID === booking.BookingID)}
+
+                            service={services.find(service => service.ServiceID === bookingDetail?.find(detail => detail.BookingID === booking.BookingID)?.ServiceID)}
+                            initialFishCount={booking.NumberOfFish}
+                            initialPoolCount={booking.NumberOfPool}
+                            setIsIncidental={setIsIncidental}
+                          />
+                        </>
+
+                      )}
+                      {userRole === 'Veterinarian' && booking.Status === 'Confirmed' && isIncidental === true && (
+                        <div>
+                          <button
+                            style={{ ...styles.actionButton, ...styles.primaryActionButton }}
+                            onClick={() => setShowServiceSelection(true)}
+                          >
+                            Dịch vụ phát sinh
+                          </button>
+
+
+                          {showServiceSelection && (
+                            <ServiceSelection
+                              booking={booking}
+                              bookingId={booking.BookingID}
+                              services={services}
+                              isOpen={showServiceSelection}
+                              onClose={handleCloseServiceSelection}
+                              deliveryMethod={booking.ServiceDeliveryMethodID}
+                              servicesSelected={bookingDetail.filter(detail =>
+                                detail.BookingID === booking.BookingID &&
+                                detail.IsIncidental === false
+                              )}
+                              IncidentalFish={booking.IncidentalFish}
+                              IncidentalPool={booking.IncidentalPool}
+                              bookingDetail={bookingDetail.find(detail => detail.BookingID === booking.BookingID)}
+
+                            />
+                          )}
+
+                          <button
+                            style={{ ...styles.actionButton, ...styles.primaryActionButton }}
+                            onClick={() => handleChangeStatus(booking.BookingID)}
+                          >
+                            Thanh toán
+                          </button>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            {filteredBookings.length > 0 ? (
+  selectedBooking ? (
+    <DetailView 
+      selectedBooking={selectedBooking}
+      bookingDetail={bookingDetail}
+      services={services}
+    />
+  ) : (
+    <div className="flex-1 flex items-center justify-center" style={{
+      minHeight: '400px',
+      backgroundColor: '#f0f7ff',
+      margin: '0 16px'
+    }}>
+      <Typography 
+        variant="h6" 
+        className="text-gray-400"
+        style={{
+          textAlign: 'center',
+          fontSize: '1.2rem',
+          fontWeight: 500
+        }}
+      >
+        Chọn một đơn đặt để xem chi tiết
+      </Typography>
+    </div>
+  )
+) : (
+  <div className="flex-1 flex items-center justify-center" style={{
+    minHeight: '400px',
+    backgroundColor: '#f0f7ff',
+    margin: '0 16px'
+  }}>
+    <Typography 
+      variant="h6" 
+      className="text-gray-400"
+      style={{
+        textAlign: 'center',
+        fontSize: '1.2rem',
+        fontWeight: 500
+      }}
+    >
+      Chưa có đơn khám
+    </Typography>
+  </div>
+)}
+
+
+          </div>
+
+          {/* Service Selection Dialog */}
+
+
+          {/* Feedback Modal */}
+          {showFeedbackModal && (
+            <FeedbackModal
+              bookingId={selectedBookingId}
+              onClose={handleCloseFeedback}
+              onFeedbackSubmitted={handleFeedbackSubmitted}
+            />
+          )}
         </div>
-
-        {/* Service Selection Dialog */}
-
-
-        {/* Feedback Modal */}
-        {showFeedbackModal && (
-          <FeedbackModal
-            bookingId={selectedBookingId}
-            onClose={handleCloseFeedback}
-            onFeedbackSubmitted={handleFeedbackSubmitted}
-          />
-        )}
-      </div>
-    </Box>
-  );
+      </Box>
+    
+    </div>  // Đây là ngoặc đóng đúng cho div cha
+  ); 
 };
-
 const styles = {
   statusButton: {
     width: '10vw',
@@ -441,7 +652,7 @@ const styles = {
   },
   actionButton: {
     textTransform: 'none',
-    padding: '8px 16px',
+    padding: '08px 16px',
     border: 'none',
     borderRadius: '10px',
     cursor: 'pointer',
@@ -459,7 +670,9 @@ const styles = {
     backgroundColor: '#f0f7ff',
     minHeight: '0vh',
     padding: '32px',
-    width: '100vw'
+    width: '100vw',
+    Height: '100bh',
+    marginLeft: '180px' // Added margin
   },
   title: {
     marginBottom: '32px',
@@ -475,8 +688,8 @@ const styles = {
   },
 
   bookingCard: {
-    width: "35%",
-    height: '100%',
+    width: "25vw",
+    minHeight: '200px', // Set minimum height instead of fixed height
     position: 'relative',
     border: '1px solid #e0e0e0',
     borderRadius: '16px',
@@ -485,15 +698,21 @@ const styles = {
   },
   cardContent: {
     padding: '24px',
-    paddingBottom: '64px',
-    width: "30vw",
+    paddingBottom: '40px', // Increase bottom padding to accommodate buttons
+    position: 'relative', // Change to relative
+    height: '100%', // Take full height
+    display: 'flex',
+    flexDirection: 'column',
   },
   actionButtonContainer: {
     position: 'absolute',
-    bottom: '15px',
-    right: '15px',
-    gap: "5px"
+    bottom: '10px',
+    right: '24px',
+    display: 'flex',
+    gap: '8px',
+    justifyContent: 'flex-end',
   },
+
   infoRow: {
     display: 'flex',
     marginBottom: '8px',
