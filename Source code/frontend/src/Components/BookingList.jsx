@@ -3,6 +3,8 @@ import FeedbackModal from './Feedback.jsx';
 import Toast from './Toast';
 import Navbar from './Navbar.jsx'
 
+import Footer from './Footer.jsx'
+
 import {
   Box,
   Card,
@@ -421,7 +423,7 @@ const BookingList = ({
     <div style={{ 
       backgroundColor: '#f0f7ff',
       minHeight: '100vh', 
-      padding: '20px' 
+      
     }}>
 
       <Box sx={{}}>
@@ -445,136 +447,119 @@ const BookingList = ({
             ))}
           </div>
 
-          <div className="flex ">
-            <div className=" p-6 overflow-y-auto "
-              style={{}}>
-              {filteredBookings.map(booking => (
-                <Card
-                  key={booking.BookingID}
-                  style={{
-                    ...styles.bookingCard,
-                    height: 'auto',
-                    cursor: 'pointer',
-                    backgroundColor: selectedBooking?.BookingID === booking.BookingID ? '#E8E2E2' : 'white',
-                    transition: 'background-color 0.3s ease'
-
-                  }}
-                  onClick={() => handleBookingClick(booking)} // Add click handler
-                >
-                  <CardContent style={styles.cardContent}>
-                    <div style={{ flex: 1 }}> {/* Wrapper for content */}
-                      {renderBookingContent(booking)}
-                    </div>
-                    <div style={styles.actionButtonContainer}>
-                      {userRole === 'Customer' && booking.Status === 'Completed' && booking.FeedbackID === 'FB0' && (
-                        <button
-                          style={{ ...styles.actionButton, ...styles.primaryActionButton }}
-                          onClick={() => handleFeedbackClick(booking.BookingID)}
-                        >
-                          Đánh giá
-                        </button>
-                      )}
-
-                      {userRole === 'Staff' && booking.Status === 'Pending' && (
-                        <>
-                          <button
-                            style={{ ...styles.actionButton, ...styles.primaryActionButton }}
-                            onClick={() => onEditBooking(booking.BookingID)}
-                            disabled={completed}
-                          >
-                            Thay đổi thông tin
-                          </button>
-                          <button
-                            style={{ ...styles.actionButton, ...styles.secondaryActionButton }}
-                            onClick={() => handleConfirmBooking(booking.BookingID)}
-                            disabled={completed}
-                          >
-                            Xác nhận đơn
-                          </button>
-                        </>
-                      )}
-                      {/* Preed */}
-                      {userRole === 'Veterinarian' && booking.Status === 'Confirmed' && isIncidental == false && (
-
-
-                        <>
-                          <button onClick={() => {
-                            setShowBookingActions(true)
-                          }}
-                            style={{ ...styles.actionButton, ...styles.primaryActionButton }}>
-                            Khám
-                          </button>
-
-                          <BookingActions
-                            booking={booking}
-                            bookingId={booking.BookingID}
-                            isOpen={showBookingActions}
-                            onClose={handleCloseBookingActions}
-                            bookingDetail={bookingDetail.find(detail => detail.BookingID === booking.BookingID)}
-
-                            service={services.find(service => service.ServiceID === bookingDetail?.find(detail => detail.BookingID === booking.BookingID)?.ServiceID)}
-                            initialFishCount={booking.NumberOfFish}
-                            initialPoolCount={booking.NumberOfPool}
-                            setIsIncidental={setIsIncidental}
-                          />
-                        </>
-
-                      )}
-                      {userRole === 'Veterinarian' && booking.Status === 'Confirmed' && isIncidental === true && (
-                        <div>
-                          <button
-                            style={{ ...styles.actionButton, ...styles.primaryActionButton }}
-                            onClick={() => setShowServiceSelection(true)}
-                          >
-                            Dịch vụ phát sinh
-                          </button>
-
-
-                          {showServiceSelection && (
-                            <ServiceSelection
-                              booking={booking}
-                              bookingId={booking.BookingID}
-                              services={services}
-                              isOpen={showServiceSelection}
-                              onClose={handleCloseServiceSelection}
-                              deliveryMethod={booking.ServiceDeliveryMethodID}
-                              servicesSelected={bookingDetail.filter(detail =>
-                                detail.BookingID === booking.BookingID &&
-                                detail.IsIncidental === false
-                              )}
-                              IncidentalFish={booking.IncidentalFish}
-                              IncidentalPool={booking.IncidentalPool}
-                              bookingDetail={bookingDetail.find(detail => detail.BookingID === booking.BookingID)}
-
-                            />
-                          )}
-
-                          <button
-                            style={{ ...styles.actionButton, ...styles.primaryActionButton }}
-                            onClick={() => handleChangeStatus(booking.BookingID)}
-                          >
-                            Thanh toán
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+          <div className="flex">
+  {filteredBookings.length > 0 ? (
+    <div className="p-6 overflow-y-auto" style={{}}>
+      {filteredBookings.map(booking => (
+        <Card
+          key={booking.BookingID}
+          style={{
+            ...styles.bookingCard,
+            height: 'auto',
+            cursor: 'pointer',
+            backgroundColor: selectedBooking?.BookingID === booking.BookingID ? '#E8E2E2' : 'white',
+            transition: 'background-color 0.3s ease'
+          }}
+          onClick={() => handleBookingClick(booking)}
+        >
+          <CardContent style={styles.cardContent}>
+            <div style={{ flex: 1 }}>
+              {renderBookingContent(booking)}
             </div>
-            {filteredBookings.length > 0 ? (
-  selectedBooking ? (
-    <DetailView 
-      selectedBooking={selectedBooking}
-      bookingDetail={bookingDetail}
-      services={services}
-    />
+            <div style={styles.actionButtonContainer}>
+              {userRole === 'Customer' && booking.Status === 'Completed' && booking.FeedbackID === 'FB0' && (
+                <button
+                  style={{ ...styles.actionButton, ...styles.primaryActionButton }}
+                  onClick={() => handleFeedbackClick(booking.BookingID)}
+                >
+                  Đánh giá
+                </button>
+              )}
+
+              {userRole === 'Staff' && booking.Status === 'Pending' && (
+                <>
+                  <button
+                    style={{ ...styles.actionButton, ...styles.primaryActionButton }}
+                    onClick={() => onEditBooking(booking.BookingID)}
+                    disabled={completed}
+                  >
+                    Thay đổi thông tin
+                  </button>
+                  <button
+                    style={{ ...styles.actionButton, ...styles.secondaryActionButton }}
+                    onClick={() => handleConfirmBooking(booking.BookingID)}
+                    disabled={completed}
+                  >
+                    Xác nhận đơn
+                  </button>
+                </>
+              )}
+
+              {userRole === 'Veterinarian' && booking.Status === 'Confirmed' && isIncidental == false && (
+                <>
+                  <button 
+                    onClick={() => setShowBookingActions(true)}
+                    style={{ ...styles.actionButton, ...styles.primaryActionButton }}
+                  >
+                    Khám
+                  </button>
+
+                  <BookingActions
+                    booking={booking}
+                    bookingId={booking.BookingID}
+                    isOpen={showBookingActions}
+                    onClose={handleCloseBookingActions}
+                    bookingDetail={bookingDetail.find(detail => detail.BookingID === booking.BookingID)}
+                    service={services.find(service => service.ServiceID === bookingDetail?.find(detail => detail.BookingID === booking.BookingID)?.ServiceID)}
+                    initialFishCount={booking.NumberOfFish}
+                    initialPoolCount={booking.NumberOfPool}
+                    setIsIncidental={setIsIncidental}
+                  />
+                </>
+              )}
+
+              {userRole === 'Veterinarian' && booking.Status === 'Confirmed' && isIncidental === true && (
+                <div>
+                  <button
+                    style={{ ...styles.actionButton, ...styles.primaryActionButton }}
+                    onClick={() => setShowServiceSelection(true)}
+                  >
+                    Dịch vụ phát sinh
+                  </button>
+
+                  {showServiceSelection && (
+                    <ServiceSelection
+                      booking={booking}
+                      bookingId={booking.BookingID}
+                      services={services}
+                      isOpen={showServiceSelection}
+                      onClose={handleCloseServiceSelection}
+                      deliveryMethod={booking.ServiceDeliveryMethodID}
+                      servicesSelected={bookingDetail.filter(detail =>
+                        detail.BookingID === booking.BookingID &&
+                        detail.IsIncidental === false
+                      )}
+                      IncidentalFish={booking.IncidentalFish}
+                      IncidentalPool={booking.IncidentalPool}
+                      bookingDetail={bookingDetail.find(detail => detail.BookingID === booking.BookingID)}
+                    />
+                  )}
+
+                  <button
+                    style={{ ...styles.actionButton, ...styles.primaryActionButton }}
+                    onClick={() => handleChangeStatus(booking.BookingID)}
+                  >
+                    Thanh toán
+                  </button>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
   ) : (
-    <div className="flex-1 flex items-center justify-center" style={{
-      minHeight: '400px',
-      backgroundColor: '#f0f7ff',
-      margin: '0 16px'
-    }}>
+    <div className="flex-1 flex items-center justify-center min-h-[400px] m-4">
       <Typography 
         variant="h6" 
         className="text-gray-400"
@@ -584,33 +569,48 @@ const BookingList = ({
           fontWeight: 500
         }}
       >
-        Chọn một đơn đặt để xem chi tiết
+        Chưa có đơn khám cho trạng thái này
       </Typography>
     </div>
-  )
-) : (
-  <div className="flex-1 flex items-center justify-center" style={{
-    minHeight: '400px',
-    backgroundColor: '#f0f7ff',
-    margin: '0 16px'
-  }}>
-    <Typography 
-      variant="h6" 
-      className="text-gray-400"
-      style={{
-        textAlign: 'center',
-        fontSize: '1.2rem',
-        fontWeight: 500
-      }}
-    >
-      Chưa có đơn khám
-    </Typography>
-  </div>
-)}
-
-
-          </div>
-
+  )}
+  
+  {/* DetailView section */}
+  {filteredBookings.length > 0 ? (
+    selectedBooking ? (
+      <DetailView 
+        selectedBooking={selectedBooking}
+        bookingDetail={bookingDetail}
+        services={services}
+      />
+    ) : (
+      <div className="flex-1 flex items-center justify-center" style={{
+        minHeight: '400px',
+        backgroundColor: '#f0f7ff',
+        margin: '0 16px'
+      }}>
+        <Typography 
+          variant="h6" 
+          className="text-gray-400"
+          style={{
+            textAlign: 'center',
+            fontSize: '1.2rem',
+            fontWeight: 500
+          }}
+        >
+          Chọn một đơn đặt để xem chi tiết
+        </Typography>
+      </div>
+    )
+  ) : (
+    <div className="flex-1 flex items-center justify-center" style={{
+      minHeight: '400px',
+      backgroundColor: '#f0f7ff',
+      margin: '0 16px'
+    }}>
+     
+    </div>
+  )}
+</div>
           {/* Service Selection Dialog */}
 
 
@@ -625,7 +625,7 @@ const BookingList = ({
         </div>
       </Box>
     
-    </div>  // Đây là ngoặc đóng đúng cho div cha
+      <Footer/></div>  // Đây là ngoặc đóng đúng cho div cha
   ); 
 };
 const styles = {
@@ -670,7 +670,7 @@ const styles = {
     backgroundColor: '#f0f7ff',
     minHeight: '0vh',
     padding: '32px',
-    width: '100vw',
+    width: '80vw',
     Height: '100bh',
     marginLeft: '180px' // Added margin
   },
