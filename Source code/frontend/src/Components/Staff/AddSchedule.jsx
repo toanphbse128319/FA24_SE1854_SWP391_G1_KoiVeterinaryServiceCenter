@@ -330,6 +330,7 @@ const handleShowModal = () => {
                 updateVetSchedule().then( result =>{
                     if( result == true )
                         Update();
+                    alert("Thêm lịch cho bác sĩ thành công");
                 });
             }}>
               Apply

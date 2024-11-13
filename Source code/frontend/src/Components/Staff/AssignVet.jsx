@@ -326,6 +326,7 @@ const AssignVet = ({DoctorSchedule, SlotSchedule, BookingDetails, bookings, doct
                         if( result == true ){
                             let oldBook = selectedBooking;
                             oldBook = temp.EmployeeID;
+                            alert("Phân công bác sĩ thành công");
                         }
                     });
                     handleAssignDoctor(selectedBooking, doctor.FirstName + " " + doctor.LastName);
