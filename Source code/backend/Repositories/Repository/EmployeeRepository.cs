@@ -36,8 +36,7 @@ namespace Repositories.Repository
                 return "Invalid: missing addressc";
             if( string.IsNullOrEmpty( info.Status ) )
                 return "Invalid: missing status";
-            if( string.IsNullOrEmpty( info.RoleID ) )
-                return "Invalid: missing role";
+            
             return "Ok";
         }
 
@@ -69,15 +68,26 @@ namespace Repositories.Repository
                 return await CreateEmployeeAsync( info );
             return await UpdateEmployeeAsync( info );
         }
-
+        
+        
         public async Task<List<Employee?>> SearchByRoleName( string rolename ){
             string role = (new RoleRepository( _context )).getRoleID( rolename );
             if( role == "" )
                 return new List<Employee?>();
-            List<Employee?> list = (await _context.Employees.Where( employee => employee.RoleID == role ).ToListAsync())!;
-            if( list == null )
+            List<Account> list = (await _context.Accounts.Where( account => account.RoleID == role ).ToListAsync())!;
+            if( list.Count == 0 )
                 return new List<Employee?>();
-            return list;
+            List<Employee?> employees = new List<Employee?>{};
+            foreach( Account account in list ){
+                Employee? temp = await _context.Employees.FirstOrDefaultAsync( employee => employee.AccountID == account.AccountID );
+                if( temp == null )
+                    continue;
+                employees.Add( temp );
+            }
+            if( employees.Count == 0 )
+                return new List<Employee?>();
+            return employees;
         }
+        
     }
 }

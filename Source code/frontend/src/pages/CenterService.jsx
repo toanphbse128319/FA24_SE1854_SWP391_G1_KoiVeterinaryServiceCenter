@@ -1,14 +1,14 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-const OnlineService = () => {
+const CenterService = () => {
   const location = useLocation();
   const { services, sdm } = location.state || {};
   const navigate = useNavigate();
 
-  // Filter services to only show those with ServiceDeliveryMethod "SDM3"
+  // Filter services to only show those with ServiceDeliveryMethod "SDM1"
   const filteredServices = services.filter(
-    (service) => service.ServiceDeliveryMethodID === 'SDM3'  
+    (service) => service.ServiceDeliveryMethodID === 'SDM4'  
   );
   
   // Handle booking navigation
@@ -59,4 +59,4 @@ const OnlineService = () => {
   );
 };
 
-export default OnlineService;
+export default CenterService;

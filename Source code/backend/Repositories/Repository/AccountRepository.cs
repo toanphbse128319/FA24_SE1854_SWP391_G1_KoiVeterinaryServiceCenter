@@ -339,6 +339,7 @@ public class AccountRepository : GenericRepository<Account>
             old.RoleID = info.RoleID;
         if( string.IsNullOrEmpty( info.Status ) == false )
             old.RoleID = info.Status;
+        old.IsActive = info.IsActive;
         if( await base.UpdateAsync( old ) < 1 )
             return "Invalid: failed to update";
         return "Ok";

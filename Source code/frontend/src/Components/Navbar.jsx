@@ -43,6 +43,7 @@ function filterServices({ allServices, sdm }) {
 
 export default function Example({ allServices, sdm }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   let navigate = useNavigate();
   const handleGoLogin = () => {
     navigate("/Login");
@@ -52,17 +53,26 @@ export default function Example({ allServices, sdm }) {
   };
 
   const services = filterServices({ allServices: allServices, sdm: sdm });
-  console.log(services);
+  
   
 
-  const handleGoBooking = (service, sdm) => {
-    if (sdm.ServiceDeliveryMethodID === "SDM3") {
-      navigate("/OnlineService", { state: { service, sdm } });
-      console.log(service);
-    } else navigate("/Booking", { state: { service, sdm } });
+  const handleGoBooking = (services, sdm) => {
+    
+
+    
+    if(sdm.ServiceDeliveryMethodID ==='SDM3'){
+      navigate("/OnlineService", { state: { services, sdm } });
+    }if(sdm.ServiceDeliveryMethodID ==='SDM1'){
+      navigate("/AtHomeService", { state: { services, sdm } });
+    }if(sdm.ServiceDeliveryMethodID ==='SDM2'){
+      navigate("/PondAtHome", { state: { services, sdm } });
+    }if(sdm.ServiceDeliveryMethodID ==='SDM4'){
+      navigate("/CenterCervice", { state: { services, sdm } });
+    }
+
+     
   };
 
-  const [showMenu, setShowMenu] = useState(false);
   const [token, setToken] = useState(
     window.sessionStorage.getItem("token") || null
   );
@@ -110,13 +120,7 @@ export default function Example({ allServices, sdm }) {
                   <a
                     key={method.ServiceDeliveryMethodID}
                     onClick={() =>
-                      handleGoBooking(
-                        {
-                          ServiceDeliveryMethodID:
-                            method.ServiceDeliveryMethodID,
-                        },
-                        method
-                      )
+                      handleGoBooking(services, method)
                     }
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >

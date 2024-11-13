@@ -159,25 +159,34 @@ public class BookingRepository : GenericRepository<Booking>
         }
     }
 
-//    public async Task<Decimal> GetTotalPrice(string bookingID){
-//        BookingDetailRepository bdRepo = new BookingDetailRepository(_context);
-//        List<BookingDetail?> details = await bdRepo.GetByBookingID(bookingID);
-//        if( details == null || details.Count == 0 )
-//            return 0;
-//        Booking info = await GetByIdAsync(bookingID);
-//        if( info == null )
-//            return 0;
-//        if( info.Vat == null )
-//            return 0;
-//        int total = 0;
-//        foreach(BookingDetail? detail in details){
-//            if( detail == null )
-//                break;
-//            total += (int)(detail.UnitPrice * info.NumberOfFish);
-//        }
-//        total += (int)(info.Vat * total);
-//        return total;
-//    }
+    public async Task<Decimal> GetTotalPrice(string bookingID){
+        BookingDetailRepository bdRepo = new BookingDetailRepository(_context);
+        List<BookingDetail?> details = (await bdRepo.GetByBookingID(bookingID))!;
+        if( details == null || details.Count == 0 )
+            return 0;
+        Booking info = await GetByIdAsync(bookingID);
+        if( info == null )
+            return 0;
+        if( info.Vat == null )
+            return 0;
+        int total = 0;
+        ServiceRepository serviceRepo = new(_context);
+        foreach(BookingDetail? detail in details){
+            if( detail == null )
+                break;
+
+            Service service = await serviceRepo.GetByIdAsync( detail.ServiceID );
+            if( service == null )
+                return 0;
+            //total += (int)(service.Price * info.NumberOfFish);
+            if( service.Name.ToLower().Contains("hồ") )
+                total += (int)(service.Price * ( info.NumberOfPool + info.IncidentalPool ) );
+            else total += (int)(service.Price * ( info.NumberOfFish + info.IncidentalFish ) );
+        }
+        total += (int)(info.DistanceCost);
+        total += (int)(info.Vat * total);
+        return total;
+    }
 
 //    public async Task<Decimal> GetDepositPrice(string bookingID){
 //        Booking info = await GetByIdAsync(bookingID);

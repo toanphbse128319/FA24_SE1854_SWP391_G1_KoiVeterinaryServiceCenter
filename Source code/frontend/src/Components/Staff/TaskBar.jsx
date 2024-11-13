@@ -120,8 +120,7 @@ const STEPS = {
     function Update(){
         setUpdate( !update );
     }
-
-    console.log(DoctorSchedule);
+    console.log( doctors );
 
   const renderComponent = () => {
     switch (currentStep) {
@@ -140,7 +139,7 @@ const STEPS = {
     <div className="flex h-screen">
       {/* Sidebar */}
       <div className="fixed top-0 h-full w-1/6 bg-gray-800 text-white p-4">
-        <h2 className="text-lg font-bold mb-6 text-center">Task Management</h2>
+        <h2 className="text-lg font-bold mb-6 text-center">Quản lí</h2>
         <div className="space-y-3">
           <button
             className={`w-full text-left p-3 rounded-lg transition-colors font-medium ${
@@ -148,7 +147,7 @@ const STEPS = {
             }`}
             onClick={() => setCurrentStep(STEPS.ASSIGN_VET)}
           >
-            Assign Vet
+            Phân công thú y 
           </button>
           <button
             className={`w-full text-left p-3 rounded-lg transition-colors font-medium ${
@@ -156,7 +155,7 @@ const STEPS = {
             }`}
             onClick={() => setCurrentStep(STEPS.ADD_SCHEDULE)}
           >
-            Add Schedule
+            Thêm lịch làm việc
           </button>
           <button
             className={`w-full text-left p-3 rounded-lg transition-colors font-medium ${
@@ -164,7 +163,7 @@ const STEPS = {
             }`}
             onClick={() => setCurrentStep(STEPS.MANAGE_USER)}
           >
-            Manage User
+            Quản lí người đùng 
           </button>
           <button
             onClick={() => {
@@ -174,7 +173,7 @@ const STEPS = {
             }}
             className="w-full text-left p-3 rounded-lg transition-colors font-medium mt-8 bg-red-600 hover:bg-red-700"
           >
-            Logout
+            Đăng xuất 
           </button>
         </div>
       </div>
