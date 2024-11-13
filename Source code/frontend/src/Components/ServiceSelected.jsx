@@ -203,7 +203,7 @@ const handleUpdatePoolProfile = (index, updatedProfile) => {
   // Xử lý dữ liệu trước khi gửi API
   const processData = () => {
     const processField = (value, isNumeric = false) => {
-      if (!value || value === 'Chưa có dữ liệu') return isNumeric ? 0 : 'N/A';
+      if (!value || value === 'Chưa có dữ liệu') return isNumeric ? 0.0 : 'N/A';
       return isNumeric ? Number(value) : String(value);
     };
 
@@ -231,8 +231,8 @@ const handleUpdatePoolProfile = (index, updatedProfile) => {
     }));
 
     return {
-      AnimalProfile: processedFishProfiles,
-      PoolProfile: processedPoolProfiles,
+      AnimalProfiles: processedFishProfiles,
+      PoolProfiles: processedPoolProfiles,
       BookingDetail: {
         ...INITIAL_STATES.FORM,
         ...formData,
@@ -272,7 +272,7 @@ const validateForm = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:5145/api/AnimalProfile/addProfiles', {
+      const response = await fetch('http://localhost:5145/api/ServiceUse/LogBooked', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(processData())
