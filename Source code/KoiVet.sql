@@ -227,7 +227,7 @@ VALUES
 ('A10', '1234567876', 'admin@gmail.com', 'R1', 'avatar5.jpg', 'admin12345', 'Normal', 1),
 ('A11', '9987654321', 'decsr@gmail.com', 'R3', 'avatar5.jpg', 'long12345', 'Normal', 1),
 ('A12', '0100101010', 'kiet@gmail.com', 'R4', 'avatar6.jpg', 'kiet12345', 'Normal', 1),
-('A13', '0989083300', 'Tawng@gmail.com', 'R2', 'avatar5.jpg', 'long12345', 'Normal', 1);
+('A13', '0100100000', 'tawng@gmail.com', 'R2', 'avatar6.jpg', 'long12345', 'Normal', 1);
 GO
 
 INSERT INTO Customer (CustomerID, FirstName, LastName, Sex, Birthday, Address, AccountID, Status) 
@@ -385,46 +385,46 @@ INSERT INTO Post (PostID, PostName, PostCategoryID, Context) VALUES
 
 INSERT INTO Schedule (ScheduleID, EmployeeID, Date, Note, Status) VALUES
 ('SCH0', 'E0', '2024-11-08', N'', 'Default'),
-('SCH1', 'E3', '2024-11-08', N'Trực tuyến', 'Active'),
-('SCH2', 'E4', '2024-11-08', N'Tại trung tâm', 'Active'),
-('SCH3', 'E3', '2024-11-09', N'Tại trung tâm', 'Active'),
-('SCH4', 'E4', '2024-11-09', N'Tại trung tâm', 'Active'),
-('SCH5', 'E3', '2024-11-10', N'Tại trung tâm', 'Active'),
-('SCH6', 'E4', '2024-11-10', N'Tại nhà', 'Active'),
-('SCH7', 'E3', '2024-11-11', N'Tại nhà', 'Active'),
-('SCH8', 'E4', '2024-11-11', N'Tại trung tâm', 'Active'),
-('SCH9', 'E3', '2024-11-12', N'Tại nhà', 'Active'),
-('SCH10', 'E4', '2024-11-12', N'Tại nhà', 'Active'),
-('SCH11', 'E3', '2024-11-13', N'Tại nhà', 'Active'),
-('SCH12', 'E4', '2024-11-13', N'Tại nhà', 'Active'),
-('SCH13', 'E3', '2024-11-14', N'Tại nhà', 'Active'),
-('SCH14', 'E4', '2024-11-14', N'Tại nhà', 'Active'),
-('SCH15', 'E3', '2024-11-15', N'Tại nhà', 'Active'),
-('SCH16', 'E4', '2024-11-15', N'Tại nhà', 'Active'),
-('SCH17', 'E3', '2024-11-16', N'Tại trung tâm', 'Active'),
-('SCH18', 'E4', '2024-11-16', N'Tại nhà', 'Active'),
-('SCH19', 'E3', '2024-11-17', N'Tại trung tâm', 'Active'),
-('SCH20', 'E4', '2024-11-17', N'Tại nhà', 'Active'),
-('SCH21', 'E3', '2024-11-18', N'Tại trung tâm', 'Active'),
-('SCH22', 'E4', '2024-11-18', N'Tại nhà', 'Active'),
-('SCH23', 'E3', '2024-11-19', N'Tại trung tâm', 'Active'),
-('SCH24', 'E4', '2024-11-19', N'Tại nhà', 'Active'),
-('SCH25', 'E3', '2024-11-20', N'Tại trung tâm', 'Active'),
-('SCH26', 'E4', '2024-11-20', N'Tại nhà', 'Active'),
-('SCH27', 'E3', '2024-11-21', N'Tại trung tâm', 'Active'),
-('SCH28', 'E4', '2024-11-21', N'Trực tuyến', 'Active'),
-('SCH29', 'E3', '2024-11-22', N'Tại trung tâm', 'Active'),
-('SCH30', 'E4', '2024-11-22', N'Trực tuyến', 'Active'),
-('SCH31', 'E3', '2024-11-23', N'Tại trung tâm', 'Active'),
-('SCH32', 'E4', '2024-11-23', N'Trực tuyến', 'Active'),
-('SCH33', 'E3', '2024-11-24', N'Tại trung tâm', 'Active'),
-('SCH34', 'E4', '2024-11-24', N'Trực tuyến', 'Active'),
-('SCH35', 'E3', '2024-11-25', N'Tại trung tâm', 'Active'),
-('SCH36', 'E4', '2024-11-25', N'Trực tuyến', 'Active'),
-('SCH37', 'E3', '2024-11-26', N'Tại trung tâm', 'Active'),
-('SCH38', 'E4', '2024-11-26', N'Trực tuyến', 'Active'),
-('SCH39', 'E3', '2024-11-27', N'Trực tuyến', 'Active'),
-('SCH40', 'E4', '2024-11-27', N'Trực tuyến', 'Active');
+('SCH1', 'E3', '2024-11-10', N'Trực tuyến', 'Active'),
+('SCH2', 'E4', '2024-11-10', N'Tại trung tâm', 'Active'),
+('SCH3', 'E3', '2024-11-11', N'Tại trung tâm', 'Active'),
+('SCH4', 'E4', '2024-11-11', N'Tại trung tâm', 'Active'),
+('SCH5', 'E3', '2024-11-12', N'Tại trung tâm', 'Active'),
+('SCH6', 'E4', '2024-11-12', N'Tại nhà', 'Active'),
+('SCH7', 'E3', '2024-11-13', N'Tại nhà', 'Active'),
+('SCH8', 'E4', '2024-11-13', N'Tại trung tâm', 'Active'),
+('SCH9', 'E3', '2024-11-14', N'Tại nhà', 'Active'),
+('SCH10', 'E4', '2024-11-14', N'Tại nhà', 'Active'),
+('SCH11', 'E3', '2024-11-15', N'Tại nhà', 'Active'),
+('SCH12', 'E4', '2024-11-15', N'Tại nhà', 'Active'),
+('SCH13', 'E3', '2024-11-16', N'Tại nhà', 'Active'),
+('SCH14', 'E4', '2024-11-16', N'Tại nhà', 'Active'),
+('SCH15', 'E3', '2024-11-17', N'Tại nhà', 'Active'),
+('SCH16', 'E4', '2024-11-17', N'Tại nhà', 'Active'),
+('SCH17', 'E3', '2024-11-18', N'Tại trung tâm', 'Active'),
+('SCH18', 'E4', '2024-11-18', N'Tại nhà', 'Active'),
+('SCH19', 'E3', '2024-11-19', N'Tại trung tâm', 'Active'),
+('SCH20', 'E4', '2024-11-19', N'Tại nhà', 'Active'),
+('SCH21', 'E3', '2024-11-20', N'Tại trung tâm', 'Active'),
+('SCH22', 'E4', '2024-11-20', N'Tại nhà', 'Active'),
+('SCH23', 'E3', '2024-11-21', N'Tại trung tâm', 'Active'),
+('SCH24', 'E4', '2024-11-21', N'Tại nhà', 'Active'),
+('SCH25', 'E3', '2024-11-22', N'Tại trung tâm', 'Active'),
+('SCH26', 'E4', '2024-11-22', N'Tại nhà', 'Active'),
+('SCH27', 'E3', '2024-11-23', N'Tại trung tâm', 'Active'),
+('SCH28', 'E4', '2024-11-23', N'Trực tuyến', 'Active'),
+('SCH29', 'E3', '2024-11-24', N'Tại trung tâm', 'Active'),
+('SCH30', 'E4', '2024-11-24', N'Trực tuyến', 'Active'),
+('SCH31', 'E3', '2024-11-25', N'Tại trung tâm', 'Active'),
+('SCH32', 'E4', '2024-11-25', N'Trực tuyến', 'Active'),
+('SCH33', 'E3', '2024-11-26', N'Tại trung tâm', 'Active'),
+('SCH34', 'E4', '2024-11-26', N'Trực tuyến', 'Active'),
+('SCH35', 'E3', '2024-11-27', N'Tại trung tâm', 'Active'),
+('SCH36', 'E4', '2024-11-27', N'Trực tuyến', 'Active'),
+('SCH37', 'E3', '2024-11-28', N'Tại trung tâm', 'Active'),
+('SCH38', 'E4', '2024-11-28', N'Trực tuyến', 'Active'),
+('SCH39', 'E3', '2024-11-29', N'Trực tuyến', 'Active'),
+('SCH40', 'E4', '2024-11-29', N'Trực tuyến', 'Active');
 
 INSERT INTO SlotTable (SlotTableID, ScheduleID, Note, Slot, SlotCapacity, SlotOrdered, SlotStatus) VALUES
 -- SCH0
@@ -835,14 +835,14 @@ INSERT INTO SlotTable (SlotTableID, ScheduleID, Note, Slot, SlotCapacity, SlotOr
 -- Insert sample data for Booking
 INSERT INTO Booking (BookingID, CustomerID, EmployeeID,ServiceDeliveryMethodID, BookingDate, ExpiredDate, Deposit, NumberOfFish, IncidentalFish, NumberOfPool, IncidentalPool, VAT, BookingAddress, Distance, DistanceCost, TotalServiceCost, Status, FeedbackID, ScheduleID, Note, PaymentMethod, PaymentStatus) 
 VALUES 
-('B1', 'C1', 'E1','SDM1', '2024-10-31 09:00:00', '2024-09-01 10:00:00', 50.00, 1, 0, 0, 0, 10.00, '250 Vo Van Hat', 5.5, 11.00, 661000, 'Confirmed', 'FB1', 'SCH0', 'Home visit for koi health check', 'Credit Card', 'Pending'),
-('B2', 'C2', 'E2','SDM1', '2024-11-01 14:00:00', '2024-09-02 15:00:00', 37.50, 1, 0, 0, 0, 7.50, '456 Maple Ave', 0, 0.00, 397500, 'Confirmed', 'FB2', 'SCH9', 'Trực tuyến consultation for koi', 'PayPal', 'Pending'),
-('B3', 'C3', 'E3','SDM1','2024-10-31 18:00:00', '2024-09-03 19:00:00', 75.00, 1, 0, 0, 0, 15.00, '789 Oak St', 3.2, 6.40, 996000, 'Cancelled', 'FB3', 'SCH10', 'Clinic visit for koi disease treatment', 'Cash', 'Pending'),
-('B4', 'C4', 'E4','SDM1', '2024-11-01 22:00:00', '2024-09-05 01:00:00', 150.00, 1, 0, 0, 0, 30.00, '321 Birch Ave', 8.7, 17.40, 2000000, 'In Progress', 'FB4', 'SCH11', 'Emergency koi surgery', 'Credit Card', 'Pending'),
+('B1', 'C1', 'E1','SDM1', '2024-11-15 09:00:00', '2024-09-01 10:00:00', 50.00, 1, 0, 0, 0, 10.00, '250 Vo Van Hat', 5.5, 11.00, 661000, 'Confirmed', 'FB1', 'SCH0', 'Home visit for koi health check', 'Credit Card', 'Pending'),
+('B2', 'C2', 'E2','SDM1', '2024-11-16 14:00:00', '2024-09-02 15:00:00', 37.50, 1, 0, 0, 0, 7.50, '456 Maple Ave', 0, 0.00, 397500, 'Confirmed', 'FB2', 'SCH9', 'Trực tuyến consultation for koi', 'PayPal', 'Pending'),
+('B3', 'C3', 'E3','SDM1','2024-11-16 14:00:00', '2024-09-03 19:00:00', 75.00, 1, 0, 0, 0, 15.00, '789 Oak St', 3.2, 6.40, 996000, 'Cancelled', 'FB3', 'SCH10', 'Clinic visit for koi disease treatment', 'Cash', 'Pending'),
+('B4', 'C4', 'E4','SDM1', '2024-11-17 07:00:00', '2024-09-05 01:00:00', 150.00, 1, 0, 0, 0, 30.00, '321 Birch Ave', 8.7, 17.40, 2000000, 'In Progress', 'FB4', 'SCH11', 'Emergency koi surgery', 'Credit Card', 'Pending'),
 --data đúng, đừng quan tâm các data ở trên
-('B5', 'C5', 'E4','SDM4', '2024-11-01 11:00:00', '2024-11-01 13:00:00', 150.00, 1, 2, 0, 0, 30.00, '321 Tran Duy Hung', 8.7, 17.40, 2000000, 'Completed', 'FB0', 'SCH12', '', 'VNPay', 'Paid'),
-('B6', 'C5', 'E4','SDM1', '2024-11-02 11:00:00', '2024-11-02 13:00:00', 150.00, 1, 0, 0, 2, 30.00, '300 Tran Hung Dao', 8.7, 17.40, 2000000, 'Completed', 'FB0', 'SCH20', 'kham ho', 'VNPay', 'Paid'),
-('B7', 'C5', 'E4','SDM1', '2024-11-03 11:00:00', '2024-11-03 13:00:00', 150.00, 1, 0, 0, 0, 30.00, '300 Tran Hung Dao', 8.7, 17.40, 2000000, 'Confirmed', 'FB0', 'SCH18', '', 'VNPay', 'Paid');
+('B5', 'C5', 'E4','SDM4', '2024-11-17 11:00:00', '2024-11-01 13:00:00', 150.00, 1, 2, 0, 0, 30.00, '321 Tran Duy Hung', 8.7, 17.40, 2000000, 'Completed', 'FB0', 'SCH12', '', 'VNPay', 'Paid'),
+('B6', 'C5', 'E4','SDM1', '2024-11-18 11:00:00', '2024-11-02 13:00:00', 150.00, 1, 0, 0, 2, 30.00, '300 Tran Hung Dao', 8.7, 17.40, 2000000, 'Completed', 'FB0', 'SCH20', 'kham ho', 'VNPay', 'Paid'),
+('B7', 'C5', 'E4','SDM1', '2024-11-19 11:00:00', '2024-11-03 13:00:00', 150.00, 1, 0, 0, 0, 30.00, '300 Tran Hung Dao', 8.7, 17.40, 2000000, 'Confirmed', 'FB0', 'SCH18', '', 'VNPay', 'Paid');
 
 
 -- Insert sample data for BookingDetail
