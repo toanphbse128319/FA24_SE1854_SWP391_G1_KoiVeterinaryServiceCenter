@@ -26,7 +26,7 @@ const OnlineService = () => {
             {services.map((service) => (
               <li key={service.ServiceID} className='mb-4 p-4 bg-white rounded shadow'>
                 <h2 className='text-2xl font-semibold'>{service.Name}</h2>
-                console.log(service);
+                
                 
                 <p>{service.Description}</p>
               </li>
