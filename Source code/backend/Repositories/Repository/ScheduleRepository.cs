@@ -38,29 +38,33 @@ public class ScheduleRepository : GenericRepository<Schedule>
 
     //    SlotTable? st = await new SlotTableRepository(_context).SearchSpecificSlotAsync(note, 1);
     //}
-  
+
 
 
     public async Task<Schedule?> CheckValidDateAsync(DateOnly date, string empID, string note, int slotNo)
     {
         if (note == "" || slotNo == 0)
             return null;
-            if (empID == "E0")
+
+        if (empID == "E0")
         {
             List<Schedule> sch = await _context.Schedules.Where(schedule => schedule.Date == date &&
-                                                                            note.Contains(schedule.Note)).ToListAsync();
+                                                                            note.ToLower().Contains(schedule.Note.ToLower())).ToListAsync();
             foreach (Schedule s in sch)
             {
-                SlotTable? slot = await new SlotTableRepository(_context).SearchSpecificSlotAsync(s.ScheduleID, slotNo);
+                SlotTable? slot = await new SlotTableRepository(_context).SearchSpecificSlotAsync(s.ScheduleID, slotNo, note);
+
                 if (slot == null)
-                    return null;
+                    continue;
+
                 if (slot.SlotStatus == true)
                     return s;
+
             }
         }
         return await _context.Schedules.FirstOrDefaultAsync(schedule => schedule.Date == date &&
                                                                         schedule.EmployeeID == empID &&
-                                                                        note.Contains(schedule.Note));
+                                                                        note.ToLower().Contains(schedule.Note.ToLower()));
     }
     public async Task<Schedule?> CheckValidScheduleAsync(DateOnly date)
     {
@@ -86,32 +90,33 @@ public class ScheduleRepository : GenericRepository<Schedule>
                                                                         schedule.EmployeeID == EmpID);
     }
 
-    public async Task<List<Schedule>> Get30DaysScheduleAsync( DateOnly date ){
-        return await _context.Schedules.Where( schedule => schedule.Date >= date &&
-                                                           schedule.Date <= date.AddDays(30) ).ToListAsync();
+    public async Task<List<Schedule>> Get30DaysScheduleAsync(DateOnly date)
+    {
+        return await _context.Schedules.Where(schedule => schedule.Date >= date &&
+                                                          schedule.Date <= date.AddDays(30)).ToListAsync();
     }
 
     public async Task<Schedule> UpdateVetScheduleAsync(DateOnly date, string oldEmpID, string newEmpID)
     {
         Schedule? sch = await _context.Schedules.FirstOrDefaultAsync(schedule => schedule.Date == date &&
-                                                                           schedule.EmployeeID == oldEmpID);
+                                                                                 schedule.EmployeeID == oldEmpID);
         if (sch == null)
             return null!;
         sch.EmployeeID = newEmpID;
         await UpdateAsync(sch);
-        
+
         return sch;
     }
 
     //Reduct redundadncy
     public async Task<Schedule> AddNewScheduleAsync(Schedule info)
     {
-//        Schedule schedule = new Schedule();
-//        schedule.ScheduleID = GetNextID("SCH");
-//        schedule.EmployeeID = info.EmployeeID;
-//        schedule.Date = info.Date;
-//        schedule.Note = info.Note;
-//        schedule.Status = info.Status;
+        //        Schedule schedule = new Schedule();
+        //        schedule.ScheduleID = GetNextID("SCH");
+        //        schedule.EmployeeID = info.EmployeeID;
+        //        schedule.Date = info.Date;
+        //        schedule.Note = info.Note;
+        //        schedule.Status = info.Status;
 
         info.ScheduleID = GetNextID("SCH");
         await base.CreateAsync(info);
@@ -119,12 +124,14 @@ public class ScheduleRepository : GenericRepository<Schedule>
         return info;
     }
 
-    public async Task<List<SlotTable>> GetSlotIn30Days( DateOnly date ){
-        List<Schedule> schedules = await Get30DaysScheduleAsync( date );
+    public async Task<List<SlotTable>> GetSlotIn30Days(DateOnly date)
+    {
+        List<Schedule> schedules = await Get30DaysScheduleAsync(date);
         List<SlotTable> slots = new List<SlotTable>();
-        SlotTableRepository slotManager = new SlotTableRepository( _context );
-        foreach( Schedule schedule in schedules ){
-            slots.AddRange( await slotManager.SearchByScheduleIDAsync( schedule.ScheduleID ) );
+        SlotTableRepository slotManager = new SlotTableRepository(_context);
+        foreach (Schedule schedule in schedules)
+        {
+            slots.AddRange(await slotManager.SearchByScheduleIDAsync(schedule.ScheduleID));
         }
         return slots;
     }

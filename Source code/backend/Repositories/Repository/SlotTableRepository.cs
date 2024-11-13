@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Repositories.Model;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Repositories.Repository;
 
@@ -11,10 +12,11 @@ public class SlotTableRepository : GenericRepository<SlotTable>
     {
         return await _context.SlotTables.Where(slottable => slottable.ScheduleID.ToLower() == id.ToLower()).ToListAsync()!;
     }
-    public async Task<SlotTable?> SearchSpecificSlotAsync(string scheduleID, int slotInfo)
+    public async Task<SlotTable?> SearchSpecificSlotAsync(string scheduleID, int slotInfo, string note)
     {
         return await _context.SlotTables.FirstOrDefaultAsync(slot => slot.ScheduleID == scheduleID &&
-                                                                     slot.Slot == slotInfo);
+                                                                     slot.Slot == slotInfo &&
+                                                                     note.ToLower().Contains(slot.Note.ToLower()));
     }
 
     public int SlotByTime(int hour)
@@ -39,11 +41,11 @@ public class SlotTableRepository : GenericRepository<SlotTable>
 
     public async Task<SlotTable?> UpdateSlotInformationAsync(SlotTable info)
     {
-        SlotTable? slot = await SearchSpecificSlotAsync(info.ScheduleID, info.Slot);
+        SlotTable? slot = await SearchSpecificSlotAsync(info.ScheduleID, info.Slot, info.Note);
         if (slot == null)
             return slot;
         if (info.Note != null)
-            slot.Note = info.Note;
+            info.Note.ToLower().Contains(slot.Note.ToLower());
         if (slot.SlotOrdered > info.SlotCapacity)
             return null;
             slot.SlotOrdered = info.SlotOrdered;
@@ -56,14 +58,20 @@ public class SlotTableRepository : GenericRepository<SlotTable>
 
     public async Task<SlotTable> OrderSlotAsync(int num, string scheduleID, string note)
     {
-        SlotTable? slot = await SearchSpecificSlotAsync(scheduleID, num);
+        SlotTable? slot = await SearchSpecificSlotAsync(scheduleID, num, note);
         if (slot == null)
             return null!;
-        Console.WriteLine( scheduleID + ", " + note + ", " + slot.Note);
         if (note.ToLower().Contains(slot.Note.ToLower()) == false)
             return null!;
         if (slot.SlotStatus == true)
         {
+            if (note.ToLower().Contains("Tại nhà".ToLower()))
+            {
+                slot.SlotOrdered = slot.SlotCapacity;
+                slot.SlotStatus = false;
+                return slot;
+            }
+                
             if (slot.SlotOrdered == slot.SlotCapacity)
             {
                 slot.SlotStatus = false;

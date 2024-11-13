@@ -59,12 +59,13 @@ public class BookingRepository : GenericRepository<Booking>
         SlotTableRepository slotManager = new SlotTableRepository(_context);
         int slotNo = slotManager.SlotByTime(bookingDate.Hour);
         Schedule? schedule = await schrepo.CheckValidDateAsync(date, employeeID, note, slotNo);
+        //Console.WriteLine("Schedule: " + schedule);
         if ( schedule == null )
             return "Cannot get the schedule";
         SlotTable? slot = new SlotTable();
         if( slotNo == 0 )
             return "Outside working hour";
-        slot = await slotManager.SearchSpecificSlotAsync(schedule.ScheduleID, slotNo);
+        slot = await slotManager.SearchSpecificSlotAsync(schedule.ScheduleID, slotNo, note);
         if( slot == null )
             return "Cannot get the schedule";
         if( slot.SlotStatus == false )
