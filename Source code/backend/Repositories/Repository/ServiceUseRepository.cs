@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Objects;
 using Helper;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Repositories.Repository;
 
@@ -68,20 +69,35 @@ public class ServiceUseRepository : GenericRepository<ServiceUse>
         BookingDetail bd = await bdRepo.GetByIdAsync( profiles.BookingDetail.BookingDetailID );
         BookingRepository bookRepo = new(_context);
         Booking bookingOrder = await bookRepo.GetByIdAsync( profiles.BookingDetail.BookingID );
+
         if( bookingOrder == null )
             return "Invalid: Cannot find the booking order";
         if( bd == null )
             return "Invalid: Cannot determined the booking detail info";
-        Service service = await serviceRepo.GetByIdAsync( bd.ServiceID );
+        Service service = await serviceRepo.GetByIdAsync(profiles.BookingDetail.ServiceID );
         if( service == null )
             return "Invalid: Cannot determined the service";
         string type = await sdmRepo.GetServicedType( service.ServiceDeliveryMethodID );
-        bdRepo.Copy(profiles.BookingDetail, bd);
+
         bookingOrder.Status += " " + Configuration.GetConfiguration()["Other:PreOrderedWorkConfirmation"];
         if( await bookRepo.UpdateAsync( bookingOrder ) < 1 )
             return "Invalid: Failed to update booking status";
-        if( await bdRepo.UpdateAsync( bd ) < 1 ) 
+
+        if (string.IsNullOrEmpty(profiles.BookingDetail.ExaminationResult) == false)
+            bd.ExaminationResult = profiles.BookingDetail.ExaminationResult;
+        if (string.IsNullOrEmpty(profiles.BookingDetail.VetConsult) == false)
+            bd.VetConsult = profiles.BookingDetail.VetConsult;
+        if (string.IsNullOrEmpty(profiles.BookingDetail.Formulary) == false)
+            bd.Formulary = profiles.BookingDetail.Formulary;
+        if (profiles.BookingDetail.IsIncidental != bd.IsIncidental)
+            bd.IsIncidental = profiles.BookingDetail.IsIncidental;
+        if (string.IsNullOrEmpty(profiles.BookingDetail.NoteResult) == false)
+            bd.NoteResult = profiles.BookingDetail.NoteResult;
+        Console.WriteLine(bd.ExaminationResult + bd.VetConsult +bd.Formulary +bd.NoteResult);
+
+        if ( await bdRepo.UpdateAsync( bd ) < 1 ) 
             return "Invalid: Failed to update booking detail info";
+
         if( type == "fish" ){
             foreach( var profile in profiles.AnimalProfiles ){
                 profile.AnimalProfileID = await animalRepo.AddAnimalProfileAsync( profile );
@@ -165,12 +181,19 @@ public class ServiceUseRepository : GenericRepository<ServiceUse>
             return "Invalid: Booking ID is inconsistent!!";
 
         List<string> temp = await GetProfiles(exam.BookingDetails[0].BookingID);
+        if (temp == null)
+            return exam.BookingDetails[0].BookingID;
+
         List<string> animalProfiles = FilterAnimalProfile( temp );
         List<string> poolProfiles = FilterPoolProfile( temp );
 
         BookingDetailRepository bdRepo = new(_context);
         List<BookingDetail> bds = await bdRepo.GetByBookingID( exam.BookingDetails[0].BookingID );
-        bds.AddRange(exam.BookingDetails);
+        foreach( BookingDetail bd in exam.BookingDetails ){
+            if( await bdRepo.isDuplicateServiceOfBooking( bd.BookingID, bd.ServiceID ) )
+                continue;
+            bds.Add( bd );
+        }
 
         if( exam.AnimalProfiles != null && exam.AnimalProfiles.Count() > 0 ){
             AnimalProfileRepository animalRepo = new(_context);
@@ -184,7 +207,10 @@ public class ServiceUseRepository : GenericRepository<ServiceUse>
             }
         }
 
-        if( exam.PoolProfiles != null && exam.PoolProfiles.Count() > 0 ){
+
+    
+
+        if ( exam.PoolProfiles != null && exam.PoolProfiles.Count() > 0 ){
             PoolProfileRepository poolRepo = new(_context);
             foreach( PoolProfile profile in exam.PoolProfiles ){
                 if( poolRepo.IsDuplicate( profile ) ) 
@@ -200,6 +226,7 @@ public class ServiceUseRepository : GenericRepository<ServiceUse>
             bd.BookingDetailID = await bdRepo.AddBookingDetailAsync( bd );
             if( bd.BookingDetailID.ToLower().Contains( "invalid" ) )
                 return bd.BookingDetailID;
+            Console.WriteLine( bd.BookingDetailID );
             temp.Add( bd.BookingDetailID );
         }
 
@@ -217,6 +244,11 @@ public class ServiceUseRepository : GenericRepository<ServiceUse>
                 await AddRangeServiceUse( bd.BookingDetailID, animalProfiles );
             }
         }
+        BookingRepository bookingRepository = new(_context);
+        Booking booking = bookingRepository.GetById(exam.BookingDetails[0].BookingID);
+        booking.IncidentalFish = booking.IncidentalFish + exam.IncidentalFish;
+        booking.IncidentalPool = booking.IncidentalPool + exam.IncidentalPool;
+        bookingRepository.Update(booking);
         return "Success";
     }
 

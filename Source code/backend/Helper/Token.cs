@@ -38,7 +38,7 @@ public class Token
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(_claims),
-            Expires = DateTime.UtcNow.AddHours(time),
+            Expires = DateTime.UtcNow.AddHours(4),
             Issuer = _issuer,
             Audience = _audience,
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(_key), SecurityAlgorithms.HmacSha256Signature)

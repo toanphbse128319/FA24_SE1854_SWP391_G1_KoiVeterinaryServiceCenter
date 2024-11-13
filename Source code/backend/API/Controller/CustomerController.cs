@@ -114,7 +114,7 @@ public class CustomerController : ControllerBase {
             int updated = await _unitOfWork.CustomerRepository.updateInfo(
                 info.Id,
                 info.Address,
-                info.DOB,  // Make sure this is in yyyy-MM-dd format
+                info.DOB,
                 info.Gender
             );
 

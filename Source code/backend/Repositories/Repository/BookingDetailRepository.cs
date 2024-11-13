@@ -52,13 +52,10 @@ namespace Repositories.Repository
             return bd.BookingDetailID;
         }
 
-        public void Copy(BookingDetail from, BookingDetail to){
-            to.ServiceID = from.ServiceID;
-            to.Formulary = from.Formulary;
-            to.NoteResult = from.NoteResult;
-            to.ExaminationResult = from.ExaminationResult;
-            to.IsIncidental = from.IsIncidental;
-            to.VetConsult = from.VetConsult;
+        public async Task<bool> isDuplicateServiceOfBooking( string bookingID, string serviceID ){
+            if( await _context.BookingDetails.FirstOrDefaultAsync( bd => bd.BookingID == bookingID && bd.ServiceID == serviceID) == null )
+                return false;
+            return true;
         }
         
     }

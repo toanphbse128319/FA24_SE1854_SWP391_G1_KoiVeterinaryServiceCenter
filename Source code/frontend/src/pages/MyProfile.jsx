@@ -58,7 +58,7 @@ const MyProfile = () => {
 
     // Make the API call
     const response = await FetchAPI({
-        endpoint: `/customer/updatecusinfo`,
+        endpoint: `/Customer/updateCusInfo`,
         method: "PUT",
         body: updatedInfo,
     });
@@ -153,8 +153,8 @@ const MyProfile = () => {
                 value={userData.gender}
                 className="p-2 border rounded w-full mb-2"
               >
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
+                <option value="true">Male</option>
+                <option value="false">Female</option>
               </select>
             ) : (
               <p className="text-gray-700">{userData.gender}</p>

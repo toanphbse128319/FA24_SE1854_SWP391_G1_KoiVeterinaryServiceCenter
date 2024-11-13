@@ -145,8 +145,6 @@ const FeedbackModal = ({ bookingId, onClose,onFeedbackSubmitted }) => {
     const [description, setDescription] = useState('');
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [showToast, setShowToast] = useState(false);
-    const [toastMessage, setToastMessage] = useState('');
     const [isFeedback, setIsFeedback] = useState(false);
 
     useEffect(() => {
@@ -194,8 +192,7 @@ const FeedbackModal = ({ bookingId, onClose,onFeedbackSubmitted }) => {
         }
         
         setIsFeedback(true);
-        setToastMessage('Đánh giá đã được gửi thành công!');
-        setShowToast(true);
+       window.showToast("Đã gửi đánh giá thành công")
         if (onFeedbackSubmitted) {
           onFeedbackSubmitted();
         }
@@ -228,9 +225,6 @@ const FeedbackModal = ({ bookingId, onClose,onFeedbackSubmitted }) => {
     return (
       <>
         <Toast 
-          message={toastMessage}
-          isVisible={showToast}
-          onHide={() => setShowToast(false)}
         />
         <div style={styles.overlay} onClick={handleOverlayClick}>
           <div style={styles.modalContent}>

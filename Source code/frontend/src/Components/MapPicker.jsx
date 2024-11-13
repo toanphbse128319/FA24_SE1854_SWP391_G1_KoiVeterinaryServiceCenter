@@ -6,17 +6,13 @@ import './Styling/Map.css'
 import React, { useState, useRef, useEffect } from "react";
 
 //setDistance is the setter for distance as there's no way to return the result
-export default function Map({address} ){
- 
-    const [distance, setDistance] = useState('');
-    const [adddress, setAdddress] = useState('');
-
-    console.log(address)
+export default function Map({address, onChangeAddress, changed} ){
     let marker = useRef(null); 
     const mapContainer = useRef(null);
     const map = useRef(null);
-    let lng = useRef(106.84452525554275);
-    let lat = useRef(10.846653659695292);
+    let lng = useRef(0);
+    let lat = useRef(0);
+
     const zoom = 18;
     const APIKey = import.meta.env.VITE_GEOAPIFY_APIKEY;
     if( APIKey == null )
@@ -24,39 +20,61 @@ export default function Map({address} ){
     const url = "https://maps.geoapify.com/v1/styles/osm-carto/style.json?";
     const style = "osm-bright";
 
+    function updateMarker({ latidude, longtidude }){
+            lng.current = longtidude;
+            lat.current = latidude;
+        if (marker.current) {
+            marker.current.remove();
+            marker.current.setLngLat([longtidude, latidude]);
+            marker.current.addTo(map.current);
+        console.log(lat + ", " + lng );
+        GetAddress({lng: lng.current, lat: lat.current}).then( result => {
+            onChangeAddress(result);
+        });
+        }
+    }
+
     useEffect(() => {
         if( map.current ){
+            GetGeoLocation({address: address}).then( temp => {
+                console.log( temp );
+                if( marker.current ){
+                    updateMarker({ latidude: temp[1], longtidude: temp[0]});
+                }
+                map.current.setCenter([temp[0], temp[1]]);
+            })
             return; //Stop map from initialing twice
         }
-        map.current = new maplibregl.Map({
-            container: mapContainer.current,
-            style: `${url}style=${style}&apiKey=${APIKey}`,
-            center: [lng.current, lat.current],
-            zoom: zoom
-        });
-        map.current.addControl( new maplibregl.NavigationControl() );
-        marker = new maplibregl.Marker({
-            color: "#FF0000",
-            draggable: false
-        }).setLngLat([lng.current, lat.current])
-            .addTo(map.current);
-        map.current.on('click', (e) => {
-            OnMapClick( e );
-        });
-    }, [lng, lat, zoom]);
+        GetGeoLocation({address: address}).then( temp => {
+            console.log( temp );
+            if( marker.current ){
+                updateMarker({ latidude: temp[1], longtidude: temp[0]});
+            }
+            map.current = new maplibregl.Map({
+                container: mapContainer.current,
+                style: `${url}style=${style}&apiKey=${APIKey}`,
+                center: [lng.current, lat.current],
+                zoom: zoom
+            });
+            map.current.addControl( new maplibregl.NavigationControl() );
+            marker.current = new maplibregl.Marker({
+                color: "#FF0000",
+                draggable: false
+            }).setLngLat([lng.current, lat.current])
+                .addTo(map.current);
+            map.current.on('click', (e) => {
+                OnMapClick( e );
+            });
+            map.current.setCenter([temp[0], temp[1]]);
+        })
+
+    }, [lng, lat, zoom, changed]);
 
     function OnMapClick( e ){
-        if (marker) {
-            marker.remove();
-            lng.current = e.lngLat.lng;
-            lat.current = e.lngLat.lat;
-            marker.setLngLat([lng.current, lat.current]);
-            marker.addTo(map.current);
-        }
+        updateMarker({ latidude: e.lngLat.lat, longtidude: e.lngLat.lng})
         //this line below will get result in syncronous function
-        //CalculateDistance( { lng: lng.current, lat: lat.current } ).then( result => console.log( result ) );
-        // CalculateDistance( { lng: lng.current, lat: lat.current } ).then( result => setDistance( result ) );
-        GetAddress({lat: lat.current, lng: lng.current}).then(result => address =result );
+        //CalculateDistance( { lng: lng, lat: lat } ).then( result => console.log( result ) );
+        // CalculateDistance( { lng: lng, lat: lat } ).then( result => setDistance( result ) );
     }
 
     return (
@@ -90,7 +108,7 @@ export async function GetAddress( {lng, lat} ){
     if( APIKey == null )
         console.error("Missing VITE_GEOAPIFY_APIKEY from .env");
 
-    let url = `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lng}&limit=1&apiKey=${APIKey}`    
+    let url = `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lng}&type=amenity&limit=1&apiKey=${APIKey}`    
     const response = await fetch(url).catch( error => console.error(error) );
     if( !response.ok )
         return "Unknown";
