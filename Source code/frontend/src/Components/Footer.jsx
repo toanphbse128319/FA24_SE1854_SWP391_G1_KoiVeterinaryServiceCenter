@@ -21,7 +21,7 @@ function Footer() {
       <div className="flex flex-col items-center w-full max-w-lg">
         <div className="w-full h-32 lg:h-36 overflow-hidden rounded-lg shadow-md"> {/* Giảm chiều cao của iframe */}
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3592.5733582042144!2d106.70488407462743!3d10.79821668935185!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317529527e3968b3%3A0x6474cca92e5cc978!2zMjM2LzI5IMSQaeG7h24gQmnDqm4gUGjhu6csIFBoxrDhu51uZyAxNywgQsOsbmggVGjhuqFuaCwgSOG7kyBDaMOtIE1pbmgsIFZp4buHdCBOYW0!5e1!3m2!1svi!2s!4v1729289457637!5m2!1svi!2s"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.610010537023!2d106.80730807388858!3d10.841127589311572!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752731176b07b1%3A0xb752b24b379bae5e!2sFPT%20University%20HCMC!5e0!3m2!1sen!2s!4v1731469072597!5m2!1sen!2s"
             width="100%"
             height="100%"
             frameBorder="0"
@@ -35,7 +35,7 @@ function Footer() {
         {/* Contact information */}
         <div className="mt-3 text-black text-sm lg:text-base leading-relaxed text-center lg:text-left">
           <p className="font-bold">Địa chỉ</p>
-          <p>236/29/18 Điện Biên Phủ - Phường 17 - Quận Bình Thạnh - TPHCM.</p>
+          <p>Lô E2a-7, Đường D1, Đ. D1, Long Thạnh Mỹ, Thành Phố Thủ Đức, Hồ Chí Minh 700000, Vietnam</p>
 
           <p className="font-bold mt-2">Website</p>
           <p>https://****.vn</p>
