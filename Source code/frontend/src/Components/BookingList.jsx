@@ -202,7 +202,7 @@ async function FetchBookingDetail() {
 
 const BookingList = ({
   //userRole = 'Customer',
-  userRole = 'Veterinarian',
+    userRole = window.sessionStorage.getItem("role"),
   onFeedback = () => { },
   onEditBooking = () => { },
   onStartExamination = () => { }

@@ -29,18 +29,18 @@ public class VnPayController : ControllerBase {
                 return Ok("The order has been paid");
             else if( info.PaymentStatus == "Refunded" )
                 return Ok("The order has been refunded");
+            info.TotalServiceCost = await _unitOfWork.BookingRepository.GetTotalPrice( info.BookingID );
             Decimal price = info.TotalServiceCost;
             if( price == 0 )
                 return StatusCode( StatusCodes.Status422UnprocessableEntity, "Unable to get pricing");
-            return StatusCode(StatusCodes.Status200OK, service.PayUrl(price, info.BookingID, Request.Host.ToString() , "vn", $"Thanh toán chi phí cho hóa đơn {info.BookingID} với giá {info.TotalServiceCost}"));
+            return StatusCode(StatusCodes.Status200OK, service.PayUrl(price, info.BookingID + "F", Request.Host.ToString() , "vn", $"Thanh toán chi phí cho hóa đơn {info.BookingID} với giá {info.TotalServiceCost}"));
         } catch ( Exception ex ){
             Console.WriteLine( ex );
             return StatusCode( StatusCodes.Status500InternalServerError, ex.Message );
         }
     }
 
-
-    [HttpGet("deposit/{id}")]
+    [HttpGet("booked/{id}")]
     //[Authorize(Policy = "customer_policy")]
     public async Task<ActionResult> GetDepositPaymentLink(string id){
         try{
@@ -61,7 +61,7 @@ public class VnPayController : ControllerBase {
             Decimal price = info.TotalServiceCost * 30 / 100;
             if( price == 0 )
                 return StatusCode( StatusCodes.Status422UnprocessableEntity, "Unable to get pricing");
-            return StatusCode(StatusCodes.Status200OK, service.PayUrl(price, info.BookingID, Request.Host.ToString() , "vn", $"Thanh toán chi phí cho hóa đơn {info.BookingID} với giá {info.TotalServiceCost}"));
+            return StatusCode(StatusCodes.Status200OK, service.PayUrl(price, info.BookingID + "D", Request.Host.ToString() , "vn", $"Thanh toán chi phí đặt trước hóa đơn {info.BookingID} với giá {info.TotalServiceCost}"));
         } catch ( Exception ex ){
             Console.WriteLine( ex );
             return StatusCode( StatusCodes.Status500InternalServerError, ex.Message );
@@ -77,8 +77,18 @@ public class VnPayController : ControllerBase {
             PaymentResult result = service.CheckResult(Request.Query.ToList());
             if (result.Result == "Giao dịch được thực hiện thành công. Cảm ơn quý khách đã sử dụng dịch vụ")
             {
-                Booking info = await _unitOfWork.BookingRepository.GetByIdAsync(result.OrderID);
-                info.PaymentStatus = "Paid";
+                char type = result.OrderID[ result.OrderID.Length - 1];
+                Booking info = await _unitOfWork.BookingRepository.GetByIdAsync(result.OrderID.Substring(0, result.OrderID.Length - 1));
+                if( info == null )
+                    BadRequest("Invalid: failed to find booking info");
+                Console.WriteLine(result.OrderID.Substring(0, result.OrderID.Length - 1));
+                if( type == 'D' ){
+                    info.PaymentStatus = "Confirmed";
+                    info.Status = "Confirmed";
+                } else if ( type == 'F' ){
+                    info.PaymentStatus = "Completed";
+                    info.Status = "Completed";
+                }
                 info.PaymentMethod = result.CardType;
                 await _unitOfWork.BookingRepository.UpdateAsync(info);
             }
