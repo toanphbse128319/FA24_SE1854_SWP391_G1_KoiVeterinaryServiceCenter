@@ -324,13 +324,22 @@ public class AccountRepository : GenericRepository<Account>
     }
 
     public async Task<string> UpdateAccountAsync( Account info ){
-        string result = "";
-        result = checkValid( info );
-        if( result != "Ok" )
-            return result;
-        if( string.IsNullOrEmpty( info.AccountID ) )
-            return "Invalid: missing info";
-        if( await base.UpdateAsync( info ) < 1 )
+        Account old = base.GetById( info.AccountID );
+        if( old == null )
+            return "Unable to find the account";
+        if( string.IsNullOrEmpty( info.Avatar ) == false )
+            old.Avatar = info.Avatar;
+        if( string.IsNullOrEmpty( info.PhoneNumber ) == false )
+            old.PhoneNumber = info.PhoneNumber;
+        if( string.IsNullOrEmpty( info.Password ) == false )
+            old.Password = info.Password;
+        if( string.IsNullOrEmpty( info.Email ) == false )
+            old.Email = info.Email;
+        if( string.IsNullOrEmpty( info.RoleID ) == false )
+            old.RoleID = info.RoleID;
+        if( string.IsNullOrEmpty( info.Status ) == false )
+            old.RoleID = info.Status;
+        if( await base.UpdateAsync( old ) < 1 )
             return "Invalid: failed to update";
         return "Ok";
     }

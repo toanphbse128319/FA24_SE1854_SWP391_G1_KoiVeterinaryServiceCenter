@@ -52,12 +52,14 @@ export default function Example({ allServices, sdm }) {
   };
 
   const services = filterServices({ allServices: allServices, sdm: sdm });
+  console.log(services);
+  
 
   const handleGoBooking = (service, sdm) => {
     if (sdm.ServiceDeliveryMethodID === "SDM3") {
       navigate("/OnlineService", { state: { service, sdm } });
       console.log(service);
-    } else navigate("/AboutUs");
+    } else navigate("/Booking", { state: { service, sdm } });
   };
 
   const [showMenu, setShowMenu] = useState(false);
@@ -93,7 +95,7 @@ export default function Example({ allServices, sdm }) {
         <PopoverGroup className="hidden lg:flex lg:gap-20">
           <Popover className="relative">
             <PopoverButton className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900">
-              Services
+              Dịch vụ
               <ChevronDownIcon
                 aria-hidden="true"
                 className="h-5 w-5 flex-none text-gray-400"
@@ -131,7 +133,7 @@ export default function Example({ allServices, sdm }) {
             duration={500}
             className="text-sm font-semibold leading-6 text-gray-900 cursor-pointer"
           >
-            News
+            Tin tức
           </Link>
           <Link
             to="footer"
@@ -139,13 +141,13 @@ export default function Example({ allServices, sdm }) {
             duration={500}
             className="text-sm font-semibold leading-6 text-gray-900 cursor-pointer"
           >
-            Contact
+            Thông tin liên lạc 
           </Link>
           <button
             onClick={handleGoAboutUs}
             className="text-sm font-semibold leading-6 text-gray-900"
           >
-            About Us
+            Về chúng tôi 
           </button>
         </PopoverGroup>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
@@ -163,13 +165,13 @@ export default function Example({ allServices, sdm }) {
                     onClick={() => navigate("/MyProfile")}
                     className="hover:text-black "
                   >
-                    My Profile
+                    Hồ sơ
                   </p>
                   <p
                     onClick={() => navigate("/bookinglist")}
                     className="hover:text-black "
                   >
-                    My Appointment
+                    Các cuộc hẹn
                   </p>
                   <p
                     onClick={() => {
@@ -179,7 +181,7 @@ export default function Example({ allServices, sdm }) {
                     }}
                     className="hover:text-black "
                   >
-                    Logout
+                    Đăng xuất 
                   </p>
                 </div>
               </div>
@@ -189,7 +191,7 @@ export default function Example({ allServices, sdm }) {
               onClick={handleGoLogin}
               className="bg-blue-300 text-gray-800 px-8 py-3 rounded-full font-semibold hidden md:block"
             >
-              Log in <span aria-hidden="true">&rarr;</span>
+              Đăng nhập <span aria-hidden="true">&rarr;</span>
             </button>
           )}
         </div>
