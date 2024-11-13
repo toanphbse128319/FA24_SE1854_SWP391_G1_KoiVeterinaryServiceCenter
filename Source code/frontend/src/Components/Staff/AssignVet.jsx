@@ -305,7 +305,7 @@ const AssignVet = ({DoctorSchedule, SlotSchedule, BookingDetails, bookings, doct
                 </p>
               </div>
             ))}
-          <button style={styles.assign} onClick={() => handleShowModal()}>
+          <button style={styles.assign} onClick={() => setSelectedDate( null )}>
               Close
             </button>
           </div>
