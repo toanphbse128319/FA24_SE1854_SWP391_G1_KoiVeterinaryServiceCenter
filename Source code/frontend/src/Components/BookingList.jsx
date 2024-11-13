@@ -347,7 +347,7 @@ const BookingList = ({
 
   const renderBookingContent = (booking) => {
     console.log(booking)
-    const isCustomerOrVet = userRole === 'Customer' || userRole === 'Veterinarian';
+    const isCustomerOrVet = ['Customer', 'Veterinarian'].includes(userRole);
     const sdm = [
       {
         ServiceDeliveryMethodID: 'SDM1',
@@ -467,7 +467,7 @@ const BookingList = ({
               {renderBookingContent(booking)}
             </div>
             <div style={styles.actionButtonContainer}>
-              {userRole === 'Customer' && booking.Status === 'Completed' && booking.FeedbackID === 'FB0' && (
+              {userRole === 'Customer' && booking.Status.includes('Completed') && booking.FeedbackID === 'FB0' && (
                 <button
                   style={{ ...styles.actionButton, ...styles.primaryActionButton }}
                   onClick={() => handleFeedbackClick(booking.BookingID)}
@@ -476,26 +476,9 @@ const BookingList = ({
                 </button>
               )}
 
-              {userRole === 'Staff' && booking.Status === 'Pending' && (
-                <>
-                  <button
-                    style={{ ...styles.actionButton, ...styles.primaryActionButton }}
-                    onClick={() => onEditBooking(booking.BookingID)}
-                    disabled={completed}
-                  >
-                    Thay đổi thông tin
-                  </button>
-                  <button
-                    style={{ ...styles.actionButton, ...styles.secondaryActionButton }}
-                    onClick={() => handleConfirmBooking(booking.BookingID)}
-                    disabled={completed}
-                  >
-                    Xác nhận đơn
-                  </button>
-                </>
-              )}
+  
 
-              {userRole === 'Veterinarian' && booking.Status === 'Confirmed' && isIncidental == false && (
+              {userRole === 'Veterinarian' && booking.Status.includes('Confirmed') && isIncidental == false && (
                 <>
                   <button 
                     onClick={() => setShowBookingActions(true)}
