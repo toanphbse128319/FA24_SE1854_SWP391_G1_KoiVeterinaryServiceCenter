@@ -6,7 +6,7 @@ const DoctorList = () => {
   const navigate = useNavigate();
 
   const handleToDoctor = () => {
-    navigate("/Doctor'sSummaryInformation");
+    navigate("/DoctorListHome");
   };
   return (
     <div className="bg-blue-50 py-10 flex justify-center">

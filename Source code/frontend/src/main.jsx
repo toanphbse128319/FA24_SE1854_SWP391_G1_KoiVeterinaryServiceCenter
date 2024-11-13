@@ -22,7 +22,7 @@ import MyProfile from "./pages/MyProfile.jsx";
 import Manager from "./Components/Manager/Manager.jsx"
 import PageTransition from "./Components/PageTransition.tsx";
 import PaymentNotice from "./Components/PaymentNotice.jsx";
-
+import DoctorListHome from "./Components/DoctorList.jsx";
 import Map from "./Components/MapPicker.jsx";
 import OnlineService from "./pages/OnlineService.jsx";
 import SchduleCustomer from "./Components/ScheduleCustomer.jsx"
@@ -89,7 +89,7 @@ createRoot(document.getElementById("root")).render(
         <Route path="/AtHomeService" element={<AtHomeService />} />
         <Route path="/PondAtHome" element={<PondAtHome />} />
         <Route path="/CenterService" element={<CenterService />} />
-
+        <Route path="/DoctorListHome" element={<DoctorListHome />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>

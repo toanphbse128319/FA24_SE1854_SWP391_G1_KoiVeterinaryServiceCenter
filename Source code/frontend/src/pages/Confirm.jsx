@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { GetGeoLocation, CalculateDistance } from '../Components/MapPicker';
 import { FetchAPI } from '../Helper/Utilities';
 import { jwtDecode } from 'jwt-decode';
+import Navbar from "../Components/Navbar"
 
 const CLINIC_ADDRESS = "1491 Lê Văn Lương, Nhà Bè, TP HCM";
 const PRICE_PER_KM = 5000; // 5000 VND per km
@@ -214,6 +215,7 @@ const Confirm = () => {
 
 
   return (
+    
     <div className="mt-8 mx-auto max-w-7xl px-4">
       <div className="space-y-8">
         <OrderConfirmation
