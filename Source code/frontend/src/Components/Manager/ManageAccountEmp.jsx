@@ -2,16 +2,17 @@ import React, { useEffect, useState } from "react";
 import { FetchAPI } from "../../Helper/Utilities";
 
 const handleUpdateStatus = async (account, isActive) => {
-    const action = isActive === "false" ? "xóa" : "kích hoạt lại";
+    // Determine action description based on intended status
+    const action = isActive ? "kích hoạt lại" : "xóa";
     const confirmed = window.confirm(`Bạn có chắc chắn muốn ${action} người dùng này?`);
 
     if (confirmed) {
         try {
-            account.isActive = isActive;
+            // Update account's isActive property
             const response = await FetchAPI({
                 endpoint: "/Account",
                 method: "PUT",
-                body: { 
+                body: {
                     accountID: account.AccountID,
                     email: account.Email,
                     phoneNum: account.PhoneNumber,
@@ -19,12 +20,12 @@ const handleUpdateStatus = async (account, isActive) => {
                     avatar: account.Avatar,
                     password: account.Password,
                     status: account.Status,
-                    isActive: account.IsActive
+                    isActive: isActive, // Update isActive based on parameter
                 },
             });
             if (response.ok) {
                 alert(`Nhân viên với account ID ${account.AccountID} đã được cập nhật trạng thái thành công.`);
-            } else { 
+            } else {
                 alert("Có lỗi xảy ra khi cập nhật trạng thái nhân viên.");
             }
         } catch (error) {
@@ -49,12 +50,24 @@ async function FetchEmployee() {
             .filter(emp => emp.EmployeeID !== "E0")
             .map(emp => {
                 const account = accounts.find(acc => acc.AccountID === emp.AccountID && acc.RoleID !== "R1");
-                return account ? { ...emp, RoleID: account.RoleID } : null;
+                return account ? { ...emp, ...account } : null; // Merging account data with employee
             })
             .filter(emp => emp !== null);
 
         return employees;
     } catch (error) {
+        console.error("Error fetching employees:", error);
+        return [];
+    }
+}
+async function FetchAccount(){
+    try{
+        const accountResponse = await FetchAPI({ endpoint: "/Account" });
+        if ( !accountResponse.ok) throw new Error("Failed to fetch data");
+
+        const accounts = await accountResponse.json();
+        return accounts;
+    }catch(error){
         console.error("Error fetching employees:", error);
         return [];
     }
@@ -116,10 +129,10 @@ const ManageEmployee = () => {
                                     <p className="text-gray-800 dark:text-gray-200">{employee.RoleID === "R2" ? "Nhân Viên" : employee.RoleID === "R3" ? "Bác Sĩ" : ""}</p>
                                 </td>
                                 <td className="border-b border-gray-200 py-5 px-4 text-center dark:border-gray-600">
-                                    {employee.Status === "1" ? (
+                                    {employee.IsActive ? (
                                         <button
                                             onClick={() => {
-                                                handleUpdateStatus(employee, "false").then(Update());
+                                                handleUpdateStatus(ac, false).then(Update());
                                             }}
                                             className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md border border-red-600 transition duration-300"
                                         >
@@ -127,7 +140,7 @@ const ManageEmployee = () => {
                                         </button>
                                     ) : (
                                         <button
-                                            onClick={() => handleUpdateStatus(employee, "true").then(Update())}
+                                            onClick={() => handleUpdateStatus(employee, true).then(Update())}
                                             className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md border border-green-600 transition duration-300"
                                         >
                                             Kích hoạt lại
