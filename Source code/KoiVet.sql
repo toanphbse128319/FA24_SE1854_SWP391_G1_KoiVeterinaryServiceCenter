@@ -44,7 +44,7 @@ GO
 CREATE TABLE Employee(
     EmployeeID nvarchar(20) PRIMARY KEY,
 	AccountID nvarchar(30) FOREIGN KEY REFERENCES Account(AccountID),
-    RoleID nvarchar(20) FOREIGN KEY REFERENCES Role(RoleID) NOT NULL,
+
 	FirstName nvarchar(20) NOT NULL,
     LastName nvarchar(20) NOT NULL,
     Sex bit,
@@ -220,13 +220,14 @@ VALUES
 ('A3', '0111111111', 'Customer2@gmail.com', 'R4', 'avatar3.jpg', 'vet123', 'Normal', 1),
 ('A4', '0121111111', 'manager2@gmail.com', 'R4', 'avatar4.jpg', 'manager123', 'Normal', 1),
 ('A5', '0123212313', 'vet1@gmail.com', 'R3', 'avatar5.jpg', 'vet12345', 'Normal', 1),
-('A6', '8765785746', 'longtnhse173174@fpt.edu.vn', 'R4', 'avatar1.jpg', 'tangdeptrai', 'Normal', 1),
-('A9', '0835377623', 'vet2@gmail.com', 'R3', 'avatar2.jpg', 'vet12345', 'Normal', 1),
-('A8', '1122334455', 'vet3@gmail.com', 'R3', 'avatar3.jpg', 'vet12345', 'Normal', 1),
+('A6', '8765785746', 'longtnhse173174@fpt.edu.vn', 'R2', 'avatar1.jpg', 'tangdeptrai', 'Normal', 1),
 ('A7', '1234554321', 'vet4@gmai.com', 'R3', 'avatar4.jpg', 'vet12345', 'Normal', 1),
+('A8', '1122334455', 'vet3@gmail.com', 'R3', 'avatar3.jpg', 'vet12345', 'Normal', 1),
+('A9', '0835377623', 'vet2@gmail.com', 'R3', 'avatar2.jpg', 'vet12345', 'Normal', 1),
 ('A10', '1234567876', 'admin@gmail.com', 'R1', 'avatar5.jpg', 'admin12345', 'Normal', 1),
 ('A11', '9987654321', 'decsr@gmail.com', 'R3', 'avatar5.jpg', 'long12345', 'Normal', 1),
-('A12', '0100101010', 'kiet@gmail.com', 'R4', 'avatar6.jpg', 'kiet12345', 'Normal', 1);
+('A12', '0100101010', 'kiet@gmail.com', 'R4', 'avatar6.jpg', 'kiet12345', 'Normal', 1),
+('A13', '0989083300', 'Tawng@gmail.com', 'R2', 'avatar5.jpg', 'long12345', 'Normal', 1);
 GO
 
 INSERT INTO Customer (CustomerID, FirstName, LastName, Sex, Birthday, Address, AccountID, Status) 
@@ -239,15 +240,16 @@ VALUES
 GO
 
 -- Insert sample data for Employee
-INSERT INTO Employee (EmployeeID, AccountID, RoleID, FirstName, LastName, Sex, Birthday, Address, Status) 
+INSERT INTO Employee (EmployeeID, AccountID, FirstName, LastName, Sex, Birthday, Address, Status) 
 VALUES 
-('E0', 'A0', 'R0', 'Null', 'Null', 1, '2003-01-02', 'Null', 1),
-('E1', 'A6', 'R1', 'Duong', 'Tang', 1, '2003-01-02', 'VinHome Q9', 1),
-('E2', 'A7', 'R2', 'Lily', 'Anderson', 0, '1988-04-25', '111 Maple St', 1),
-('E3', 'A8', 'R3', 'Tom', 'Clark', 1, '1991-02-19', '222 Oak Dr', 1),
-('E4', 'A9', 'R2', 'Nancy', 'Lee', 0, '1985-12-12', '333 Pine Ln', 1),
-('E5', 'A10', 'R3', 'Michael', 'Scott', 1, '1975-09-08', '444 Birch Rd', 1),
-('E6', 'A11', 'R3', 'Hoang', 'Long', 1, '2000-02-02', 'Vin', 1);
+('E0', 'A0', 'Null', 'Null', 1, '2003-01-02', 'Null', 1),
+('E1', 'A6', 'Duong', 'Tang', 1, '2003-01-02', 'VinHome Q9', 1),
+('E2', 'A7', 'Lily', 'Anderson', 0, '1988-04-25', '111 Maple St', 1),
+('E3', 'A8', 'Tom', 'Clark', 1, '1991-02-19', '222 Oak Dr', 1),
+('E4', 'A9', 'Nancy', 'Lee', 0, '1985-12-12', '333 Pine Ln', 1),
+('E5', 'A10', 'Ky', 'Vy', 1, '1975-09-08', '444 Birch Rd', 1),
+('E6', 'A11', 'Hoang', 'Long', 1, '2000-02-02', 'Vin', 1),
+('E7', 'A13', 'Michael', 'Long', 1, '1975-09-08', '444 Birch Rd', 1);
 
 -- Insert sample data for ServiceDeliveryMethod
 INSERT INTO ServiceDeliveryMethod (ServiceDeliveryMethodID, Name, Status) 
