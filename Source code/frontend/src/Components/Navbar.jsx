@@ -52,12 +52,14 @@ export default function Example({ allServices, sdm }) {
   };
 
   const services = filterServices({ allServices: allServices, sdm: sdm });
+  console.log(services);
+  
 
   const handleGoBooking = (service, sdm) => {
     if (sdm.ServiceDeliveryMethodID === "SDM3") {
       navigate("/OnlineService", { state: { service, sdm } });
       console.log(service);
-    } else navigate("/AboutUs");
+    } else navigate("/Booking", { state: { service, sdm } });
   };
 
   const [showMenu, setShowMenu] = useState(false);

@@ -5,6 +5,7 @@ const handleUpdateStatus = async (account, isActive) => {
     // Determine action description based on intended status
     const action = isActive ? "kích hoạt lại" : "xóa";
     const confirmed = window.confirm(`Bạn có chắc chắn muốn ${action} người dùng này?`);
+    console.log(account.AccountID);
 
     if (confirmed) {
         try {
@@ -13,14 +14,8 @@ const handleUpdateStatus = async (account, isActive) => {
                 endpoint: "/Account",
                 method: "PUT",
                 body: {
-                    accountID: account.AccountID,
-                    email: account.Email,
-                    phoneNum: account.PhoneNumber,
-                    roleID: account.RoleID,
-                    avatar: account.Avatar,
-                    password: account.Password,
-                    status: account.Status,
-                    isActive: isActive, // Update isActive based on parameter
+                    accountID: account.AccountID,  
+                    isActive: isActive, 
                 },
             });
             if (response.ok) {
@@ -44,6 +39,8 @@ async function FetchEmployee() {
 
         let employees = await employeeResponse.json();
         const accounts = await accountResponse.json();
+        
+        
 
         // Filter and merge data
         employees = employees
@@ -53,7 +50,7 @@ async function FetchEmployee() {
                 return account ? { ...emp, ...account } : null; // Merging account data with employee
             })
             .filter(emp => emp !== null);
-
+            console.log(employees);
         return employees;
     } catch (error) {
         console.error("Error fetching employees:", error);
@@ -132,7 +129,7 @@ const ManageEmployee = () => {
                                     {employee.IsActive ? (
                                         <button
                                             onClick={() => {
-                                                handleUpdateStatus(ac, false).then(Update());
+                                                handleUpdateStatus(employee, false).then(Update());
                                             }}
                                             className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md border border-red-600 transition duration-300"
                                         >
