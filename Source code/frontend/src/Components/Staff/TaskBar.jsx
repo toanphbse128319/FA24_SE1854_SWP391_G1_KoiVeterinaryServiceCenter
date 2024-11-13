@@ -120,8 +120,7 @@ const STEPS = {
     function Update(){
         setUpdate( !update );
     }
-
-    console.log(DoctorSchedule);
+    console.log( doctors );
 
   const renderComponent = () => {
     switch (currentStep) {

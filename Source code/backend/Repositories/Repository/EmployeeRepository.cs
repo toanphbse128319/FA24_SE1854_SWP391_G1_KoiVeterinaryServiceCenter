@@ -68,7 +68,26 @@ namespace Repositories.Repository
                 return await CreateEmployeeAsync( info );
             return await UpdateEmployeeAsync( info );
         }
-
+        
+        
+        public async Task<List<Employee?>> SearchByRoleName( string rolename ){
+            string role = (new RoleRepository( _context )).getRoleID( rolename );
+            if( role == "" )
+                return new List<Employee?>();
+            List<Account> list = (await _context.Accounts.Where( account => account.RoleID == role ).ToListAsync())!;
+            if( list.Count == 0 )
+                return new List<Employee?>();
+            List<Employee?> employees = new List<Employee?>{};
+            foreach( Account account in list ){
+                Employee? temp = await _context.Employees.FirstOrDefaultAsync( employee => employee.AccountID == account.AccountID );
+                if( temp == null )
+                    continue;
+                employees.Add( temp );
+            }
+            if( employees.Count == 0 )
+                return new List<Employee?>();
+            return employees;
+        }
         
     }
 }

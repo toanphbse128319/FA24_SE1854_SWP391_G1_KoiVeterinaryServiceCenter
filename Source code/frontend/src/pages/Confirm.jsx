@@ -199,7 +199,7 @@ const Confirm = () => {
             if( !response.ok ){
                 return text;
             }
-            response = await FetchAPI( {endpoint: "/VnPay/all/" + text } );
+            response = await FetchAPI( {endpoint: "/VnPay/booked/" + text } );
             text = await response.text();
             if( !response.ok )
                 return await text;

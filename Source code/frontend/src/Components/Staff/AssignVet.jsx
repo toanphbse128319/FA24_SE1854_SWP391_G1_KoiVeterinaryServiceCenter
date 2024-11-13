@@ -76,15 +76,12 @@ const AssignVet = ({DoctorSchedule, SlotSchedule, BookingDetails, bookings, doct
 //    { DoctorID: 'E4', DoctorName: 'Dr. Michael Brown' },
 //  ];
 //
-        console.log( bookings );
-    console.log( doctors );
 
     function getDoctorNameFromBookingID({booking}){
         let result = "N/A";
         doctors.forEach( doctor => {
             if( doctor.EmployeeID == booking.EmployeeID ){
                 result = doctor.FirstName + " " + doctor.LastName;
-                console.log( doctor.FirstName + " " + doctor.LastName );
             }
         })
         return result;
