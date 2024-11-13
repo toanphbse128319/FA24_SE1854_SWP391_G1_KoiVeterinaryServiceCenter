@@ -58,12 +58,18 @@ export default function Example({ allServices, sdm }) {
 
   const handleGoBooking = (services, sdm) => {
     
+
     
-    
-    navigate("/OnlineService", { state: { services, sdm } });
-    
-    
-      
+    if(sdm.ServiceDeliveryMethodID ==='SDM3'){
+      navigate("/OnlineService", { state: { services, sdm } });
+    }if(sdm.ServiceDeliveryMethodID ==='SDM1'){
+      navigate("/AtHomeService", { state: { services, sdm } });
+    }if(sdm.ServiceDeliveryMethodID ==='SDM2'){
+      navigate("/PondAtHome", { state: { services, sdm } });
+    }if(sdm.ServiceDeliveryMethodID ==='SDM4'){
+      navigate("/CenterCervice", { state: { services, sdm } });
+    }
+
      
   };
 

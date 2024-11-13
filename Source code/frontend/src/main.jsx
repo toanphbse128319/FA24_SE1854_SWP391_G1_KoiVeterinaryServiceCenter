@@ -26,6 +26,9 @@ import PaymentNotice from "./Components/PaymentNotice.jsx";
 import Map from "./Components/MapPicker.jsx";
 import OnlineService from "./pages/OnlineService.jsx";
 import SchduleCustomer from "./Components/ScheduleCustomer.jsx"
+import PondAtHome from "./pages/PondAtHome.jsx";
+import AtHomeService from "./pages/AtHomeService.jsx";
+import CenterService from "./pages/CenterService.jsx";
 
 
 import {
@@ -83,6 +86,9 @@ createRoot(document.getElementById("root")).render(
         <Route path="/Manager" element={<Manager />} />
         <Route path="/ScheduleCustomer" element={<SchduleCustomer />} />
         <Route path="/OnlineService" element={<OnlineService />} />
+        <Route path="/AtHomeService" element={<AtHomeService />} />
+        <Route path="/PondAtHome" element={<PondAtHome />} />
+        <Route path="/CenterService" element={<CenterService />} />
 
       </Routes>
     </BrowserRouter>
