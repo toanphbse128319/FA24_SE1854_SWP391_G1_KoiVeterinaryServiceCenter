@@ -260,6 +260,60 @@ const BookingList = ({
   const handleBookingClick = (booking) => {
     setSelectedBooking(booking);
   };
+
+    const handlePayment = () => {
+          const calculateTotal = () => {
+              let count = fishCount;
+              if( count == 0 )
+                  count = poolCount;
+            const servicePrice = (service?.Price * count ) || 0;
+            const moving = movingCost || 0;
+            return servicePrice + moving;
+          };
+
+        // Chuyển đến trang thanh toán
+        let token = window.sessionStorage.getItem("token");
+        if( token == null )
+            navigate("/Login");
+        let json = jwtDecode(token);
+        let customerID = json.ID;
+        if( customerID == null )
+            navigate("/Login");
+        let bookingDateTime = time.split(" ")[1] + "T";
+        let slotTime = time.split(" ")[0].split("-")[0]+":00";
+        if( slotTime.length == 7 )
+            slotTime = "0" + slotTime;
+        bookingDateTime = bookingDateTime + slotTime;
+        console.log(bookingDateTime);
+        async function GetPaymentURL(){
+            let response = await FetchAPI( { endpoint: "/booking/add", method: "Post", body: {
+                customerID: customerID,
+                employeeID: doctor?.EmployeeID,
+                serviceID: service.ServiceID,
+                BookingDate: bookingDateTime,
+                numberOfFish: fishCount,
+                numberOfPool: poolCount,
+                distance: currentDistance,
+                distanceCost: movingCost,
+                totalServiceCost: calculateTotal(),
+                bookingAddress: window.sessionStorage.getItem("address")
+            } } );
+            let text = await response.text();
+            if( !response.ok ){
+                return text;
+            }
+            response = await FetchAPI( {endpoint: "/VnPay/booked/" + text } );
+            text = await response.text();
+            if( !response.ok )
+                return await text;
+            window.location.replace( text ); 
+        }
+        console.log( `cid: ${customerID}, eid: ${doctor?.EmployeeID}, 
+            sid: ${service.ServiceID}, bkaddr: ${window.sessionStorage.getItem("address")}, 
+            date: ${ bookingDateTime }, numberOfFish: ${fishCount}, distance: ${currentDistance}, numberOfPool: ${poolCount}
+            distanceCost: ${movingCost}, totalServiceCost: ${calculateTotal()}`)
+        GetPaymentURL().then( result => console.log(result) );
+  };
   const handleChangeStatus = async (bookingId) => {
     try {
       const response = await fetch('http://localhost:5145/api/Booking/updatestatus', {
@@ -416,7 +470,7 @@ const BookingList = ({
     setSelectedBooking(null);
   };
   const filteredBookings = activeStatus
-    ? bookings.filter(booking => booking.Status === activeStatus)
+    ? bookings.filter(booking => booking.Status.includes( activeStatus ))
     : bookings;
 
   return (
@@ -478,7 +532,7 @@ const BookingList = ({
 
   
 
-              {userRole === 'Veterinarian' && booking.Status.includes('Confirmed') && isIncidental == false && (
+              {userRole === 'Veterinarian' && booking.Status === 'Confirmed' && (
                 <>
                   <button 
                     onClick={() => setShowBookingActions(true)}
@@ -501,7 +555,7 @@ const BookingList = ({
                 </>
               )}
 
-              {userRole === 'Veterinarian' && booking.Status === 'Confirmed' && isIncidental === true && (
+              {userRole === 'Veterinarian' && booking.Status === 'Confirmed preed' && (
                 <div>
                   <button
                     style={{ ...styles.actionButton, ...styles.primaryActionButton }}

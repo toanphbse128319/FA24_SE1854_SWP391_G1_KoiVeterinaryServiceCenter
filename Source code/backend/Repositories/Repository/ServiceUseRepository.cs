@@ -248,6 +248,7 @@ public class ServiceUseRepository : GenericRepository<ServiceUse>
         Booking booking = bookingRepository.GetById(exam.BookingDetails[0].BookingID);
         booking.IncidentalFish = booking.IncidentalFish + exam.IncidentalFish;
         booking.IncidentalPool = booking.IncidentalPool + exam.IncidentalPool;
+        booking.TotalServiceCost = await bookingRepository.GetTotalPriceAsync( booking.BookingID );
         bookingRepository.Update(booking);
         return "Success";
     }

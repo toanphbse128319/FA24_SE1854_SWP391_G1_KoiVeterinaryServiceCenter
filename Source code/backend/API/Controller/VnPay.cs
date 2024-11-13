@@ -29,7 +29,7 @@ public class VnPayController : ControllerBase {
                 return Ok("The order has been paid");
             else if( info.PaymentStatus == "Refunded" )
                 return Ok("The order has been refunded");
-            info.TotalServiceCost = await _unitOfWork.BookingRepository.GetTotalPrice( info.BookingID );
+            info.TotalServiceCost = await _unitOfWork.BookingRepository.GetTotalPriceAsync( info.BookingID );
             Decimal price = info.TotalServiceCost;
             if( price == 0 )
                 return StatusCode( StatusCodes.Status422UnprocessableEntity, "Unable to get pricing");

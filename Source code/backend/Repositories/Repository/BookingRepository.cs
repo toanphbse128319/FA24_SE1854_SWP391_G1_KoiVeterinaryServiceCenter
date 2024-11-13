@@ -160,7 +160,7 @@ public class BookingRepository : GenericRepository<Booking>
         }
     }
 
-    public async Task<Decimal> GetTotalPrice(string bookingID){
+    public async Task<Decimal> GetTotalPriceAsync(string bookingID){
         BookingDetailRepository bdRepo = new BookingDetailRepository(_context);
         List<BookingDetail?> details = (await bdRepo.GetByBookingID(bookingID))!;
         if( details == null || details.Count == 0 )
